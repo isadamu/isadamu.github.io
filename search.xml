@@ -30,37 +30,6 @@
       </tags>
   </entry>
   <entry>
-    <title>博客bug记录</title>
-    <url>/2017/08/18/2017-08-18-blog-bugs/</url>
-    <content><![CDATA[<hr>
-<h2 id="2017-08-18-公式符号导致搜索功能无法使用（jekyll）"><a href="#2017-08-18-公式符号导致搜索功能无法使用（jekyll）" class="headerlink" title="2017-08-18 公式符号导致搜索功能无法使用（jekyll）"></a>2017-08-18 公式符号导致搜索功能无法使用（jekyll）</h2><p>本来以为弄好了博客，结果发现搜索功能不能使用了，重新来了一遍，控制变量法。<br>终于发现问题是因为一个公式内的符号<code>&amp;</code>，造成的问题。</p>
-<p>去掉公式内的<code>&amp;</code>符号后，一切恢复正常…</p>
-<hr>
-<h2 id="2017-08-20-image标签与photos标签（jekyll）"><a href="#2017-08-20-image标签与photos标签（jekyll）" class="headerlink" title="2017-08-20 image标签与photos标签（jekyll）"></a>2017-08-20 image标签与photos标签（jekyll）</h2><p>试了一下在文件头加入这两个标签，想试一试加上封面的效果，
-结果发现image标签我根本用不了，但是photos标签可以用，
-不过需要注意的是photos标签后面内链直接<code>source/images/...</code>，
-不再需要前面那个<code>site.url</code>。</p>
-<p>但是用了photos标签后，文章内部会有一个加载失败的图片，看来是用不了了。</p>
-<hr>
-<h2 id="hexo-Error-fatal-bad-config-line-1-in-file-git-config（hexo）"><a href="#hexo-Error-fatal-bad-config-line-1-in-file-git-config（hexo）" class="headerlink" title="hexo Error: fatal: bad config line 1 in file .git/config（hexo）"></a>hexo Error: fatal: bad config line 1 in file .git/config（hexo）</h2><p>今天在部署博客时，突然出现了错误，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hexo Error: fatal: bad config line 1 in file .git&#x2F;config</span><br></pre></td></tr></table></figure>
-<p>完全不明白为什么，又没有改过配置文件。</p>
-<p>搜索了发现是<code>.deploy_git/.git/config</code>文件里面的配置出现了问题，不是hexo的问题，而是git的问题。
-这里的<code>config</code>文件里面的内容不知道为什么被修改了，变成了乱码。</p>
-<p>删除了<code>config</code>文件，找了一个<code>idea</code>下面的一个同步工程的<code>config</code>文件，但是还是报错。</p>
-<p>最后找了一个同步之前的<code>config</code>文件，才总于解决了问题。</p>
-<p>里面的配置为：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[core]</span><br><span class="line">	repositoryformatversion &#x3D; 0</span><br><span class="line">	filemode &#x3D; false</span><br><span class="line">	bare &#x3D; false</span><br><span class="line">	logallrefupdates &#x3D; true</span><br><span class="line">	symlinks &#x3D; false</span><br><span class="line">	ignorecase &#x3D; true</span><br><span class="line">[branch &quot;master&quot;]</span><br><span class="line">	remote &#x3D; git@github.com:isadamu&#x2F;isadamu.github.io.git</span><br><span class="line">	merge &#x3D; refs&#x2F;heads&#x2F;master</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>guide</category>
-        <category>jekyll</category>
-      </categories>
-      <tags>
-        <tag>guide</tag>
-        <tag>bug</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 15.3Sum</title>
     <url>/2017/08/18/2017-08-18-3Sum/</url>
     <content><![CDATA[<h2 id="15-3Sum"><a href="#15-3Sum" class="headerlink" title="15.3Sum"></a>15.3Sum</h2><blockquote>
@@ -121,74 +90,6 @@
       </categories>
       <tags>
         <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Everflow 阅读报告</title>
-    <url>/2017/08/18/2017-08-18-everflow/</url>
-    <content><![CDATA[<h2 id="Everflow-阅读报告"><a href="#Everflow-阅读报告" class="headerlink" title="Everflow 阅读报告"></a>Everflow 阅读报告</h2><p>文献名：Packet-Level Telemetry in Large Datacenter Networks</p>
-<p>（Zhu Y, Kang N, Cao J, et al. Packet-level telemetry in large datacenter networks[C]//ACM SIGCOMM Computer Communication Review. ACM, 2015, 45(4): 479-491.）</p>
-<p>作者：Yibo Zhu、Nanxi Kang、Jiaxin Cao、Albert Greenberg、Guohan Lu、Ratul Mahajan、Dave Maltz、Lihua Yuan、Ming Zhang、Ben Y. Zhao、Haitao Zheng</p>
-<p>关键字：Datacenter network; failure detection; probe</p>
-<h2 id="引言："><a href="#引言：" class="headerlink" title="引言："></a>引言：</h2><p>在复杂网络中去排查故障是一件很困难的事，要做到及时的解决故障，需要做到：</p>
-<ul>
-<li>在大规模的网络流量中识别出受影响的报文。</li>
-<li>穿过多个网络组件去追踪它们。</li>
-<li>分析流量轨迹中的故障模式。</li>
-<li>测试并确定潜在的故障原因。</li>
-</ul>
-<p>Everflow 就是一个大型网络中基于报文级别的遥测系统，使用商用交换机所具有的“match and mirror”功能来追踪特定的报文。它将抓取到的报文送到分析服务器，并且发出“guided probes”来测试并确定潜在的故障。
-它的特点在于它是报文级别的，粒度细，并且随着数据中心实时运行，对当前的一小部分报文进行追踪，可以实时检测到故障。另外当操作员发现某些故障时，也可以对Everflow进行配置，注入探针报文去定位这些故障。</p>
-<p>对于Silent packet drop、Silent blackhole、Inflated end-to-end latency、Loops from buggy middlebox routing、Load imbalance和Protocol bugs等一些问题，传统的工具是很难检测到故障或者很难定位到故障的，但是这些问题Everflow都可以发现，并且能够将这些问题定位到某个路由器或者某条链路。</p>
-<p>另外，它所需占用的资源在数据中心尺度来看是很小的，基本可以不予考虑。</p>
-<h2 id="Everflow架构："><a href="#Everflow架构：" class="headerlink" title="Everflow架构："></a>Everflow架构：</h2><p><img src="/images/paper/everflow_1.png" alt="image"></p>
-<p>Everflow主要由四个部分组成：controller、analyzer、storage和reshuffler。在这之上，多个Everflow application与Controller进行交互，利用Everflow提供的信息来诊断网络故障。</p>
-<h3 id="Reshuffler："><a href="#Reshuffler：" class="headerlink" title="Reshuffler："></a>Reshuffler：</h3><p>Reshuffler负责将追踪的报文进行镜像，然后送到Analyzer。其中主要的问题是数据中心的流量巨大，不可能追踪所有的报文，只能有选择的进行追踪。需要使用下面一些措施。</p>
-<p><strong>在交换机上进行匹配和镜像。</strong>商用的数据中心交换机可以预定义匹配规则，
-并对匹配报文执行确定的操作，且不改变原报文的转发行为。
-Everflow利用这一点来减少追踪的负载，
-用三种匹配规则来处理DCN（DataCenter Network）的通常故障。
-<strong>第一</strong>，由于数据中心流的大小分布十分不均匀，
-所以以TCP报文的SYN、FIN和RST部分来进行匹配，
-随机在n个踪迹中选择一个踪迹进行追踪。
-<strong>第二</strong>，某一些问题可能需要追踪特定应用的特定端口的报文，
-或者两个服务器之间的报文，
-所以这里在这样的报文中加入一个特殊的<strong>“debug bit”</strong>，
-交换机将对这样的报文进行追踪。<strong>第三</strong>，对一些协议报文（例如BGP、PFC和RDMA），
-它们在网络中是属于很小的一部分，但是又十分重要，
-所以Everflow会追踪所有这些的协议报文。</p>
-<p><strong>Switch-based reshuffler。</strong>我们需要一个低花费的策略来reshuffle这些追踪流量。为了实现这个策略，首先在HMux（hardware Mux）中定义一个VIP（virtual IP），配置所有交换机将踪迹报文转发到VIP，当一个踪迹报文到达HMux，HMux依据报文的五元组将报文重定向到一个DIP（direct IP，它就对应一个分析服务器）。这样就保证了同一五元组的报文只会被重定向到相同的DIP。</p>
-<h3 id="Analyzers："><a href="#Analyzers：" class="headerlink" title="Analyzers："></a>Analyzers：</h3><p>分析器。由分布式服务器组组成，每台服务器处理一部分“tracing traffic”。
-每一个分析器保持着两个状态：<strong>追踪报文</strong>和<strong>计数器</strong>。</p>
-<p><strong>追踪报文。</strong>分析器保持着一个报文踪迹表，表中保存了同一个报文（由五元组和IPID定义）的镜像链。它保存原报文的一份全拷贝，一系列的逐跳信息，逐跳信息包括报文被镜像的交换机IP地址、时间戳、TTL、源MAC地址和DSCP/ECN。当在一秒以内不再有新的报文，就认为一条踪迹结束。</p>
-<p>在一条结束的报文踪迹中，分析器会检查它是否有<strong>循环</strong>或<strong>丢包</strong>问题。当相同的设备在一条踪迹中出现多次时，就认为出现了循环。当一条踪迹的最后一跳与所期望的最后一跳不同时，就认为发生了丢包。</p>
-<p>由于需要追踪的报文的数量十分巨大，为了减小存储压力，每一个分析器只会将 异常行为、设置了调试位（例guided probes）或者协议相关报文（例PFC和BGP）的踪迹信息写入存储单元。对剩下的踪迹，分析器会将它们以类型的区别聚合到计数列表，并每隔10秒写入存储单元。最后controller还会将每个分析器的计数合并到一起。</p>
-<p><strong>链路负载计数器。</strong>对每条链路，分析器会计算出链路的总负载（报文数、比特数和flow数）。另外它还可以对指定前缀的流量或指定的内部流量来进行更细粒度的统计，这个操作可以通过controller来动态增减。</p>
-<p><strong>延迟计数器。</strong>分析器通过“guided probes”来计算每一条链路的延迟。</p>
-<p><strong>镜像报文丢包计数。</strong>镜像报文也有可能会发生丢包，如下图5所示，当踪迹包含S2却不包含S1时，明显表示从S1镜像出来的报文发生了丢失。在实际部署中镜像报文丢失率很低，通过将镜像报文避开拥塞链路就能很好的解决这个问题。</p>
-<p><img src="/images/paper/everflow_2.png" alt="image"></p>
-<h3 id="Storage："><a href="#Storage：" class="headerlink" title="Storage："></a>Storage：</h3><p>这里使用了SCOPE数据库，它是一个可扩展的分布式数据处理系统。数据用表的形式进行存储。这里将报文踪迹按行进行存储，每一行存储一条报文踪迹。</p>
-<h3 id="Controller-APIs："><a href="#Controller-APIs：" class="headerlink" title="Controller APIs："></a>Controller APIs：</h3><p>Everflow applications通过一些API来与控制器进行交互，通过这些API，应用可以查询报文踪迹、添加细粒度的负载计数器、触发guided probes以及选定踪迹添加调试bit。</p>
-<p>它有GetTrace()、GetCounter()、AddCounter()、RemoveCounter()、Probe()以及EnableDbg()、DisableDbg() 这样一些操作函数。</p>
-<p><strong>guided probing。</strong>由于故障的发生可能有多种原因，被动的追踪报文可能不足以确定这些的原因，这时就需要重新注入报文来判断故障。这种能够在任意交换机上注入任意报文的能力，就叫做guided probing。</p>
-<p><img src="/images/paper/everflow_3.png" alt="image"></p>
-<p>如上图（a），虽然追踪到了这个丢包，但是我们不能确定这个丢包是随机的还是持续的，通过guided probing，我们将报文p的复制注入到S2（如图b），确定丢包是随机的还是持续的。更进一步，可以设置探针报文为不同的五元组，测试丢包是随机的，还是针对某个特定的五元组。</p>
-<p><img src="/images/paper/everflow_4.png" alt="image"></p>
-<p>如上图（a），当使用被动追踪中去测量链路延迟时（也就是正常的追踪），可能由于追踪报文的两次返回所经过的路径不同，造成测量不正确。guided probing不仅可以注入报文，还可以指定报文经过的路径，通过这一特点，设置探针报文经过S1 -&gt; S2 -&gt; S1，这样报文就会经过S1两次，这两次的时间间隔就是链路延迟的两倍。</p>
-<h2 id="故障排查："><a href="#故障排查：" class="headerlink" title="故障排查："></a>故障排查：</h2><p><strong>Latency profiler。</strong>当两个服务器之间的延迟变得很高时，为了去查询问题的原因，首先，对两个服务器之间的TCP SYN报文的debug bit进行标志，追踪这些报文，就可以路径上所经过的网络设备。然后，注入guided probes去测量逐跳延迟。有了这些信息，就能快速定位到发生问题的网络设备。</p>
-<p><strong>Packet drop debugger。</strong>发生丢包的原因可能有很多，例如拥塞、软件bug或者配置错误，这就需要调试器对发生丢包的踪迹进行检查。对于一个遭到丢弃的报文p，通过最后抓取到p的交换机Sn，可以推断出p所期望的下一跳。这样，调试器就会注入guided probes到Sn，确定丢包是否是持续的，确定丢包是否有固定模式（例如特定的五元组）。</p>
-<p><strong>Loop debugger。</strong>循环在数据中心网络中并不常见，但是它一旦出现，就将消耗大量的资源。当一个循环被检测到时（踪迹上相同设备出现两次），首先调试器注入guided probes去测试循环是不是持续的，如果循环是持续的，它会将循环路径上的设备进行上报，于是操作员就可以禁用设备上的端口来打破循环。在这期间调试器会持续注入guided probes，直到循环消失。</p>
-<p><strong>ECMP profiler。</strong>在数据中心网络中，交换机会用ECMP（等价路由）来切分流量到下一跳。但可能由于不好的哈希函数或者路由问题，会造成链路拥塞。对每一个交换机，ECMP profiler将会它的链路总负载。当检测到不均衡的负载划分时，它会启动更加细粒度的负载计数器来排查，检测这样的不均衡的负载划分是对所有的流还是特定前缀的流。这些信息可以帮助操作员快速的检测并定位故障。</p>
-<p><strong>RoCEv2-based RDMA debugger。</strong>RoCEv2-based RDMA（Remote DirectMemoryAccess）是一个新兴协议，它对网络的延迟要求非常的高。在数据中心网络中，有时由于NIC的一些软件bug，使得RDMA达不到理想的性能，但是NIC是由第三方厂商所提供的，不能得到其中的代码，于是就需要用调试器来处理这个问题。调试器追踪关于RDMA的所有控制报文，这些信息不仅能够观察到RDMA流的实际行为，也能调试第三方的代码问题。</p>
-<p>（文章中第七部分提到了一些这些问题在实际中的一些处理的例子）</p>
-]]></content>
-      <categories>
-        <category>paper</category>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>read</tag>
       </tags>
   </entry>
   <entry>
@@ -272,6 +173,105 @@ width="200" height="200" title="大范" /></div>
       </categories>
       <tags>
         <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客bug记录</title>
+    <url>/2017/08/18/2017-08-18-blog-bugs/</url>
+    <content><![CDATA[<hr>
+<h2 id="2017-08-18-公式符号导致搜索功能无法使用（jekyll）"><a href="#2017-08-18-公式符号导致搜索功能无法使用（jekyll）" class="headerlink" title="2017-08-18 公式符号导致搜索功能无法使用（jekyll）"></a>2017-08-18 公式符号导致搜索功能无法使用（jekyll）</h2><p>本来以为弄好了博客，结果发现搜索功能不能使用了，重新来了一遍，控制变量法。<br>终于发现问题是因为一个公式内的符号<code>&amp;</code>，造成的问题。</p>
+<p>去掉公式内的<code>&amp;</code>符号后，一切恢复正常…</p>
+<hr>
+<h2 id="2017-08-20-image标签与photos标签（jekyll）"><a href="#2017-08-20-image标签与photos标签（jekyll）" class="headerlink" title="2017-08-20 image标签与photos标签（jekyll）"></a>2017-08-20 image标签与photos标签（jekyll）</h2><p>试了一下在文件头加入这两个标签，想试一试加上封面的效果，
+结果发现image标签我根本用不了，但是photos标签可以用，
+不过需要注意的是photos标签后面内链直接<code>source/images/...</code>，
+不再需要前面那个<code>site.url</code>。</p>
+<p>但是用了photos标签后，文章内部会有一个加载失败的图片，看来是用不了了。</p>
+<hr>
+<h2 id="hexo-Error-fatal-bad-config-line-1-in-file-git-config（hexo）"><a href="#hexo-Error-fatal-bad-config-line-1-in-file-git-config（hexo）" class="headerlink" title="hexo Error: fatal: bad config line 1 in file .git/config（hexo）"></a>hexo Error: fatal: bad config line 1 in file .git/config（hexo）</h2><p>今天在部署博客时，突然出现了错误，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hexo Error: fatal: bad config line 1 in file .git&#x2F;config</span><br></pre></td></tr></table></figure>
+<p>完全不明白为什么，又没有改过配置文件。</p>
+<p>搜索了发现是<code>.deploy_git/.git/config</code>文件里面的配置出现了问题，不是hexo的问题，而是git的问题。
+这里的<code>config</code>文件里面的内容不知道为什么被修改了，变成了乱码。</p>
+<p>删除了<code>config</code>文件，找了一个<code>idea</code>下面的一个同步工程的<code>config</code>文件，但是还是报错。</p>
+<p>最后找了一个同步之前的<code>config</code>文件，才总于解决了问题。</p>
+<p>里面的配置为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[core]</span><br><span class="line">	repositoryformatversion &#x3D; 0</span><br><span class="line">	filemode &#x3D; false</span><br><span class="line">	bare &#x3D; false</span><br><span class="line">	logallrefupdates &#x3D; true</span><br><span class="line">	symlinks &#x3D; false</span><br><span class="line">	ignorecase &#x3D; true</span><br><span class="line">[branch &quot;master&quot;]</span><br><span class="line">	remote &#x3D; git@github.com:isadamu&#x2F;isadamu.github.io.git</span><br><span class="line">	merge &#x3D; refs&#x2F;heads&#x2F;master</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>guide</category>
+        <category>jekyll</category>
+      </categories>
+      <tags>
+        <tag>guide</tag>
+        <tag>bug</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Everflow 阅读报告</title>
+    <url>/2017/08/18/2017-08-18-everflow/</url>
+    <content><![CDATA[<h2 id="Everflow-阅读报告"><a href="#Everflow-阅读报告" class="headerlink" title="Everflow 阅读报告"></a>Everflow 阅读报告</h2><p>文献名：Packet-Level Telemetry in Large Datacenter Networks</p>
+<p>（Zhu Y, Kang N, Cao J, et al. Packet-level telemetry in large datacenter networks[C]//ACM SIGCOMM Computer Communication Review. ACM, 2015, 45(4): 479-491.）</p>
+<p>作者：Yibo Zhu、Nanxi Kang、Jiaxin Cao、Albert Greenberg、Guohan Lu、Ratul Mahajan、Dave Maltz、Lihua Yuan、Ming Zhang、Ben Y. Zhao、Haitao Zheng</p>
+<p>关键字：Datacenter network; failure detection; probe</p>
+<h2 id="引言："><a href="#引言：" class="headerlink" title="引言："></a>引言：</h2><p>在复杂网络中去排查故障是一件很困难的事，要做到及时的解决故障，需要做到：</p>
+<ul>
+<li>在大规模的网络流量中识别出受影响的报文。</li>
+<li>穿过多个网络组件去追踪它们。</li>
+<li>分析流量轨迹中的故障模式。</li>
+<li>测试并确定潜在的故障原因。</li>
+</ul>
+<p>Everflow 就是一个大型网络中基于报文级别的遥测系统，使用商用交换机所具有的“match and mirror”功能来追踪特定的报文。它将抓取到的报文送到分析服务器，并且发出“guided probes”来测试并确定潜在的故障。
+它的特点在于它是报文级别的，粒度细，并且随着数据中心实时运行，对当前的一小部分报文进行追踪，可以实时检测到故障。另外当操作员发现某些故障时，也可以对Everflow进行配置，注入探针报文去定位这些故障。</p>
+<p>对于Silent packet drop、Silent blackhole、Inflated end-to-end latency、Loops from buggy middlebox routing、Load imbalance和Protocol bugs等一些问题，传统的工具是很难检测到故障或者很难定位到故障的，但是这些问题Everflow都可以发现，并且能够将这些问题定位到某个路由器或者某条链路。</p>
+<p>另外，它所需占用的资源在数据中心尺度来看是很小的，基本可以不予考虑。</p>
+<h2 id="Everflow架构："><a href="#Everflow架构：" class="headerlink" title="Everflow架构："></a>Everflow架构：</h2><p><img src="/images/paper/everflow_1.png" alt="image"></p>
+<p>Everflow主要由四个部分组成：controller、analyzer、storage和reshuffler。在这之上，多个Everflow application与Controller进行交互，利用Everflow提供的信息来诊断网络故障。</p>
+<h3 id="Reshuffler："><a href="#Reshuffler：" class="headerlink" title="Reshuffler："></a>Reshuffler：</h3><p>Reshuffler负责将追踪的报文进行镜像，然后送到Analyzer。其中主要的问题是数据中心的流量巨大，不可能追踪所有的报文，只能有选择的进行追踪。需要使用下面一些措施。</p>
+<p><strong>在交换机上进行匹配和镜像。</strong>商用的数据中心交换机可以预定义匹配规则，
+并对匹配报文执行确定的操作，且不改变原报文的转发行为。
+Everflow利用这一点来减少追踪的负载，
+用三种匹配规则来处理DCN（DataCenter Network）的通常故障。
+<strong>第一</strong>，由于数据中心流的大小分布十分不均匀，
+所以以TCP报文的SYN、FIN和RST部分来进行匹配，
+随机在n个踪迹中选择一个踪迹进行追踪。
+<strong>第二</strong>，某一些问题可能需要追踪特定应用的特定端口的报文，
+或者两个服务器之间的报文，
+所以这里在这样的报文中加入一个特殊的<strong>“debug bit”</strong>，
+交换机将对这样的报文进行追踪。<strong>第三</strong>，对一些协议报文（例如BGP、PFC和RDMA），
+它们在网络中是属于很小的一部分，但是又十分重要，
+所以Everflow会追踪所有这些的协议报文。</p>
+<p><strong>Switch-based reshuffler。</strong>我们需要一个低花费的策略来reshuffle这些追踪流量。为了实现这个策略，首先在HMux（hardware Mux）中定义一个VIP（virtual IP），配置所有交换机将踪迹报文转发到VIP，当一个踪迹报文到达HMux，HMux依据报文的五元组将报文重定向到一个DIP（direct IP，它就对应一个分析服务器）。这样就保证了同一五元组的报文只会被重定向到相同的DIP。</p>
+<h3 id="Analyzers："><a href="#Analyzers：" class="headerlink" title="Analyzers："></a>Analyzers：</h3><p>分析器。由分布式服务器组组成，每台服务器处理一部分“tracing traffic”。
+每一个分析器保持着两个状态：<strong>追踪报文</strong>和<strong>计数器</strong>。</p>
+<p><strong>追踪报文。</strong>分析器保持着一个报文踪迹表，表中保存了同一个报文（由五元组和IPID定义）的镜像链。它保存原报文的一份全拷贝，一系列的逐跳信息，逐跳信息包括报文被镜像的交换机IP地址、时间戳、TTL、源MAC地址和DSCP/ECN。当在一秒以内不再有新的报文，就认为一条踪迹结束。</p>
+<p>在一条结束的报文踪迹中，分析器会检查它是否有<strong>循环</strong>或<strong>丢包</strong>问题。当相同的设备在一条踪迹中出现多次时，就认为出现了循环。当一条踪迹的最后一跳与所期望的最后一跳不同时，就认为发生了丢包。</p>
+<p>由于需要追踪的报文的数量十分巨大，为了减小存储压力，每一个分析器只会将 异常行为、设置了调试位（例guided probes）或者协议相关报文（例PFC和BGP）的踪迹信息写入存储单元。对剩下的踪迹，分析器会将它们以类型的区别聚合到计数列表，并每隔10秒写入存储单元。最后controller还会将每个分析器的计数合并到一起。</p>
+<p><strong>链路负载计数器。</strong>对每条链路，分析器会计算出链路的总负载（报文数、比特数和flow数）。另外它还可以对指定前缀的流量或指定的内部流量来进行更细粒度的统计，这个操作可以通过controller来动态增减。</p>
+<p><strong>延迟计数器。</strong>分析器通过“guided probes”来计算每一条链路的延迟。</p>
+<p><strong>镜像报文丢包计数。</strong>镜像报文也有可能会发生丢包，如下图5所示，当踪迹包含S2却不包含S1时，明显表示从S1镜像出来的报文发生了丢失。在实际部署中镜像报文丢失率很低，通过将镜像报文避开拥塞链路就能很好的解决这个问题。</p>
+<p><img src="/images/paper/everflow_2.png" alt="image"></p>
+<h3 id="Storage："><a href="#Storage：" class="headerlink" title="Storage："></a>Storage：</h3><p>这里使用了SCOPE数据库，它是一个可扩展的分布式数据处理系统。数据用表的形式进行存储。这里将报文踪迹按行进行存储，每一行存储一条报文踪迹。</p>
+<h3 id="Controller-APIs："><a href="#Controller-APIs：" class="headerlink" title="Controller APIs："></a>Controller APIs：</h3><p>Everflow applications通过一些API来与控制器进行交互，通过这些API，应用可以查询报文踪迹、添加细粒度的负载计数器、触发guided probes以及选定踪迹添加调试bit。</p>
+<p>它有GetTrace()、GetCounter()、AddCounter()、RemoveCounter()、Probe()以及EnableDbg()、DisableDbg() 这样一些操作函数。</p>
+<p><strong>guided probing。</strong>由于故障的发生可能有多种原因，被动的追踪报文可能不足以确定这些的原因，这时就需要重新注入报文来判断故障。这种能够在任意交换机上注入任意报文的能力，就叫做guided probing。</p>
+<p><img src="/images/paper/everflow_3.png" alt="image"></p>
+<p>如上图（a），虽然追踪到了这个丢包，但是我们不能确定这个丢包是随机的还是持续的，通过guided probing，我们将报文p的复制注入到S2（如图b），确定丢包是随机的还是持续的。更进一步，可以设置探针报文为不同的五元组，测试丢包是随机的，还是针对某个特定的五元组。</p>
+<p><img src="/images/paper/everflow_4.png" alt="image"></p>
+<p>如上图（a），当使用被动追踪中去测量链路延迟时（也就是正常的追踪），可能由于追踪报文的两次返回所经过的路径不同，造成测量不正确。guided probing不仅可以注入报文，还可以指定报文经过的路径，通过这一特点，设置探针报文经过S1 -&gt; S2 -&gt; S1，这样报文就会经过S1两次，这两次的时间间隔就是链路延迟的两倍。</p>
+<h2 id="故障排查："><a href="#故障排查：" class="headerlink" title="故障排查："></a>故障排查：</h2><p><strong>Latency profiler。</strong>当两个服务器之间的延迟变得很高时，为了去查询问题的原因，首先，对两个服务器之间的TCP SYN报文的debug bit进行标志，追踪这些报文，就可以路径上所经过的网络设备。然后，注入guided probes去测量逐跳延迟。有了这些信息，就能快速定位到发生问题的网络设备。</p>
+<p><strong>Packet drop debugger。</strong>发生丢包的原因可能有很多，例如拥塞、软件bug或者配置错误，这就需要调试器对发生丢包的踪迹进行检查。对于一个遭到丢弃的报文p，通过最后抓取到p的交换机Sn，可以推断出p所期望的下一跳。这样，调试器就会注入guided probes到Sn，确定丢包是否是持续的，确定丢包是否有固定模式（例如特定的五元组）。</p>
+<p><strong>Loop debugger。</strong>循环在数据中心网络中并不常见，但是它一旦出现，就将消耗大量的资源。当一个循环被检测到时（踪迹上相同设备出现两次），首先调试器注入guided probes去测试循环是不是持续的，如果循环是持续的，它会将循环路径上的设备进行上报，于是操作员就可以禁用设备上的端口来打破循环。在这期间调试器会持续注入guided probes，直到循环消失。</p>
+<p><strong>ECMP profiler。</strong>在数据中心网络中，交换机会用ECMP（等价路由）来切分流量到下一跳。但可能由于不好的哈希函数或者路由问题，会造成链路拥塞。对每一个交换机，ECMP profiler将会它的链路总负载。当检测到不均衡的负载划分时，它会启动更加细粒度的负载计数器来排查，检测这样的不均衡的负载划分是对所有的流还是特定前缀的流。这些信息可以帮助操作员快速的检测并定位故障。</p>
+<p><strong>RoCEv2-based RDMA debugger。</strong>RoCEv2-based RDMA（Remote DirectMemoryAccess）是一个新兴协议，它对网络的延迟要求非常的高。在数据中心网络中，有时由于NIC的一些软件bug，使得RDMA达不到理想的性能，但是NIC是由第三方厂商所提供的，不能得到其中的代码，于是就需要用调试器来处理这个问题。调试器追踪关于RDMA的所有控制报文，这些信息不仅能够观察到RDMA流的实际行为，也能调试第三方的代码问题。</p>
+<p>（文章中第七部分提到了一些这些问题在实际中的一些处理的例子）</p>
+]]></content>
+      <categories>
+        <category>paper</category>
+        <category>network</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>read</tag>
       </tags>
   </entry>
   <entry>
@@ -486,6 +486,44 @@ github会自动按这个域名来转。  </p>
       </tags>
   </entry>
   <entry>
+    <title>Coursera neural-networks-deep-learning 笔记</title>
+    <url>/2017/08/22/2017-08-22-Andrew-Ng-DeepLearning_1/</url>
+    <content><![CDATA[<p><a href="https://www.coursera.org/learn/neural-networks-deep-learning">课程主页</a></p>
+<p>学完了吴恩达在Coursera上新开的课程的第一部分<code>neural networks deep learning</code>，
+是时候对课程进行一下总结了。</p>
+<hr>
+<h2 id="每周内容小回顾"><a href="#每周内容小回顾" class="headerlink" title="每周内容小回顾"></a>每周内容小回顾</h2><p>先对第一个专项课程所讲的内容进行简单的梳理，后面捡重点单独拿出来进行记录。</p>
+<h3 id="week-1"><a href="#week-1" class="headerlink" title="week 1"></a>week 1</h3><p>第一周视频时间很短，主要就是介绍了神经网络的发展以及它的一些作用，
+然后讲了课程的相关内容，如何讨论啊，作业形式啊什么的。</p>
+<h3 id="week-2"><a href="#week-2" class="headerlink" title="week 2"></a>week 2</h3><p>第二周的课程首先引入了<strong>Logistic Regression</strong>，然后讲了如何对<strong>Logistic</strong>模型进行训练，
+这样就引入了代价函数，梯度下降等等一些机器学习中的一些概念。</p>
+<p>另外，后半部分又顺带引入了计算过程的向量化，所以就讲了与作业有关的<strong>Jupyter、numpy</strong>的相关操作。</p>
+<h3 id="week-3"><a href="#week-3" class="headerlink" title="week 3"></a>week 3</h3><p>第三周主要讲了一个二层的神经网络，当然是先讲了它的前向传播，然后讲了如何向量化计算，
+这里主要是为了讲清楚神经网络的层次结构。</p>
+<p>然后讲了神经网络中的激活函数，最后给出了反向传播，加上权值的随机初始化。</p>
+<h3 id="week-4"><a href="#week-4" class="headerlink" title="week 4"></a>week 4</h3><p>第四周开始更深层次的神经网络，然后讲了前向和反向传播，并且强调了神经网络每一层的
+矩阵维度问题，在程序中要注意维度的正确性。</p>
+<p>最后讲了参数设置问题。<code>Parameters</code>：通过网络学习得来的参数。
+<code>Hyperparameters</code>：在训练前就要设置，需要多次重复训练来手动调整。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>讲了构建一个多层的前向神经网络所需要的基本的知识。</p>
+<hr>
+<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p><a href="http://longrm.com/2017/08/22/2017-08-22-logistic-regression/">Logistic Regression总结</a></p>
+<hr>
+<h2 id="初级-Deep-Neural-Networks"><a href="#初级-Deep-Neural-Networks" class="headerlink" title="初级 Deep Neural Networks"></a>初级 Deep Neural Networks</h2><p><a href="http://longrm.com/2017/08/22/2017-08-22-dnn/">Deep Neural Networks 总结一</a></p>
+<hr>
+<h2 id="课程的一些问题"><a href="#课程的一些问题" class="headerlink" title="课程的一些问题"></a>课程的一些问题</h2><p>好像没有ppt，笔记写起来很痛苦啊。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>朴素贝叶斯+垃圾邮件分类器</title>
     <url>/2017/08/21/2017-08-21-spam-classifier/</url>
     <content><![CDATA[<hr>
@@ -528,44 +566,6 @@ P(y = 1)= \Phi_y</script><p>同样的，利用极大似然法估计概率值。<
       </categories>
       <tags>
         <tag>mechine learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Coursera neural-networks-deep-learning 笔记</title>
-    <url>/2017/08/22/2017-08-22-Andrew-Ng-DeepLearning_1/</url>
-    <content><![CDATA[<p><a href="https://www.coursera.org/learn/neural-networks-deep-learning">课程主页</a></p>
-<p>学完了吴恩达在Coursera上新开的课程的第一部分<code>neural networks deep learning</code>，
-是时候对课程进行一下总结了。</p>
-<hr>
-<h2 id="每周内容小回顾"><a href="#每周内容小回顾" class="headerlink" title="每周内容小回顾"></a>每周内容小回顾</h2><p>先对第一个专项课程所讲的内容进行简单的梳理，后面捡重点单独拿出来进行记录。</p>
-<h3 id="week-1"><a href="#week-1" class="headerlink" title="week 1"></a>week 1</h3><p>第一周视频时间很短，主要就是介绍了神经网络的发展以及它的一些作用，
-然后讲了课程的相关内容，如何讨论啊，作业形式啊什么的。</p>
-<h3 id="week-2"><a href="#week-2" class="headerlink" title="week 2"></a>week 2</h3><p>第二周的课程首先引入了<strong>Logistic Regression</strong>，然后讲了如何对<strong>Logistic</strong>模型进行训练，
-这样就引入了代价函数，梯度下降等等一些机器学习中的一些概念。</p>
-<p>另外，后半部分又顺带引入了计算过程的向量化，所以就讲了与作业有关的<strong>Jupyter、numpy</strong>的相关操作。</p>
-<h3 id="week-3"><a href="#week-3" class="headerlink" title="week 3"></a>week 3</h3><p>第三周主要讲了一个二层的神经网络，当然是先讲了它的前向传播，然后讲了如何向量化计算，
-这里主要是为了讲清楚神经网络的层次结构。</p>
-<p>然后讲了神经网络中的激活函数，最后给出了反向传播，加上权值的随机初始化。</p>
-<h3 id="week-4"><a href="#week-4" class="headerlink" title="week 4"></a>week 4</h3><p>第四周开始更深层次的神经网络，然后讲了前向和反向传播，并且强调了神经网络每一层的
-矩阵维度问题，在程序中要注意维度的正确性。</p>
-<p>最后讲了参数设置问题。<code>Parameters</code>：通过网络学习得来的参数。
-<code>Hyperparameters</code>：在训练前就要设置，需要多次重复训练来手动调整。</p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>讲了构建一个多层的前向神经网络所需要的基本的知识。</p>
-<hr>
-<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p><a href="http://longrm.com/2017/08/22/2017-08-22-logistic-regression/">Logistic Regression总结</a></p>
-<hr>
-<h2 id="初级-Deep-Neural-Networks"><a href="#初级-Deep-Neural-Networks" class="headerlink" title="初级 Deep Neural Networks"></a>初级 Deep Neural Networks</h2><p><a href="http://longrm.com/2017/08/22/2017-08-22-dnn/">Deep Neural Networks 总结一</a></p>
-<hr>
-<h2 id="课程的一些问题"><a href="#课程的一些问题" class="headerlink" title="课程的一些问题"></a>课程的一些问题</h2><p>好像没有ppt，笔记写起来很痛苦啊。</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -853,26 +853,6 @@ b^{[i]} \in R^{n^{[i]} \times 1}</script><hr>
       </tags>
   </entry>
   <entry>
-    <title>jekyll博客顶端背景修改</title>
-    <url>/2017/08/22/2017-08-22-head-color/</url>
-    <content><![CDATA[<p>由于NexT是Hexo上的主题，搬运到jekyll上面之后，目录结构完全不一样，所以网上的参考基本没什么用。</p>
-<hr>
-<h2 id="修改head颜色"><a href="#修改head颜色" class="headerlink" title="修改head颜色"></a>修改head颜色</h2><p>在<code>_sass/_schemes/Mist/_header.scss</code>下面修改，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: $whitesmoke; &#125;</span><br></pre></td></tr></table></figure>
-<p>为，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: #FFC78E; &#125;</span><br></pre></td></tr></table></figure>
-<p>然后就变成下面的颜色，</p>
-<p><img src="/images/guide/head-color_1.png" alt="image" title="改为了橘黄色"></p>
-]]></content>
-      <categories>
-        <category>guide</category>
-        <category>jekyll</category>
-      </categories>
-      <tags>
-        <tag>guide</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Logistic Regression 简单总结</title>
     <url>/2017/08/22/2017-08-22-logistic-regression/</url>
     <content><![CDATA[<hr>
@@ -964,9 +944,30 @@ b = b - \alpha \frac {\partial J}{\partial b}
       </tags>
   </entry>
   <entry>
+    <title>jekyll博客顶端背景修改</title>
+    <url>/2017/08/22/2017-08-22-head-color/</url>
+    <content><![CDATA[<p>由于NexT是Hexo上的主题，搬运到jekyll上面之后，目录结构完全不一样，所以网上的参考基本没什么用。</p>
+<hr>
+<h2 id="修改head颜色"><a href="#修改head颜色" class="headerlink" title="修改head颜色"></a>修改head颜色</h2><p>在<code>_sass/_schemes/Mist/_header.scss</code>下面修改，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: $whitesmoke; &#125;</span><br></pre></td></tr></table></figure>
+<p>为，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: #FFC78E; &#125;</span><br></pre></td></tr></table></figure>
+<p>然后就变成下面的颜色，</p>
+<p><img src="/images/guide/head-color_1.png" alt="image" title="改为了橘黄色"></p>
+]]></content>
+      <categories>
+        <category>guide</category>
+        <category>jekyll</category>
+      </categories>
+      <tags>
+        <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hexo使用next主题建站全过程</title>
     <url>/2017/08/23/2017-08-23-build-hexo/</url>
     <content><![CDATA[<hr>
+<h1 id="2017"><a href="#2017" class="headerlink" title="2017"></a>2017</h1><hr>
 <h2 id="心路历程"><a href="#心路历程" class="headerlink" title="心路历程"></a>心路历程</h2><p>之前搭好了<code>github + jekyll</code>的个人博客，
 <a href="http://longrm.com/2017/08/19/2017-08-19-build-blog-review/">搭建jekyll博客的一些回顾</a>，
 写了几天，并没有什么问题，写得还挺开心的。</p>
@@ -1127,6 +1128,16 @@ github会在它上面启动<a href="https://pages.github.com/">github pages</a>�
 <p>需要将网易云音乐的外链插入到<code>next/layout/_macro/sidebar.swig</code>里面，</p>
 <p><img src="/images/guide/build-hexo_12.png" alt="image"></p>
 <p>注意插入到图中的位置，也就是<strong>Blogroll</strong>下面。按道理可以将这个插入到主题的各种地方，只要看得明白主题的布局…</p>
+<hr>
+<h1 id="2020-12-30号更新"><a href="#2020-12-30号更新" class="headerlink" title="2020-12-30号更新"></a>2020-12-30号更新</h1><p>最近更新了一下nodejs的版本，然后发现使用hexo生成时，会产生一堆空文件导致博客构建失败。索性就将所有的版本都升级了一下，版本如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo -v</span></span><br><span class="line"></span><br><span class="line">hexo-cli: 4.2.0</span><br><span class="line">os: Windows_NT 10.0.18363 win32 x64</span><br><span class="line">node: 14.15.1</span><br><span class="line">v8: 8.4.371.19-node.17</span><br><span class="line">uv: 1.40.0</span><br><span class="line">zlib: 1.2.11</span><br><span class="line">brotli: 1.0.9</span><br><span class="line">ares: 1.16.1</span><br><span class="line">modules: 83</span><br><span class="line">nghttp2: 1.41.0</span><br><span class="line">napi: 7</span><br><span class="line">llhttp: 2.1.3</span><br><span class="line">openssl: 1.1.1g</span><br><span class="line">cldr: 37.0</span><br><span class="line">icu: 67.1</span><br><span class="line">tz: 2020a</span><br><span class="line">unicode: 13.0</span><br></pre></td></tr></table></figure>
+<p>顺便主题next也换了一个新版本<a href="https://github.com/theme-next/hexo-theme-next">https://github.com/theme-next/hexo-theme-next</a>，老版本的<a href="https://github.com/iissnan/hexo-theme-next">https://github.com/iissnan/hexo-theme-next</a>，已经不维护了。
+这里使用的7.8.0版本的next。</p>
+<p>hexo的配置参考文档<a href="https://hexo.io/docs/">https://hexo.io/docs/</a>，用法还和以前一样。</p>
+<p>next的配置参考文档<a href="https://theme-next.js.org/docs/">https://theme-next.js.org/docs/</a>。</p>
+<p>这个版本的next对于中文用户有一个很严重的bug，你会发现有些博客页面打开是空白的，然后查看F12发现浏览器报了一个<code>Cannot read property &#39;replace&#39; of null</code>的错误，
+然后在这里找到了解决办法<a href="https://issuehunt.io/r/hexojs/hexo/issues/4486">https://issuehunt.io/r/hexojs/hexo/issues/4486</a>，即使用<code>hexo-theme-next:master</code>中的文件<code>next\source\js\utils.js</code>覆盖<code>themes\next\source\js\utils.js</code>即可。</p>
+<p>以后当然直接使用更新版本的next即可，这个bug会在后续版本修复。</p>
 ]]></content>
       <categories>
         <category>guide</category>
@@ -1852,50 +1863,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>TensorFlow 笔记一</title>
-    <url>/2017/09/02/2017-09-02-tensorflow/</url>
-    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
-<hr>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>或者</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>它也可以是矩阵，</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
-<p>当然直接写也是可以的，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
-<hr>
-<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
-<p>还不明白它的作用。</p>
-<hr>
-<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
-<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
-<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
-<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
-<hr>
-<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>109</p>
-</blockquote>
-<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 10 Regular Expression Matching</title>
     <url>/2017/09/05/2017-09-05-leetcode_10/</url>
     <content><![CDATA[<p>Description:</p>
@@ -1951,6 +1918,50 @@ z^{[L]} =
 <code>training error</code>与<code>dev set</code>之间的差值就叫做<code>variance</code>，表示模型的泛化能力。</p>
 <p>这两个精度差就可以指示我们，当前的模型问题出在哪个地方。</p>
 <h2 id="后一周"><a href="#后一周" class="headerlink" title="后一周"></a>后一周</h2><p>不好总结，需要时可以再去看一遍…</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TensorFlow 笔记一</title>
+    <url>/2017/09/02/2017-09-02-tensorflow/</url>
+    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
+<hr>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>它也可以是矩阵，</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
+<p>当然直接写也是可以的，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
+<hr>
+<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
+<p>还不明白它的作用。</p>
+<hr>
+<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
+<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
+<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
+<hr>
+<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>109</p>
+</blockquote>
+<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
 ]]></content>
       <categories>
         <category>coursera</category>
@@ -2545,35 +2556,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>python argparse 模块笔记</title>
-    <url>/2017/09/26/2017-09-26-python-argparse/</url>
-    <content><![CDATA[<p><strong>argparse</strong>是python中的一个模块，参考官方文档来理解它
-<a href="https://docs.python.org/3/library/argparse.html?highlight=argparse#module-argparse">argparse — Parser for command-line options, arguments and sub-commands</a></p>
-<p>第一句介绍就是<code>The argparse module makes it easy to write user-friendly command-line interfaces</code>，
-所以这个模块是用于写命令行接口的，使得脚本友好的从命令行传入参数。</p>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br></pre></td></tr></table></figure>
-<h2 id="创建一个parser对象"><a href="#创建一个parser对象" class="headerlink" title="创建一个parser对象"></a>创建一个parser对象</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser = argparse.ArgumentParser()</span><br></pre></td></tr></table></figure>
-<h2 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&#x27;integers&#x27;</span>, metavar=<span class="string">&#x27;N&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, nargs=<span class="string">&#x27;+&#x27;</span>,</span><br><span class="line">                    <span class="built_in">help</span>=<span class="string">&#x27;an integer for the accumulator&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>这里添加了一个叫做<code>integers</code>的参数，它的类型是<code>int</code>，<br><code>metavar</code>是用于在help里面来表示这个数的，本来是help里面会使用<code>integers</code>这个名字，这里就会被替换为<code>N</code>，<br><code>nargs</code>表示这个参数后面可以跟的输入的个数，这里的’+’表示一个或者多个，<br><code>help</code>是在打印help信息时给出的提示。</p>
-<p> 例如下面脚本：</p>
- <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&#x27;--foo&#x27;</span>, nargs=<span class="number">2</span>, metavar=<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&#x27;bar&#x27;</span>, nargs=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args)</span><br></pre></td></tr></table></figure>
-<p>先在命令行中调用帮助信息，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py -h</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo f f] bar</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  bar</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line">  --foo f f</span><br></pre></td></tr></table></figure>
-<p>输入正确的参数个数和错误的参数个数，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py --foo a b 1</span><br><span class="line"></span><br><span class="line">Namespace(bar&#x3D;[&#39;1&#39;], foo&#x3D;[&#39;a&#39;, &#39;b&#39;])</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: the following arguments are required: bar</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b c 2</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: unrecognized arguments: 2</span><br></pre></td></tr></table></figure>
-<p>另外有时候，可能需要使用下面的函数来返回输入参数，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FLAGS, unparsed = parser.parse_known_args()</span><br></pre></td></tr></table></figure>
-<p>这里的意思就是说对于认识的参数，存到<code>FLAGS</code>里面，对于不认识的参数，存到<code>unparsed</code>里面。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/a50aead61319">argparser模块学习</a></p>
-]]></content>
-      <categories>
-        <category>python modules</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Anaconda 使用记录</title>
     <url>/2017/09/18/2017-09-18-anaconda/</url>
     <content><![CDATA[<hr>
@@ -2618,6 +2600,35 @@ z^{[L]} =
       </categories>
       <tags>
         <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python argparse 模块笔记</title>
+    <url>/2017/09/26/2017-09-26-python-argparse/</url>
+    <content><![CDATA[<p><strong>argparse</strong>是python中的一个模块，参考官方文档来理解它
+<a href="https://docs.python.org/3/library/argparse.html?highlight=argparse#module-argparse">argparse — Parser for command-line options, arguments and sub-commands</a></p>
+<p>第一句介绍就是<code>The argparse module makes it easy to write user-friendly command-line interfaces</code>，
+所以这个模块是用于写命令行接口的，使得脚本友好的从命令行传入参数。</p>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br></pre></td></tr></table></figure>
+<h2 id="创建一个parser对象"><a href="#创建一个parser对象" class="headerlink" title="创建一个parser对象"></a>创建一个parser对象</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser = argparse.ArgumentParser()</span><br></pre></td></tr></table></figure>
+<h2 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&#x27;integers&#x27;</span>, metavar=<span class="string">&#x27;N&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, nargs=<span class="string">&#x27;+&#x27;</span>,</span><br><span class="line">                    <span class="built_in">help</span>=<span class="string">&#x27;an integer for the accumulator&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>这里添加了一个叫做<code>integers</code>的参数，它的类型是<code>int</code>，<br><code>metavar</code>是用于在help里面来表示这个数的，本来是help里面会使用<code>integers</code>这个名字，这里就会被替换为<code>N</code>，<br><code>nargs</code>表示这个参数后面可以跟的输入的个数，这里的’+’表示一个或者多个，<br><code>help</code>是在打印help信息时给出的提示。</p>
+<p> 例如下面脚本：</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&#x27;--foo&#x27;</span>, nargs=<span class="number">2</span>, metavar=<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&#x27;bar&#x27;</span>, nargs=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args)</span><br></pre></td></tr></table></figure>
+<p>先在命令行中调用帮助信息，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py -h</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo f f] bar</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  bar</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line">  --foo f f</span><br></pre></td></tr></table></figure>
+<p>输入正确的参数个数和错误的参数个数，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py --foo a b 1</span><br><span class="line"></span><br><span class="line">Namespace(bar&#x3D;[&#39;1&#39;], foo&#x3D;[&#39;a&#39;, &#39;b&#39;])</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: the following arguments are required: bar</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b c 2</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: unrecognized arguments: 2</span><br></pre></td></tr></table></figure>
+<p>另外有时候，可能需要使用下面的函数来返回输入参数，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FLAGS, unparsed = parser.parse_known_args()</span><br></pre></td></tr></table></figure>
+<p>这里的意思就是说对于认识的参数，存到<code>FLAGS</code>里面，对于不认识的参数，存到<code>unparsed</code>里面。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/a50aead61319">argparser模块学习</a></p>
+]]></content>
+      <categories>
+        <category>python modules</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -3014,19 +3025,6 @@ D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
       </tags>
   </entry>
   <entry>
-    <title>深度学习第二章《线性代数》</title>
-    <url>/2017/11/23/2017-11-23-linear-algebra/</url>
-    <content><![CDATA[<h2 id="标量、向量、矩阵和张量"><a href="#标量、向量、矩阵和张量" class="headerlink" title="标量、向量、矩阵和张量"></a>标量、向量、矩阵和张量</h2>]]></content>
-      <categories>
-        <category>deep learning</category>
-        <category>math</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Sibyl 论文笔记</title>
     <url>/2017/11/28/2017-11-28-Sibyl/</url>
     <content><![CDATA[<h2 id="Sibyl-A-Practical-Internet-Route-Oracle"><a href="#Sibyl-A-Practical-Internet-Route-Oracle" class="headerlink" title="Sibyl: A Practical Internet Route Oracle"></a>Sibyl: A Practical Internet Route Oracle</h2><p>论文<a href="https://pdfs.semanticscholar.org/0d89/37cad20f57a0453111691efe0ddbc90604b3.pdf">Calder, Matt, Yi-Ching Chiu, and Brandon Schlinker. “Sibyl: A Practical Internet Route Oracle.”</a></p>
@@ -3228,6 +3226,19 @@ Calculation &= 64 \times 64 \times 1 \times 1 \times 256 \times 64 +
 ]]></content>
       <categories>
         <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深度学习第二章《线性代数》</title>
+    <url>/2017/11/23/2017-11-23-linear-algebra/</url>
+    <content><![CDATA[<h2 id="标量、向量、矩阵和张量"><a href="#标量、向量、矩阵和张量" class="headerlink" title="标量、向量、矩阵和张量"></a>标量、向量、矩阵和张量</h2>]]></content>
+      <categories>
+        <category>deep learning</category>
+        <category>math</category>
       </categories>
       <tags>
         <tag>study</tag>
@@ -3858,23 +3869,6 @@ java中可以使用下面语句来取到：</p>
       </tags>
   </entry>
   <entry>
-    <title>centos7中lvm分区的创建与扩展</title>
-    <url>/2019/07/23/2019-07-23-centos-lvm-create-extend/</url>
-    <content><![CDATA[<hr>
-<h2 id="创建LVM分区"><a href="#创建LVM分区" class="headerlink" title="创建LVM分区"></a>创建LVM分区</h2><p>首先，挂载虚拟硬盘到虚拟机上，这里挂了2个1T的硬盘。</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdb&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 创建卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgcreate VG1 /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully created</span><br><span class="line"></span><br><span class="line">// 查看卷组剩多少PE</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgdisplay</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               VG1</span><br><span class="line">  System ID             </span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        2</span><br><span class="line">  Metadata Sequence No  7</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                1</span><br><span class="line">  Open LV               0</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                2</span><br><span class="line">  Act PV                2</span><br><span class="line">  VG Size               &lt;2.00 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              524286</span><br><span class="line">  Alloc PE / Size       262143 / &lt;1024.00 GiB</span><br><span class="line">  Free  PE / Size       262143 / &lt;1024.00 GiB     //剩余空间大小</span><br><span class="line">  VG UUID               DYPyVN-9ssj-pLxN-bksi-9U0V-m2wQ-aQ3IPe</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">// 将所有剩余空间创建为逻辑卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvcreate -l 262143 -n MyLvm0 VG1</span></span><br><span class="line"></span><br><span class="line">  Logical volume &quot;MyLvm0&quot; created.</span><br><span class="line"></span><br><span class="line">// 创建完成</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 所创建的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br></pre></td></tr></table></figure></h2><h2 id="扩展LVM分区"><a href="#扩展LVM分区" class="headerlink" title="扩展LVM分区"></a>扩展LVM分区</h2><p>上面使用了一块1T虚拟硬盘，下面将另外一块虚拟硬盘添加到刚才的逻辑卷中，实现扩展。</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 需要扩展的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk       // 额外的空间</span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdc&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 将它加入到卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgextend VG1 /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully extended</span><br><span class="line"></span><br><span class="line">// 扩展逻辑卷MyLvm0</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvextend -l +262142 /dev/VG1/MyLvm0</span></span><br><span class="line"></span><br><span class="line">  Size of logical volume VG1/MyLvm0 changed from 1.00 TiB (262144 extents) to &lt;2.00 TiB (524286 extents).</span><br><span class="line">  Logical volume VG1/MyLvm0 successfully resized.</span><br><span class="line"></span><br><span class="line">// 成功扩展</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br></pre></td></tr></table></figure></h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.cnblogs.com/youn/p/6079376.html">Linux下添加磁盘创建lvm分区</a></p>
-<p><a href="https://www.cnblogs.com/weiyiming007/p/9517484.html">centos7用lvm扩展xfs文件系统的根分区</a></p>
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-        <tag>centos</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ceph-13.2.5删除osd，新建osd</title>
     <url>/2019/07/19/2019-07-19-ceph-osd-create-remove/</url>
     <content><![CDATA[<hr>
@@ -3955,6 +3949,23 @@ java中可以使用下面语句来取到：</p>
         <tag>linux</tag>
         <tag>centos</tag>
         <tag>ceph</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>centos7中lvm分区的创建与扩展</title>
+    <url>/2019/07/23/2019-07-23-centos-lvm-create-extend/</url>
+    <content><![CDATA[<hr>
+<h2 id="创建LVM分区"><a href="#创建LVM分区" class="headerlink" title="创建LVM分区"></a>创建LVM分区</h2><p>首先，挂载虚拟硬盘到虚拟机上，这里挂了2个1T的硬盘。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdb&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 创建卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgcreate VG1 /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully created</span><br><span class="line"></span><br><span class="line">// 查看卷组剩多少PE</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgdisplay</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               VG1</span><br><span class="line">  System ID             </span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        2</span><br><span class="line">  Metadata Sequence No  7</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                1</span><br><span class="line">  Open LV               0</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                2</span><br><span class="line">  Act PV                2</span><br><span class="line">  VG Size               &lt;2.00 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              524286</span><br><span class="line">  Alloc PE / Size       262143 / &lt;1024.00 GiB</span><br><span class="line">  Free  PE / Size       262143 / &lt;1024.00 GiB     //剩余空间大小</span><br><span class="line">  VG UUID               DYPyVN-9ssj-pLxN-bksi-9U0V-m2wQ-aQ3IPe</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">// 将所有剩余空间创建为逻辑卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvcreate -l 262143 -n MyLvm0 VG1</span></span><br><span class="line"></span><br><span class="line">  Logical volume &quot;MyLvm0&quot; created.</span><br><span class="line"></span><br><span class="line">// 创建完成</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 所创建的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br></pre></td></tr></table></figure></h2><h2 id="扩展LVM分区"><a href="#扩展LVM分区" class="headerlink" title="扩展LVM分区"></a>扩展LVM分区</h2><p>上面使用了一块1T虚拟硬盘，下面将另外一块虚拟硬盘添加到刚才的逻辑卷中，实现扩展。</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 需要扩展的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk       // 额外的空间</span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdc&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 将它加入到卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgextend VG1 /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully extended</span><br><span class="line"></span><br><span class="line">// 扩展逻辑卷MyLvm0</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvextend -l +262142 /dev/VG1/MyLvm0</span></span><br><span class="line"></span><br><span class="line">  Size of logical volume VG1/MyLvm0 changed from 1.00 TiB (262144 extents) to &lt;2.00 TiB (524286 extents).</span><br><span class="line">  Logical volume VG1/MyLvm0 successfully resized.</span><br><span class="line"></span><br><span class="line">// 成功扩展</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br></pre></td></tr></table></figure></h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.cnblogs.com/youn/p/6079376.html">Linux下添加磁盘创建lvm分区</a></p>
+<p><a href="https://www.cnblogs.com/weiyiming007/p/9517484.html">centos7用lvm扩展xfs文件系统的根分区</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>centos</tag>
       </tags>
   </entry>
   <entry>
@@ -4335,6 +4346,45 @@ A_T \leqslant \frac{N}{2}</script><p>显然与假设中的 $A_T$大于$\frac{N}{
       </tags>
   </entry>
   <entry>
+    <title>srs带ffmpeg的安装</title>
+    <url>/2019/09/18/2019-09-18-srs-ffmpeg/</url>
+    <content><![CDATA[<hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>主要记录一下如何成功在centos7下面编译安装带ffmpeg的srs，其中有一些小坑。</p>
+<p>这里srs版本为<code>2.0.263</code>。</p>
+<hr>
+<h1 id="下载编译srs"><a href="#下载编译srs" class="headerlink" title="下载编译srs"></a>下载编译srs</h1><p>直接看github，<a href="https://github.com/ossrs/srs">https://github.com/ossrs/srs</a></p>
+<p>很简单的几步：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/ossrs/srs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> srs/trunk</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./configure &amp;&amp; make</span></span><br></pre></td></tr></table></figure>
+<p>那么上面就完成了srs的编译，但是没有带ffmpeg。</p>
+<hr>
+<h1 id="带ffmpeg"><a href="#带ffmpeg" class="headerlink" title="带ffmpeg"></a>带ffmpeg</h1><p>srs自带了ffmpeg，但是在编译的时候需要加上<code>--with-ffmpeg</code>，也就是：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./configure --with-ffmpeg &amp;&amp; make</span><br></pre></td></tr></table></figure>
+<p>其中可能会报几个错，这里说一下我遇到的。</p>
+<p><strong>问题一：</strong></p>
+<p><strong>Found no assembler</strong>，提示缺少<strong>nasm</strong>。</p>
+<p>去下一个安装就行，<a href="http://www.linuxfromscratch.org/blfs/view/8.2/general/nasm.html">NASM-2.13.03</a></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget http://www.nasm.us/pub/nasm/releasebuilds/2.13.03/nasm-2.13.03.tar.xz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> tar -xf nasm-2.13.03.tar.xz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mv nasm-2.13.03 nasm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> nasm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./configure --prefix=/usr &amp;&amp; make</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo make install</span></span><br></pre></td></tr></table></figure>
+<p><strong>问题二：</strong></p>
+<p><strong>speex not found using pkg-config</strong></p>
+<p>提示找不到<code>speex</code>。</p>
+<p>但是其实<code>speex</code>就在<code>srs/trunk/objs/ffmpeg.src/speex-1.2rc1/</code>下面，可以看到其中有<code>speex.pc</code>就没错。那么设置一下路径即可：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> PKG_CONFIG_PATH=/xxx/srs/trunk/objs/ffmpeg.src/speex-1.2rc1/</span></span><br></pre></td></tr></table></figure>
+<p>然后这个问题就解决了。</p>
+<p><strong>问题三：</strong></p>
+<p><strong>bzlib requested but not found</strong></p>
+<p>提示找不到<code>bzlib</code>，那么安装一下就行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install -y bzip2-devel.x86_64</span></span><br></pre></td></tr></table></figure>
+<p>解决上面三个问题，应该就能成功编译带ffmpeg的srs了。</p>
+]]></content>
+      <categories>
+        <category>live</category>
+      </categories>
+      <tags>
+        <tag>live</tag>
+        <tag>srs</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>rsyslog + Logrotate进行日志记录并切割压缩</title>
     <url>/2019/09/26/2019-09-26-rsyslog-logrotate/</url>
     <content><![CDATA[<hr>
@@ -4485,45 +4535,6 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
         <tag>centos</tag>
         <tag>rsyslog</tag>
         <tag>logrotate</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>srs带ffmpeg的安装</title>
-    <url>/2019/09/18/2019-09-18-srs-ffmpeg/</url>
-    <content><![CDATA[<hr>
-<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>主要记录一下如何成功在centos7下面编译安装带ffmpeg的srs，其中有一些小坑。</p>
-<p>这里srs版本为<code>2.0.263</code>。</p>
-<hr>
-<h1 id="下载编译srs"><a href="#下载编译srs" class="headerlink" title="下载编译srs"></a>下载编译srs</h1><p>直接看github，<a href="https://github.com/ossrs/srs">https://github.com/ossrs/srs</a></p>
-<p>很简单的几步：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/ossrs/srs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> srs/trunk</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./configure &amp;&amp; make</span></span><br></pre></td></tr></table></figure>
-<p>那么上面就完成了srs的编译，但是没有带ffmpeg。</p>
-<hr>
-<h1 id="带ffmpeg"><a href="#带ffmpeg" class="headerlink" title="带ffmpeg"></a>带ffmpeg</h1><p>srs自带了ffmpeg，但是在编译的时候需要加上<code>--with-ffmpeg</code>，也就是：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./configure --with-ffmpeg &amp;&amp; make</span><br></pre></td></tr></table></figure>
-<p>其中可能会报几个错，这里说一下我遇到的。</p>
-<p><strong>问题一：</strong></p>
-<p><strong>Found no assembler</strong>，提示缺少<strong>nasm</strong>。</p>
-<p>去下一个安装就行，<a href="http://www.linuxfromscratch.org/blfs/view/8.2/general/nasm.html">NASM-2.13.03</a></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget http://www.nasm.us/pub/nasm/releasebuilds/2.13.03/nasm-2.13.03.tar.xz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> tar -xf nasm-2.13.03.tar.xz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mv nasm-2.13.03 nasm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> nasm</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./configure --prefix=/usr &amp;&amp; make</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo make install</span></span><br></pre></td></tr></table></figure>
-<p><strong>问题二：</strong></p>
-<p><strong>speex not found using pkg-config</strong></p>
-<p>提示找不到<code>speex</code>。</p>
-<p>但是其实<code>speex</code>就在<code>srs/trunk/objs/ffmpeg.src/speex-1.2rc1/</code>下面，可以看到其中有<code>speex.pc</code>就没错。那么设置一下路径即可：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> PKG_CONFIG_PATH=/xxx/srs/trunk/objs/ffmpeg.src/speex-1.2rc1/</span></span><br></pre></td></tr></table></figure>
-<p>然后这个问题就解决了。</p>
-<p><strong>问题三：</strong></p>
-<p><strong>bzlib requested but not found</strong></p>
-<p>提示找不到<code>bzlib</code>，那么安装一下就行：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install -y bzip2-devel.x86_64</span></span><br></pre></td></tr></table></figure>
-<p>解决上面三个问题，应该就能成功编译带ffmpeg的srs了。</p>
-]]></content>
-      <categories>
-        <category>live</category>
-      </categories>
-      <tags>
-        <tag>live</tag>
-        <tag>srs</tag>
       </tags>
   </entry>
   <entry>
@@ -4803,6 +4814,42 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
       </tags>
   </entry>
   <entry>
+    <title>中国城市之间的球面距离计算</title>
+    <url>/2020/07/27/2020-07-27-china-citys-distance/</url>
+    <content><![CDATA[<hr>
+<h2 id="经纬度数据"><a href="#经纬度数据" class="headerlink" title="经纬度数据"></a>经纬度数据</h2><p>很明显，要就算城市之间的球面距离，那就需要确定各个城市在地球上所处的位置，也就是经纬度。</p>
+<p>这里最简单的方式就是去<strong>百度地图开放平台</strong>里面去下载一份<code>百度地图城市名称-中心点经纬度（cityCenter）关系对照文本</code>，</p>
+<p><a href="http://lbsyun.baidu.com/index.php?title=open/dev-res">http://lbsyun.baidu.com/index.php?title=open/dev-res</a></p>
+<p>这里面应该包含了中国绝大部分城市的经纬度数据，格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;municipalities:[&#123;n:&quot;北京&quot;,g:&quot;116.395645,39.929986|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;上海&quot;,g:&quot;121.487899,31.249162|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;天津&quot;,g:&quot;117.210813,39.14393|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;重庆&quot;,g:&quot;106.530635,29.544606|12&quot;&#125;],</span><br><span class="line">provinces:[&#123;n:&quot;安徽&quot;,g:&quot;117.216005,31.859252|8&quot;,</span><br><span class="line">cities:[&#123;n:&quot;合肥&quot;,g:&quot;117.282699,31.866942|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;安庆&quot;,g:&quot;117.058739,30.537898|13&quot;&#125;,</span><br><span class="line">&#123;n:&quot;蚌埠&quot;,g:&quot;117.35708,32.929499|13&quot;&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>长得跟json差不多，但是又不是json，因为这里所有键值都没有加上引号<code>&quot;</code>，为了方便解析，
+可以直接使用文本编辑器来把这些键值替换为带有引号的形式。</p>
+<p>解析后，将每个所有城市的经纬度解析出来，重新格式化为json，得到如下文件：</p>
+<div>
+<a href="/images/files/CityDistance/ChinaCityCoordinate.json">ChinaCityCoordinate.json（39.2 KB）</a>
+</div>
+
+<hr>
+<h2 id="城市间距离计算"><a href="#城市间距离计算" class="headerlink" title="城市间距离计算"></a>城市间距离计算</h2><p>球面距离有很多种计算方法，这里就不考虑地球实际是个椭圆体的问题了，直接使用<strong>Haversine</strong>算法比较简单。</p>
+<p>这里也是参考网上别人写的代码：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Haversine 算法：通过两地经纬度计算两地的球面距离（正球体，非椭圆）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> EarthRadius <span class="keyword">float64</span> = <span class="number">6371.0</span> <span class="comment">//km 地球半径 平均值，千米</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DegToRadians</span><span class="params">(degrees <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (degrees * math.Pi) / <span class="number">180</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetDistanceFromLatLonInKm</span><span class="params">(lat1, lon1, lat2, lon2 <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> dLat = DegToRadians(lat2-lat1)</span><br><span class="line">    <span class="keyword">var</span> dLon = DegToRadians(lon2-lon1)</span><br><span class="line">    <span class="keyword">var</span> a = math.Sin(dLat/<span class="number">2</span>) * math.Sin(dLat/<span class="number">2</span>) + math.Cos(DegToRadians(lat1)) * math.Cos(DegToRadians(lat2)) *</span><br><span class="line">            math.Sin(dLon/<span class="number">2</span>) * math.Sin(dLon/<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> c = math.Atan2(math.Sqrt(a), math.Sqrt(<span class="number">1</span>-a))</span><br><span class="line">    <span class="keyword">var</span> d = <span class="number">2</span> * EarthRadius * c</span><br><span class="line">    <span class="keyword">return</span> d</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样简单的两两计算，就可以得到中国各个城市之间的距离：</p>
+<div>
+<a href="/images/files/CityDistance/CityDisMatrix.json">CityDisMatrix.json（4.73MB）</a>
+</div>
+
+
+<p>在实际使用的情况中，如果不想浪费内存，可以考虑使用坐标实时计算，浪费点CPU。</p>
+<hr>
+]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
+      <tags>
+        <tag>algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>cgo+ffmpeg+linux的简单使用</title>
     <url>/2020/08/20/2020-08-20-cgo+ffmpeg+linux/</url>
     <content><![CDATA[<hr>
@@ -4838,42 +4885,6 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
         <tag>live</tag>
         <tag>golang</tag>
         <tag>ffmpeg</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>中国城市之间的球面距离计算</title>
-    <url>/2020/07/27/2020-07-27-china-citys-distance/</url>
-    <content><![CDATA[<hr>
-<h2 id="经纬度数据"><a href="#经纬度数据" class="headerlink" title="经纬度数据"></a>经纬度数据</h2><p>很明显，要就算城市之间的球面距离，那就需要确定各个城市在地球上所处的位置，也就是经纬度。</p>
-<p>这里最简单的方式就是去<strong>百度地图开放平台</strong>里面去下载一份<code>百度地图城市名称-中心点经纬度（cityCenter）关系对照文本</code>，</p>
-<p><a href="http://lbsyun.baidu.com/index.php?title=open/dev-res">http://lbsyun.baidu.com/index.php?title=open/dev-res</a></p>
-<p>这里面应该包含了中国绝大部分城市的经纬度数据，格式如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;municipalities:[&#123;n:&quot;北京&quot;,g:&quot;116.395645,39.929986|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;上海&quot;,g:&quot;121.487899,31.249162|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;天津&quot;,g:&quot;117.210813,39.14393|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;重庆&quot;,g:&quot;106.530635,29.544606|12&quot;&#125;],</span><br><span class="line">provinces:[&#123;n:&quot;安徽&quot;,g:&quot;117.216005,31.859252|8&quot;,</span><br><span class="line">cities:[&#123;n:&quot;合肥&quot;,g:&quot;117.282699,31.866942|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;安庆&quot;,g:&quot;117.058739,30.537898|13&quot;&#125;,</span><br><span class="line">&#123;n:&quot;蚌埠&quot;,g:&quot;117.35708,32.929499|13&quot;&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>长得跟json差不多，但是又不是json，因为这里所有键值都没有加上引号<code>&quot;</code>，为了方便解析，
-可以直接使用文本编辑器来把这些键值替换为带有引号的形式。</p>
-<p>解析后，将每个所有城市的经纬度解析出来，重新格式化为json，得到如下文件：</p>
-<div>
-<a href="/images/files/CityDistance/ChinaCityCoordinate.json">ChinaCityCoordinate.json（39.2 KB）</a>
-</div>
-
-<hr>
-<h2 id="城市间距离计算"><a href="#城市间距离计算" class="headerlink" title="城市间距离计算"></a>城市间距离计算</h2><p>球面距离有很多种计算方法，这里就不考虑地球实际是个椭圆体的问题了，直接使用<strong>Haversine</strong>算法比较简单。</p>
-<p>这里也是参考网上别人写的代码：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Haversine 算法：通过两地经纬度计算两地的球面距离（正球体，非椭圆）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> EarthRadius <span class="keyword">float64</span> = <span class="number">6371.0</span> <span class="comment">//km 地球半径 平均值，千米</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DegToRadians</span><span class="params">(degrees <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (degrees * math.Pi) / <span class="number">180</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetDistanceFromLatLonInKm</span><span class="params">(lat1, lon1, lat2, lon2 <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> dLat = DegToRadians(lat2-lat1)</span><br><span class="line">    <span class="keyword">var</span> dLon = DegToRadians(lon2-lon1)</span><br><span class="line">    <span class="keyword">var</span> a = math.Sin(dLat/<span class="number">2</span>) * math.Sin(dLat/<span class="number">2</span>) + math.Cos(DegToRadians(lat1)) * math.Cos(DegToRadians(lat2)) *</span><br><span class="line">            math.Sin(dLon/<span class="number">2</span>) * math.Sin(dLon/<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> c = math.Atan2(math.Sqrt(a), math.Sqrt(<span class="number">1</span>-a))</span><br><span class="line">    <span class="keyword">var</span> d = <span class="number">2</span> * EarthRadius * c</span><br><span class="line">    <span class="keyword">return</span> d</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样简单的两两计算，就可以得到中国各个城市之间的距离：</p>
-<div>
-<a href="/images/files/CityDistance/CityDisMatrix.json">CityDisMatrix.json（4.73MB）</a>
-</div>
-
-
-<p>在实际使用的情况中，如果不想浪费内存，可以考虑使用坐标实时计算，浪费点CPU。</p>
-<hr>
-]]></content>
-      <categories>
-        <category>algorithm</category>
-      </categories>
-      <tags>
-        <tag>algorithm</tag>
       </tags>
   </entry>
   <entry>
