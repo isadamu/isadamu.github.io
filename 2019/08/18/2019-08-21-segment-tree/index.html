@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="线段树的lazy标志的使用，实践题目HDU3397">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线段树(Segment Tree)进阶使用记录(HDU3397)">
+<meta property="og:url" content="http://example.com/2019/08/18/2019-08-21-segment-tree/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="线段树的lazy标志的使用，实践题目HDU3397">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/algorithm/SegmentTree_1.png">
+<meta property="og:image" content="http://example.com/images/algorithm/SegmentTree_3.png">
+<meta property="og:image" content="http://example.com/images/algorithm/SegmentTree_4.png">
+<meta property="article:published_time" content="2019-08-18T06:55:00.000Z">
+<meta property="article:modified_time" content="2019-12-31T09:12:06.237Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="leetcode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/algorithm/SegmentTree_1.png">
+
+<link rel="canonical" href="http://example.com/2019/08/18/2019-08-21-segment-tree/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>线段树(Segment Tree)进阶使用记录(HDU3397) | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/18/2019-08-21-segment-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          线段树(Segment Tree)进阶使用记录(HDU3397)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-18 14:55:00" itemprop="dateCreated datePublished" datetime="2019-08-18T14:55:00+08:00">2019-08-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-31 17:12:06" itemprop="dateModified" datetime="2019-12-31T17:12:06+08:00">2019-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">线段树的lazy标志的使用，实践题目HDU3397</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="线段树的进阶"><a href="#线段树的进阶" class="headerlink" title="线段树的进阶"></a>线段树的进阶</h2><p>在前一篇博客中<a target="_blank" rel="noopener" href="http://longrm.com/2019/08/16/2019-08-16-segment-tree/">线段树(Segment Tree)使用记录</a>，介绍了基础的线段树形式。</p>
+<p>这一篇讨论以下进阶的使用，主要针对<code>lazy标志</code>。</p>
+<p>上一篇博客中对于一个区间的修改只是<strong>单点修改</strong>，但是有时候会碰到<strong>区间修改</strong>的情况，这时基本的线段树可能就不适用了。</p>
+<p>这时就需要针对<strong>区间修改</strong>来对区间树的更新方式进行变化。</p>
+<p><strong>下面先假设问题为，初始给定一个数组：</strong></p>
+<ul>
+<li>修改操作包括：区间加上一个数，或者区间减去一个数。</li>
+<li>查询操作包括：区间的求和。</li>
+</ul>
+<hr>
+<h2 id="建树"><a href="#建树" class="headerlink" title="建树"></a>建树</h2><p>上一篇博客中使用的是<strong>至底向上</strong>的建树方式，这样的建树方法可以最大化空间利用率（2n空间即可），但是这样会造成一些处理上的困难，如图：</p>
+<div align="center"><img src="/images/algorithm/SegmentTree_1.png"
+style="zoom:70%" title="至底向上" /></div>
+
+<p>图中点1、2其实在整颗树的最右边，而3、4、5、6却在左边，这样的节点排列方式对于区间修改是不利的（会造成逻辑上的混乱）。</p>
+<p>所以可以使用<strong>至顶向下</strong>的建树方式，也就是递归建树：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> node, <span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == r) &#123;</span><br><span class="line">        table[node] = arr[l];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    buildTree(l, mid, left(node), arr);</span><br><span class="line">    buildTree(mid+<span class="number">1</span>, r, right(node), arr);</span><br><span class="line">    pushUp(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将区间的左边放到左子树，右边放到右子树来进行递归建树，注意在建立完毕左右子树之后更新本节点信息（<code>pushUp(node)</code>）。</p>
+<div align="center"><img src="/images/algorithm/SegmentTree_3.png"
+style="zoom:70%" title="至顶向下" /></div>
+
+<p>可以看到上面就是<strong>至顶向下</strong>所建立的树的结构，节点序号从左向右排列，但是这样带来的问题就是增加了空间占用（上图中数组大小14）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SegmentTreeLazySum</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.n = n;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; n) &#123;</span><br><span class="line">        i = i &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    table = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">    lazy = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">    buildTree(<span class="number">0</span>, n-<span class="number">1</span>, <span class="number">1</span>, arr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以使用上面的方式来确定所需数组大小，也就是假如最后一层需要能放下n个元素，最小的i使得$2^i &gt; n$。</p>
+<hr>
+<h2 id="lazy标记"><a href="#lazy标记" class="headerlink" title="lazy标记"></a>lazy标记</h2><p>在进行区间修改时，我们不可能像单点修改一样，将所有节点的值都修改，因为在查询时，可能只需要上层节点的信息就可以完成查询。</p>
+<p>例如将整个数组所有点都增加1，然后询问整个数组的求和，这时我们只需要在根节点上之前所记录的求和加上整个数组的长度即可。</p>
+<p>这样的思想就是为了降低算法复杂度，对于一个区间的修改，我们先欠着，当必要的时候才进行修改。</p>
+<p><code>update</code>方法的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// [L, R]为原始更新区间，[x, y]为当前节点node所包含的区间</span></span><br><span class="line"><span class="comment">// t为操作类型，c为操作数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> c, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ( y &lt; L || x &gt; R ) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (L &lt;= x &amp;&amp; y &lt;= R) &#123;</span><br><span class="line">        c = t == <span class="number">0</span> ? c : -c;</span><br><span class="line">        table[node] += (y - x + <span class="number">1</span>) * c;</span><br><span class="line">        lazy[node] += c;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    lazyDown(node, y - x + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> mid = (x + y) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    update(t, L, R, c,  x, mid, left(node));</span><br><span class="line">    update(t, L, R, c, mid+<span class="number">1</span>, y, right(node));</span><br><span class="line">    pushUp(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>这里lazy标记就代表需要加上的数（使用正负来代表原始的加减）。</strong></p>
+<p>可以看到：</p>
+<ol>
+<li>当发现整个子区间都包含在更新区间中时，就可以停止更新下传，更新节点值与lazy标记即可。</li>
+<li>当子区间部分包含在更新区间中时，就需要下传更新，那么此时就需要先将之前的lazy标记给下传了。</li>
+<li>完成左右儿子的更新后，记得更新本节点（<code>pushUp(node)</code>）。</li>
+</ol>
+<p>那么这里就涉及到了<code>lazyDown</code>函数，这个函数根据不同的情况会有很大的变化，这里因为只涉及加减法，所以比较简单：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">lazyDown</span><span class="params">(<span class="keyword">int</span> node, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lazy[node] == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> l = left(node), r = right(node);</span><br><span class="line">    lazy[l] += lazy[node];</span><br><span class="line">    table[l] += lazy[node] * (len - (len &gt;&gt; <span class="number">1</span>));</span><br><span class="line">    lazy[r] += lazy[node];</span><br><span class="line">    table[r] += lazy[node] * (len &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    lazy[node] = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为只是加减法，所以子节点的lazy标记单纯加上父节点的lazy标记即可，当然同时也要记得更新子节点的值。</p>
+<hr>
+<h2 id="查询操作"><a href="#查询操作" class="headerlink" title="　查询操作"></a>　查询操作</h2><p>查询操作就递归向下即可，当然记得需要下传lazy标记：</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ( y &lt; L || x &gt; R ) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (L &lt;= x &amp;&amp; y &lt;= R) &#123;</span><br><span class="line">        <span class="keyword">return</span> table[node];</span><br><span class="line">    &#125;</span><br><span class="line">    lazyDown(node, y - x + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>, mid = (x + y) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    res += query(L, R, x, mid, left(node));</span><br><span class="line">    res += query(L, R,mid+<span class="number">1</span>, y, right(node));</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><p>注意这里所针对的问题，初始给定一个数组：</p>
+<ul>
+<li>修改操作包括：区间加上一个数，或者区间减去一个数。</li>
+<li>查询操作包括：区间的求和。</li>
+</ul>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SegmentTreeLazySum</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] table;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] lazy;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SegmentTreeLazySum</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.n = n;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; n) &#123;</span><br><span class="line">            i = i &lt;&lt; <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        table = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        lazy = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        buildTree(<span class="number">0</span>, n-<span class="number">1</span>, <span class="number">1</span>, arr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> node, <span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(l == r) &#123;</span><br><span class="line">            table[node] = arr[l];</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        buildTree(l, mid, left(node), arr);</span><br><span class="line">        buildTree(mid+<span class="number">1</span>, r, right(node), arr);</span><br><span class="line">        pushUp(node);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushUp</span><span class="params">(<span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = left(node), r = right(node);</span><br><span class="line">        table[node] = table[l] + table[r];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">lazyDown</span><span class="params">(<span class="keyword">int</span> node, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy[node] == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> l = left(node), r = right(node);</span><br><span class="line">        lazy[l] += lazy[node];</span><br><span class="line">        table[l] += lazy[node] * (len - (len &gt;&gt; <span class="number">1</span>));</span><br><span class="line">        lazy[r] += lazy[node];</span><br><span class="line">        table[r] += lazy[node] * (len &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        lazy[node] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> c, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( y &lt; L || x &gt; R ) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (L &lt;= x &amp;&amp; y &lt;= R) &#123;</span><br><span class="line">            c = t == <span class="number">0</span> ? c : -c;</span><br><span class="line">            table[node] += (y - x + <span class="number">1</span>) * c;</span><br><span class="line">            lazy[node] += c;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        lazyDown(node, y - x + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> mid = (x + y) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        update(t, L, R, c,  x, mid, left(node));</span><br><span class="line">        update(t, L, R, c, mid+<span class="number">1</span>, y, right(node));</span><br><span class="line">        pushUp(node);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( y &lt; L || x &gt; R ) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (L &lt;= x &amp;&amp; y &lt;= R) &#123;</span><br><span class="line">            <span class="keyword">return</span> table[node];</span><br><span class="line">        &#125;</span><br><span class="line">        lazyDown(node, y - x + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>, mid = (x + y) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        res += query(L, R, x, mid, left(node));</span><br><span class="line">        res += query(L, R,mid+<span class="number">1</span>, y, right(node));</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">left</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> idx &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">right</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (idx &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 测试用例：</span></span><br><span class="line">    <span class="comment">// 输入：</span></span><br><span class="line">    <span class="comment">// 1</span></span><br><span class="line">    <span class="comment">// 5 5</span></span><br><span class="line">    <span class="comment">// 1 1 1 1 1</span></span><br><span class="line">    <span class="comment">// 2 2 4 7</span></span><br><span class="line">    <span class="comment">// 1 1 3 4</span></span><br><span class="line">    <span class="comment">// 0 0 4 2</span></span><br><span class="line">    <span class="comment">// 1 1 4 8</span></span><br><span class="line">    <span class="comment">// 2 2 4 3</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// 输出：</span></span><br><span class="line">    <span class="comment">// 3</span></span><br><span class="line">    <span class="comment">// -23</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Scanner sc = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        <span class="keyword">int</span> T = sc.nextInt();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; T; k++) &#123;</span><br><span class="line">            <span class="keyword">int</span> n, m, t, x, y, c;</span><br><span class="line">            n = sc.nextInt();</span><br><span class="line">            m = sc.nextInt();</span><br><span class="line">            <span class="keyword">int</span>[] arr = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">                arr[i] = sc.nextInt();</span><br><span class="line">            &#125;</span><br><span class="line">            SegmentTreeLazySum hdu = <span class="keyword">new</span> SegmentTreeLazySum(n, arr);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">                t = sc.nextInt();</span><br><span class="line">                x = sc.nextInt();</span><br><span class="line">                y = sc.nextInt();</span><br><span class="line">                c = sc.nextInt();</span><br><span class="line">                <span class="keyword">if</span> (t == <span class="number">2</span>) &#123;</span><br><span class="line">                    System.out.println(hdu.query(x, y, <span class="number">0</span>, n - <span class="number">1</span>, <span class="number">1</span>));</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    hdu.update(t, x, y, c,<span class="number">0</span>, n - <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h2 id="HDU3397"><a href="#HDU3397" class="headerlink" title="HDU3397"></a>HDU3397</h2><p>这个题目是一个比较典型的线段树题，初始给定一个数组，操作包括：</p>
+<ul>
+<li>0：将区间[x, y]全部置为0；</li>
+<li>1：将区间[x, y]全部置为1；</li>
+<li><p>2：将区间[x, y]中的1变为0，0变为1；</p>
+</li>
+<li><p>3：查询区间[x, y]中1的数量；</p>
+</li>
+<li>4：查询区间[x, y]中连续出现1的最多的次数。</li>
+</ul>
+<p><strong>这道题的难点一在于查询<code>4</code></strong>，因为在一个节点上，我们需要通过它的两个子节点的信息来得到连续1的数量。</p>
+<p>对于这个问题，可以考虑这样来解决，在一个节点上，我们保存如下信息：</p>
+<ol>
+<li>贴着区间左边的连续1的数量<code>LLen</code>。</li>
+<li>贴着区间右边的连续1的数量<code>RLen</code>。</li>
+<li>区间中的最大连续1的数量<code>MLen</code>。</li>
+</ol>
+<p>那么对于一个节点，它的相关信息可以这样计算得到：</p>
+<ol>
+<li><code>LLen</code>：等于左儿子的<code>LLen</code>。但是需要注意，如果左儿子的<code>LLen</code>等于整个区间的长度，那么就为<strong>左儿子的<code>LLen</code></strong>加上右儿子的<code>LLen</code>。</li>
+<li><code>RLen</code>：同上。</li>
+<li><code>MLen</code>：等于 左儿子的<code>MLen</code>，右儿子的<code>MLen</code>，左儿子的<code>RLen</code>加上右儿子的<code>LLen</code> 的最大值。</li>
+</ol>
+<p><strong>这道题的难点二在于操作<code>2</code></strong>，如何在一个节点上完成信息的更新，主要是<code>LLen</code>、<code>RLen</code>、<code>MLen</code>信息的变化？</p>
+<p>为了完成这个件事，这里对称的将连续0的数量保存下来<code>ZLLen</code>、<code>ZRLen</code>、<code>ZMLen</code>，这样在进行操作2时，
+就可以将<code>LLen</code>、<code>RLen</code>、<code>MLen</code>和<code>ZLLen</code>、<code>ZRLen</code>、<code>ZMLen</code>的信息交换即可。</p>
+<p><strong>整个代码如下：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HDU3397</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] table;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] Ztable;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] MLen;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] LLen;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] RLen;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] ZLLen;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] ZRLen;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] ZMLen;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] lazy;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HDU3397</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.n = n;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; n) &#123;</span><br><span class="line">            i = i &lt;&lt; <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        table = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        Ztable = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        lazy = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        MLen = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        LLen = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        RLen = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        ZLLen = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        ZRLen = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        ZMLen = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>*i];</span><br><span class="line">        Arrays.fill(lazy, -<span class="number">1</span>);</span><br><span class="line">        buildTree(<span class="number">0</span>, n-<span class="number">1</span>, <span class="number">1</span>, arr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> node, <span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(l == r) &#123;</span><br><span class="line">            table[node] = MLen[node] = LLen[node] = RLen[node] = arr[l];</span><br><span class="line">            Ztable[node] = ZLLen[node] = ZRLen[node] = ZMLen[node] = <span class="number">1</span> - arr[l];</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        buildTree(l, mid, left(node), arr);</span><br><span class="line">        buildTree(mid+<span class="number">1</span>, r, right(node), arr);</span><br><span class="line">        pushUp(node, mid - l + <span class="number">1</span>, r - mid);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushUp</span><span class="params">(<span class="keyword">int</span> node, <span class="keyword">int</span> lenL, <span class="keyword">int</span> lenR)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = left(node), r = right(node);</span><br><span class="line">        table[node] = table[l] + table[r];</span><br><span class="line">        Ztable[node] = Ztable[l] + Ztable[r];</span><br><span class="line"></span><br><span class="line">        LLen[node] = LLen[l] == lenL ? LLen[l] + LLen[r] : LLen[l];</span><br><span class="line">        RLen[node] = RLen[r] == lenR ? RLen[r] + RLen[l] : RLen[r];</span><br><span class="line"></span><br><span class="line">        ZLLen[node] = ZLLen[l] == lenL ? ZLLen[l] + ZLLen[r] : ZLLen[l];</span><br><span class="line">        ZRLen[node] = ZRLen[r] == lenR ? ZRLen[r] + ZRLen[l] : ZRLen[r];</span><br><span class="line"></span><br><span class="line">        MLen[node] = Math.max(MLen[l], MLen[r]);</span><br><span class="line">        MLen[node] = Math.max(MLen[node], RLen[l] + LLen[r]);</span><br><span class="line"></span><br><span class="line">        ZMLen[node] = Math.max(ZMLen[l], ZMLen[r]);</span><br><span class="line">        ZMLen[node] = Math.max(ZMLen[node], ZRLen[l] + ZLLen[r]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">lazyDown</span><span class="params">(<span class="keyword">int</span> node, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (len &lt;= <span class="number">1</span> || lazy[node] == -<span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> l = left(node), r = right(node);</span><br><span class="line">        lazyHelper2(lazy[node], l, len - (len &gt;&gt; <span class="number">1</span>));</span><br><span class="line">        lazyHelper2(lazy[node], r, len &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        lazy[node] = -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">lazyHelper</span><span class="params">(<span class="keyword">int</span> node, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy[node] == <span class="number">0</span>) &#123;</span><br><span class="line">            table[node] = LLen[node] = RLen[node] = MLen[node] = <span class="number">0</span>;</span><br><span class="line">            Ztable[node] = ZLLen[node] = ZRLen[node] = ZMLen[node] = len;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (lazy[node] == <span class="number">1</span>) &#123;</span><br><span class="line">            table[node] = LLen[node] = RLen[node] = MLen[node] = len;</span><br><span class="line">            Ztable[node] = ZLLen[node] = ZRLen[node] = ZMLen[node] = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (lazy[node] == <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> tmp0 = table[node], tmp1 = LLen[node], tmp2 = RLen[node], tmp3 = MLen[node];</span><br><span class="line">            table[node] = Ztable[node];</span><br><span class="line">            LLen[node] = ZLLen[node];</span><br><span class="line">            RLen[node] = ZRLen[node];</span><br><span class="line">            MLen[node] = ZMLen[node];</span><br><span class="line">            Ztable[node] = tmp0;</span><br><span class="line">            ZLLen[node] = tmp1;</span><br><span class="line">            ZRLen[node] = tmp2;</span><br><span class="line">            ZMLen[node] = tmp3;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">lazyHelper2</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> node, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (t == <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy[node] == -<span class="number">1</span>) &#123;</span><br><span class="line">                lazy[node] = t;</span><br><span class="line">                lazyHelper(node, len);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (lazy[node] == <span class="number">2</span>) &#123;</span><br><span class="line">                lazyHelper(node, len);</span><br><span class="line">                lazy[node] = -<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                lazy[node] = <span class="number">1</span> - lazy[node];</span><br><span class="line">                lazyHelper(node, len);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            lazy[node] = t;</span><br><span class="line">            lazyHelper(node, len);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( y &lt; L || x &gt; R ) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (L &lt;= x &amp;&amp; y &lt;= R) &#123;</span><br><span class="line">            lazyHelper2(t, node, y - x + <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        lazyDown(node, y - x + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> mid = (x + y) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        update(t, L, R, x, mid, left(node));</span><br><span class="line">        update(t, L, R, mid+<span class="number">1</span>, y, right(node));</span><br><span class="line">        pushUp(node, mid - x + <span class="number">1</span>, y - mid);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query3</span><span class="params">(<span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( y &lt; L || x &gt; R ) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (L &lt;= x &amp;&amp; y &lt;= R) &#123;</span><br><span class="line">            <span class="keyword">return</span> table[node];</span><br><span class="line">        &#125;</span><br><span class="line">        lazyDown(node, y - x + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>, mid = (x + y) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        res += query3(L, R, x, mid, left(node));</span><br><span class="line">        res += query3(L, R,mid+<span class="number">1</span>, y, right(node));</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 在进行查询4的时候，由于左右儿子都可能只有一部分与查询区间相交，</span></span><br><span class="line">    <span class="comment">// 所有需要一个结构体来存储相交部分的相关信息。</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Ans</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> LLen = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> RLen = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> MLen = <span class="number">0</span>;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Ans</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Ans</span><span class="params">(<span class="keyword">int</span> LLen, <span class="keyword">int</span> RLen, <span class="keyword">int</span> MLen)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.LLen = LLen;</span><br><span class="line">            <span class="keyword">this</span>.RLen = RLen;</span><br><span class="line">            <span class="keyword">this</span>.MLen = MLen;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query4</span><span class="params">(<span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> query4Helper(L, R, x, y, node).MLen;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Ans <span class="title">query4Helper</span><span class="params">(<span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( y &lt; L || x &gt; R ) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Ans();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (L &lt;= x &amp;&amp; y &lt;= R) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Ans(LLen[node], RLen[node], MLen[node]);</span><br><span class="line">        &#125;</span><br><span class="line">        lazyDown(node, y - x + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> res1 = <span class="number">0</span>, res2 = <span class="number">0</span>, res3 = <span class="number">0</span>, mid = (x + y) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        Ans ans1 = query4Helper(L, R, x, mid, left(node));</span><br><span class="line">        Ans ans2 = query4Helper(L, R, mid+<span class="number">1</span>, y, right(node));</span><br><span class="line">        res1 = ans1.LLen == (mid - x + <span class="number">1</span>) ? ans1.LLen + ans2.LLen : ans1.LLen;</span><br><span class="line">        res2 = ans2.RLen == (y - mid) ? ans2.RLen + ans1.RLen : ans2.RLen;</span><br><span class="line">        res3 = Math.max(ans1.MLen, ans2.MLen);</span><br><span class="line">        res3 = Math.max(res3, ans1.RLen + ans2.LLen);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Ans(res1, res2, res3);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">left</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> idx &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">right</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (idx &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Scanner sc = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        <span class="keyword">int</span> T = sc.nextInt();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; T; k++) &#123;</span><br><span class="line">            <span class="keyword">int</span> n, m, t, x, y;</span><br><span class="line">            n = sc.nextInt();</span><br><span class="line">            m = sc.nextInt();</span><br><span class="line">            <span class="keyword">int</span>[] arr = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">                arr[i] = sc.nextInt();</span><br><span class="line">            &#125;</span><br><span class="line">            HDU3397 hdu = <span class="keyword">new</span> HDU3397(n, arr);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">                t = sc.nextInt();</span><br><span class="line">                x = sc.nextInt();</span><br><span class="line">                y = sc.nextInt();</span><br><span class="line">                <span class="keyword">if</span> (t == <span class="number">3</span>) &#123;</span><br><span class="line">                    System.out.println(hdu.query3(x, y, <span class="number">0</span>, n - <span class="number">1</span>, <span class="number">1</span>));</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (t == <span class="number">4</span>) &#123;</span><br><span class="line">                    System.out.println(hdu.query4(x, y, <span class="number">0</span>, n - <span class="number">1</span>, <span class="number">1</span>));</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    hdu.update(t, x, y, <span class="number">0</span>, n - <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码比较基础，速度与使用空间都不怎么样，但是至少AC了：</p>
+<p><img src="/images/algorithm/SegmentTree_4.png" alt="image" title="运行结果"></p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>线段树有很多不同的形式，而且很多时候根据题目的不同会有很多的小变化。</p>
+<p>最重要的是<strong>代码一般较长，逻辑一般较乱</strong>，所有很容易<strong>出BUG</strong>，建议保持好<strong>心态</strong>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+              <a href="/tags/leetcode/" rel="tag"># leetcode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/16/2019-08-16-segment-tree/" rel="prev" title="线段树(Segment Tree)使用记录">
+      <i class="fa fa-chevron-left"></i> 线段树(Segment Tree)使用记录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/23/2019-08-23-cloud-workgroup/" rel="next" title="云改讲坛和部门业务培训记录">
+      云改讲坛和部门业务培训记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91%E7%9A%84%E8%BF%9B%E9%98%B6"><span class="nav-number">1.</span> <span class="nav-text">线段树的进阶</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">建树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lazy%E6%A0%87%E8%AE%B0"><span class="nav-number">3.</span> <span class="nav-text">lazy标记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">　查询操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+public int query(int L, int R, int x, int y, int node) &amp;#123;
+    if ( y &lt; L || x &gt; R ) &amp;#123;
+        return 0;
+    &amp;#125;
+    if (L &lt;&#x3D; x &amp;&amp; y &lt;&#x3D; R) &amp;#123;
+        return table[node];
+    &amp;#125;
+    lazyDown(node, y - x + 1);
+    int res &#x3D; 0, mid &#x3D; (x + y) &gt;&gt; 1;
+    res +&#x3D; query(L, R, x, mid, left(node));
+    res +&#x3D; query(L, R,mid+1, y, right(node));
+    return res;
+&amp;#125;
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">完整代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">7.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+public class SegmentTreeLazySum &amp;#123;
+
+    private int[] table;
+    private int[] lazy;
+    private int n;
+
+    public SegmentTreeLazySum(int n, int[] arr) &amp;#123;
+        this.n &#x3D; n;
+        int i &#x3D; 1;
+        while (i &lt; n) &amp;#123;
+            i &#x3D; i &lt;&lt; 1;
+        &amp;#125;
+        table &#x3D; new int[2*i];
+        lazy &#x3D; new int[2*i];
+        buildTree(0, n-1, 1, arr);
+    &amp;#125;
+
+    private void buildTree(int l, int r, int node, int[] arr) &amp;#123;
+        if(l &#x3D;&#x3D; r) &amp;#123;
+            table[node] &#x3D; arr[l];
+            return;
+        &amp;#125;
+        int mid &#x3D; (l + r) &gt;&gt; 1;
+        buildTree(l, mid, left(node), arr);
+        buildTree(mid+1, r, right(node), arr);
+        pushUp(node);
+    &amp;#125;
+
+    private void pushUp(int node) &amp;#123;
+        int l &#x3D; left(node), r &#x3D; right(node);
+        table[node] &#x3D; table[l] + table[r];
+    &amp;#125;
+
+    private void lazyDown(int node, int len) &amp;#123;
+        if (lazy[node] &#x3D;&#x3D; 0) &amp;#123;
+            return;
+        &amp;#125;
+        int l &#x3D; left(node), r &#x3D; right(node);
+        lazy[l] +&#x3D; lazy[node];
+        table[l] +&#x3D; lazy[node] * (len - (len &gt;&gt; 1));
+        lazy[r] +&#x3D; lazy[node];
+        table[r] +&#x3D; lazy[node] * (len &gt;&gt; 1);
+        lazy[node] &#x3D; 0;
+    &amp;#125;
+
+    public void update(int t, int L, int R, int c, int x, int y, int node) &amp;#123;
+        if ( y &lt; L || x &gt; R ) &amp;#123;
+            return;
+        &amp;#125;
+        if (L &lt;&#x3D; x &amp;&amp; y &lt;&#x3D; R) &amp;#123;
+            c &#x3D; t &#x3D;&#x3D; 0 ? c : -c;
+            table[node] +&#x3D; (y - x + 1) * c;
+            lazy[node] +&#x3D; c;
+            return;
+        &amp;#125;
+        lazyDown(node, y - x + 1);
+        int mid &#x3D; (x + y) &gt;&gt; 1;
+        update(t, L, R, c,  x, mid, left(node));
+        update(t, L, R, c, mid+1, y, right(node));
+        pushUp(node);
+    &amp;#125;
+
+    public int query(int L, int R, int x, int y, int node) &amp;#123;
+        if ( y &lt; L || x &gt; R ) &amp;#123;
+            return 0;
+        &amp;#125;
+        if (L &lt;&#x3D; x &amp;&amp; y &lt;&#x3D; R) &amp;#123;
+            return table[node];
+        &amp;#125;
+        lazyDown(node, y - x + 1);
+        int res &#x3D; 0, mid &#x3D; (x + y) &gt;&gt; 1;
+        res +&#x3D; query(L, R, x, mid, left(node));
+        res +&#x3D; query(L, R,mid+1, y, right(node));
+        return res;
+    &amp;#125;
+
+    private int left(int idx) &amp;#123;
+        return idx &lt;&lt; 1;
+    &amp;#125;
+
+    private int right(int idx) &amp;#123;
+        return (idx &lt;&lt; 1) + 1;
+    &amp;#125;
+    
+    &#x2F;&#x2F; 测试用例：
+    &#x2F;&#x2F; 输入：
+    &#x2F;&#x2F; 1
+    &#x2F;&#x2F; 5 5
+    &#x2F;&#x2F; 1 1 1 1 1
+    &#x2F;&#x2F; 2 2 4 7
+    &#x2F;&#x2F; 1 1 3 4
+    &#x2F;&#x2F; 0 0 4 2
+    &#x2F;&#x2F; 1 1 4 8
+    &#x2F;&#x2F; 2 2 4 3
+    &#x2F;&#x2F;
+    &#x2F;&#x2F; 输出：
+    &#x2F;&#x2F; 3
+    &#x2F;&#x2F; -23
+    public static void main(String[] args) &amp;#123;
+        Scanner sc &#x3D; new Scanner(System.in);
+        int T &#x3D; sc.nextInt();
+        for (int k &#x3D; 0; k &lt; T; k++) &amp;#123;
+            int n, m, t, x, y, c;
+            n &#x3D; sc.nextInt();
+            m &#x3D; sc.nextInt();
+            int[] arr &#x3D; new int[n];
+            for (int i &#x3D; 0; i &lt; n; i++) &amp;#123;
+                arr[i] &#x3D; sc.nextInt();
+            &amp;#125;
+            SegmentTreeLazySum hdu &#x3D; new SegmentTreeLazySum(n, arr);
+            for (int i &#x3D; 0; i &lt; m; i++) &amp;#123;
+                t &#x3D; sc.nextInt();
+                x &#x3D; sc.nextInt();
+                y &#x3D; sc.nextInt();
+                c &#x3D; sc.nextInt();
+                if (t &#x3D;&#x3D; 2) &amp;#123;
+                    System.out.println(hdu.query(x, y, 0, n - 1, 1));
+                &amp;#125; else &amp;#123;
+                    hdu.update(t, x, y, c,0, n - 1, 1);
+                &amp;#125;
+            &amp;#125;
+        &amp;#125;
+    &amp;#125;
+
+&amp;#125;
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDU3397"><span class="nav-number">8.</span> <span class="nav-text">HDU3397</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="使用golang直接CMD调用FFmpeg来进行转码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang通过CMD来调用FFmpeg">
+<meta property="og:url" content="http://example.com/2019/11/12/2019-11-12-golang_cmd_ffmpeg/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="使用golang直接CMD调用FFmpeg来进行转码">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-12T07:58:00.000Z">
+<meta property="article:modified_time" content="2020-01-20T08:00:56.874Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="live">
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="ffmpeg">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2019/11/12/2019-11-12-golang_cmd_ffmpeg/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>golang通过CMD来调用FFmpeg | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/12/2019-11-12-golang_cmd_ffmpeg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          golang通过CMD来调用FFmpeg
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-12 15:58:00" itemprop="dateCreated datePublished" datetime="2019-11-12T15:58:00+08:00">2019-11-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-20 16:00:56" itemprop="dateModified" datetime="2020-01-20T16:00:56+08:00">2020-01-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index"><span itemprop="name">golang</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">使用golang直接CMD调用FFmpeg来进行转码</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在golang中调用FFmpeg，一种方法是使用cgo来使用FFmpeg，这样就可以在go程序里面编写转码语句，进行错误处理等，
+但是这样的方法貌似有点复杂，或许得不偿失。</p>
+<p>这里使用CMD来直接调用FFmpeg进行转码，在使用较多的复杂参数的情况下，可能反而简单许多。</p>
+<hr>
+<h1 id="使用记录"><a href="#使用记录" class="headerlink" title="使用记录"></a>使用记录</h1><p><strong>调用：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmd :&#x3D; exec.Command(&quot;&#x2F;bin&#x2F;bash&quot;, &quot;-c&quot;, param)</span><br><span class="line">cmd.SysProcAttr &#x3D; &amp;syscall.SysProcAttr&#123;Setpgid: true&#125;</span><br><span class="line">cmd.start()</span><br></pre></td></tr></table></figure>
+<p>这里的<code>param</code>就是整个FFmpeg转码语句，例如<code>/usr/bin/ffmpeg -i 1.mp4 1.flv</code>。</p>
+<p>这里使用<code>Setpgid</code>来设置进程组pid，这样在后面kill时直接杀掉整个进程组，无残留。</p>
+<p>另外<code>cmd.start()</code>表示非阻塞，转码开始后就放在后台（因为直播相关，所以会一直转码），等待结束命令。</p>
+<p><strong>转码日志记录：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stdout, err :&#x3D; os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, 0644)</span><br><span class="line">cmd.Stderr &#x3D; stdout</span><br></pre></td></tr></table></figure>
+<p>注意ffmpeg使用的日志输出是<strong>Stderr</strong>，<strong>err</strong>…</p>
+<p><strong>停止：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">err :&#x3D; syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)</span><br></pre></td></tr></table></figure>
+<p>加上一个负号，直接杀掉整个进程组。</p>
+<p><strong>PS：一定要在kill之后调用<code>cmd.Wait()</code>，否则会变成僵尸进程。</strong></p>
+<hr>
+<p><strong>完整代码：</strong></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Exec</span><span class="params">(param, logFile <span class="keyword">string</span>)</span> <span class="params">(*exec.Cmd, error)</span></span> &#123;</span><br><span class="line">	cmd := exec.Command(<span class="string">&quot;/bin/bash&quot;</span>, <span class="string">&quot;-c&quot;</span>, param)</span><br><span class="line">	cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;Setpgid: <span class="literal">true</span>&#125;</span><br><span class="line"></span><br><span class="line">	logOut, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, <span class="number">0644</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 将标准输出和标准错误都写到log中</span></span><br><span class="line">	cmd.Stdout = logOut</span><br><span class="line">	cmd.Stderr = logOut</span><br><span class="line"></span><br><span class="line">	log.Info(<span class="string">&quot;Exce cmd: %s&quot;</span>, param)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> err := cmd.Start(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		_ = logOut.Close()</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> cmd, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">KillCmd</span><span class="params">(cmd *exec.Cmd)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> cmd == <span class="literal">nil</span> || cmd.Process == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">&quot;process not found or already stopped&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	log.Info(<span class="string">&quot;Kill CMD. pid: %d&quot;</span>, cmd.Process.Pid)</span><br><span class="line"></span><br><span class="line">	err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 如果不wait，则会产生僵尸进程</span></span><br><span class="line">	<span class="keyword">go</span> cmd.Wait() <span class="comment">// 为了不阻塞，另外起一个线程去Wait</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h1 id="2019-12-30修改记录"><a href="#2019-12-30修改记录" class="headerlink" title="2019-12-30修改记录"></a>2019-12-30修改记录</h1><p>实际使用的时候发现出现了defunct进程，也就是僵尸进程，重新看了一下<code>cmd.Start()</code>的使用方法，
+发现自己没有调用<code>cmd.Wait()</code>。</p>
+<hr>
+<h1 id="2020-01-20修改记录"><a href="#2020-01-20修改记录" class="headerlink" title="2020-01-20修改记录"></a>2020-01-20修改记录</h1><p>最近在使用FFmpeg来将rtmp流录制成ts文件，发现了一系列问题：</p>
+<ul>
+<li>首先，在FFmpeg进程运行过程中，如果使用<strong>SIGKILL</strong>（也就是-9信号）来将其杀死，那么这就相当于FFmpeg异常结束，它在结束时不会进行任何后处理。
+那么FFmpeg所录制的最后一片ts（由于只录制了一部分，没有达到设置的ts时长），就不能得到正确的处理，m3u8文件中也不会对他进行记录。
+这里正确的做法是使用<strong>SIGTERM</strong>信号（或者SIGINT）来使FFmpeg进程停止，FFmpeg收到这个信号，会将最后一片时长不足的ts片也保存下来，并写进m3u8文件中。</li>
+<li>第二，在拉取rtmp流的时候，我是先停止rtmp流，然后再发送<strong>SIGTERM</strong>信号给FFmpeg，但是我发现<strong>FFmpeg进程并没有结束！</strong>这个问题困扰了很久，
+终于在一瞬间想到了，原来是FFmpeg因为拉不到新数据而阻塞了！所以连信号都接收不到了！为了让FFmpeg不会无限阻塞，可以设置一个<code>rw_timeout</code>参数，
+来让FFmpeg阻塞一段时间后超时，从而接收到信号。</li>
+</ul>
+<p>所以这里总结一下就是：1.使用SIGTERM信号来使得FFmpeg正常结束。2.使用<code>rw_timeout</code>参数来防止FFmpeg无限阻塞。</p>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1f3ec2f00b03">Go语言中Kill子进程的正确姿势</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/live/" rel="tag"># live</a>
+              <a href="/tags/golang/" rel="tag"># golang</a>
+              <a href="/tags/ffmpeg/" rel="tag"># ffmpeg</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/10/29/2019-10-29-srs_bench-v1/" rel="prev" title="srs的推拉流压测">
+      <i class="fa fa-chevron-left"></i> srs的推拉流压测
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/19/2019-11-27-ffmpeg-screenshot/" rel="next" title="使用FFmpeg来进行固定时间间隔截图（rtmp直播流）">
+      使用FFmpeg来进行固定时间间隔截图（rtmp直播流） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text">使用记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.1.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+func Exec(param, logFile string) (*exec.Cmd, error) &amp;#123;
+	cmd :&#x3D; exec.Command(&quot;&#x2F;bin&#x2F;bash&quot;, &quot;-c&quot;, param)
+	cmd.SysProcAttr &#x3D; &amp;syscall.SysProcAttr&amp;#123;Setpgid: true&amp;#125;
+
+	logOut, err :&#x3D; os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, 0644)
+	if err !&#x3D; nil &amp;#123;
+		return nil, err
+	&amp;#125;
+	&#x2F;&#x2F; 将标准输出和标准错误都写到log中
+	cmd.Stdout &#x3D; logOut
+	cmd.Stderr &#x3D; logOut
+
+	log.Info(&quot;Exce cmd: %s&quot;, param)
+
+	if err :&#x3D; cmd.Start(); err !&#x3D; nil &amp;#123;
+		_ &#x3D; logOut.Close()
+		return nil, err
+	&amp;#125;
+
+	return cmd, nil
+&amp;#125;
+
+func KillCmd(cmd *exec.Cmd) error &amp;#123;
+	if cmd &#x3D;&#x3D; nil || cmd.Process &#x3D;&#x3D; nil &amp;#123;
+		return errors.New(&quot;process not found or already stopped&quot;)
+	&amp;#125;
+
+	log.Info(&quot;Kill CMD. pid: %d&quot;, cmd.Process.Pid)
+
+	err :&#x3D; syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
+	if err !&#x3D; nil &amp;#123;
+		return err
+	&amp;#125;
+
+	&#x2F;&#x2F; 如果不wait，则会产生僵尸进程
+	go cmd.Wait() &#x2F;&#x2F; 为了不阻塞，另外起一个线程去Wait
+
+	return nil
+&amp;#125;
+</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2019-12-30%E4%BF%AE%E6%94%B9%E8%AE%B0%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text">2019-12-30修改记录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2020-01-20%E4%BF%AE%E6%94%B9%E8%AE%B0%E5%BD%95"><span class="nav-number">4.</span> <span class="nav-text">2020-01-20修改记录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

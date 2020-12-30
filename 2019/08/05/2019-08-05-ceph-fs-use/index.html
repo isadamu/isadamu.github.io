@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="练习使用CephFS，使用不同方式进行挂载使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ceph-mimic-13.2.5中CephFS的初步使用">
+<meta property="og:url" content="http://example.com/2019/08/05/2019-08-05-ceph-fs-use/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="练习使用CephFS，使用不同方式进行挂载使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-08-05T02:28:00.000Z">
+<meta property="article:modified_time" content="2019-08-23T08:13:40.703Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="centos">
+<meta property="article:tag" content="ceph">
+<meta property="article:tag" content="cephfs">
+<meta property="article:tag" content="nfs">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2019/08/05/2019-08-05-ceph-fs-use/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ceph-mimic-13.2.5中CephFS的初步使用 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/05/2019-08-05-ceph-fs-use/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ceph-mimic-13.2.5中CephFS的初步使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-05 10:28:00" itemprop="dateCreated datePublished" datetime="2019-08-05T10:28:00+08:00">2019-08-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-23 16:13:40" itemprop="dateModified" datetime="2019-08-23T16:13:40+08:00">2019-08-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">练习使用CephFS，使用不同方式进行挂载使用</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><p>有一个<strong>HEALTH_OK</strong>的ceph集群，并且还有剩余的存储空间。</p>
+<p>这里是我所搭建的集群：</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph -s</span></span><br><span class="line"></span><br><span class="line">  cluster:</span><br><span class="line">    id:     a20b153c-c907-41bb-a5b2-753a40e2085c</span><br><span class="line">    health: HEALTH_WARN</span><br><span class="line">            clock skew detected on mon.node2</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon: 4 daemons, quorum node1,node2,node3,node4</span><br><span class="line">    mgr: node2(active), standbys: node3, node1, node4</span><br><span class="line">    osd: 4 osds: 4 up, 4 in</span><br><span class="line">    rgw: 1 daemon active</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   6 pools, 48 pgs</span><br><span class="line">    objects: 492  objects, 1.1 GiB</span><br><span class="line">    usage:   7.5 GiB used, 42 GiB / 50 GiB avail</span><br><span class="line">    pgs:     48 active+clean</span><br><span class="line"></span><br></pre></td></tr></table></figure></h2><h2 id="创建mds-METADATA-SERVER"><a href="#创建mds-METADATA-SERVER" class="headerlink" title="创建mds(METADATA SERVER)"></a>创建mds(METADATA SERVER)</h2><p>要使用CephFS，至少需要有一个mds，可以使用ceph-deploy工具进行创建：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ceph-deploy mds create node1</span></span><br></pre></td></tr></table></figure>
+<p>查看mds状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo ceph mds <span class="built_in">stat</span></span></span><br><span class="line"></span><br><span class="line">, 1 up:standby</span><br></pre></td></tr></table></figure>
+<p>可以看到mds创建成功了。</p>
+<hr>
+<h2 id="创建CEPH-FILESYSTEM"><a href="#创建CEPH-FILESYSTEM" class="headerlink" title="创建CEPH FILESYSTEM"></a>创建CEPH FILESYSTEM</h2><p>根据官方文档所述<code>A Ceph filesystem requires at least two RADOS pools, one for data and one for metadata.</code>，
+这里需要创建两个pool。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[node1]$</span><span class="bash"> ceph osd pool create cephfs_data 16</span></span><br><span class="line"></span><br><span class="line">pool &#x27;cephfs_data&#x27; created</span><br><span class="line"></span><br><span class="line"><span class="meta">[node1]$</span><span class="bash"> ceph osd pool create cephfs_metadata 16</span></span><br><span class="line"></span><br><span class="line">pool &#x27;cephfs_metadata&#x27; created</span><br></pre></td></tr></table></figure>
+<p>然后直接就可以进行CephFS的创建：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[node1]$</span><span class="bash"> ceph fs new cephfs cephfs_metadata cephfs_data</span></span><br><span class="line"><span class="meta">[node1]$</span><span class="bash"> ceph fs ls</span></span><br><span class="line"></span><br><span class="line">name: cephfs, metadata pool: cephfs_metadata, data pools: [cephfs_data ]</span><br></pre></td></tr></table></figure>
+<p>此时<code>sudo ceph mds stat</code>命令和<code>sudo ceph -s</code>的输出就发生了变化：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo ceph mds <span class="built_in">stat</span></span></span><br><span class="line"></span><br><span class="line">cephfs-1/1/1 up  &#123;0=node1=up:active&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo ceph -s</span></span><br><span class="line"></span><br><span class="line">  cluster:</span><br><span class="line">    id:     a20b153c-c907-41bb-a5b2-753a40e2085c</span><br><span class="line">    health: HEALTH_OK</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon: 4 daemons, quorum node1,node2,node3,node4</span><br><span class="line">    mgr: node2(active), standbys: node3, node1, node4</span><br><span class="line">    mds: cephfs-1/1/1 up  &#123;0=node1=up:active&#125;   // 增加了mds的状态</span><br><span class="line">    osd: 4 osds: 4 up, 4 in</span><br><span class="line">    rgw: 1 daemon active</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   8 pools, 112 pgs</span><br><span class="line">    objects: 514  objects, 1.1 GiB</span><br><span class="line">    usage:   7.5 GiB used, 42 GiB / 50 GiB avail</span><br><span class="line">    pgs:     112 active+clean</span><br></pre></td></tr></table></figure>
+<p>注：集群中可以同时创建多个CephFS，这时候就会有默认FS、优先级等设置上的问题。</p>
+<hr>
+<h2 id="挂载CephFS"><a href="#挂载CephFS" class="headerlink" title="挂载CephFS"></a>挂载CephFS</h2><p>挂载CephFS有几种不同的方式，直接挂载、fuse、fstab。</p>
+<p>这里一一进行叙述，但是详细的内核态用户态什么的就先不分析了。</p>
+<p>在哪台机器上执行都可以，无所谓。</p>
+<hr>
+<h3 id="直接挂载CephFS"><a href="#直接挂载CephFS" class="headerlink" title="直接挂载CephFS"></a>直接挂载CephFS</h3><p>很简单，直接使用mount命令挂载就完事了，<strong>注意端口是6789，密钥去ceph.client.admin.keyring里看，不要在要挂载的目录下去执行挂载！</strong>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mkdir /mnt/mycephfs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount -t ceph 192.168.31.203:6789:/ /mnt/mycephfs -o name=admin,secret=AQBxGTVdnr4PAhAAd4KqF0802IwTk0wVzw0cZA==</span></span><br></pre></td></tr></table></figure>
+<p>复制一个文件进去试试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 复制文件进去</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mkdir /mnt/mycephfs/<span class="built_in">test</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo cp 11.mp4 /mnt/mycephfs/<span class="built_in">test</span>/</span></span><br><span class="line"></span><br><span class="line">// 卸载看是不是都没了</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo umount /mnt/mycephfs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ll /mnt/mycephfs/</span></span><br><span class="line"></span><br><span class="line">total 0</span><br><span class="line"></span><br><span class="line">// 重新挂载</span><br><span class="line">// 查看文件</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount -t ceph 192.168.31.203:6789:/ /mnt/mycephfs -o name=admin,secret=AQBxGTVdnr4PAhAAd4KqF0802IwTk0wVzw0cZA==</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ll /mnt/mycephfs/<span class="built_in">test</span>/</span></span><br><span class="line"></span><br><span class="line">total 196753</span><br><span class="line">-rw-r--r-- 1 root root 201474919 Aug  5 10:03 11.mp4</span><br></pre></td></tr></table></figure>
+<p>可以看到文件成功的存入了CephFS中。</p>
+<hr>
+<h3 id="使用ceph-fuse进行挂载"><a href="#使用ceph-fuse进行挂载" class="headerlink" title="使用ceph-fuse进行挂载"></a>使用ceph-fuse进行挂载</h3><p>按照官方文档所说，把密钥和conf拷贝到要执行挂载的机器上：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[client]$</span><span class="bash"> sudo scp ming@192.168.31.203:/etc/ceph/ceph.client.admin.keyring /etc/ceph/ceph.client.admin.keyring</span></span><br><span class="line"><span class="meta">[client]$</span><span class="bash"> sudo scp ming@192.168.31.203:/etc/ceph/ceph.conf /etc/ceph/ceph.conf</span></span><br></pre></td></tr></table></figure>
+<p>要注意的是，现在需要使用的<code>ceph-fuse</code>命令是还没有按照的，需要手动按照一下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[client]$</span><span class="bash"> sudo yum install -y ceph-fuse</span></span><br></pre></td></tr></table></figure>
+<p>进行挂载：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[client]$</span><span class="bash"> sudo mkdir /home/ming/cephfs</span></span><br><span class="line"><span class="meta">[client]$</span><span class="bash"> sudo ceph-fuse -m 192.168.31.203:6789 /home/ming/cephfs</span></span><br><span class="line"></span><br><span class="line">ceph-fuse[1607]: starting ceph client</span><br><span class="line">2019-08-05 10:21:37.388 7f7f411bec00 -1 init, newargv = 0x55b21236d6e0 newargc=7</span><br><span class="line">ceph-fuse[1607]: starting fuse</span><br><span class="line"></span><br><span class="line"><span class="meta">[client]$</span><span class="bash"> ll cephfs/<span class="built_in">test</span>/</span></span><br><span class="line"></span><br><span class="line">total 196753</span><br><span class="line">-rw-r--r-- 1 root root 201474919 Aug  5 10:03 11.mp4</span><br></pre></td></tr></table></figure>
+<p>可以看到成功的进行了挂载，并且也看到了已有的文件。</p>
+<p>下面进行卸载，注意到卸载所使用的命令与挂载不同：</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo fusermount -u cephfs/</span></span><br></pre></td></tr></table></figure></h2><h3 id="使用fstab进行挂载"><a href="#使用fstab进行挂载" class="headerlink" title="使用fstab进行挂载"></a>使用fstab进行挂载</h3><p>也就是在/etc/fstab文件中进行配置，这样在开机时就会自动进行挂载。</p>
+<p>首先，将密钥保存到一个文件里面：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/ceph/secret.key</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo cat /etc/ceph/secret.key</span></span><br><span class="line"></span><br><span class="line">AQBxGTVdnr4PAhAAd4KqF0802IwTk0wVzw0cZA==</span><br></pre></td></tr></table></figure>
+<p>修改<code>/etc/fstab</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/fstab</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo cat /etc/fstab</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">/dev/mapper/centos-root /                       xfs     defaults        0 0</span><br><span class="line">UUID=37492c10-b6e6-4905-99ad-36207abe5b00 /boot                   xfs     defaults        0 0</span><br><span class="line">/dev/mapper/centos-swap swap                    swap    defaults        0 0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ceph fs</span></span><br><span class="line">192.168.31.203:6789:/  /mnt/mycephfs  ceph  name=admin,secretfile=/etc/ceph/secret.key,noatime,_netdev  0  2</span><br></pre></td></tr></table></figure>
+<p>重启虚拟机：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo reboot</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ll /mnt/mycephfs</span></span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x 1 root root 1 Aug  5 10:03 test</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> ll /mnt/mycephfs/<span class="built_in">test</span></span></span><br><span class="line">total 196753</span><br><span class="line">-rw-r--r-- 1 root root 201474919 Aug  5 10:03 11.mp4</span><br></pre></td></tr></table></figure>
+<p>可以看到完成了开机自动挂载。</p>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://docs.ceph.com/docs/master/cephfs/">CEPH FILESYSTEM</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/centos/" rel="tag"># centos</a>
+              <a href="/tags/ceph/" rel="tag"># ceph</a>
+              <a href="/tags/cephfs/" rel="tag"># cephfs</a>
+              <a href="/tags/nfs/" rel="tag"># nfs</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/02/2019-08-02-ceph-s3-use/" rel="prev" title="ceph-mimic-13.2.5中s3的初步使用">
+      <i class="fa fa-chevron-left"></i> ceph-mimic-13.2.5中s3的初步使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/06/2019-08-06-ceph-samba/" rel="next" title="ceph+samba的简单使用">
+      ceph+samba的简单使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%8F%90%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">前提准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+$ sudo ceph -s
+
+  cluster:
+    id:     a20b153c-c907-41bb-a5b2-753a40e2085c
+    health: HEALTH_WARN
+            clock skew detected on mon.node2
+ 
+  services:
+    mon: 4 daemons, quorum node1,node2,node3,node4
+    mgr: node2(active), standbys: node3, node1, node4
+    osd: 4 osds: 4 up, 4 in
+    rgw: 1 daemon active
+ 
+  data:
+    pools:   6 pools, 48 pgs
+    objects: 492  objects, 1.1 GiB
+    usage:   7.5 GiB used, 42 GiB &#x2F; 50 GiB avail
+    pgs:     48 active+clean
+
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAmds-METADATA-SERVER"><span class="nav-number">3.</span> <span class="nav-text">创建mds(METADATA SERVER)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BACEPH-FILESYSTEM"><span class="nav-number">4.</span> <span class="nav-text">创建CEPH FILESYSTEM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%82%E8%BD%BDCephFS"><span class="nav-number">5.</span> <span class="nav-text">挂载CephFS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E6%8C%82%E8%BD%BDCephFS"><span class="nav-number">5.1.</span> <span class="nav-text">直接挂载CephFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8ceph-fuse%E8%BF%9B%E8%A1%8C%E6%8C%82%E8%BD%BD"><span class="nav-number">5.2.</span> <span class="nav-text">使用ceph-fuse进行挂载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">6.</span> <span class="nav-text">1
+$ sudo fusermount -u cephfs&#x2F;
+</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8fstab%E8%BF%9B%E8%A1%8C%E6%8C%82%E8%BD%BD"><span class="nav-number">6.1.</span> <span class="nav-text">使用fstab进行挂载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

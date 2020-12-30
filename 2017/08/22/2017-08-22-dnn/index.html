@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="初级 Deep Neural Networks">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DNN 笔记一">
+<meta property="og:url" content="http://example.com/2017/08/22/2017-08-22-dnn/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="初级 Deep Neural Networks">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/coursera/nndl-note_2.png">
+<meta property="og:image" content="http://example.com/images/coursera/nndl-note_3.png">
+<meta property="og:image" content="http://example.com/images/coursera/nndl-note_4.png">
+<meta property="og:image" content="http://example.com/images/coursera/nndl-note_5.png">
+<meta property="article:published_time" content="2017-08-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2017-09-08T13:43:08.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="mechine learning">
+<meta property="article:tag" content="deep learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/coursera/nndl-note_2.png">
+
+<link rel="canonical" href="http://example.com/2017/08/22/2017-08-22-dnn/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DNN 笔记一 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/08/22/2017-08-22-dnn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DNN 笔记一
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-22T00:00:00+08:00">2017-08-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-09-08 21:43:08" itemprop="dateModified" datetime="2017-09-08T21:43:08+08:00">2017-09-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/" itemprop="url" rel="index"><span itemprop="name">coursera</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/deep-learning/" itemprop="url" rel="index"><span itemprop="name">deep learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">初级 Deep Neural Networks</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于第一个专项课程的笔记。</p>
+<p>这里先简单的定义为DNN就是层数很多的神经网络。</p>
+<hr>
+<h2 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h2><p>神经网络的激活函数一般有以下四种：</p>
+<p><img src="/images/coursera/nndl-note_2.png" alt="image" title="各种激活函数"></p>
+<p>它们的方程写为：</p>
+<script type="math/tex; mode=display">
+sigmoid = \frac{1}{1+e^{-Z}}</script><script type="math/tex; mode=display">
+tanh = \frac{e^x-e^{-x}}{e^x+e^{-x}}</script><script type="math/tex; mode=display">
+Relu = max(0,Z)</script><script type="math/tex; mode=display">
+Leaky Relu = max(0.01Z,Z)</script><p>从图中可以看出，对于<strong>sigmoid</strong>函数，它的输出大于1，这对于神经网络来说是不利的。
+<strong>tanh</strong>就能对<strong>sigmoid</strong>函数进行改进，使得输出值的范围在-1到1之间。</p>
+<p>但是，对于<strong>sigmoid</strong>和<strong>tanh</strong>来说，当输出值<strong>Z</strong>过大或者过小时，
+当我们在求取梯度的时候，这个地方的梯度值就几乎为0，这样就使得在网络层数较多时，
+梯度值在某一层就会变为十分接近0，影响到梯度的反向传播。</p>
+<p>所以，一般情况下，使用<strong>Relu</strong>或<strong>Leaky Relu</strong>来作为神经网络的激活函数，
+它不仅能改善梯度的反向传播，还可以加快训练速度，因为作为函数，它的计算算是非常简单。</p>
+<p>对它们进行求导，看它们的导函数长什么样：</p>
+<p>对于$g(z) = \frac {1}{1+e^{-z}}$，它的导函数为：</p>
+<script type="math/tex; mode=display">
+\frac{d}{dz}g(z) = g(z)(1 - g(z))</script><p>对于$g(z) = tanh(z)$，</p>
+<script type="math/tex; mode=display">
+\frac{d}{dz}g(z) = 1 - g(z)^2</script><p>对于$g(z) = Rule(z) = max(0,z)$,</p>
+<script type="math/tex; mode=display">
+\frac{d}{dz}g(z) =
+\begin{cases}
+0 \ \ \ \ \ ,\mbox{if } z < 0 \\
+1 \ \ \ \ \ ,\mbox{if } z > 0
+\end{cases}</script><p>最后对于$g(z) = LeakyRelu(z) = max(0.01z, z)$ ，</p>
+<script type="math/tex; mode=display">
+\frac{d}{dz}g(z) =
+\begin{cases}
+0.01 \ \ \ ,\mbox{if } z < 0 \\
+1 \ \ \ \ \ \ \ \ ,\mbox{if } z > 0
+\end{cases}</script><p>看得出上面的导数其实都很简单，这也有利于快速的计算。</p>
+<hr>
+<h2 id="两层神经网络"><a href="#两层神经网络" class="headerlink" title="两层神经网络"></a>两层神经网络</h2><p>在week_3的作业中，需要构建一个两层的神经网络，这里将它拿出来先分析一下。</p>
+<p><img src="/images/coursera/nndl-note_3.png" alt="image" title="two-layer-net"></p>
+<p>注意到这里的激活函数是<strong>tanh</strong>加上<strong>sigmoid</strong>，最后一层使用<strong>sigmoid</strong>的原因，
+主要是为了输出一个0~1的值，就可以把它看成概率来处理。（由图中可以看出其中的上标
+$[i]$就代表了层数）</p>
+<p><strong>参数初始化</strong></p>
+<p>这里需要初始化的参数有：</p>
+<ul>
+<li>学习速率$\alpha$。</li>
+<li>链接权值$w^{[i]}$。</li>
+<li>偏置$b^{[i]}$。</li>
+</ul>
+<p>对于学习速率$\alpha$，一般将其定义为一个确定的值即可，可能在0.01~1之间，
+视情况而定，需要不断调整来获得它较优的取值。</p>
+<p>对于偏置$b^{[i]}$，直接将它初始化为0就可以了。</p>
+<p>对于权值$w^{[i]}$，这里就不能将它们初始化0，或者可以说不能将它们初始化为一个相同的值，
+因为如果它们的初始值相同，它们之间的更新将不会有差异，这样它们会一直取到相同的值，
+显然不行。
+（如果使用drop-out策略，初始化为相同的值应该也无所谓）</p>
+<p>对于权值的初始化，它的好坏对网络的训练也是会有很大影响的，后面再谈。</p>
+<p>这里直接随机初始化就行，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">w = np.random.randn(dx,dy) * <span class="number">0.01</span></span><br><span class="line"></span><br><span class="line">b = np.zeros((dx,<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<p>这里权值$w$先以标准正态来随机取值，然后乘以0.01，防止权值过大造成计算出的数值过大。
+偏置$b$直接初始化为0即可。</p>
+<p><strong>前向传播</strong></p>
+<p>对于一个输入$x^{(i)}$，它的<strong>前向传播</strong>过程如下：</p>
+<script type="math/tex; mode=display">z^{[1] (i)} =  W^{[1]} x^{(i)} + b^{[1] (i)}</script><script type="math/tex; mode=display">a^{[1] (i)} = \tanh(z^{[1] (i)})</script><script type="math/tex; mode=display">z^{[2] (i)} = W^{[2]} a^{[1] (i)} + b^{[2] (i)}</script><script type="math/tex; mode=display">\hat{y}^{(i)} = a^{[2] (i)} = \sigma(z^{ [2] (i)})</script><script type="math/tex; mode=display">
+y^{(i)}_{prediction} =
+\begin{cases}
+1 \ \ \ \ \ \mbox{if } a^{[2](i)} > 0.5 \\
+0 \ \ \ \ \ \mbox{otherwise }
+\end{cases}</script><p>这里的输出是一个$a^{[2]}$，它是$z^{[2]}$通过<strong>sigmoid</strong>函数求出来的，
+输出的值可以看出一个概率值，所以这里使用一个交叉熵函数来估计最后的损失。</p>
+<script type="math/tex; mode=display">
+J = - \frac{1}{m} \sum_{i=0}^{m}
+(y^{(i)}log(a^{[2](i)}) + (1 - y^{(i)})log(1 - a^{[2](i)}))</script><p><strong>反向传播求其梯度：</strong></p>
+<p>最重要的，就是函数的反向传播过程了，这也是最难的地方，
+但实际上它就是一个求取梯度的过程，但是由于函数嵌套太多，
+所以容易引起困扰。</p>
+<p>这里先忽略前面的系数，就当输入只有一个样本，所以去掉所有的上标$(i)$。</p>
+<p>直接看一个最难的，结合上面的图与公式进行推导，</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial w^{[1]}} =
+\frac{\partial J}{\partial a^{[2]}}
+\frac{\partial a^{[2]}}{\partial z^{[2]}}
+\frac{\partial z^{[2]}}{\partial a^{[1]}}
+\frac{\partial a^{[1]}}{\partial z^{[1]}}
+\frac{\partial z^{[1]}}{\partial w^{[1]}}</script><p>上面就是链式法则，显然要求$w^{[1]}$的偏导，首先要将前面的偏导数全部求出来，
+一个一个的写出来。</p>
+<p>首先对$a^{[2]}$进行求导，它是在上面的交叉熵函数里面，</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial a^{[2]}} =
+\frac{1 - y}{1 - a^{[2]}} -
+\frac{y}{a^{[2]}}</script><p>再对$z^{[2]}$进行求导，它通过了一个<strong>sigmoid</strong>函数，</p>
+<script type="math/tex; mode=display">
+\frac{\partial a^{[2]}}{\partial z^{[2]}} =
+\frac{\partial}{\partial z^{[2]}}(\frac {1}{1+e^{-z^{[2]}}})
+= a^{[2]}(1 - a^{[2]})</script><p>继续对$a^{[1]}$进行求导，它通过了一个线性运算，</p>
+<script type="math/tex; mode=display">
+\frac{\partial z^{[2]}}{\partial a^{[1]}} =
+\frac{\partial }{\partial a^{[1]}} (w^{[2]}a^{[1]} + b^{[2]})
+= w^{[2]}</script><p>接着对$z^{[1]}$进行求导，这里通过了一个<strong>tanh</strong>运算，</p>
+<script type="math/tex; mode=display">
+\frac{\partial a^{[1]}}{\partial z^{[1]}} =
+\frac{\partial}{\partial z^{[1]}}
+(\frac{e^{z^{[1]}} - e^{-z^{[1]}}}{e^{z^{[1]}} + e^{-z^{[1]}}}) =
+1 - (a^{[1]})^2</script><p>最后对$w^{[1]}$进行求导，这也是同样的一个线性运算，</p>
+<script type="math/tex; mode=display">
+\frac{\partial z^{[1]}}{\partial w^{[1]}} =
+\frac{\partial}{\partial w^{[1]}}(w^{[1]}x + b^{[1]}) =
+x</script><p>对于偏执$b^{[1]}, b^{[2]}$，它们的导数同理，可以写为，</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial b^{[2]}} =
+\frac{\partial J}{\partial a^{[2]}}
+\frac{\partial a^{[2]}}{\partial z^{[2]}}
+\frac{\partial z^{[2]}}{\partial b^{[2]}}</script><script type="math/tex; mode=display">
+\frac{\partial J}{\partial b^{[1]}} =
+\frac{\partial J}{\partial a^{[2]}}
+\frac{\partial a^{[2]}}{\partial z^{[2]}}
+\frac{\partial z^{[2]}}{\partial a^{[1]}}
+\frac{\partial a^{[1]}}{\partial z^{[1]}}
+\frac{\partial z^{[1]}}{\partial b^{[1]}}</script><p>其中，</p>
+<script type="math/tex; mode=display">
+\frac{\partial z^{[2]}}{\partial b^{[2]}} = 1</script><script type="math/tex; mode=display">
+\frac{\partial z^{[1]}}{\partial b^{[1]}} = 1</script><hr>
+<p>综合上面的所有式子，可以将各个参数的导数写为，</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial a^{[2]}} =
+\frac{1 - y}{1 - a^{[2]}} +
+\frac{y}{a^{[2]}}</script><script type="math/tex; mode=display">
+\frac{\partial J}{\partial z^{[2]}} =
+\frac{\partial J}{\partial a^{[2]}}
+\frac{\partial a^{[2]}}{\partial z^{[2]}} =
+\frac{\partial J}{\partial a^{[2]}}
+a^{[2]}(1 - a^{[2]}) =
+a^{[2]} - y</script><script type="math/tex; mode=display">
+\frac{\partial J}{\partial w^{[2]}} =
+\frac{\partial J}{\partial z^{[2]}}
+\frac{\partial z^{[2]}}{\partial w^{[2]}} =
+\frac{\partial J}{\partial z^{[2]}}
+a^{[1]} =
+(a^{[2]} - y)a^{[1]}</script><script type="math/tex; mode=display">
+\frac{\partial J}{\partial b^{[2]}} =
+\frac{\partial J}{\partial z^{[2]}}
+\frac{\partial z^{[2]}}{\partial b^{[2]}} =
+\frac{\partial J}{\partial z^{[2]}} =
+a^{[2]} - y</script><script type="math/tex; mode=display">
+\frac{\partial J}{\partial a^{[1]}} =
+\frac{\partial J}{\partial z^{[2]}}
+\frac{\partial z^{[2]}}{\partial a^{[1]}} =
+\frac{\partial J}{\partial z^{[2]}}
+w^{[2]} =
+(a^{[2]} - y)w^{[2]}</script><script type="math/tex; mode=display">
+\frac{\partial J}{\partial z^{[1]}} =
+\frac{\partial J}{\partial a^{[1]}}
+\frac{\partial a^{[1]}}{\partial z^{[1]}} =
+\frac{\partial J}{\partial a^{[1]}}
+(1 - (a^{[1]})^2)</script><script type="math/tex; mode=display">
+\frac{\partial J}{\partial w^{[1]}} =
+\frac{\partial J}{\partial z^{[1]}}
+\frac{\partial z^{[1]}}{\partial w^{[1]}} =
+\frac{\partial J}{\partial z^{[1]}}
+x</script><script type="math/tex; mode=display">
+\frac{\partial J}{\partial b^{[1]}} =
+\frac{\partial J}{\partial z^{[1]}}
+\frac{\partial z^{[1]}}{\partial b^{[1]}} =
+\frac{\partial J}{\partial z^{[1]}}</script><hr>
+<p>所以在计算正向传播时，需要将中间计算得到的各个$a^{[i]}$的值保存下来，
+因为在反向传播时，会用到它们。</p>
+<p>在反向传播的计算中，一层一层从后向前计算梯度，
+就可以利用链式法则计算出各个参数的梯度了。</p>
+<p><strong>参数更新：</strong></p>
+<p>这里先不引入高级的参数更新方式，就正常的更新，</p>
+<script type="math/tex; mode=display">
+w^{[2]} = w^{[2]} -
+\alpha \frac{\partial J}{\partial w^{[2]}}</script><script type="math/tex; mode=display">
+b^{[2]} = b^{[2]} -
+\alpha \frac{\partial J}{\partial b^{[2]}}</script><script type="math/tex; mode=display">
+w^{[1]} = w^{[1]} -
+\alpha \frac{\partial J}{\partial w^{[1]}}</script><script type="math/tex; mode=display">
+b^{[1]} = b^{[1]} -
+\alpha \frac{\partial J}{\partial b^{[1]}}</script><hr>
+<h2 id="更多层的神经网络"><a href="#更多层的神经网络" class="headerlink" title="更多层的神经网络"></a>更多层的神经网络</h2><p>简单的理解，深度神经网络就是层数比较多的神经网络，
+所以基本的操作可以说和上面的两层神经网络是一样的，</p>
+<p>下面按照编程题过一遍整个流程，首先是网络结构图，</p>
+<p><img src="/images/coursera/nndl-note_4.png" alt="image"></p>
+<p>图中就是一个深度神经网络的结构，它中间神经元的激活函数是<strong>ReLU</strong>，
+最后一层是由<strong>sigmoid</strong>神经元组成，这一般适用于进行多分类。</p>
+<p>由图中，可以看出整个神经网络的一个训练步骤：</p>
+<ol>
+<li>初始化各层的权值$W$和$b$。</li>
+<li>输入样本，进行前向传播，先进过一系列的<strong>ReLU</strong>激活函数，
+最后再通过一个<strong>sigmoid</strong>，得到最后得输出。</li>
+<li>对于得到的输出，计算它与样本的标签值的交叉熵，得到当前的损失。</li>
+<li>将损失反向传播。</li>
+<li>更新各个参数，继续从第2步开始。</li>
+</ol>
+<p>注意在前向传播的过程中，要存下每一层的输出，因为在反向传播时需要用到它们。</p>
+<p><strong>各层参数的维度：</strong></p>
+<p>明白各层参数的维度，对于理解神经网络的代码很重要，这里写出它们的矩阵维度。</p>
+<p>首先，假设一个输入样本是一个<strong>12288</strong>长度的行向量，它是由一幅<strong>64*64*3</strong>的图片展开而成的，
+同时假设输入共有<strong>209</strong>个样本。</p>
+<p>同时需要假设如下的一些东西：</p>
+<ul>
+<li>网络一共有$L$层。</li>
+<li>样本数$m = 209$。</li>
+<li>样本维度$n = 12288$。</li>
+<li>第$i$层的神经元数量有$n^{[i]}$个。</li>
+<li>最后一层就是输出层，按上面的定义，它神经元的个数就是$n^{[L]}$个。</li>
+</ul>
+<p>从输入开始，假设每个样本是一个列向量，那么输入就是一行输入样本，</p>
+<script type="math/tex; mode=display">
+X =
+\begin{bmatrix}
+x^{[1]} & x^{[2]} & ... & x^{[m-1]} & x^{[m]}
+\end{bmatrix}</script><p>其中$x^{[i]}$就是一个样本，它是一个列向量，</p>
+<script type="math/tex; mode=display">
+x^{[i]} =
+\begin{bmatrix}
+x_1^{[i]}     \\
+x_2^{[i]}     \\
+...           \\
+x_{n-1}^{[i]} \\
+x_n^{[i]}
+\end{bmatrix}</script><p>所以输入$X$的维度是，$X \in R^{n \times m}$。</p>
+<p>为了方便线性运算，也就是之间$WX + b$来计算，这里把每个神经元定义为一个行向量，
+并且它的长度等于它上一层的神经元数。</p>
+<script type="math/tex; mode=display">
+W^{[i](j)} =
+\begin{bmatrix}
+w_{1}^{[i](j)} & w_{2}^{[i](j)} & ... & w_{n^{[i-1]}-1}^{[i](j)} & w_{n^{[i-1]}}^{[i](j)}
+\end{bmatrix}</script><p>其中$W^{[i](j)}$就表示第$i$层的第$j$个神经元。那么对于$W^{[i]}$，它就等于，</p>
+<script type="math/tex; mode=display">
+W^{[i]} =
+\begin{bmatrix}
+W_1^{[i]}     \\
+W_2^{[i]}     \\
+...           \\
+W_{n^{[i]}-1}^{[i]} \\
+W_{n^{[i]}}^{[i]}
+\end{bmatrix}</script><p>所以第$i$层的神经元的权值矩阵$W^{[i]}$的维度为，$W^{[i]} \in R^{n^{[i]} \times n^{[i-1]}}$，另外，</p>
+<script type="math/tex; mode=display">
+z^{[i]} = W^{[i]}a^{[i-1]} + b  \in R^{n^{[i]} \times m}</script><script type="math/tex; mode=display">
+a^{[i]} = g(z^{[i]}) \in R^{n^{[i]} \times m}</script><hr>
+<p>将它们的维度总结如下，当然它们所对应的导数和它们的维度一致，</p>
+<script type="math/tex; mode=display">
+X \in R^{n \times m}</script><script type="math/tex; mode=display">
+z^{[i]} \in R^{n^{[i]} \times m}</script><script type="math/tex; mode=display">
+a^{[i]} \in R^{n^{[i]} \times m}</script><script type="math/tex; mode=display">
+W^{[i]} \in R^{n^{[i]} \times n^{[i-1]}}</script><script type="math/tex; mode=display">
+b^{[i]} \in R^{n^{[i]} \times 1}</script><hr>
+<p><strong>前向传播：</strong></p>
+<p>只需要注意保存中间变量。</p>
+<p><strong>反向传播：</strong></p>
+<p><img src="/images/coursera/nndl-note_5.png" alt="image"></p>
+<p>结合对两层神经网络的描述，其实反向传播的计算也很简单，
+就从后向前计算导数就好了。</p>
+<p><strong>Hyperparameter：</strong></p>
+<p>超参数，就是一些需要在训练前就确定好的参数，并且可以认为一旦训练开始，
+就不能再改变它们的值了，在神经网络中，超参数控制着$W$和$b$的最终取值，
+可以认为它们决定了网络的最终性能。</p>
+<p>例如下面的一些参数，</p>
+<ul>
+<li>学习速率$\alpha$。</li>
+<li>迭代次数$t$。</li>
+<li>网络层数$L$。</li>
+<li>某一层的神经元数$n^{[1]},n^{[2]},…$</li>
+<li>激活函数的选择。</li>
+</ul>
+<p>对于这样一些的参数的选择，通常情况都得按着经验来，现在的很多研究也都是围绕着如何调参来展开的。</p>
+<p>一般情况只能一个一个的去试，看哪一组参数最合适，所以这是一个很耗时间的过程。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>第一个专项的课程，主要还是在于引入深度神经网络，讲了最为重要的前向传播和反向传播，
+理解好前向与反向传播，对于神经网络的学习至关重要。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/mechine-learning/" rel="tag"># mechine learning</a>
+              <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/22/2017-08-22-head-color/" rel="prev" title="jekyll博客顶端背景修改">
+      <i class="fa fa-chevron-left"></i> jekyll博客顶端背景修改
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/22/2017-08-22-Andrew-Ng-DeepLearning_1/" rel="next" title="Coursera neural-networks-deep-learning 笔记">
+      Coursera neural-networks-deep-learning 笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">激活函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E5%B1%82%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">2.</span> <span class="nav-text">两层神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E5%B1%82%E7%9A%84%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">3.</span> <span class="nav-text">更多层的神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

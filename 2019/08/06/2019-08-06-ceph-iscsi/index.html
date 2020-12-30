@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="学习在ceph集群中使用iscsi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ceph+iscsi的简单使用">
+<meta property="og:url" content="http://example.com/2019/08/06/2019-08-06-ceph-iscsi/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="学习在ceph集群中使用iscsi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-1.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-2.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-3.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-4.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-5.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-6.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-7.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-8.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-9.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-10.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-11.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-12.png">
+<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-iscsi-13.png">
+<meta property="article:published_time" content="2019-08-06T08:09:00.000Z">
+<meta property="article:modified_time" content="2019-08-23T08:13:30.106Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="centos">
+<meta property="article:tag" content="ceph">
+<meta property="article:tag" content="iscsi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/linux/ceph/ceph-iscsi-1.png">
+
+<link rel="canonical" href="http://example.com/2019/08/06/2019-08-06-ceph-iscsi/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ceph+iscsi的简单使用 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/06/2019-08-06-ceph-iscsi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ceph+iscsi的简单使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-06 16:09:00" itemprop="dateCreated datePublished" datetime="2019-08-06T16:09:00+08:00">2019-08-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-23 16:13:30" itemprop="dateModified" datetime="2019-08-23T16:13:30+08:00">2019-08-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">学习在ceph集群中使用iscsi</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><p>首先看到ceph官网给出的大体结构：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-1.png" alt="image" title="大体结构"></p>
+<p>可以看到主要分为ceph集群、rbd、iscsi网关、initiator（也就是客户端）构成。</p>
+<p>那么所需的准备就如下：</p>
+<ul>
+<li>一个<strong>HEALTH_OK</strong>的ceph集群，还有剩余的存储空间（给创建的rbd使用）。</li>
+</ul>
+<p>这里是我所搭建的集群：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph -s</span></span><br><span class="line"></span><br><span class="line">  cluster:</span><br><span class="line">    id:     51e9f534-b15a-4273-953c-9b56e9312510</span><br><span class="line">    health: HEALTH_OK</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon: 3 daemons, quorum node1,node2,node3</span><br><span class="line">    mgr: node1(active), standbys: node2, node3</span><br><span class="line">    mds: cephfs-1/1/1 up  &#123;0=node1=up:active&#125;</span><br><span class="line">    osd: 6 osds: 6 up, 6 in</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   2 pools, 64 pgs</span><br><span class="line">    objects: 508  objects, 1.9 GiB</span><br><span class="line">    usage:   26 GiB used, 6.0 TiB / 6.0 TiB avail</span><br><span class="line">    pgs:     64 active+clean</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>两台linux主机，作为iscsi网关，可以是集群中的主机。</p>
+</li>
+<li><p>一台linux主机，作为linux系统下的客户端。</p>
+</li>
+<li><p>一台windows主机，作为windows系统下的客户端。</p>
+</li>
+</ul>
+<hr>
+<h2 id="配置ceph-iscsi网关"><a href="#配置ceph-iscsi网关" class="headerlink" title="配置ceph-iscsi网关"></a>配置ceph-iscsi网关</h2><hr>
+<h3 id="修改osd配置"><a href="#修改osd配置" class="headerlink" title="修改osd配置"></a>修改osd配置</h3><p>安装官网所述，先修改osd的配置：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[osd]</span><br><span class="line">osd heartbeat grace = 20</span><br><span class="line">osd heartbeat interval = 5</span><br></pre></td></tr></table></figure>
+<p>将上述配置添加到所有ceph节点的<code>/etc/ceph/ceph.conf</code>文件中，
+当然可以使用ceph-deploy来推送。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim ceph.conf</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ceph.conf</span></span><br><span class="line"></span><br><span class="line">[global]</span><br><span class="line">fsid = 51e9f534-b15a-4273-953c-9b56e9312510</span><br><span class="line">mon_initial_members = node1, node2, node3</span><br><span class="line">mon_host = 192.168.90.233,192.168.90.234,192.168.90.235</span><br><span class="line">auth_cluster_required = cephx</span><br><span class="line">auth_service_required = cephx</span><br><span class="line">auth_client_required = cephx</span><br><span class="line">public_network = 192.168.0.0/16</span><br><span class="line"></span><br><span class="line">[osd]</span><br><span class="line">osd heartbeat grace = 20</span><br><span class="line">osd heartbeat interval = 5</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> ceph-deploy --overwrite-conf config push node1 node2 node3</span></span><br></pre></td></tr></table></figure></h2><h3 id="下载所需要的相关rpm包"><a href="#下载所需要的相关rpm包" class="headerlink" title="下载所需要的相关rpm包"></a>下载所需要的相关rpm包</h3><p>这里直接选择<strong>Using the Command Line Interface</strong>，感觉这个更靠谱一些。</p>
+<p>按照官网所述，yum的repo中需要有以下rpm包：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-2.png" alt="image" title="所需rpm包"></p>
+<p>直接<code>yum install</code>试试可以发现，只有<strong>targetcli</strong>和<strong>python-rtslib</strong>能装上，而且版本都比官网说的要低，好吧，麻烦来了。</p>
+<p>经过一段<strong>几个小时*</strong>的搜索……从下面链接中找到了rpm包：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ceph/ceph-iscsi/issues/64">Build new RPM for 3.0</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ceph/ceph-ansible/issues/2707">Missing ceph-iscsi-cli package</a></li>
+</ul>
+<p>新建repo文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/yum.repo.d/iscsi.repo</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /etc/yum.repo.d/iscsi.repo</span></span><br><span class="line"></span><br><span class="line">[ceph-iscsi]</span><br><span class="line">name=Ceph-iscsi</span><br><span class="line">baseurl=https://4.chacra.ceph.com/r/ceph-iscsi/master/88f3f67981c7da15448f140f711a1a8413d450b0/centos/7/flavors/default/noarch/</span><br><span class="line">priority=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line">[tcmu-runner]</span><br><span class="line">name=tcmu-runner</span><br><span class="line">baseurl=https://3.chacra.ceph.com/r/tcmu-runner/master/eef511565078fb4e2ed52caaff16e6c7e75ed6c3/centos/7/flavors/default/x86_64/</span><br><span class="line">priority=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line">[python-rtslib]</span><br><span class="line">name=python-rtslib</span><br><span class="line">baseurl=https://2.chacra.ceph.com/r/python-rtslib/master/67eb1605c697b6307d8083b2962f5170db13d306/centos/7/flavors/default/noarch/</span><br><span class="line">priority=1</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure>
+<p>这里我使用的是本地源，将上面的包下载到本地源：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install --downloadonly --downloaddir=yum/ceph-iscsi/ targetcli python-rtslib tcmu-runner ceph-iscsi</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> createrepo -p -d -o yum/ yum/</span></span><br></pre></td></tr></table></figure>
+<p>注意到这里没有包含<strong>targetcli</strong>的repo，因为没有找到，使用yum基础的Base源或者是Ceph源可以安装<code>targetcli-2.1.fb46-7.el7.noarch.rpm</code>，
+虽然官网需要的是<code>targetcli-2.1.fb47 or newer package</code>，但在后续使用中发现没有影响，所以这里就不用管<strong>targetcli</strong>了。</p>
+<p>那么这里下载下来的就是：</p>
+<ul>
+<li>targetcli-2.1.fb46-7.el7.noarch.rpm</li>
+<li>python-rtslib-2.1.fb68-1.noarch.rpm</li>
+<li>tcmu-runner-1.4.0-0.1.51.geef5115.el7.x86_64.rpm</li>
+<li>ceph-iscsi-3.2-8.g88f3f67.el7.noarch.rpm</li>
+</ul>
+<hr>
+<h3 id="ceph-iscsi网关初始配置"><a href="#ceph-iscsi网关初始配置" class="headerlink" title="ceph-iscsi网关初始配置"></a>ceph-iscsi网关初始配置</h3><p>如果使用的不是集群内的节点作为ceph-iscsi网关，那就需要进行一些初始的配置。</p>
+<ol>
+<li>安装ceph。</li>
+<li>从集群中的一台机器上拷贝<code>/etc/ceph/ceph.conf</code>到本机的<code>/etc/ceph/ceph.conf</code>。</li>
+<li>从集群中的一台机器上拷贝<code>/etc/ceph/ceph.client.admin.keyring</code>到本机的<code>/etc/ceph/ceph.client.admin.keyring</code>。</li>
+</ol>
+<p>当然第2和3步可以直接在deploy节点使用<code>ceph-deploy admin &#123;node-gateway&#125;</code>，<code>&#123;node-gateway&#125;</code>就表示网关节点的名字。</p>
+<p>可见这里就是为了将ceph-iscsi网关节点变成一个admin节点。</p>
+<p>这时在网关节点上应该可以执行相关命令操作ceph集群，例如<code>sudo ceph -s</code>查询当前集群的状态。</p>
+<hr>
+<h3 id="安装配置iscsi"><a href="#安装配置iscsi" class="headerlink" title="安装配置iscsi"></a>安装配置iscsi</h3><p>这里官网建议先切换到root用户，方便一点：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> su root</span></span><br></pre></td></tr></table></figure>
+<p>在两个网关节点上都安装iscsi（注意到上面已经将相关包下载到了本地源，所以可以直接yum安装）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> yum install -y ceph-iscsi</span></span><br></pre></td></tr></table></figure>
+<p><strong>服务启动：</strong></p>
+<p>先创建<code>rbd pool</code>，如果没有的话。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ceph osd lspools</span></span><br><span class="line"></span><br><span class="line">1 cephfs_data</span><br><span class="line">2 cephfs_metadata</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ceph osd pool create rbd 128</span></span><br><span class="line"></span><br><span class="line">pool &#x27;rbd&#x27; created</span><br></pre></td></tr></table></figure>
+<p>创建并修改<code>/etc/ceph/iscsi-gateway.cfg</code>文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> vim /etc/ceph/iscsi-gateway.cfg</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> cat /etc/ceph/iscsi-gateway.cfg</span></span><br><span class="line"></span><br><span class="line">[config]</span><br><span class="line"><span class="meta">#</span><span class="bash"> Name of the Ceph storage cluster. A suitable Ceph configuration file allowing</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> access to the Ceph storage cluster from the gateway node is required, <span class="keyword">if</span> not</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> colocated on an OSD node.</span></span><br><span class="line">cluster_name = ceph</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Place a copy of the ceph cluster<span class="string">&#x27;s admin keyring in the gateway&#x27;</span>s /etc/ceph</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> drectory and reference the filename here</span></span><br><span class="line">gateway_keyring = ceph.client.admin.keyring</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> API settings.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> The API supports a number of options that allow you to tailor it to your</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">local</span> environment. If you want to run the API under https, you will need to</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> create cert/key files that are compatible <span class="keyword">for</span> each iSCSI gateway node, that is</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> not locked to a specific node. SSL cert and key files *must* be called</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">&#x27;iscsi-gateway.crt&#x27;</span> and <span class="string">&#x27;iscsi-gateway.key&#x27;</span> and placed <span class="keyword">in</span> the <span class="string">&#x27;/etc/ceph/&#x27;</span> directory</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> on *each* gateway node. With the SSL files <span class="keyword">in</span> place, you can use <span class="string">&#x27;api_secure = true&#x27;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> to switch to https mode.</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> To support the API, the bear minimum settings are:</span></span><br><span class="line">api_secure = false</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Additional API configuration options are as follows, defaults shown.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> api_user = admin</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> api_password = admin</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> api_port = 5001</span></span><br><span class="line">trusted_ip_list = 192.168.90.234,192.168.90.235</span><br></pre></td></tr></table></figure>
+<p>上面<code>trusted_ip_list</code>填写的就是两台网关的ip（这里不讨论多网卡的情况）。</p>
+<p>在另外一台网关上复制这个文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo scp cluster@node2:/etc/ceph/iscsi-gateway.cfg /etc/ceph/iscsi-gateway.cfg</span></span><br></pre></td></tr></table></figure>
+<p>在两台网关上都开启rbd-target-api服务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> systemctl daemon-reload</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> systemctl <span class="built_in">enable</span> rbd-target-api</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> systemctl start rbd-target-api</span></span><br></pre></td></tr></table></figure>
+<p><strong>配置：（在其中一台网关配置就行）</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> gwcli</span></span><br><span class="line"><span class="meta">/&gt;</span><span class="bash"> <span class="built_in">cd</span> /iscsi-targets</span></span><br><span class="line"></span><br><span class="line"><span class="meta">/iscsi-targets&gt;</span><span class="bash"> create iqn.2003-01.com.redhat.iscsi-gw:iscsi-igw</span></span><br><span class="line">ok</span><br><span class="line"></span><br><span class="line"><span class="meta">/iscsi-targets&gt;</span><span class="bash"> <span class="built_in">cd</span> iqn.2003-01.com.redhat.iscsi-gw:iscsi-igw/gateways</span></span><br><span class="line"></span><br><span class="line">/iscsi-target...-igw/gateways&gt; create node2 192.168.90.234</span><br><span class="line">Adding gateway, sync&#x27;ing 0 disk(s) and 0 client(s)</span><br><span class="line">ok</span><br><span class="line"></span><br><span class="line">/iscsi-target...-igw/gateways&gt; create node3 192.168.90.235</span><br><span class="line">Adding gateway, sync&#x27;ing 0 disk(s) and 0 client(s)</span><br><span class="line">ok</span><br><span class="line"></span><br><span class="line">/iscsi-target...-igw/gateways&gt; cd /disks</span><br><span class="line"></span><br><span class="line"><span class="meta">/disks&gt;</span><span class="bash"> create pool=rbd image=disk_1 size=200G</span></span><br><span class="line">ok</span><br><span class="line"></span><br><span class="line"><span class="meta">/disks&gt;</span><span class="bash"> <span class="built_in">cd</span> /iscsi-targets/iqn.2003-01.com.redhat.iscsi-gw:iscsi-igw/hosts</span></span><br><span class="line"></span><br><span class="line">/iscsi-target...csi-igw/hosts&gt; create iqn.1994-05.com.redhat:rh7-client</span><br><span class="line">ok</span><br><span class="line"></span><br><span class="line">/iscsi-target...at:rh7-client&gt; auth username=myiscsiusername password=myiscsipassword</span><br><span class="line">ok</span><br><span class="line"></span><br><span class="line">/iscsi-target...at:rh7-client&gt; disk add rbd/disk_1</span><br><span class="line">ok</span><br></pre></td></tr></table></figure>
+<p>配置完成，可以看到我当前的目录结构：</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">/&gt;</span><span class="bash"> ls</span></span><br><span class="line">o- / ......................................................................... [...]</span><br><span class="line">  o- cluster ......................................................... [Clusters: 1]</span><br><span class="line">  | o- ceph .......................................................... [HEALTH_WARN]</span><br><span class="line">  |   o- pools .......................................................... [Pools: 3]</span><br><span class="line">  |   | o- cephfs_data ... [(x3), Commit: 0.00Y/2028052096K (0%), Used: 2029431878b]</span><br><span class="line">  |   | o- cephfs_metadata .... [(x3), Commit: 0.00Y/2028052096K (0%), Used: 77834b]</span><br><span class="line">  |   | o- rbd ................ [(x3), Commit: 200G/2028052096K (10%), Used: 15352b]</span><br><span class="line">  |   o- topology ................................................ [OSDs: 6,MONs: 3]</span><br><span class="line">  o- disks ........................................................ [200G, Disks: 1]</span><br><span class="line">  | o- rbd ............................................................ [rbd (200G)]</span><br><span class="line">  |   o- disk_1 ................................................ [rbd/disk_1 (200G)]</span><br><span class="line">  o- iscsi-targets ............................... [DiscoveryAuth: None, Targets: 1]</span><br><span class="line">    o- iqn.2003-01.com.redhat.iscsi-gw:iscsi-igw ..................... [Gateways: 2]</span><br><span class="line">      o- disks .......................................................... [Disks: 1]</span><br><span class="line">      | o- rbd/disk_1 ............................................... [Owner: node3]</span><br><span class="line">      o- gateways ............................................ [Up: 2/2, Portals: 2]</span><br><span class="line">      | o- node2 ............................................. [192.168.90.234 (UP)]</span><br><span class="line">      | o- node3 ............................................. [192.168.90.235 (UP)]</span><br><span class="line">      o- host-groups .................................................. [Groups : 0]</span><br><span class="line">      o- hosts .............................................. [Hosts: 1: Auth: CHAP]</span><br><span class="line">        o- iqn.1994-05.com.redhat:rh7-client .......... [Auth: CHAP, Disks: 1(200G)]</span><br><span class="line">          o- lun 0 ................................ [rbd/disk_1(200G), Owner: node3]</span><br></pre></td></tr></table></figure></h2><h2 id="linux客户端配置"><a href="#linux客户端配置" class="headerlink" title="linux客户端配置"></a>linux客户端配置</h2><p>在作为客户端的linux主机上。</p>
+<p>安装相关组件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install -y iscsi-initiator-utils</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install -y device-mapper-multipath</span></span><br></pre></td></tr></table></figure>
+<p>开启multipathd服务并进行配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mpathconf --<span class="built_in">enable</span> --with_multipathd y</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/multipath.conf</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo cat /etc/multipath.conf</span></span><br><span class="line"></span><br><span class="line">devices &#123;</span><br><span class="line">        device &#123;</span><br><span class="line">                vendor                 &quot;LIO-ORG&quot;</span><br><span class="line">                hardware_handler       &quot;1 alua&quot;</span><br><span class="line">                path_grouping_policy   &quot;failover&quot;</span><br><span class="line">                path_selector          &quot;queue-length 0&quot;</span><br><span class="line">                failback               60</span><br><span class="line">                path_checker           tur</span><br><span class="line">                prio                   alua</span><br><span class="line">                prio_args              exclusive_pref_bit</span><br><span class="line">                fast_io_fail_tmo       25</span><br><span class="line">                no_path_retry          queue</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改客户端名称：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/iscsi/initiatorname.iscsi</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo cat /etc/iscsi/initiatorname.iscsi</span></span><br><span class="line"></span><br><span class="line">InitiatorName=iqn.1994-05.com.redhat:rh7-client</span><br></pre></td></tr></table></figure>
+<p>修改chap认证配置文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/iscsi/iscsid.conf</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo cat /etc/iscsi/iscsid.conf</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="meta">#</span><span class="bash"> *************</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> CHAP Settings</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> *************</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> To <span class="built_in">enable</span> CHAP authentication <span class="built_in">set</span> node.session.auth.authmethod</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> to CHAP. The default is None.</span></span><br><span class="line">node.session.auth.authmethod = CHAP</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> To <span class="built_in">set</span> a CHAP username and password <span class="keyword">for</span> initiator</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> authentication by the target(s), uncomment the following lines:</span></span><br><span class="line">node.session.auth.username = myiscsiusername</span><br><span class="line">node.session.auth.password = myiscsipassword</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>发现target：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo iscsiadm -m discovery -t st -p 192.168.90.234</span></span><br><span class="line"></span><br><span class="line">192.168.90.234:3260,1 iqn.2003-01.org.linux-iscsi.rheln1</span><br><span class="line">192.168.90.235:3260,2 iqn.2003-01.org.linux-iscsi.rheln1</span><br></pre></td></tr></table></figure>
+<p>登入target：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo iscsiadm -m node -T iqn.2003-01.org.linux-iscsi.rheln1 -l</span></span><br></pre></td></tr></table></figure>
+<p>查看是否成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo multipath -ll</span></span><br><span class="line">mpatha (360014050fedd563975249adb2e84e978) dm-2 LIO-ORG ,TCMU device     </span><br><span class="line">size=200G features=&#x27;1 queue_if_no_path&#x27; hwhandler=&#x27;1 alua&#x27; wp=rw</span><br><span class="line">|-+- policy=&#x27;queue-length 0&#x27; prio=50 status=active</span><br><span class="line">| `- 3:0:0:0 sdc 8:32 active ready running</span><br><span class="line">`-+- policy=&#x27;queue-length 0&#x27; prio=10 status=enabled</span><br><span class="line">  `- 2:0:0:0 sdb 8:16 active ready running</span><br></pre></td></tr></table></figure>
+<p>在fdisk中就可以直接看到这个“硬盘”：</p>
+<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo fdisk -l</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Disk /dev/mapper/mpatha: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 524288 bytes</span><br><span class="line">...</span><br></pre></td></tr></table></figure></h2><h2 id="windows客户端配置"><a href="#windows客户端配置" class="headerlink" title="windows客户端配置"></a>windows客户端配置</h2><p>在<code>控制面板-&gt;管理工具-&gt;iSCSI 发起程序</code>：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-3.png" alt="image" title="控制面板-&gt;管理工具"></p>
+<p><img src="/images/linux/ceph/ceph-iscsi-4.png" alt="image" title="管理工具-&gt;iSCSI 发起程序"></p>
+<p>修改发起程序名称：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-5.png" alt="image" title="发起程序名称"></p>
+<p>添加发现目标门户：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-6.png" alt="image" title="添加发现目标门户"></p>
+<p>可以看到出现目标：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-7.png" alt="image" title="出现目标"></p>
+<p>连接到该目标：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-8.png" alt="image" title="连接目标"></p>
+<p>修改高级设置：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-9.png" alt="image" title="修改高级设置"></p>
+<p>可以看到已连接：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-10.png" alt="image" title="可以看到已连接"></p>
+<p>可以在磁盘管理中看到硬盘已经连接：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-11.png" alt="image" title="磁盘管理"></p>
+<p>这里将它分为F盘，并且成功往里面放了一个文件：</p>
+<p><img src="/images/linux/ceph/ceph-iscsi-12.png" alt="image" title="分配成为F盘"></p>
+<p><img src="/images/linux/ceph/ceph-iscsi-13.png" alt="image" title="放入文件成功"></p>
+<hr>
+<h2 id="Health-Warning"><a href="#Health-Warning" class="headerlink" title="Health Warning"></a>Health Warning</h2><p>注意到此时ceph集群可能会出现一个<code>Health Warning</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph -s</span></span><br><span class="line"></span><br><span class="line">  cluster:</span><br><span class="line">    id:     51e9f534-b15a-4273-953c-9b56e9312510</span><br><span class="line">    health: HEALTH_WARN</span><br><span class="line">            application not enabled on 1 pool(s)</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon:         3 daemons, quorum node1,node2,node3</span><br><span class="line">    mgr:         node1(active), standbys: node2, node3</span><br><span class="line">    mds:         cephfs-1/1/1 up  &#123;0=node1=up:active&#125;</span><br><span class="line">    osd:         6 osds: 6 up, 6 in</span><br><span class="line">    tcmu-runner: 2 daemons active</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   3 pools, 192 pgs</span><br><span class="line">    objects: 559  objects, 2.1 GiB</span><br><span class="line">    usage:   27 GiB used, 6.0 TiB / 6.0 TiB avail</span><br><span class="line">    pgs:     192 active+clean</span><br><span class="line"> </span><br><span class="line">  io:</span><br><span class="line">    client:   2.5 KiB/s rd, 2 op/s rd, 0 op/s wr</span><br></pre></td></tr></table></figure>
+<p>从官网中可以看到这个warning发生的原因<a target="_blank" rel="noopener" href="https://ceph.io/community/new-luminous-pool-tags/">New in Luminous: pool tags</a>，
+另外使用<code>ceph health detail</code>也可以看到解决方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph health detail</span></span><br><span class="line"></span><br><span class="line">HEALTH_WARN application not enabled on 1 pool(s)</span><br><span class="line">POOL_APP_NOT_ENABLED application not enabled on 1 pool(s)</span><br><span class="line">    application not enabled on pool &#x27;rbd&#x27;</span><br><span class="line">    use &#x27;ceph osd pool application enable &lt;pool-name&gt; &lt;app-name&gt;&#x27;, where &lt;app-name&gt; is &#x27;cephfs&#x27;, &#x27;rbd&#x27;, &#x27;rgw&#x27;, or freeform for custom applications.</span><br></pre></td></tr></table></figure>
+<p>这里就将所建立的<code>rbd</code>池标记为<strong>rbd</strong>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph osd pool application <span class="built_in">enable</span> rbd rbd</span></span><br><span class="line"></span><br><span class="line">enabled application &#x27;rbd&#x27; on pool &#x27;rbd&#x27;</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph -s</span></span><br><span class="line"></span><br><span class="line">  cluster:</span><br><span class="line">    id:     51e9f534-b15a-4273-953c-9b56e9312510</span><br><span class="line">    health: HEALTH_OK</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon:         3 daemons, quorum node1,node2,node3</span><br><span class="line">    mgr:         node1(active), standbys: node2, node3</span><br><span class="line">    mds:         cephfs-1/1/1 up  &#123;0=node1=up:active&#125;</span><br><span class="line">    osd:         6 osds: 6 up, 6 in</span><br><span class="line">    tcmu-runner: 2 daemons active</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   3 pools, 192 pgs</span><br><span class="line">    objects: 559  objects, 2.1 GiB</span><br><span class="line">    usage:   27 GiB used, 6.0 TiB / 6.0 TiB avail</span><br><span class="line">    pgs:     192 active+clean</span><br><span class="line"> </span><br><span class="line">  io:</span><br><span class="line">    client:   2.0 KiB/s rd, 1 op/s rd, 0 op/s wr</span><br></pre></td></tr></table></figure>
+<p>问题解决。</p>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://docs.ceph.com/docs/master/rbd/iscsi-overview/">CEPH ISCSI GATEWAY</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.51cto.com/devingeng/2125656">看Ceph如何实现原生的ISCSI</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ceph/ceph-iscsi/issues/64">Build new RPM for 3.0</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ceph/ceph-ansible/issues/2707">Missing ceph-iscsi-cli package</a></p>
+<p><a target="_blank" rel="noopener" href="https://ceph.io/community/new-luminous-pool-tags/">New in Luminous: pool tags</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/centos/" rel="tag"># centos</a>
+              <a href="/tags/ceph/" rel="tag"># ceph</a>
+              <a href="/tags/iscsi/" rel="tag"># iscsi</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/06/2019-08-06-ceph-samba/" rel="prev" title="ceph+samba的简单使用">
+      <i class="fa fa-chevron-left"></i> ceph+samba的简单使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/08/2019-08-08-ffmpeg-practice/" rel="next" title="练习使用FFmpeg将视频转码为hls，并添加水印">
+      练习使用FFmpeg将视频转码为hls，并添加水印 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%8F%90%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">前提准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEceph-iscsi%E7%BD%91%E5%85%B3"><span class="nav-number">2.</span> <span class="nav-text">配置ceph-iscsi网关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9osd%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">修改osd配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+$ vim ceph.conf
+$ cat ceph.conf
+
+[global]
+fsid &#x3D; 51e9f534-b15a-4273-953c-9b56e9312510
+mon_initial_members &#x3D; node1, node2, node3
+mon_host &#x3D; 192.168.90.233,192.168.90.234,192.168.90.235
+auth_cluster_required &#x3D; cephx
+auth_service_required &#x3D; cephx
+auth_client_required &#x3D; cephx
+public_network &#x3D; 192.168.0.0&#x2F;16
+
+[osd]
+osd heartbeat grace &#x3D; 20
+osd heartbeat interval &#x3D; 5
+
+$ ceph-deploy --overwrite-conf config push node1 node2 node3
+</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E7%9B%B8%E5%85%B3rpm%E5%8C%85"><span class="nav-number">3.1.</span> <span class="nav-text">下载所需要的相关rpm包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ceph-iscsi%E7%BD%91%E5%85%B3%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">ceph-iscsi网关初始配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEiscsi"><span class="nav-number">3.3.</span> <span class="nav-text">安装配置iscsi</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">4.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+&#x2F;&gt; ls
+o- &#x2F; ......................................................................... [...]
+  o- cluster ......................................................... [Clusters: 1]
+  | o- ceph .......................................................... [HEALTH_WARN]
+  |   o- pools .......................................................... [Pools: 3]
+  |   | o- cephfs_data ... [(x3), Commit: 0.00Y&#x2F;2028052096K (0%), Used: 2029431878b]
+  |   | o- cephfs_metadata .... [(x3), Commit: 0.00Y&#x2F;2028052096K (0%), Used: 77834b]
+  |   | o- rbd ................ [(x3), Commit: 200G&#x2F;2028052096K (10%), Used: 15352b]
+  |   o- topology ................................................ [OSDs: 6,MONs: 3]
+  o- disks ........................................................ [200G, Disks: 1]
+  | o- rbd ............................................................ [rbd (200G)]
+  |   o- disk_1 ................................................ [rbd&#x2F;disk_1 (200G)]
+  o- iscsi-targets ............................... [DiscoveryAuth: None, Targets: 1]
+    o- iqn.2003-01.com.redhat.iscsi-gw:iscsi-igw ..................... [Gateways: 2]
+      o- disks .......................................................... [Disks: 1]
+      | o- rbd&#x2F;disk_1 ............................................... [Owner: node3]
+      o- gateways ............................................ [Up: 2&#x2F;2, Portals: 2]
+      | o- node2 ............................................. [192.168.90.234 (UP)]
+      | o- node3 ............................................. [192.168.90.235 (UP)]
+      o- host-groups .................................................. [Groups : 0]
+      o- hosts .............................................. [Hosts: 1: Auth: CHAP]
+        o- iqn.1994-05.com.redhat:rh7-client .......... [Auth: CHAP, Disks: 1(200G)]
+          o- lun 0 ................................ [rbd&#x2F;disk_1(200G), Owner: node3]
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">linux客户端配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-2"><span class="nav-number">6.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+$ sudo fdisk -l
+
+...
+Disk &#x2F;dev&#x2F;mapper&#x2F;mpatha: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units &#x3D; sectors of 1 * 512 &#x3D; 512 bytes
+Sector size (logical&#x2F;physical): 512 bytes &#x2F; 512 bytes
+I&#x2F;O size (minimum&#x2F;optimal): 512 bytes &#x2F; 524288 bytes
+...
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#windows%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">7.</span> <span class="nav-text">windows客户端配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Health-Warning"><span class="nav-number">8.</span> <span class="nav-text">Health Warning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

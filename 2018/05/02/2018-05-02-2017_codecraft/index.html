@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="强行回忆一下，过太久，很多都忘了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2017年华为软件精英挑战赛记录">
+<meta property="og:url" content="http://example.com/2018/05/02/2018-05-02-2017_codecraft/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="强行回忆一下，过太久，很多都忘了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-02T09:08:08.000Z">
+<meta property="article:modified_time" content="2018-05-05T00:47:32.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="competition">
+<meta property="article:tag" content="algorithm">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2018/05/02/2018-05-02-2017_codecraft/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2017年华为软件精英挑战赛记录 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/05/02/2018-05-02-2017_codecraft/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2017年华为软件精英挑战赛记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-02 17:08:08" itemprop="dateCreated datePublished" datetime="2018-05-02T17:08:08+08:00">2018-05-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-05-05 08:47:32" itemprop="dateModified" datetime="2018-05-05T08:47:32+08:00">2018-05-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/competition/" itemprop="url" rel="index"><span itemprop="name">competition</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">强行回忆一下，过太久，很多都忘了。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="初赛"><a href="#初赛" class="headerlink" title="初赛"></a>初赛</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>很好，网上找了一会也没有找到题目，我只想说，华为你把往年的题的链接给一下可好？</p>
+<p>凭借记忆，初赛的题目大概是，有一个网络，要在上面部署cdn服务器，怎么部署既能满足用户需求，
+又能使得部署费用最少。</p>
+<p>具体一点，相当于一个无向图，有一些点是小区，每个小区都有视频业务的需求，而且需求量不一样，每条边是一条链路，
+链路有它的带宽限制。现在需要部署cdn服务器，让每一个小区的视频业务都能满足，同时部署cdn服务器的费用越低越好。</p>
+<p>每一个点都可以部署cdn服务器（包括是小区的点），每一个小区有一个需求值，每一条边是一条链路，每条链路都是双向的，
+每条链路有一个链路容量和一个单位费用（使用链路上一个单位的流量需要多少钱）。cdn服务器数量无限，cdn服务器输出能力无限，
+同样cdn服务器也有一个单价。</p>
+<p>限制：不能使用第三方库，程序运行时间不超过60s。</p>
+<h2 id="简单分析"><a href="#简单分析" class="headerlink" title="简单分析"></a>简单分析</h2><p>这个需要一步一步来分析：</p>
+<ol>
+<li>该选择哪些点来部署服务器？</li>
+<li>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</li>
+</ol>
+<p>这就是这个题目的两个核心问题。</p>
+<h3 id="该选择哪些点来部署服务器？"><a href="#该选择哪些点来部署服务器？" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>这是这个题目最难的一部分，因为这个选择是一个NP难的问题，所以是没有现成的解法来教你如何求解这个问题的，
+通常都是将它变成一个整数规划模型，然后使用求解器来求解。但是由于不能使用第三方库，所以代码全靠手写，
+那么这个问题基本上只能使用启发式算法来解。</p>
+<p>那么有哪些常用的启发式算法呢？遗传算法、模拟退火、蚁群算法、粒子群算法等。</p>
+<p>很好，那么从哪个算法开始呢？显然都不用，第一步当然是写一个最简单的版本，先熟悉问题，在深入问题。</p>
+<p><strong>最简单的版本（原始想法）：</strong></p>
+<p>版本1：初始每一个小区都给一个cdn，然后再尝试一个个cdn删除，直到不能降低费用，或者不能满足用户需求为止。</p>
+<p>版本2：初始没有cdn，然后尝试一个小区一个小区添加cdn，直到需求满足且不能降低费用为止。</p>
+<p><strong>初始版本的想法非常简单，但是很遗憾，这个想法在初赛的简单用例上能直接跑出最优解…</strong></p>
+<p>(有时候问题就是这么简单，只不过很多人还没开始就觉得难，然后就没有然后了)</p>
+<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>解决这个问题很简单，使用<a href="待补充">最小费用最大流</a>就解决了。</p>
+<p>使用最简单的增广路写法就好。</p>
+<h2 id="进阶分析"><a href="#进阶分析" class="headerlink" title="进阶分析"></a>进阶分析</h2><p>同样的，两个步骤的想法。</p>
+<h3 id="该选择哪些点来部署服务器？-1"><a href="#该选择哪些点来部署服务器？-1" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>由于最初始的版本效果很好，那么在这个基础上还能加强吗？</p>
+<p>当然能，很简单就能想到几个操作方法：</p>
+<ol>
+<li>cdn移动。现在cdn都是直接放在小区上面的，所以自然可以尝试移动cdn，只移动一步，
+如果移动能降低费用就移动，否则维持原状。</li>
+<li>cdn删除。这个删除不同于上面的原始想法中的删除，这个删除是根据cdn移动来的，如果有cdn移动成功了，
+那么意味着图的结构变了，有的点就也许就可以删除了。</li>
+</ol>
+<p><strong>很遗憾，初赛使用的就是这个思路做的，最后大概成渝前3的水平…</strong></p>
+<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>上面选择了增广路写法。</p>
+<p>但是，注意到时间限制60s，在这种分两步走的策略里面，需要跑很多次费用流，
+这时候的问题就是如何解决好这个问题，也就是用时尽量少。</p>
+<p><strong>最小费用最大流：</strong></p>
+<p>这里我首先使用的是增广路解法，使用SPFA计算增广路的最短路径。</p>
+<p>由于在一次求解最小费用最大流的过程中，需要反复的调用SPFA，那么<strong>在重复进行SPFA的过程中，不用每一次都重头开始</strong>，
+也就是一部分最短路径的结果可以保留，这样在下一次计算时就可以少很多的计算量。</p>
+<p>使用这样的方法，跑高级用例也没有问题，否则高级用例会有压力。</p>
+<p>由于上面部署的思路太简单了，这个最小费用最大流的魔改是我觉得自己最有意思的地方了。</p>
+<p>（具体用时忘记了…太过久远）</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>参见github<a target="_blank" rel="noopener" href="https://github.com/isadamu/2017-codecraft">2017-codecraft</a></p>
+<p>在一年之后，看自己一年之前写的代码，真的写得稀烂…估计再过一年又会嫌弃现在。</p>
+<h1 id="复赛"><a href="#复赛" class="headerlink" title="复赛"></a>复赛</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>和上面的题目其实一样，</p>
+<p>// TODO</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/competition/" rel="tag"># competition</a>
+              <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/03/19/2018-03-19-java_jar_jre_reduce/" rel="prev" title="jar包的运行以及jre精简">
+      <i class="fa fa-chevron-left"></i> jar包的运行以及jre精简
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/05/2018-05-05-KM/" rel="next" title="匈牙利算法和KM算法">
+      匈牙利算法和KM算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9D%E8%B5%9B"><span class="nav-number">1.</span> <span class="nav-text">初赛</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">1.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">简单分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%A5%E9%80%89%E6%8B%A9%E5%93%AA%E4%BA%9B%E7%82%B9%E6%9D%A5%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9F"><span class="nav-number">1.2.1.</span> <span class="nav-text">该选择哪些点来部署服务器？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E9%83%A8%E7%BD%B2%E5%A5%BD%E4%BA%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%EF%BC%8C%E6%B5%81%E9%87%8F%E8%AF%A5%E5%A6%82%E4%BD%95%E6%B5%81%EF%BC%8C%E6%89%8D%E8%83%BD%E6%BB%A1%E8%B6%B3%E6%89%80%E6%9C%89%E7%94%A8%E6%88%B7%EF%BC%8C%E5%B9%B6%E4%B8%94%E4%BD%BF%E5%BE%97%E8%B4%B9%E7%94%A8%E6%9C%80%E5%B0%8F%EF%BC%9F"><span class="nav-number">1.2.2.</span> <span class="nav-text">在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text">进阶分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%A5%E9%80%89%E6%8B%A9%E5%93%AA%E4%BA%9B%E7%82%B9%E6%9D%A5%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9F-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">该选择哪些点来部署服务器？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E9%83%A8%E7%BD%B2%E5%A5%BD%E4%BA%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%EF%BC%8C%E6%B5%81%E9%87%8F%E8%AF%A5%E5%A6%82%E4%BD%95%E6%B5%81%EF%BC%8C%E6%89%8D%E8%83%BD%E6%BB%A1%E8%B6%B3%E6%89%80%E6%9C%89%E7%94%A8%E6%88%B7%EF%BC%8C%E5%B9%B6%E4%B8%94%E4%BD%BF%E5%BE%97%E8%B4%B9%E7%94%A8%E6%9C%80%E5%B0%8F%EF%BC%9F-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.4.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E8%B5%9B"><span class="nav-number">2.</span> <span class="nav-text">复赛</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

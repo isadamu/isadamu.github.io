@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="阅读Everflow论文，进行一下论文的概括。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Everflow 阅读报告">
+<meta property="og:url" content="http://example.com/2017/08/18/2017-08-18-everflow/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="阅读Everflow论文，进行一下论文的概括。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/paper/everflow_1.png">
+<meta property="og:image" content="http://example.com/images/paper/everflow_2.png">
+<meta property="og:image" content="http://example.com/images/paper/everflow_3.png">
+<meta property="og:image" content="http://example.com/images/paper/everflow_4.png">
+<meta property="article:published_time" content="2017-08-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2017-12-01T02:00:07.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="read">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/paper/everflow_1.png">
+
+<link rel="canonical" href="http://example.com/2017/08/18/2017-08-18-everflow/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Everflow 阅读报告 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/08/18/2017-08-18-everflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Everflow 阅读报告
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-18 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-18T00:00:00+08:00">2017-08-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-12-01 10:00:07" itemprop="dateModified" datetime="2017-12-01T10:00:07+08:00">2017-12-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">paper</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">阅读Everflow论文，进行一下论文的概括。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Everflow-阅读报告"><a href="#Everflow-阅读报告" class="headerlink" title="Everflow 阅读报告"></a>Everflow 阅读报告</h2><p>文献名：Packet-Level Telemetry in Large Datacenter Networks</p>
+<p>（Zhu Y, Kang N, Cao J, et al. Packet-level telemetry in large datacenter networks[C]//ACM SIGCOMM Computer Communication Review. ACM, 2015, 45(4): 479-491.）</p>
+<p>作者：Yibo Zhu、Nanxi Kang、Jiaxin Cao、Albert Greenberg、Guohan Lu、Ratul Mahajan、Dave Maltz、Lihua Yuan、Ming Zhang、Ben Y. Zhao、Haitao Zheng</p>
+<p>关键字：Datacenter network; failure detection; probe</p>
+<h2 id="引言："><a href="#引言：" class="headerlink" title="引言："></a>引言：</h2><p>在复杂网络中去排查故障是一件很困难的事，要做到及时的解决故障，需要做到：</p>
+<ul>
+<li>在大规模的网络流量中识别出受影响的报文。</li>
+<li>穿过多个网络组件去追踪它们。</li>
+<li>分析流量轨迹中的故障模式。</li>
+<li>测试并确定潜在的故障原因。</li>
+</ul>
+<p>Everflow 就是一个大型网络中基于报文级别的遥测系统，使用商用交换机所具有的“match and mirror”功能来追踪特定的报文。它将抓取到的报文送到分析服务器，并且发出“guided probes”来测试并确定潜在的故障。
+它的特点在于它是报文级别的，粒度细，并且随着数据中心实时运行，对当前的一小部分报文进行追踪，可以实时检测到故障。另外当操作员发现某些故障时，也可以对Everflow进行配置，注入探针报文去定位这些故障。</p>
+<p>对于Silent packet drop、Silent blackhole、Inflated end-to-end latency、Loops from buggy middlebox routing、Load imbalance和Protocol bugs等一些问题，传统的工具是很难检测到故障或者很难定位到故障的，但是这些问题Everflow都可以发现，并且能够将这些问题定位到某个路由器或者某条链路。</p>
+<p>另外，它所需占用的资源在数据中心尺度来看是很小的，基本可以不予考虑。</p>
+<h2 id="Everflow架构："><a href="#Everflow架构：" class="headerlink" title="Everflow架构："></a>Everflow架构：</h2><p><img src="/images/paper/everflow_1.png" alt="image"></p>
+<p>Everflow主要由四个部分组成：controller、analyzer、storage和reshuffler。在这之上，多个Everflow application与Controller进行交互，利用Everflow提供的信息来诊断网络故障。</p>
+<h3 id="Reshuffler："><a href="#Reshuffler：" class="headerlink" title="Reshuffler："></a>Reshuffler：</h3><p>Reshuffler负责将追踪的报文进行镜像，然后送到Analyzer。其中主要的问题是数据中心的流量巨大，不可能追踪所有的报文，只能有选择的进行追踪。需要使用下面一些措施。</p>
+<p><strong>在交换机上进行匹配和镜像。</strong>商用的数据中心交换机可以预定义匹配规则，
+并对匹配报文执行确定的操作，且不改变原报文的转发行为。
+Everflow利用这一点来减少追踪的负载，
+用三种匹配规则来处理DCN（DataCenter Network）的通常故障。
+<strong>第一</strong>，由于数据中心流的大小分布十分不均匀，
+所以以TCP报文的SYN、FIN和RST部分来进行匹配，
+随机在n个踪迹中选择一个踪迹进行追踪。
+<strong>第二</strong>，某一些问题可能需要追踪特定应用的特定端口的报文，
+或者两个服务器之间的报文，
+所以这里在这样的报文中加入一个特殊的<strong>“debug bit”</strong>，
+交换机将对这样的报文进行追踪。<strong>第三</strong>，对一些协议报文（例如BGP、PFC和RDMA），
+它们在网络中是属于很小的一部分，但是又十分重要，
+所以Everflow会追踪所有这些的协议报文。</p>
+<p><strong>Switch-based reshuffler。</strong>我们需要一个低花费的策略来reshuffle这些追踪流量。为了实现这个策略，首先在HMux（hardware Mux）中定义一个VIP（virtual IP），配置所有交换机将踪迹报文转发到VIP，当一个踪迹报文到达HMux，HMux依据报文的五元组将报文重定向到一个DIP（direct IP，它就对应一个分析服务器）。这样就保证了同一五元组的报文只会被重定向到相同的DIP。</p>
+<h3 id="Analyzers："><a href="#Analyzers：" class="headerlink" title="Analyzers："></a>Analyzers：</h3><p>分析器。由分布式服务器组组成，每台服务器处理一部分“tracing traffic”。
+每一个分析器保持着两个状态：<strong>追踪报文</strong>和<strong>计数器</strong>。</p>
+<p><strong>追踪报文。</strong>分析器保持着一个报文踪迹表，表中保存了同一个报文（由五元组和IPID定义）的镜像链。它保存原报文的一份全拷贝，一系列的逐跳信息，逐跳信息包括报文被镜像的交换机IP地址、时间戳、TTL、源MAC地址和DSCP/ECN。当在一秒以内不再有新的报文，就认为一条踪迹结束。</p>
+<p>在一条结束的报文踪迹中，分析器会检查它是否有<strong>循环</strong>或<strong>丢包</strong>问题。当相同的设备在一条踪迹中出现多次时，就认为出现了循环。当一条踪迹的最后一跳与所期望的最后一跳不同时，就认为发生了丢包。</p>
+<p>由于需要追踪的报文的数量十分巨大，为了减小存储压力，每一个分析器只会将 异常行为、设置了调试位（例guided probes）或者协议相关报文（例PFC和BGP）的踪迹信息写入存储单元。对剩下的踪迹，分析器会将它们以类型的区别聚合到计数列表，并每隔10秒写入存储单元。最后controller还会将每个分析器的计数合并到一起。</p>
+<p><strong>链路负载计数器。</strong>对每条链路，分析器会计算出链路的总负载（报文数、比特数和flow数）。另外它还可以对指定前缀的流量或指定的内部流量来进行更细粒度的统计，这个操作可以通过controller来动态增减。</p>
+<p><strong>延迟计数器。</strong>分析器通过“guided probes”来计算每一条链路的延迟。</p>
+<p><strong>镜像报文丢包计数。</strong>镜像报文也有可能会发生丢包，如下图5所示，当踪迹包含S2却不包含S1时，明显表示从S1镜像出来的报文发生了丢失。在实际部署中镜像报文丢失率很低，通过将镜像报文避开拥塞链路就能很好的解决这个问题。</p>
+<p><img src="/images/paper/everflow_2.png" alt="image"></p>
+<h3 id="Storage："><a href="#Storage：" class="headerlink" title="Storage："></a>Storage：</h3><p>这里使用了SCOPE数据库，它是一个可扩展的分布式数据处理系统。数据用表的形式进行存储。这里将报文踪迹按行进行存储，每一行存储一条报文踪迹。</p>
+<h3 id="Controller-APIs："><a href="#Controller-APIs：" class="headerlink" title="Controller APIs："></a>Controller APIs：</h3><p>Everflow applications通过一些API来与控制器进行交互，通过这些API，应用可以查询报文踪迹、添加细粒度的负载计数器、触发guided probes以及选定踪迹添加调试bit。</p>
+<p>它有GetTrace()、GetCounter()、AddCounter()、RemoveCounter()、Probe()以及EnableDbg()、DisableDbg() 这样一些操作函数。</p>
+<p><strong>guided probing。</strong>由于故障的发生可能有多种原因，被动的追踪报文可能不足以确定这些的原因，这时就需要重新注入报文来判断故障。这种能够在任意交换机上注入任意报文的能力，就叫做guided probing。</p>
+<p><img src="/images/paper/everflow_3.png" alt="image"></p>
+<p>如上图（a），虽然追踪到了这个丢包，但是我们不能确定这个丢包是随机的还是持续的，通过guided probing，我们将报文p的复制注入到S2（如图b），确定丢包是随机的还是持续的。更进一步，可以设置探针报文为不同的五元组，测试丢包是随机的，还是针对某个特定的五元组。</p>
+<p><img src="/images/paper/everflow_4.png" alt="image"></p>
+<p>如上图（a），当使用被动追踪中去测量链路延迟时（也就是正常的追踪），可能由于追踪报文的两次返回所经过的路径不同，造成测量不正确。guided probing不仅可以注入报文，还可以指定报文经过的路径，通过这一特点，设置探针报文经过S1 -&gt; S2 -&gt; S1，这样报文就会经过S1两次，这两次的时间间隔就是链路延迟的两倍。</p>
+<h2 id="故障排查："><a href="#故障排查：" class="headerlink" title="故障排查："></a>故障排查：</h2><p><strong>Latency profiler。</strong>当两个服务器之间的延迟变得很高时，为了去查询问题的原因，首先，对两个服务器之间的TCP SYN报文的debug bit进行标志，追踪这些报文，就可以路径上所经过的网络设备。然后，注入guided probes去测量逐跳延迟。有了这些信息，就能快速定位到发生问题的网络设备。</p>
+<p><strong>Packet drop debugger。</strong>发生丢包的原因可能有很多，例如拥塞、软件bug或者配置错误，这就需要调试器对发生丢包的踪迹进行检查。对于一个遭到丢弃的报文p，通过最后抓取到p的交换机Sn，可以推断出p所期望的下一跳。这样，调试器就会注入guided probes到Sn，确定丢包是否是持续的，确定丢包是否有固定模式（例如特定的五元组）。</p>
+<p><strong>Loop debugger。</strong>循环在数据中心网络中并不常见，但是它一旦出现，就将消耗大量的资源。当一个循环被检测到时（踪迹上相同设备出现两次），首先调试器注入guided probes去测试循环是不是持续的，如果循环是持续的，它会将循环路径上的设备进行上报，于是操作员就可以禁用设备上的端口来打破循环。在这期间调试器会持续注入guided probes，直到循环消失。</p>
+<p><strong>ECMP profiler。</strong>在数据中心网络中，交换机会用ECMP（等价路由）来切分流量到下一跳。但可能由于不好的哈希函数或者路由问题，会造成链路拥塞。对每一个交换机，ECMP profiler将会它的链路总负载。当检测到不均衡的负载划分时，它会启动更加细粒度的负载计数器来排查，检测这样的不均衡的负载划分是对所有的流还是特定前缀的流。这些信息可以帮助操作员快速的检测并定位故障。</p>
+<p><strong>RoCEv2-based RDMA debugger。</strong>RoCEv2-based RDMA（Remote DirectMemoryAccess）是一个新兴协议，它对网络的延迟要求非常的高。在数据中心网络中，有时由于NIC的一些软件bug，使得RDMA达不到理想的性能，但是NIC是由第三方厂商所提供的，不能得到其中的代码，于是就需要用调试器来处理这个问题。调试器追踪关于RDMA的所有控制报文，这些信息不仅能够观察到RDMA流的实际行为，也能调试第三方的代码问题。</p>
+<p>（文章中第七部分提到了一些这些问题在实际中的一些处理的例子）</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/read/" rel="tag"># read</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/18/2017-08-18-my-first-blog/" rel="prev" title="我的第一篇博客 for jekyll">
+      <i class="fa fa-chevron-left"></i> 我的第一篇博客 for jekyll
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/18/2017-08-18-4Sum/" rel="next" title="LeetCode 18.4Sum">
+      LeetCode 18.4Sum <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Everflow-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A"><span class="nav-number">1.</span> <span class="nav-text">Everflow 阅读报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">引言：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Everflow%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">Everflow架构：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Reshuffler%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">Reshuffler：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Analyzers%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">Analyzers：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Storage%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">Storage：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller-APIs%EF%BC%9A"><span class="nav-number">3.4.</span> <span class="nav-text">Controller APIs：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">故障排查：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

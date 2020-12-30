@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="总结一下两种实现的方式，包括使用ffmpeg命令行，FFmpeg的C语言调用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用FFmpeg来进行固定时间间隔截图（rtmp直播流）">
+<meta property="og:url" content="http://example.com/2019/12/19/2019-11-27-ffmpeg-screenshot/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="总结一下两种实现的方式，包括使用ffmpeg命令行，FFmpeg的C语言调用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-19T08:52:00.000Z">
+<meta property="article:modified_time" content="2019-12-31T06:22:01.272Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="live">
+<meta property="article:tag" content="ffmpeg">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2019/12/19/2019-11-27-ffmpeg-screenshot/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用FFmpeg来进行固定时间间隔截图（rtmp直播流） | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/12/19/2019-11-27-ffmpeg-screenshot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用FFmpeg来进行固定时间间隔截图（rtmp直播流）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-19 16:52:00" itemprop="dateCreated datePublished" datetime="2019-12-19T16:52:00+08:00">2019-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-31 14:22:01" itemprop="dateModified" datetime="2019-12-31T14:22:01+08:00">2019-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index"><span itemprop="name">media</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">总结一下两种实现的方式，包括使用ffmpeg命令行，FFmpeg的C语言调用</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p><strong>如何对一个直播流不停的进行截图？</strong></p>
+<p>对直播流进行截图是一件十分平常的事情，因为实际中需要通过截图来对视频内容进行审核。</p>
+<p>一个简单的需求就是每隔一个固定时间间隔来从直播流中截取一张图片（jpeg或者png）。</p>
+<p>这里总结一下如何使用FFmpeg工具来完成这件事。有两种使用方法，简单的就是直接通过CMD来调用FFmpeg进行截图，
+复杂的就是用C语言来调用FFmpeg。</p>
+<ul>
+<li>使用CMD调用FFmpeg：简单，稳定，但是低效。</li>
+<li>使用C语言调用FFmpeg：复杂，但是非常高效。</li>
+</ul>
+<hr>
+<h1 id="使用CMD调用FFmpeg来截图"><a href="#使用CMD调用FFmpeg来截图" class="headerlink" title="使用CMD调用FFmpeg来截图"></a>使用CMD调用FFmpeg来截图</h1><hr>
+<h2 id="在固定时间点的截取一张图"><a href="#在固定时间点的截取一张图" class="headerlink" title="在固定时间点的截取一张图"></a>在固定时间点的截取一张图</h2><p>先来最简单的，如何截取一个视频流的第一张图：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i rtmp://192.168.90.43:2019/live/long -frames:v 1 ./snap/1.png</span></span><br></pre></td></tr></table></figure>
+<p>这里直接使用<code>-frames:v 1</code>参数就可以完成，截图一张图片后，便会结束。</p>
+<p>考虑在一个时间节点截取一张图：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -ss 00:00:10 -i .\1080_60.flv -frames:v 1 ./snap/1.png</span></span><br></pre></td></tr></table></figure>
+<p>增加<code>-ss 00:00:10</code>参数，这里截取10秒处的一张图。</p>
+<hr>
+<h2 id="建立for循环来达到固定时间间隔截图"><a href="#建立for循环来达到固定时间间隔截图" class="headerlink" title="建立for循环来达到固定时间间隔截图"></a>建立for循环来达到固定时间间隔截图</h2><p>那么为了简单的达到固定时间间隔截图，可以使用for循环来完成，隔一段时间截一单张图：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for((;;)); do \</span><br><span class="line">    ffmpeg -i rtmp://192.168.90.43:2019/live/long -strftime 1 -frames:v 1 ./snap/%H-%M-%S.png \</span><br><span class="line">    sleep 10; \</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<p>这个方法十分简单，但是问题在于每次都要拉一次流，创建一次连接，虽然也不占多少CPU，但是感觉有毒。</p>
+<hr>
+<h2 id="使用帧率控制来达到固定时间间隔截取一张图"><a href="#使用帧率控制来达到固定时间间隔截取一张图" class="headerlink" title="使用帧率控制来达到固定时间间隔截取一张图"></a>使用帧率控制来达到固定时间间隔截取一张图</h2><p>一条命令完成，可以通过控制帧率来达到，将帧率设置在<code>0.1</code>，也就是每10秒1帧：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i rtmp://192.168.90.43:2019/live/long -vf fps=0.1 ./snap/%00d.png</span></span><br></pre></td></tr></table></figure>
+<p>如果想要调整图片分辨率可以同时<code>scale</code>来完成：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i rtmp://192.168.90.43:2019/live/long \</span></span><br><span class="line"><span class="bash">    -filter_complex <span class="string">&quot;[0:v]fps=0.1[a];[a]scale=-1:720[out]&quot;</span> -map <span class="string">&quot;[out]&quot;</span> -an ./snap/%00d.png</span></span><br></pre></td></tr></table></figure>
+<p>这样的方法的确可以达到固定时间间隔截图，但是问题在于FFmpeg会一直进行解码，CPU占用很高，且非常没有必要。</p>
+<p><strong>另外还有通过<code>Select</code>滤镜来选择frame来进行截图，但是实际上不仅很难用，而且也会持续解码，占用CPU。</strong></p>
+<hr>
+<h2 id="（曲线救国）先保存成TS文件，再从TS文件上截图"><a href="#（曲线救国）先保存成TS文件，再从TS文件上截图" class="headerlink" title="（曲线救国）先保存成TS文件，再从TS文件上截图"></a>（曲线救国）先保存成TS文件，再从TS文件上截图</h2><p>上面的方法中，使用for循环来截图相对来说是最健康的，因为它基本不占啥CPU，但是每次重新创建远程连接也挺耗资源的。</p>
+<p>那么可以先通过一个FFmpeg进程来拉取流，并保存成为本地的TS文件，然后再进行for循环来对TS文件进行截图，
+这样就能免得每次创建远程连接。</p>
+<p>下面是一个简单的Shell脚本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">input=&quot;&quot;</span><br><span class="line">interval=5</span><br><span class="line">outdir=&quot;./screens&quot;</span><br><span class="line">segmdir=&quot;tmp&quot;</span><br><span class="line">height=-1</span><br><span class="line">outfmt=&quot;jpg&quot;</span><br><span class="line">invalid=false</span><br><span class="line"></span><br><span class="line">while getopts &quot;:i:t:d:h:f:&quot; opt</span><br><span class="line">do</span><br><span class="line">    case $opt in</span><br><span class="line">        i)</span><br><span class="line">        input=$OPTARG</span><br><span class="line">        ;;</span><br><span class="line">        t)</span><br><span class="line">        interval=$OPTARG</span><br><span class="line">        ;;</span><br><span class="line">        d)</span><br><span class="line">        outdir=$OPTARG</span><br><span class="line">        ;;</span><br><span class="line">        h)</span><br><span class="line">        height=$OPTARG</span><br><span class="line">        ;;</span><br><span class="line">        f)</span><br><span class="line">        outfmt=$OPTARG</span><br><span class="line">        ;;</span><br><span class="line">        ?)</span><br><span class="line">        invalid=true</span><br><span class="line">        ;;</span><br><span class="line">    esac</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">if [ &quot;$input&quot; == &quot;&quot; ] ; then invalid=true ; fi</span><br><span class="line"></span><br><span class="line">if [[ &quot;$outfmt&quot; != &quot;jpg&quot; &amp;&amp; &quot;$outfmt&quot; != &quot;png&quot; ]] ; then invalid=true ; fi</span><br><span class="line"></span><br><span class="line">if [ $invalid == true ]</span><br><span class="line">then</span><br><span class="line">    echo &quot;Invalid input&quot; </span><br><span class="line">    exit 1</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">echo &quot;input = $input&quot;</span><br><span class="line">echo &quot;interval = $interval&quot;</span><br><span class="line">echo &quot;outdir = $outdir&quot;</span><br><span class="line">echo &quot;screen fmt = $outfmt&quot;</span><br><span class="line">echo &quot;screenshot height = $height&quot;</span><br><span class="line"></span><br><span class="line">if [ ! -d &quot;$outdir&quot; ] ; then mkdir -p $outdir ; fi</span><br><span class="line">segmdir=&quot;$outdir/$segmdir&quot;</span><br><span class="line">if [ ! -d &quot;$segmdir&quot; ] ; then mkdir -p $segmdir ; fi</span><br><span class="line"></span><br><span class="line">trap &quot; echo &quot;&quot; ; echo &quot;exit...&quot; ; rm -r $segmdir ; exit &quot; SIGHUP SIGINT SIGQUIT</span><br><span class="line"></span><br><span class="line">ffmpeg -i $input -f segment -segment_list $segmdir/list \</span><br><span class="line">       -segment_list_size 3 -segment_time $interval -segment_wrap 3 \</span><br><span class="line">       -codec copy $segmdir/%01d.mp4 \</span><br><span class="line">       &gt; /dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line">sleep `expr $interval / 2`</span><br><span class="line"></span><br><span class="line">idx=1</span><br><span class="line">while true</span><br><span class="line">do</span><br><span class="line">    seg=`cat $segmdir/list | awk &#x27;END &#123;print&#125;&#x27;`</span><br><span class="line">    if [ &quot;$seg&quot; != &quot;&quot; ]</span><br><span class="line">    then</span><br><span class="line">	echo &quot;$seg $idx.$outfmt&quot;</span><br><span class="line">        if [ &quot;$outfmt&quot; == &quot;png&quot; ] ; then</span><br><span class="line">            ffmpeg -i $segmdir/$seg -vf &quot;scale=-1:$height&quot; -c:v png -an -frames:v 1 -y $outdir/$idx.$outfmt &gt; /dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">        elif [ &quot;$outfmt&quot; == &quot;jpg&quot; ] ; then </span><br><span class="line">            ffmpeg -i $segmdir/$seg -vf &quot;scale=-1:$height&quot; -f image2 -q:v 2 -an -frames:v 1 -y $outdir/$idx.$outfmt &gt; /dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">        fi</span><br><span class="line">        let idx++</span><br><span class="line">    fi</span><br><span class="line">    sleep $interval</span><br><span class="line">done</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这个方法虽然每次都要重新开启线程，关闭线程，而且还相当于在进行录制，但是基本避免了最大的开销（解码，建立远程连接）。</p>
+<hr>
+<h1 id="使用C语言调用FFmpeg"><a href="#使用C语言调用FFmpeg" class="headerlink" title="使用C语言调用FFmpeg"></a>使用C语言调用FFmpeg</h1><p>很明显，上面的方法虽然进化得越来越好，但是始终是不完美的。</p>
+<p>要想达到完美，看来只能通过C语言来调用FFmpeg，这样就能将整个编解码过程控制在自己手里。</p>
+<p><a target="_blank" rel="noopener" href="http://longrm.com/2019/12/23/2019-12-23-ffmpeg-screenshot-2/">使用C语言调用FFmpeg来进行固定时间间隔截图(rtmp直播流)</a></p>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://ffmpeg.org/documentation.html">FFmpeg Documentation</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/live/" rel="tag"># live</a>
+              <a href="/tags/ffmpeg/" rel="tag"># ffmpeg</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/12/2019-11-12-golang_cmd_ffmpeg/" rel="prev" title="golang通过CMD来调用FFmpeg">
+      <i class="fa fa-chevron-left"></i> golang通过CMD来调用FFmpeg
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/23/2019-12-23-ffmpeg-screenshot-2/" rel="next" title="使用C语言调用FFmpeg来进行固定时间间隔截图(rtmp直播流)">
+      使用C语言调用FFmpeg来进行固定时间间隔截图(rtmp直播流) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8CMD%E8%B0%83%E7%94%A8FFmpeg%E6%9D%A5%E6%88%AA%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">使用CMD调用FFmpeg来截图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%9B%BA%E5%AE%9A%E6%97%B6%E9%97%B4%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96%E4%B8%80%E5%BC%A0%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">在固定时间点的截取一张图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Bfor%E5%BE%AA%E7%8E%AF%E6%9D%A5%E8%BE%BE%E5%88%B0%E5%9B%BA%E5%AE%9A%E6%97%B6%E9%97%B4%E9%97%B4%E9%9A%94%E6%88%AA%E5%9B%BE"><span class="nav-number">2.2.</span> <span class="nav-text">建立for循环来达到固定时间间隔截图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B8%A7%E7%8E%87%E6%8E%A7%E5%88%B6%E6%9D%A5%E8%BE%BE%E5%88%B0%E5%9B%BA%E5%AE%9A%E6%97%B6%E9%97%B4%E9%97%B4%E9%9A%94%E6%88%AA%E5%8F%96%E4%B8%80%E5%BC%A0%E5%9B%BE"><span class="nav-number">2.3.</span> <span class="nav-text">使用帧率控制来达到固定时间间隔截取一张图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E6%9B%B2%E7%BA%BF%E6%95%91%E5%9B%BD%EF%BC%89%E5%85%88%E4%BF%9D%E5%AD%98%E6%88%90TS%E6%96%87%E4%BB%B6%EF%BC%8C%E5%86%8D%E4%BB%8ETS%E6%96%87%E4%BB%B6%E4%B8%8A%E6%88%AA%E5%9B%BE"><span class="nav-number">2.4.</span> <span class="nav-text">（曲线救国）先保存成TS文件，再从TS文件上截图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8C%E8%AF%AD%E8%A8%80%E8%B0%83%E7%94%A8FFmpeg"><span class="nav-number">3.</span> <span class="nav-text">使用C语言调用FFmpeg</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.1.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Coursera deep-learning part-2 week-3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hyperparameter tuning, Batch Norm and TensorFlow">
+<meta property="og:url" content="http://example.com/2017/08/29/2017-08-29-dnn_4/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="Coursera deep-learning part-2 week-3">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_1.png">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_2.png">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_3.png">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_4.png">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_5.png">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_6.png">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_7.png">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_8.png">
+<meta property="og:image" content="http://example.com/images/coursera/HBT_9.png">
+<meta property="article:published_time" content="2017-08-29T11:55:00.000Z">
+<meta property="article:modified_time" content="2017-09-08T13:42:59.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="mechine learning">
+<meta property="article:tag" content="deep learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/coursera/HBT_1.png">
+
+<link rel="canonical" href="http://example.com/2017/08/29/2017-08-29-dnn_4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Hyperparameter tuning, Batch Norm and TensorFlow | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/08/29/2017-08-29-dnn_4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hyperparameter tuning, Batch Norm and TensorFlow
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-29 19:55:00" itemprop="dateCreated datePublished" datetime="2017-08-29T19:55:00+08:00">2017-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-09-08 21:42:59" itemprop="dateModified" datetime="2017-09-08T21:42:59+08:00">2017-09-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/" itemprop="url" rel="index"><span itemprop="name">coursera</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/deep-learning/" itemprop="url" rel="index"><span itemprop="name">deep learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Coursera deep-learning part-2 week-3</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="Hyperparameter-tuning"><a href="#Hyperparameter-tuning" class="headerlink" title="Hyperparameter tuning"></a>Hyperparameter tuning</h2><p>调参是训练神经网络中十分重要的一项技能，很有可能为了训练出一个好的模型，一大半的时间需要花费在调参上面。</p>
+<p>首先调参时要分清楚哪些是重要参数，也就是对结果影响较大的参数，着重去调整它们，例如下列的参数：</p>
+<ul>
+<li>$\alpha$</li>
+<li>$\lambda$</li>
+<li>$\beta_1,\beta_2,\epsilon$</li>
+<li>$layers$</li>
+<li>$hidden \ units$</li>
+<li>$learning \ rate \ decay$</li>
+<li>$mini \ batch \ size$</li>
+</ul>
+<p>显然，其中比较重要的参数是$\alpha,\lambda,layers,learning \ rate \ decay$，所以在调参的时候着重去调整它们，
+剩下的参数随意一点，可调可不调，看着具体的问题来选择。</p>
+<p>通常会认为调参是下面这种形式：</p>
+<p><img src="/images/coursera/HBT_1.png" alt="image"></p>
+<p>这种形式就是先选好固定的距离，然后进行搜索，这样并没有太大问题，但就上图来说，如果参数一重要，参数二不重要，
+这样就会浪费一些搜索机会，比如先固定了参数一，参数二变化五次，这五次模型的性能并不会有什么变化。</p>
+<p>所以，可以进行随机选点：</p>
+<p><img src="/images/coursera/HBT_2.png" alt="image"></p>
+<p>这样就不会太浪费选点的机会。</p>
+<p>另外可以第一轮先在一个较大的范围去选点，然后再缩小到一个小一点的范围进行更加精确的搜索。</p>
+<p><strong>随机选点：</strong></p>
+<p>随机选点可不是<code>random</code>就可以了，有时还需要考虑一下尺度问题，</p>
+<p>首先，假如是一个<code>50 ~ 100</code>范围内的随机，那么随机选就可以了，没什么问题，</p>
+<p><img src="/images/coursera/HBT_3.png" alt="image"></p>
+<p>但是如果是一个<code>0.0001 ~ 1</code>的范围，那么随机就会显得很蠢，</p>
+<p><img src="/images/coursera/HBT_4.png" alt="image"></p>
+<p>那么90%的概率点会选在<code>0.1 ~ 1</code>的区间里面，显然不行。如下图所示，才是这里的”均匀”。</p>
+<p><img src="/images/coursera/HBT_5.png" alt="image"></p>
+<p>为了产生这种效果，就把它变成一个对数坐标，在<strong>python</strong>中就像下面这样来写就行了，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">r = -<span class="number">4</span> * np.random.rand() <span class="comment"># -4 ~ 0</span></span><br><span class="line">a = <span class="number">10</span>**r                 <span class="comment"># 10^-4 ~ 10^0</span></span><br></pre></td></tr></table></figure>
+<p>相当于变成对数坐标，在对数坐标上面进行随机，然后再返回来。</p>
+<p>如果是一个<code>0.9 ~ 0.999</code>的范围，先按上面的方式随机一个<code>0.1 ~ 0.001</code>的范围，再用<strong>1</strong>来<strong>减</strong>就行了。</p>
+<p>另外例如范围<code>0.9000 ~ 0.9005</code>与<code>0.999 ~ 0.9995</code>，看起来它们之间没有什么不同，但是实际上，后一个范围它很接近<strong>1</strong>，
+这个变化在机器学习中是会有<strong>质变</strong>的，所以第二个范围在进行搜索时，需要更加的细致。</p>
+<p>另外视频中还给提供了在模型训练时间很长的时候（几天以上），两种调参方式的有趣的名字：</p>
+<ul>
+<li><strong>Pandas：</strong>一次一胎，也就是同时只训练一个模型，然后你看着代价变化曲线，每天调一调参。（计算资源较少）</li>
+<li><strong>Caviar：</strong>一次n胎，同时训练n个模型，几天后选择其中那个最好的。（计算资源很多）</li>
+</ul>
+<hr>
+<h2 id="Batch-Norm"><a href="#Batch-Norm" class="headerlink" title="Batch Norm"></a>Batch Norm</h2><p>就像前面将输入进行标准化一样，可以在神经网络中任意一层去应用类似的标准化方法，这样的标准化对于<strong>梯度爆炸和梯度消失</strong>问题的缓解都很有好处。</p>
+<p>如下图，</p>
+<p><img src="/images/coursera/HBT_6.png" alt="image"></p>
+<p><code>Batch norm</code>一般是在$z^{[i]}$上进行，也就是在激活函数之前进行，</p>
+<script type="math/tex; mode=display">
+\mu^{[l]} = \frac{1}{n^{[l]}} \sum_{i = 1}^{n^{[l]}} z^{[l]}_i</script><script type="math/tex; mode=display">
+(\sigma^{[l]})^2 = \frac{1}{n^{[l]}} \sum_{i = 1}^{n^{[l]}} (z^{[l]}_i - \mu^{[l]})^2</script><script type="math/tex; mode=display">
+z^{[l]}_{norm} = \frac{z^{[l]} - \mu^{[l]}}{\sqrt{(\sigma^{[l]})^2 + \epsilon}}</script><script type="math/tex; mode=display">
+\tilde{z}^{[l]}_{norm} = \delta z^{[l]}_{norm} + \beta</script><p>这里的$\epsilon$就是防止出现除以零的错误，另外，这里不直接使用标准化后的$z^{[l]}_{norm}$，
+而是加入了两个参数$\delta,\beta$，这两个参数不是定死的，它是随着更新而更新的，加这两个参数的原因，
+是为了让模型可以在标准化的基础上进行一下小变动，甚至可以返回标准化之前的数值，例如，</p>
+<script type="math/tex; mode=display">
+\delta = \sqrt{(\sigma^{[l]})^2 + \epsilon}</script><script type="math/tex; mode=display">
+\beta = \mu</script><p>那么带进去计算就会发现，数值又返回原始的状态了。</p>
+<p>在这里，使用了<code>Batch norm</code>的层就多了两个参数$\delta,\beta$，在反向传播时，同样要去计算这两个参数的梯度，然后更新。
+同样的也可以使用<strong>Adam</strong>方法来更新这两个参数。</p>
+<p>另外需要注意的是，</p>
+<script type="math/tex; mode=display">
+z^{[l]} = w^{[l]}a^{[l-1]} + b^{[l]}</script><p>那么在对$z^{[l]}$进行<code>batch norm</code>的时候，$b^{[l]}$就会显得很多余，因为它会被零均值化掉，
+所以在施加了<code>batch norm</code>的神经层中，就不再需要$b^{[l]}$这个参数。</p>
+<p><strong>为什么<code>Batch norm</code>会起到作用？</strong></p>
+<p>吴恩达在这里给了一些直觉来使得它<code>make sense</code>，例如下面训练一个简单的神经元，</p>
+<p><img src="/images/coursera/HBT_7.png" alt="image"></p>
+<p>训练的数据如下图左边，测试时变为了下图右边，</p>
+<p><img src="/images/coursera/HBT_8.png" alt="image"></p>
+<p>显然由于数据的分布发生了变化，模型的准确率就会下降，不可能指望左边真的能够学习到那条绿色的判决线。</p>
+<p>同样的道理，在多层的神经网络中，可以认为某一层的输入就有一个疯狂变化的分布，</p>
+<p><img src="/images/coursera/HBT_9.png" alt="image"></p>
+<p>那么，这时受到分布变化的影响，这一层就很难去学习到一个比较好的参数。当加上<code>Batch norm</code>时，
+就能<strong>限制</strong>一下这个分布的变化，<strong>减轻</strong>影响。</p>
+<p><strong>测试样本怎么办？</strong></p>
+<p>当训练时，使用的都是<strong>mini-batch</strong>，自然可以计算出它们的均值、方差，但是如果在测试时，一次只有一个样本通过，
+那么怎么<code>Batch norm</code>呢？</p>
+<p>通常情况下，追踪训练中的每一个<strong>mini-batch</strong>在该层上得到的均值与方差，使用<code>exponentially weighted</code>的方法来估计它们的均值，</p>
+<script type="math/tex; mode=display">
+\mu_{all}^{[l]} = \beta \mu_{all}^{[l]} + (1 - \beta) \mu^{\{i\}[l]}</script><p>这里的$i$代表第$i$个<code>mini-batch</code>。</p>
+<p>注意这样求出来的总的均值、方差只是在<strong>test</strong>阶段使用，并不用在训练过程中。</p>
+<p><strong>梯度怎么求？</strong></p>
+<p>这个现在先避开，感觉上就不好算，按吴恩达的说法，通常不会去手写这个的，让学习框架来就好。</p>
+<hr>
+<h2 id="Softmax-Regression"><a href="#Softmax-Regression" class="headerlink" title="Softmax Regression"></a>Softmax Regression</h2><p><a target="_blank" rel="noopener" href="http://longrm.com/2017/08/30/2017-08-30-softmax/">Softmax Regression 总结</a></p>
+<hr>
+<h2 id="深度学习框架"><a href="#深度学习框架" class="headerlink" title="深度学习框架"></a>深度学习框架</h2><p>不知道视频是什么时间做的，总之上面列出了很多深度学习的框架，但就现在这个时间点来说，<strong>TensorFlow</strong>肯定是主流的，
+当然，课程里面用的也是<strong>TensorFlow</strong>。</p>
+<p>当神经网络的结构变得复杂的时候，手写代码就真的会比较辛苦，还容易出现<strong>bug</strong>，这个时候，就需要框架来帮忙了。</p>
+<p><a target="_blank" rel="noopener" href="http://longrm.com/2017/09/02/2017-09-02-tensorflow/">TensorFlow笔记一</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/mechine-learning/" rel="tag"># mechine learning</a>
+              <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/29/2017-08-29-dnn_3/" rel="prev" title="Mini-batch 和 权重更新策略">
+      <i class="fa fa-chevron-left"></i> Mini-batch 和 权重更新策略
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/30/2017-08-30-softmax/" rel="next" title="Softmax Regression 总结">
+      Softmax Regression 总结 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hyperparameter-tuning"><span class="nav-number">1.</span> <span class="nav-text">Hyperparameter tuning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Batch-Norm"><span class="nav-number">2.</span> <span class="nav-text">Batch Norm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Softmax-Regression"><span class="nav-number">3.</span> <span class="nav-text">Softmax Regression</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A1%86%E6%9E%B6"><span class="nav-number">4.</span> <span class="nav-text">深度学习框架</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

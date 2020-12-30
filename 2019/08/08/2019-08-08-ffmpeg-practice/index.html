@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="主要在于如何调整水印大小...">
+<meta property="og:type" content="article">
+<meta property="og:title" content="练习使用FFmpeg将视频转码为hls，并添加水印">
+<meta property="og:url" content="http://example.com/2019/08/08/2019-08-08-ffmpeg-practice/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="主要在于如何调整水印大小...">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-1.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-2.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-3.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-4.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-5.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-6.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-7.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-8.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-9.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-10.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-11.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-12.png">
+<meta property="og:image" content="http://example.com/images/media/FFmpeg/1-13.png">
+<meta property="article:published_time" content="2019-08-08T02:30:00.000Z">
+<meta property="article:modified_time" content="2019-08-23T08:13:12.410Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="ffmpeg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/media/FFmpeg/1-1.png">
+
+<link rel="canonical" href="http://example.com/2019/08/08/2019-08-08-ffmpeg-practice/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>练习使用FFmpeg将视频转码为hls，并添加水印 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/08/2019-08-08-ffmpeg-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          练习使用FFmpeg将视频转码为hls，并添加水印
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-08 10:30:00" itemprop="dateCreated datePublished" datetime="2019-08-08T10:30:00+08:00">2019-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-23 16:13:12" itemprop="dateModified" datetime="2019-08-23T16:13:12+08:00">2019-08-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index"><span itemprop="name">media</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">主要在于如何调整水印大小...</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><ul>
+<li>一个高清的视频（这样转分辨率后起码不会糊）。</li>
+<li>一个高清的水印图片（理由同上）。</li>
+<li>FFmpeg，直接官网下一个就可以，这里我使用的就是FFmpeg.exe。</li>
+</ul>
+<p>下面将各个部分拆开练习，最后再合在一起。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i 11.mp4 </span><br><span class="line">-vf &quot;movie&#x3D;wm.png [logo];[logo][in]scale2ref&#x3D;w&#x3D;oh*mdar:h&#x3D;ih&#x2F;10[logo-rescale][video-out];[video-out][logo-rescale]overlay&#x3D;x&#x3D;main_w&#x2F;10-w&#x2F;2:y&#x3D;main_h&#x2F;10-h&#x2F;2 [out]&quot;</span><br><span class="line">-codec:v libx264 -s 1920x1080 -codec:a mp3 </span><br><span class="line">-map 0 -f ssegment -segment_format mpegts -segment_list playlist.m3u8 -segment_time 10 1080P%03d.ts</span><br></pre></td></tr></table></figure></h2><h2 id="一些基本命令"><a href="#一些基本命令" class="headerlink" title="一些基本命令"></a>一些基本命令</h2><hr>
+<h3 id="1-转格式（容器转换）"><a href="#1-转格式（容器转换）" class="headerlink" title="1.转格式（容器转换）"></a>1.转格式（容器转换）</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 out.avi</span></span><br></pre></td></tr></table></figure>
+<p>直接在输出文件的后缀指定需要转的格式（容器）就行。</p>
+<p><strong>这样转码是会使用默认编码器，需要设置转码为copy来达到视频质量无损失。参考设置视频编码。</strong></p>
+<hr>
+<h3 id="2-转分辨率"><a href="#2-转分辨率" class="headerlink" title="2.转分辨率"></a>2.转分辨率</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -s 1280x720 out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>通过<code>-s 1280x720</code>指定分辨率为720P。</p>
+<hr>
+<h3 id="3-设置视频编码"><a href="#3-设置视频编码" class="headerlink" title="3.设置视频编码"></a>3.设置视频编码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -s 1280x720 -codec:v libx264 -codec:a mp3 out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>这里通过<code>-codec:v libx264</code>指定视频编码格式为<code>x264</code>，通过<code>-codec:a mp3</code>指定音频编码格式为<code>mp3</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 4K_BXJG.mp4 -codec:v copy -codec:a copy out.avi</span></span><br></pre></td></tr></table></figure>
+<p>这里的转码格式被指定为<code>copy</code>，实际上FFmpeg就会省去编解码过程，速度非常快。</p>
+<blockquote>
+<p>Stream copy is a mode selected by supplying the copy parameter to the -codec option. It makes ffmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing. It is useful for changing the container format or modifying container-level metadata.</p>
+<p>Since there is no decoding or encoding, it is very fast and there is no quality loss. </p>
+</blockquote>
+<p>上面是官网中的描述，可以看到使用copy可以无损的转化容器格式。</p>
+<hr>
+<h3 id="4-转图片分辨率"><a href="#4-转图片分辨率" class="headerlink" title="4.转图片分辨率"></a>4.转图片分辨率</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i wm.png -s 100x100 out.png</span></span><br></pre></td></tr></table></figure>
+<p>可以看到转图片其实和转视频是同理的。</p>
+<h3 id="5-流选择"><a href="#5-流选择" class="headerlink" title="5.流选择"></a>5.流选择</h3><p>一个正常的视频至少有两个流，一个视频流，一个音频流。</p>
+<p>通过输入而不输出可以查看媒体文件信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 4K_BXJG.mp4</span></span><br><span class="line"></span><br><span class="line">Input #0, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_BXJG.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : mp42</span><br><span class="line">    minor_version   : 0</span><br><span class="line">    compatible_brands: mp42mp41</span><br><span class="line">    creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">  Duration: 00:00:54.02, start: 0.000000, bitrate: 39655 kb/s</span><br><span class="line">    Stream #0:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 39366 kb/s, 23.98 fps, 23.98 tbr, 24k tbn, 47.95 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : ?Mainconcept Video Media Handler</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #0:1(eng): Audio: aac (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 317 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : #Mainconcept MP4 Sound Media Handler</span><br></pre></td></tr></table></figure>
+<p>可以看到这个mp4文件包含两个流，0号流为视频流，1号流为音频流。</p>
+<p>同时输入两个媒体文件试试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">  ffmpeg -i 4K_Z4.mp4 -i 4K_BXJG.mp4</span></span><br><span class="line"></span><br><span class="line">Input #0, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_Z4.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : isom</span><br><span class="line">    minor_version   : 512</span><br><span class="line">    compatible_brands: mp41mp42</span><br><span class="line">    creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">  Duration: 00:02:22.56, start: 0.000000, bitrate: 44851 kb/s</span><br><span class="line">    Stream #0:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 44717 kb/s, 50 fps, 50 tbr, 30k tbn, 100 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 128 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">Input #1, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_BXJG.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : mp42</span><br><span class="line">    minor_version   : 0</span><br><span class="line">    compatible_brands: mp42mp41</span><br><span class="line">    creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">  Duration: 00:00:54.02, start: 0.000000, bitrate: 39655 kb/s</span><br><span class="line">    Stream #1:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 39366 kb/s, 23.98 fps, 23.98 tbr, 24k tbn, 47.95 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : ?Mainconcept Video Media Handler</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #1:1(eng): Audio: aac (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 317 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : #Mainconcept MP4 Sound Media Handler</span><br></pre></td></tr></table></figure>
+<p>可以发现流编号上面的规律，<code>0:0</code>、<code>0:1</code>表示第一个文件的两个流，<code>1:0</code>、<code>1:1</code>则表示第二个文件的两个流。</p>
+<p><strong>提取视频流：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -map 0:0 -codec copy out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>上面的命令将原视频的视频流单独分离出来。</p>
+<p><strong>合并音视频流：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i 4K_Z4.mp4 -map 0:0 -codec copy -map 1:1 -codec copy out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>提取第一个视频的视频流，第二个视频的音频流，合并为out.mp4。</p>
+<hr>
+<hr>
+<hr>
+<h2 id="filter设置"><a href="#filter设置" class="headerlink" title="filter设置"></a>filter设置</h2><hr>
+<h3 id="1-过滤器图"><a href="#1-过滤器图" class="headerlink" title="1.过滤器图"></a>1.过滤器图</h3><p>先看官方文档说的：</p>
+<blockquote>
+<p>Filtering in FFmpeg is enabled through the libavfilter library.</p>
+<p>In libavfilter, a filter can have multiple inputs and multiple outputs. To illustrate the sorts of things that are possible, we consider the following filtergraph.</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">                [main]</span><br><span class="line">input --&gt; split ---------------------&gt; overlay --&gt; output</span><br><span class="line">            |                             ^</span><br><span class="line">            |[tmp]                  [flip]|</span><br><span class="line">            +-----&gt; crop --&gt; vflip -------+</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>This filtergraph splits the input stream in two streams, then sends one stream through the crop filter and the vflip filter, before merging it back with the other stream by overlaying it on top. </p>
+</blockquote>
+<p>filter即常说的滤镜，Filtering过程可以是一个多输入多输出的过程，多个输入的视频经过处理合并成一个或多个输出。</p>
+<p>上面的过程的命令为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i INPUT -vf <span class="string">&quot;split [main][tmp]; [tmp] crop=iw:ih/2:0:0, vflip [flip]; [main][flip] overlay=0:H/2&quot;</span> OUTPUT</span></span><br></pre></td></tr></table></figure>
+<p>它的效果如下：</p>
+<p><img src="/images/media/FFmpeg/1-1.png" alt="image" title="原视频"></p>
+<p><img src="/images/media/FFmpeg/1-2.png" alt="image" title="转码后"></p>
+<p>它将原视频复制（split），裁剪一半（crop），反转（cflip），覆盖（overlay）到原视频之上。</p>
+<p>可以看到主要的处理过程在<code>-vf</code>之后，它就代表<code>filtergraph</code>也就是<strong>过滤器图</strong>（相似的还有<code>-filter_complex</code>），相当于定义了一个视频处理的过程。</p>
+<p><strong>注意到：<code>-vf</code>不能有多个输入，而<code>-filter_complex</code>可以。</strong></p>
+<hr>
+<h3 id="2-label（标签）"><a href="#2-label（标签）" class="headerlink" title="2.label（标签）"></a>2.label（标签）</h3><p>标签用于对流进行标记，目前我只知道它一些简单的用法。</p>
+<p>例如上面的命令中的过滤器图：</p>
+<p><code>&quot;split [main][tmp]; [tmp] crop=iw:ih/2:0:0, vflip [flip]; [main][flip] overlay=0:H/2&quot;</code></p>
+<ol>
+<li>它将原视频进行split，将它复制为两个流，一个命名为<code>[main]</code>，一个命名为<code>[tmp]</code>。</li>
+<li>它将<code>[tmp]</code>流进行crop操作和vfilp操作，处理之后的流命名为<code>[flip]</code>。</li>
+<li>输入<code>[main]</code>和<code>[flip]</code>流，进行overlay（覆盖）操作，根据这里<code>[main][flip]</code>的先后关系，这里将<code>[flip]</code>覆盖到<code>[main]</code>之上。</li>
+</ol>
+<p>例如下面的命令，将第二个输入视频分辨率降低一半，然后覆盖到第一个视频之上：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i 1080_BXJG.mp4 -filter_complex <span class="string">&quot;[1:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</span> tmp1.mp4</span></span><br></pre></td></tr></table></figure>
+<p>其中<code>&quot;[1:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</code>：</p>
+<ol>
+<li><code>[1:0]</code>代表第二个视频的第一个流（视频流），将它的scale变为一半（<code>iw/2</code>和<code>ih/2</code>），然后标记为<code>[scaled]</code>。</li>
+<li><code>[0]</code>就代表第一个输入的媒体文件，将<code>[scaled]</code>置于它之上然后输出。</li>
+</ol>
+<hr>
+<h3 id="3-将视频分辨率降低一半"><a href="#3-将视频分辨率降低一半" class="headerlink" title="3.将视频分辨率降低一半"></a>3.将视频分辨率降低一半</h3><p>可以利用scale来完成，其中<code>iw</code>、<code>ih</code>分别代表输入的宽和高。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -vf <span class="string">&quot;[in]scale=w=iw/2:h=ih/2[out]&quot;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>为了展示效果，这里将降低了分辨率的视频覆盖到原视频之上：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -filter_complex <span class="string">&quot;[0:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</span> tmp1.mp4</span></span><br></pre></td></tr></table></figure>
+<p><img src="/images/media/FFmpeg/1-3.png" alt="image" title="分辨率降低一半"></p>
+<hr>
+<h3 id="4-为视频添加水印"><a href="#4-为视频添加水印" class="headerlink" title="4.为视频添加水印"></a>4.为视频添加水印</h3><p>为视频添加水印，也就是将水印覆盖到原视频之上，即<code>overlay</code>滤镜。</p>
+<p><strong>简单覆盖：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i wm.png -filter_complex overlay out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>简单覆盖时，没有对水印大小进行调整，会造成下面的结果：</p>
+<p><img src="/images/media/FFmpeg/1-4.png" alt="image" title="简单覆盖"></p>
+<p><strong>大小调整-1：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1]scale=w=200:h=-1[scaled]; [0][scaled]overlay&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>使用<code>scale</code>滤镜来进行分辨率的调整，再将它覆盖到原视频之上：</p>
+<p><img src="/images/media/FFmpeg/1-5.png" alt="image" title="水印分辨率调整"></p>
+<p>可以看到这里成功的对水印的大小进行了调整，<strong>但是</strong>又有一点太小了。</p>
+<p>那么问题来了，难道要不断的试来找到一个健康的分辨率吗？</p>
+<p><strong>大小调整-2：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p><code>scale2ref</code>滤镜有两个输入，它对第一个输入进行rescale，
+但它与<code>scale</code>滤镜的区别在于，它使用第二个输入作为参考，来进行第一个输入的rescale。</p>
+<p>这里的<code>[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]</code>中，ih指的就是参考输入<code>[0]</code>的宽度，
+为了保证水印的横纵比，这里使用<code>oh*mdar</code>来定义水印的宽度。</p>
+<p><img src="/images/media/FFmpeg/1-6.png" alt="image" title="水印分辨率调整"></p>
+<p><strong>水印位置调整-1：</strong></p>
+<p>可以看到上面水印都是贴着视频的左上角的，这里来对它的位置进行调整：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay=x=300:y=300&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>可以通过指定overlay的坐标来确定水印覆盖的位置（默认x=0，y=0，即左上角），这里将坐标指定在300，300，效果如下：</p>
+<p><img src="/images/media/FFmpeg/1-7.png" alt="image" title="水印位置调整"></p>
+<p><strong>水印位置调整-2：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>这里<code>main_w</code>和<code>main_h</code>指的就是视频输入（<code>[0-out]</code>）的宽和高，<code>w</code>和<code>h</code>则是水印输入（<code>[scaled]</code>）的宽和高，
+这里将水印的中心点指定在视频输入的1/10宽和1/10高的位置。</p>
+<p><img src="/images/media/FFmpeg/1-8.png" alt="image" title="水印位置调整"></p>
+<hr>
+<h2 id="转hls"><a href="#转hls" class="headerlink" title="转hls"></a>转hls</h2><p>hls即包括一个m3u(8)的索引文件，TS媒体分片文件和key加密串文件。</p>
+<p>在ffmpeg中可以使用hls或者segment来实现。</p>
+<hr>
+<h3 id="使用segment-muxer"><a href="#使用segment-muxer" class="headerlink" title="使用segment muxer"></a>使用segment muxer</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -f segment -segment_format mpegts -segment_list playlist.m3u8 -segment_list_size 0 -segment_time 5 out%03d.ts</span></span><br></pre></td></tr></table></figure>
+<p>上面的命令将输入视频切割为5秒一片的ts文件。其中，<code>-segment_list playlist.m3u8</code>设置文件list输出到playlist.m3u8，
+<code>-segment_list_size 0</code>设置playlist.m3u8里面将包含所有切分出来的分片，
+<code>-segment_time 5</code>设置分片大小为5秒。</p>
+<p>得到如下结果：</p>
+<p><img src="/images/media/FFmpeg/1-9.png" alt="image" title="segment muxer切分"></p>
+<hr>
+<h3 id="使用hls-muxer"><a href="#使用hls-muxer" class="headerlink" title="使用hls muxer"></a>使用hls muxer</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -map 0 -f hls -hls_segment_type mpegts -hls_list_size 6 -hls_time 5 -hls_segment_filename <span class="string">&#x27;out%03d.ts&#x27;</span> playlist.m3u8</span></span><br></pre></td></tr></table></figure>
+<p>参数基本一样，就不多解释了，效果如下：</p>
+<p><img src="/images/media/FFmpeg/1-10.png" alt="image" title="hls muxer切分"></p>
+<hr>
+<h2 id="转码，水印，hls"><a href="#转码，水印，hls" class="headerlink" title="转码，水印，hls"></a>转码，水印，hls</h2><p>将上面的命令进行总结，可以融合得到下面这条命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png \</span></span><br><span class="line"><span class="bash">    -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; \</span></span></span><br><span class="line"><span class="bash">    [0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2[over];[over]scale=w=1920:h=-1[out]<span class="string">&#x27; \</span></span></span><br><span class="line"><span class="bash">    -map [out] -c:v h264 -c:a mp3 \</span></span><br><span class="line"><span class="bash">    -f hls -hls_segment_type mpegts -hls_list_size 0 -hls_time 5 -hls_segment_filename <span class="string">&#x27;out%03d.ts&#x27;</span> playlist.m3u8</span></span><br></pre></td></tr></table></figure>
+<p>这条命令将一个视频文件添加水印，并切割为5秒的ts小文件，同时将分辨率调整为1080P。</p>
+<hr>
+<h2 id="基于nginx的m3u8的点播、直播的实现"><a href="#基于nginx的m3u8的点播、直播的实现" class="headerlink" title="基于nginx的m3u8的点播、直播的实现"></a>基于nginx的m3u8的点播、直播的实现</h2><p>首先看我这里nginx的配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat /etc/nginx/nginx.conf</span></span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       11111 default_server;</span><br><span class="line">        listen       [::]:11111 default_server;</span><br><span class="line">        server_name  long;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root html;</span><br><span class="line">            index index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location /hls &#123;</span><br><span class="line">            types &#123;</span><br><span class="line">                application/vnd.apple.mpegusr m3u8;</span><br><span class="line">                video/mp2t ts;</span><br><span class="line">            &#125;</span><br><span class="line">            root /mycephfs;</span><br><span class="line">            add_header Cache-Control no-cache;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>我这里将nginx的服务起在11111端口，文件目录为/mycephfs/hls，浏览器打开<code>192.168.90.233:11111</code>：</p>
+<p><img src="/images/media/FFmpeg/1-11.png" alt="image" title="nginx"></p>
+<p><strong>点播：</strong></p>
+<p>将对应的hls文件放入nginx的文件目录下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ll /mycephfs/hls/videos/BXJG-hls/</span></span><br><span class="line"></span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3938600 Aug 13 12:47 out000.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 1366196 Aug 13 12:47 out001.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster  926088 Aug 13 12:47 out002.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3286992 Aug 13 12:47 out003.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7581852 Aug 13 12:47 out004.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 1721516 Aug 13 12:47 out005.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3373848 Aug 13 12:48 out006.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3193556 Aug 13 12:48 out007.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 5041220 Aug 13 12:48 out008.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3229088 Aug 13 12:48 out009.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster     370 Aug 13 12:48 playlist.m3u8</span><br></pre></td></tr></table></figure>
+<p>直接使用potplayer打开链接<code>http://192.168.90.233:11111/hls/videos/BXJG-hls/playlist.m3u8</code>：</p>
+<p><img src="/images/media/FFmpeg/1-12.png" alt="image" title="点播"></p>
+<p>点播效果完成。</p>
+<p><strong>直播：</strong></p>
+<p>这里直播和点播的十分相似，它通过不断的修改<code>.m3u8</code>文件来达到直播的目的。</p>
+<p>同样的，使用一个本地的视频文件当作输入流来进行直播，需要加入<code>-re</code>来模拟直播流的输入速度，<code>-stream_loop</code>来不断重复输入。
+另外，这个过程会不断产生新的ts文件，需要将使用过的小文件删除，添加<code>-hls_list_size 5</code>将<code>.m3u8</code>文件中的数量控制为5个，
+添加<code>-hls_flags delete_segments</code>开启自动删除过时的ts小文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -re -stream_loop -1 -i 1080_MS.mp4 -i logo.png \</span></span><br><span class="line"><span class="bash">  -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out];[0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2[over]&#x27;</span> \</span></span><br><span class="line"><span class="bash">  -map [over] -c:v h264 -map 0 -c:a copy \</span></span><br><span class="line"><span class="bash">  -f hls -hls_segment_type mpegts -hls_flags delete_segments -hls_list_size 5 -hls_time 10 -hls_segment_filename <span class="string">&#x27;out%05d.ts&#x27;</span> live.m3u8</span></span><br></pre></td></tr></table></figure>
+<p>产生ts小文件的效果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls /mycephfs/hls/videos/MS/</span></span><br><span class="line"></span><br><span class="line">total 49306</span><br><span class="line">-rw-rw-r-- 1 cluster cluster     227 Aug 14 16:41 live.m3u8</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 6638092 Aug 14 16:40 out00017.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 6406100 Aug 14 16:40 out00018.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7560044 Aug 14 16:40 out00019.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7581664 Aug 14 16:41 out00020.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 9148832 Aug 14 16:41 out00021.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 8171984 Aug 14 16:41 out00022.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 4980736 Aug 14 16:41 out00023.ts</span><br></pre></td></tr></table></figure>
+<p>可以看到ffmpeg同一时刻只会保留6个ts文件。</p>
+<p>同样的，使用potplayer打开连接<code>http://192.168.90.233:11111/hls/videos/MS/live.m3u8</code>，就可以看到直播，
+和点播十分相似，不同之处在于，这里会不断的播放下去：</p>
+<p><img src="/images/media/FFmpeg/1-13.png" alt="image" title="直播"></p>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://ffmpeg.org/documentation.html">FFmpeg Documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/my_life/articles/6520155.html">使用FFMPEG生成HLS</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ffmpeg/" rel="tag"># ffmpeg</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/06/2019-08-06-ceph-iscsi/" rel="prev" title="ceph+iscsi的简单使用">
+      <i class="fa fa-chevron-left"></i> ceph+iscsi的简单使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/14/2019-08-14-TCP-IP-19-20-21/" rel="next" title="TCP/IP详解卷1：协议 第19、20、21章笔记">
+      TCP/IP详解卷1：协议 第19、20、21章笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%8F%90%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">前提准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">1
+2
+3
+4
+ffmpeg -i 11.mp4 
+-vf &quot;movie&#x3D;wm.png [logo];[logo][in]scale2ref&#x3D;w&#x3D;oh*mdar:h&#x3D;ih&#x2F;10[logo-rescale][video-out];[video-out][logo-rescale]overlay&#x3D;x&#x3D;main_w&#x2F;10-w&#x2F;2:y&#x3D;main_h&#x2F;10-h&#x2F;2 [out]&quot;
+-codec:v libx264 -s 1920x1080 -codec:a mp3 
+-map 0 -f ssegment -segment_format mpegts -segment_list playlist.m3u8 -segment_time 10 1080P%03d.ts
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">一些基本命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BD%AC%E6%A0%BC%E5%BC%8F%EF%BC%88%E5%AE%B9%E5%99%A8%E8%BD%AC%E6%8D%A2%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">1.转格式（容器转换）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BD%AC%E5%88%86%E8%BE%A8%E7%8E%87"><span class="nav-number">3.2.</span> <span class="nav-text">2.转分辨率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%AE%BE%E7%BD%AE%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81"><span class="nav-number">3.3.</span> <span class="nav-text">3.设置视频编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%BD%AC%E5%9B%BE%E7%89%87%E5%88%86%E8%BE%A8%E7%8E%87"><span class="nav-number">3.4.</span> <span class="nav-text">4.转图片分辨率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%B5%81%E9%80%89%E6%8B%A9"><span class="nav-number">3.5.</span> <span class="nav-text">5.流选择</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filter%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">filter设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BF%87%E6%BB%A4%E5%99%A8%E5%9B%BE"><span class="nav-number">4.1.</span> <span class="nav-text">1.过滤器图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-label%EF%BC%88%E6%A0%87%E7%AD%BE%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">2.label（标签）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%B0%86%E8%A7%86%E9%A2%91%E5%88%86%E8%BE%A8%E7%8E%87%E9%99%8D%E4%BD%8E%E4%B8%80%E5%8D%8A"><span class="nav-number">4.3.</span> <span class="nav-text">3.将视频分辨率降低一半</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%B8%BA%E8%A7%86%E9%A2%91%E6%B7%BB%E5%8A%A0%E6%B0%B4%E5%8D%B0"><span class="nav-number">4.4.</span> <span class="nav-text">4.为视频添加水印</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AChls"><span class="nav-number">5.</span> <span class="nav-text">转hls</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8segment-muxer"><span class="nav-number">5.1.</span> <span class="nav-text">使用segment muxer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8hls-muxer"><span class="nav-number">5.2.</span> <span class="nav-text">使用hls muxer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E7%A0%81%EF%BC%8C%E6%B0%B4%E5%8D%B0%EF%BC%8Chls"><span class="nav-number">6.</span> <span class="nav-text">转码，水印，hls</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Enginx%E7%9A%84m3u8%E7%9A%84%E7%82%B9%E6%92%AD%E3%80%81%E7%9B%B4%E6%92%AD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">7.</span> <span class="nav-text">基于nginx的m3u8的点播、直播的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

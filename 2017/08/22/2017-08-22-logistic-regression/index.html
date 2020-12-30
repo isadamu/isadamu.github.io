@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="关于Coursera课程中所说的Logistic Regression的一点总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logistic Regression 简单总结">
+<meta property="og:url" content="http://example.com/2017/08/22/2017-08-22-logistic-regression/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="关于Coursera课程中所说的Logistic Regression的一点总结。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/coursera/nndl-note_1.png">
+<meta property="article:published_time" content="2017-08-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2018-08-09T06:50:20.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="mechine learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/coursera/nndl-note_1.png">
+
+<link rel="canonical" href="http://example.com/2017/08/22/2017-08-22-logistic-regression/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Logistic Regression 简单总结 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/08/22/2017-08-22-logistic-regression/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Logistic Regression 简单总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-22T00:00:00+08:00">2017-08-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-08-09 14:50:20" itemprop="dateModified" datetime="2018-08-09T14:50:20+08:00">2018-08-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/" itemprop="url" rel="index"><span itemprop="name">coursera</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/deep-learning/" itemprop="url" rel="index"><span itemprop="name">deep learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">关于Coursera课程中所说的Logistic Regression的一点总结。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p>把它看成只有一个神经元的神经网络，激活函数就是<code>sigmoid</code>函数。</p>
+<hr>
+<h2 id="模型："><a href="#模型：" class="headerlink" title="模型："></a>模型：</h2><script type="math/tex; mode=display">
+\hat y = \sigma (W^T x + b)</script><p>其中，</p>
+<script type="math/tex; mode=display">
+\sigma(Z) = \frac{1}{1+e^{-Z}}</script><hr>
+<h2 id="代价函数："><a href="#代价函数：" class="headerlink" title="代价函数："></a>代价函数：</h2><script type="math/tex; mode=display">
+J(W,b) = \frac{1}{m} \sum_{i=1}^m L(\hat y^{(i)},y^{(i)} )
+= - \frac{1}{m} \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
++ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>视频中好像没有具体说这个损失函数的一个推导，这里自己简单推一推。</p>
+<p>首先对于$\sigma(Z)$这个函数，它其实就是经常说到的<strong>sigmoid</strong>函数，
+它的函数图像如下：</p>
+<div align="center"><img src="/images/coursera/nndl-note_1.png"
+style="zoom:50%" title="sigmoid函数" /></div>
+
+<p>可以看出sigmoid函数的值域范围是0~1，所以通常把它当成一个概率来看待，
+那么，可以写出<code>y</code>的概率表达式为：</p>
+<script type="math/tex; mode=display">
+P(y) = (\hat y)^y (1 - \hat y)^{1-y}</script><p>其中$\hat y$就是预测$y$为1的概率，区分两种情况，
+上面的式子分开写就是下面的式子，合并在一起有利于公式化：</p>
+<script type="math/tex; mode=display">
+P(y) =
+\begin{cases}
+\hat y \ \ \ \ \ \ \ \ \ \ ,y = 1 \\
+1 - \hat y \ \ \ ,y = 0
+\end{cases}</script><p>所以我们采用<strong>极大似然法</strong>来进行对$W$的求解，似然函数就可以写为：</p>
+<script type="math/tex; mode=display">
+\prod_{i=1}^m (\hat y^{(i)})^{y^{(i)}}(1 - \hat y^{(i)})^{1 - y^{(i)}}</script><p>对数似然写为：</p>
+<script type="math/tex; mode=display">
+L(\hat y) = \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
++ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>加上$- \frac{1}{m}$就得到了上面的代价函数，同时也从最大化变成了最小化。</p>
+<hr>
+<h2 id="梯度："><a href="#梯度：" class="headerlink" title="梯度："></a>梯度：</h2><p>首先需要对代价函数进行求导，下面进行推导，令：</p>
+<script type="math/tex; mode=display">
+Z^{(i)} = W^Tx^{(i)} + b \\
+\alpha^{(i)}=\sigma (W^Tx^{(i)} + b)</script><p>单独看一个样本<script type="math/tex">(x^{(i)},y^{(i)})</script>，它的代价函数为，</p>
+<script type="math/tex; mode=display">
+J^{(i)} = y^{(i)}log(\alpha^{(i)})+ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>对其中一个<script type="math/tex">W_i</script>进行求导,这里先忽略上标<script type="math/tex">(i)</script>：</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial W_i}=
+\frac{y}{a} \frac{\partial \alpha}{\partial W_i} -
+\frac{1-y}{1-\alpha}\frac{\partial \alpha}{\partial W_i}
+= ( \frac{y}{a} - \frac{1-y}{1-\alpha} )\frac{\partial \alpha}{\partial W_i}</script><p>然后其中的$\frac{\partial \alpha}{\partial W_i}$继续计算：</p>
+<script type="math/tex; mode=display">
+\frac{\partial \alpha}{\partial W_i}=
+\frac{e^{-Z}}{(1+e^{-Z})^2} \frac{\partial Z}{\partial W_i}
+= \frac {1}{1+e^{-Z}}\frac{e^{-Z} + 1 - 1}{1+e^{-Z}} \frac{\partial Z}{\partial W_i}
+= \alpha(1 - \alpha)\frac{\partial Z}{\partial W_i}</script><p>继续对$\frac{\partial Z}{\partial W_i}$进行计算：</p>
+<script type="math/tex; mode=display">
+\frac{\partial Z}{\partial W_i} = x_i</script><p>将上面的合起来，写为：</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial W_i} =
+( \frac{y}{a} - \frac{1-y}{1-\alpha} )\alpha(1 - \alpha)x_i =
+(y - \alpha)x_i</script><p>注意到代价函数为：</p>
+<script type="math/tex; mode=display">
+J(W,b) =
+- \frac{1}{m} \sum_{i=1}^m y^{(i)}log(\alpha^{(i)})
++ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>所以考虑到向量化处理，同时加上前面的因子$-\frac{1}{m}$，<strong>最终可以写为</strong>：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\frac {\partial J}{\partial W} = \frac{1}{m}X(A - Y)^T \\
+\frac {\partial J}{\partial b} = \frac{1}{m} \sum_{i=1}^m(\alpha^{(i)} - y^{(i)})
+\end{cases}</script><p>其中，</p>
+<script type="math/tex; mode=display">
+A = [\alpha^{(1)},\alpha^{(2)},...,\alpha^{(m-1)},\alpha^{(m)}] \\
+
+X = [x^{(1)},x^{(2)},...,x^{(m-1)},x^{(m)}] \\
+
+Y = [y^{(1)},y^{(2)},...,y^{(m-1)},y^{(m)}]</script><hr>
+<h2 id="参数更新"><a href="#参数更新" class="headerlink" title="参数更新"></a>参数更新</h2><p>权值的更新就按照梯度下降的原则更新就行，</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+W = W - \alpha \frac {\partial J}{\partial W} \\
+b = b - \alpha \frac {\partial J}{\partial b}
+\end{cases}</script><p>这里的$\alpha$代表学习因子。</p>
+<hr>
+<h2 id="存疑"><a href="#存疑" class="headerlink" title="存疑"></a>存疑</h2><p><strong>如果直接使用最小二乘损失函数呢？</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/mechine-learning/" rel="tag"># mechine learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/21/2017-08-21-simplfiy-path/" rel="prev" title="LeetCode 71.Simplify Path">
+      <i class="fa fa-chevron-left"></i> LeetCode 71.Simplify Path
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/22/2017-08-22-head-color/" rel="next" title="jekyll博客顶端背景修改">
+      jekyll博客顶端背景修改 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Logistic-Regression"><span class="nav-number">1.</span> <span class="nav-text">Logistic Regression</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">模型：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">代价函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">梯度：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E6%9B%B4%E6%96%B0"><span class="nav-number">5.</span> <span class="nav-text">参数更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E7%96%91"><span class="nav-number">6.</span> <span class="nav-text">存疑</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

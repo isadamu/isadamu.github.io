@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="线段树的原理及使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线段树(Segment Tree)使用记录">
+<meta property="og:url" content="http://example.com/2019/08/16/2019-08-16-segment-tree/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="线段树的原理及使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/algorithm/SegmentTree_1.png">
+<meta property="og:image" content="http://example.com/images/algorithm/SegmentTree_2.png">
+<meta property="article:published_time" content="2019-08-16T09:42:00.000Z">
+<meta property="article:modified_time" content="2019-12-31T09:11:29.957Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="leetcode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/algorithm/SegmentTree_1.png">
+
+<link rel="canonical" href="http://example.com/2019/08/16/2019-08-16-segment-tree/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>线段树(Segment Tree)使用记录 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/16/2019-08-16-segment-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          线段树(Segment Tree)使用记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-16 17:42:00" itemprop="dateCreated datePublished" datetime="2019-08-16T17:42:00+08:00">2019-08-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-31 17:11:29" itemprop="dateModified" datetime="2019-12-31T17:11:29+08:00">2019-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">线段树的原理及使用</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="线段树代码形式"><a href="#线段树代码形式" class="headerlink" title="线段树代码形式"></a>线段树代码形式</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SegmentTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] table;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SegmentTree</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> idx, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，通常线段树输入一个数组，同时维护自身的一个<code>table</code>数组。
+提供<code>query</code>方法来完成对一个区间$[left, right]$的查询操作（最大值、最小值、求和等），
+提供<code>update</code>方法来完成对输入数组某一位置的修改。</p>
+<p>比如对于子数组最大值的查询，假设数组长度为$N$，查询$M$次，那么<strong>暴力</strong>方法查询的复杂度就为$O(MN)$，
+而使用<strong>线段树</strong>则可以将每次查询的复杂度降到$log(n)$，那么总的复杂度就能降到$O(Mlog(N))$。</p>
+<p>所以在某些时候，线段树是一个十分有用的数据结构。</p>
+<hr>
+<h2 id="线段树结构形式"><a href="#线段树结构形式" class="headerlink" title="线段树结构形式"></a>线段树结构形式</h2><hr>
+<h3 id="树的性质"><a href="#树的性质" class="headerlink" title="树的性质"></a>树的性质</h3><p>线段树其实就是一颗<strong>满二叉树</strong>，注意到这是一个十分重要的性质（使得可以使用数组快速建树），
+它可以推出<strong>“假设叶节点个数为$n$，那么非叶节点的个数一定是 $n - 1$ ”</strong>，
+那么同时也就表明总的节点数为 $n + (n - 1) = 2n - 1$ ，<strong>总的节点个数一定是奇数</strong>。</p>
+<p>（这里使用的满二叉树定义为：除了叶子结点之外的每一个结点都有两个孩子结点。）</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_22642239/article/details/80774013">完美二叉树, 完全二叉树和完满二叉树</a></p>
+<p>下面可以简单的证明一下推论“<strong>假设叶节点个数为$n$，那么非叶节点的个数一定是 $n - 1$ </strong>”：</p>
+<ul>
+<li>假设总结点树为$n$，非叶节点数为$n_1$，叶节点数为$n_2$，那么$n = n_1 + n_2$。</li>
+<li>由二叉树的性质，分支数（边数）为$n - 1$。</li>
+<li>由非叶节点都有两个儿子，分支数（边数）也可以计算为$2n_1$。</li>
+</ul>
+<p>那么：</p>
+<script type="math/tex; mode=display">
+n - 1 = 2n_1 \\
+n = 2n_1 - 1</script><p>可以推出：</p>
+<script type="math/tex; mode=display">
+n = n_1 + n_2 \\
+2n_1 - 1 = n_1 + n_2 \\
+n_1 - 1 = n_2</script><p>推论得证。</p>
+<hr>
+<h3 id="线段树数据结构"><a href="#线段树数据结构" class="headerlink" title="线段树数据结构"></a>线段树数据结构</h3><p>线段树通常使用一个数组<code>T</code>来进行存储，根节点在<code>T[1]</code>的位置（<code>T[0]</code>不使用），
+一个节点<code>T[i]</code>的左儿子为<code>T[2i]</code>，右儿子为<code>T[2i+1]</code>，父节点为<code>T[i/2]</code>。</p>
+<p>对于最大值来说，每个节点维护以这个节点为根的子树的最大值，所有输入的数据都存放在叶节点。</p>
+<p><strong>建树</strong>：</p>
+<p>复杂度：$O(n)$</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SegmentTreeMax</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] table;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SegmentTreeMax</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.n = arr.length;</span><br><span class="line">        table = <span class="keyword">new</span> <span class="keyword">int</span>[n*<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n, j = <span class="number">0</span>; i &lt; table.length; i++, j++) &#123;</span><br><span class="line">            table[i] = arr[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n-<span class="number">1</span>; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">            table[i] = Math.max(table[left(i)], table[right(i)]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>建树时就使用了上面的性质：<strong>假设叶节点个数为$n$，那么非叶节点的个数一定是 $n - 1$ </strong>。所以这里直接申请一个<code>2n</code>大小的数组，
+然后从1到n-1为作为非叶节点，n到2n-1作为叶节点。</p>
+<p>对于<code>[1, 2, 3, 4, 5, 6]</code>来说，它建立的数组为<code>[0, 6, 6, 2, 4, 6, 1, 2, 3, 4, 5, 6]</code>（注意索引0不使用），形状为：</p>
+<div align="center"><img src="/images/algorithm/SegmentTree_1.png"
+style="zoom:70%" title="树的形状" /></div>
+
+<p><strong>更新：</strong></p>
+<p>复杂度：$O(log(n))$</p>
+<p>更新很简单，更新叶节点后再迭代更新父节点即可：</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> idx, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">    idx += n; </span><br><span class="line">    table[idx] = num;</span><br><span class="line">    idx = parent(idx);</span><br><span class="line">    <span class="keyword">while</span> (idx &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        table[idx] = Math.max(table[left(idx)], table[right(idx)]);</span><br><span class="line">        idx = parent(idx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h2 id="线段树的查询"><a href="#线段树的查询" class="headerlink" title="线段树的查询"></a>线段树的查询</h2><p>复杂度：$O(log(n))$</p>
+<p>线段树的查询才是线段树的精髓所在，其实二叉树这种分治的思想并不是一个难以想到的方法，
+但是分治后的子问题结果的合并才是这里比较重要的地方。</p>
+<p>线段树的结构已经将问题划分到了一个个子树之上，但是在进行区间查询时，区间可能跨越多颗子树：</p>
+<div align="center"><img src="/images/algorithm/SegmentTree_2.png"
+style="zoom:70%" title="跨区间查询" /></div>
+
+<p>例如上图，它查询原数组中<code>[3, 5]</code>区间（树中的节点9、10、11）中的最大元素，很明显的，9号节点单独在一颗子树之中。</p>
+<p>首先需要注意到上面线段树数据结构中所说“一个节点<code>T[i]</code>的左儿子为<code>T[2i]</code>，右儿子为<code>T[2i+1]</code>”，
+那么所有左儿子的节点序号都是偶数，而右儿子的节点序号则都是奇数。</p>
+<p>那么对于一个查询区间<code>[L, R]</code>（L不等于R）：</p>
+<ul>
+<li>对于区间的左边界L，如果它是偶数，那么它是父节点的<strong>左</strong>儿子，那么它的兄弟节点L+1（父节点的右儿子）也属于这个区间之内，那么对于最大值，应该直接向上询问它的父节点。</li>
+<li>对于区间的左边界L，如果它是奇数，那么它是父节点的<strong>右</strong>儿子，那么它的兄弟节点L-1（父节点的左儿子）肯定不属于这个区间之内，那么对于最大值，直接询问节点l，不能向上询问它的父节点。</li>
+</ul>
+<p>对应以上结论：</p>
+<ul>
+<li>当左边界L为偶数时：<code>L = parent(L)</code>。</li>
+<li>当左边界L为奇数时：<code>max = Math.max(max, L)</code>。这里完成了对L这个点的查询，那么就可以对区间进行缩小，即：<code>L = L + 1</code>（注意到L变成了偶数）。</li>
+</ul>
+<p>右边界的处理同理左边界。</p>
+<p>可以看到这是一个不断<strong>收缩</strong>区间左右边界的过程，并从叶节点逐渐向上走，实际代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    l += n;</span><br><span class="line">    r += n;</span><br><span class="line">    <span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> ( l &lt;= r ) &#123;</span><br><span class="line">        <span class="keyword">if</span> ( (l &amp; <span class="number">1</span>) == <span class="number">1</span> ) &#123;</span><br><span class="line">            max = Math.max(max, table[l]);</span><br><span class="line">            l++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( (r &amp; <span class="number">1</span>) != <span class="number">1</span> ) &#123;</span><br><span class="line">            max = Math.max(max, table[r]);</span><br><span class="line">            r--;</span><br><span class="line">        &#125;</span><br><span class="line">        l &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        r &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码在不断缩小区间的过程中，并且对于更新后的<code>L&#39;</code>、<code>R&#39;</code>，能够保证 $[L’, R’] \in [L, R]$ ，也不会遗漏任何区间内的元素。</p>
+<hr>
+<h2 id="线段树代码"><a href="#线段树代码" class="headerlink" title="线段树代码"></a>线段树代码</h2><p>区间最大值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SegmentTreeMax</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] table;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SegmentTreeMax</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.n = arr.length;</span><br><span class="line">        table = <span class="keyword">new</span> <span class="keyword">int</span>[n*<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n, j = <span class="number">0</span>; i &lt; table.length; i++, j++) &#123;</span><br><span class="line">            table[i] = arr[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n-<span class="number">1</span>; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">            table[i] = Math.max(table[left(i)], table[right(i)]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> idx, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        idx += n; </span><br><span class="line">        table[idx] = num;</span><br><span class="line">        idx = parent(idx);</span><br><span class="line">        <span class="keyword">while</span> (idx &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            table[idx] = Math.max(table[left(idx)], table[right(idx)]);</span><br><span class="line">            idx = parent(idx);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">        l += n;</span><br><span class="line">        r += n;</span><br><span class="line">        <span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt;= r ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( (l &amp; <span class="number">1</span>) == <span class="number">1</span> ) &#123;</span><br><span class="line">                max = Math.max(max, table[l]);</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( (r &amp; <span class="number">1</span>) != <span class="number">1</span> ) &#123;</span><br><span class="line">                max = Math.max(max, table[r]);</span><br><span class="line">                r--;</span><br><span class="line">            &#125;</span><br><span class="line">            l &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">            r &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">left</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> idx &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">right</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (idx &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">parent</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> idx &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面是基本的代码形式，可以依据它来修改为各种不同的用途。</p>
+<hr>
+<h2 id="Leetcode-1157"><a href="#Leetcode-1157" class="headerlink" title="Leetcode 1157"></a>Leetcode 1157</h2><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/online-majority-element-in-subarray/">Leetcode 1157</a></p>
+<p>题目大意是给定一个数组，提供以下功能：</p>
+<ul>
+<li>查询一个区间内的<code>majority-element</code>，也就是这个数的出现次数大于给定的<code>threshold</code>，注意<code>threshold</code>一定大于这个区间的一半大小，
+这样即能保证一个区间里面最多只存在一个<code>majority-element</code>。</li>
+</ul>
+<p>注意到这个题目最关键的思想点在于：</p>
+<p><strong>一个区间（区间大小<code>N</code>）中的一个数<code>A</code>，它在区间内的出现次数大于<code>N/2</code>，那么无论将这个区间切分为几个小区间，
+这些小区间中，必定至少存在一个小区间t（区间大小<code>n</code>），<code>A</code>在小区间t中的出现次数大于<code>n/2</code></strong>。</p>
+<p>这个证明使用<strong>反证</strong>即可：</p>
+<p>假设区间$T$，大小为$N$，其中数$A$出现次数$A_T$大于$\frac{N}{2}$。</p>
+<p>现在将区间$T$划分为小区间$\{ T_1, T_2, T_3, … , T_m \}$，区间大小为$\{ n_1, n_2, n_3, … , n_m \}$，$A$的出现次数为：</p>
+<script type="math/tex; mode=display">\{ A_{T_1}, A_{T_2}, ..., A_{T_m} \}</script><p>如果所有的小区间中，A的出现都不到区间的一半：</p>
+<script type="math/tex; mode=display">
+A_{T_i} \leqslant \frac{n_i}{2}，对于任意 \  i \in \{1,2,...,m\}</script><p>那么：</p>
+<script type="math/tex; mode=display">
+A_{T_1} + A_{T_2} + ... + A_{T_m} \leqslant \frac{n_1}{2} + \frac{n_2}{2} + ... + \frac{n_m}{2}  \\
+A_T \leqslant \frac{N}{2}</script><p>显然与假设中的 $A_T$大于$\frac{N}{2}$ 相矛盾。</p>
+<p>一旦想通了这个<strong>Punchline</strong>，就可以开始使用线段树来做这个题了，线段树中每个节点存储以它为根的子树中最多的元素，
+那么一个区间内的最多的元素，就类似于求这个区间内的最大元素，只不过最大元素比的是大小，而这里比的是在子区间中出现的次数多少。</p>
+<p>注意到一个查询区间可能由多个子树组成，这就类似与多个子区间，那么这个<code>majority-element</code>一定会出现在某课子树的根节点上。</p>
+<p>当然这里还有另一个重点：<strong>如何快速查询一个数在一个子区间内出现多少次？</strong>如果使用遍历，那么是$O(n)$的复杂度。</p>
+<p>一个巧妙的方法是将这个数的所有索引存下来形成一个List，通过二分查找来查询子区间的左右边界在List中出现的位置，
+相减即可知道子区间中这个数的数量，复杂度$O(log(n))$。</p>
+<p>最后代码如下：</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MajorityChecker</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] table;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;Integer, List&lt;Integer&gt;&gt; numIdxs = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MajorityChecker</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.n = arr.length;</span><br><span class="line">        table = <span class="keyword">new</span> <span class="keyword">int</span>[n*<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n, j = <span class="number">0</span>; i &lt; table.length; i++, j++) &#123;</span><br><span class="line">            table[i] = arr[j];</span><br><span class="line">            List&lt;Integer&gt; idxs = numIdxs.get(arr[j]);</span><br><span class="line">            <span class="keyword">if</span> ( idxs == <span class="keyword">null</span> ) &#123;</span><br><span class="line">                idxs = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                numIdxs.put(arr[j], idxs);</span><br><span class="line">            &#125;</span><br><span class="line">            idxs.add(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n-<span class="number">1</span>; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">            <span class="keyword">int</span> l = left(i), r = right(i);</span><br><span class="line">            table[i] = countRange(l, r, table[l]) &gt; countRange(l, r, table[r]) ? table[l] : table[r];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">countRange</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; idxs = numIdxs.get(num);</span><br><span class="line">        <span class="keyword">int</span> idx1 = Collections.binarySearch(idxs, l);</span><br><span class="line">        <span class="keyword">int</span> idx2 = Collections.binarySearch(idxs, r);</span><br><span class="line">        <span class="keyword">if</span> (idx1 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            idx1 = -(idx1 + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (idx2 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            idx2 = -(idx2 + <span class="number">1</span>) - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> idx2 - idx1 + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> threshold)</span> </span>&#123;</span><br><span class="line">        l += n;</span><br><span class="line">        r += n;</span><br><span class="line">        <span class="keyword">int</span> ll = l, rr = r;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt;= r ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( (l &amp; <span class="number">1</span>) == <span class="number">1</span> ) &#123;</span><br><span class="line">                <span class="keyword">int</span> tmp = countRange(ll, rr, table[l]);</span><br><span class="line">                <span class="keyword">if</span> (tmp &gt; max) &#123;</span><br><span class="line">                    max = tmp;</span><br><span class="line">                    res = table[l];</span><br><span class="line">                &#125;</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( (r &amp; <span class="number">1</span>) != <span class="number">1</span> ) &#123;</span><br><span class="line">                <span class="keyword">int</span> tmp = countRange(ll, rr, table[r]);</span><br><span class="line">                <span class="keyword">if</span> (tmp &gt; max) &#123;</span><br><span class="line">                    max = tmp;</span><br><span class="line">                    res = table[r];</span><br><span class="line">                &#125;</span><br><span class="line">                r--;</span><br><span class="line">            &#125;</span><br><span class="line">            l &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">            r &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max &gt;= threshold ? res : -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">left</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> idx &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">right</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (idx &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h2 id="进一步"><a href="#进一步" class="headerlink" title="进一步"></a>进一步</h2><p><a target="_blank" rel="noopener" href="http://longrm.com/2019/08/18/2019-08-21-segment-tree/">线段树(Segment Tree)进阶使用记录(HDU3397)</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+              <a href="/tags/leetcode/" rel="tag"># leetcode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/14/2019-08-14-TCP-IP-19-20-21/" rel="prev" title="TCP/IP详解卷1：协议 第19、20、21章笔记">
+      <i class="fa fa-chevron-left"></i> TCP/IP详解卷1：协议 第19、20、21章笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/18/2019-08-21-segment-tree/" rel="next" title="线段树(Segment Tree)进阶使用记录(HDU3397)">
+      线段树(Segment Tree)进阶使用记录(HDU3397) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91%E4%BB%A3%E7%A0%81%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">线段树代码形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91%E7%BB%93%E6%9E%84%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">线段树结构形式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">2.1.</span> <span class="nav-text">树的性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.2.</span> <span class="nav-text">线段树数据结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+public void update(int idx, int num) &amp;#123;
+    idx +&#x3D; n; 
+    table[idx] &#x3D; num;
+    idx &#x3D; parent(idx);
+    while (idx &gt; 0) &amp;#123;
+        table[idx] &#x3D; Math.max(table[left(idx)], table[right(idx)]);
+        idx &#x3D; parent(idx);
+    &amp;#125;
+&amp;#125;
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.</span> <span class="nav-text">线段树的查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91%E4%BB%A3%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">线段树代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Leetcode-1157"><span class="nav-number">6.</span> <span class="nav-text">Leetcode 1157</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">7.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+class MajorityChecker &amp;#123;
+    
+    private int[] table;
+
+    private Map&lt;Integer, List&lt;Integer&gt;&gt; numIdxs &#x3D; new HashMap&lt;&gt;();
+
+    private int n;
+
+    public MajorityChecker(int[] arr) &amp;#123;
+        this.n &#x3D; arr.length;
+        table &#x3D; new int[n*2];
+        for (int i &#x3D; n, j &#x3D; 0; i &lt; table.length; i++, j++) &amp;#123;
+            table[i] &#x3D; arr[j];
+            List&lt;Integer&gt; idxs &#x3D; numIdxs.get(arr[j]);
+            if ( idxs &#x3D;&#x3D; null ) &amp;#123;
+                idxs &#x3D; new ArrayList&lt;&gt;();
+                numIdxs.put(arr[j], idxs);
+            &amp;#125;
+            idxs.add(i);
+        &amp;#125;
+        for (int i &#x3D; n-1; i &gt; 0; i--) &amp;#123;
+            int l &#x3D; left(i), r &#x3D; right(i);
+            table[i] &#x3D; countRange(l, r, table[l]) &gt; countRange(l, r, table[r]) ? table[l] : table[r];
+        &amp;#125;
+    &amp;#125;
+
+    private int countRange(int l, int r, int num) &amp;#123;
+        List&lt;Integer&gt; idxs &#x3D; numIdxs.get(num);
+        int idx1 &#x3D; Collections.binarySearch(idxs, l);
+        int idx2 &#x3D; Collections.binarySearch(idxs, r);
+        if (idx1 &lt; 0) &amp;#123;
+            idx1 &#x3D; -(idx1 + 1);
+        &amp;#125;
+        if (idx2 &lt; 0) &amp;#123;
+            idx2 &#x3D; -(idx2 + 1) - 1;
+        &amp;#125;
+        return idx2 - idx1 + 1;
+    &amp;#125;
+
+    public int query(int l, int r, int threshold) &amp;#123;
+        l +&#x3D; n;
+        r +&#x3D; n;
+        int ll &#x3D; l, rr &#x3D; r;
+        int res &#x3D; 0;
+        int max &#x3D; 0;
+        while ( l &lt;&#x3D; r ) &amp;#123;
+            if ( (l &amp; 1) &#x3D;&#x3D; 1 ) &amp;#123;
+                int tmp &#x3D; countRange(ll, rr, table[l]);
+                if (tmp &gt; max) &amp;#123;
+                    max &#x3D; tmp;
+                    res &#x3D; table[l];
+                &amp;#125;
+                l++;
+            &amp;#125;
+            if ( (r &amp; 1) !&#x3D; 1 ) &amp;#123;
+                int tmp &#x3D; countRange(ll, rr, table[r]);
+                if (tmp &gt; max) &amp;#123;
+                    max &#x3D; tmp;
+                    res &#x3D; table[r];
+                &amp;#125;
+                r--;
+            &amp;#125;
+            l &gt;&gt;&#x3D; 1;
+            r &gt;&gt;&#x3D; 1;
+        &amp;#125;
+        return max &gt;&#x3D; threshold ? res : -1;
+    &amp;#125;
+
+    private int left(int idx) &amp;#123;
+        return idx &lt;&lt; 1;
+    &amp;#125;
+
+    private int right(int idx) &amp;#123;
+        return (idx &lt;&lt; 1) + 1;
+    &amp;#125;
+   
+&amp;#125;
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5"><span class="nav-number">8.</span> <span class="nav-text">进一步</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

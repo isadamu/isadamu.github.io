@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在centos7下使用rsyslog + Logrotate进行日志记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rsyslog + Logrotate进行日志记录并切割压缩">
+<meta property="og:url" content="http://example.com/2019/09/26/2019-09-26-rsyslog-logrotate/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="在centos7下使用rsyslog + Logrotate进行日志记录">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-26T08:10:00.000Z">
+<meta property="article:modified_time" content="2020-01-02T07:25:56.268Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="centos">
+<meta property="article:tag" content="rsyslog">
+<meta property="article:tag" content="logrotate">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2019/09/26/2019-09-26-rsyslog-logrotate/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>rsyslog + Logrotate进行日志记录并切割压缩 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/09/26/2019-09-26-rsyslog-logrotate/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          rsyslog + Logrotate进行日志记录并切割压缩
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-26 16:10:00" itemprop="dateCreated datePublished" datetime="2019-09-26T16:10:00+08:00">2019-09-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-02 15:25:56" itemprop="dateModified" datetime="2020-01-02T15:25:56+08:00">2020-01-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">在centos7下使用rsyslog + Logrotate进行日志记录</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="目标描述"><a href="#目标描述" class="headerlink" title="目标描述"></a>目标描述</h1><p>Golang程序将日志写入到rsyslog的LOCAL0中。</p>
+<p>所以这里要使用rsyslog记录来自LOCAL0的日志，几点需求：</p>
+<ol>
+<li>日志存储在<code>/xxx/程序名/程序名.log</code>下。</li>
+<li>要对日志进行切割，压缩。</li>
+</ol>
+<p>这里主要需要研究的功能就是：</p>
+<ol>
+<li><code>rsyslog</code>的日志动态路径。</li>
+<li><code>Logrotate</code>的定期日志切割。</li>
+<li><code>Logrotate</code>的日志压缩。</li>
+</ol>
+<p>另外：</p>
+<p>这里系统为<strong>Centos7</strong>，不涉及远程日志记录。</p>
+<p>关于rsyslog和Logrotate的介绍网上有很多：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34556414/article/details/81610534">Linux rsyslog服务</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.itpub.net/31559985/viewspace-2286286/">Rsyslog日志系统</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/clsn/p/8428257.html">日志切割之Logrotate</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ec7f1626a3d3">高效的log工具：Logrotate</a></p>
+<hr>
+<h1 id="rsyslog的配置"><a href="#rsyslog的配置" class="headerlink" title="rsyslog的配置"></a>rsyslog的配置</h1><p>rsyslog版本(centos7)：8.24.0-41 </p>
+<hr>
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>rsyslog的配置文件位于<code>/etc/rsyslog.conf</code>，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="meta">#</span><span class="bash"> Log all the mail messages <span class="keyword">in</span> one place.</span></span><br><span class="line">mail.*                                                  -/var/log/maillog</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Log cron stuff</span></span><br><span class="line">cron.*                                                  /var/log/cron</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Everybody gets emergency messages</span></span><br><span class="line">*.emerg                                                 :omusrmsg:*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Save news errors of level crit and higher <span class="keyword">in</span> a special file.</span></span><br><span class="line">uucp,news.crit                                          /var/log/spooler</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Save boot messages also to boot.log</span></span><br><span class="line">local7.*                                                /var/log/boot.log</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>上面的配置中，所使用的<code>*</code>就表示通配，例如<code>mail.*</code>就表示来自<code>mail</code>的所有级别日志都记录到
+<code>-/var/log/maillog</code>中。<code>*.emerg</code>则表示所有<code>emerg</code>级别以上的日志（其实<code>emerg</code>已经是最高级别）都发送给所有正在登陆的用户。</p>
+<p>rsyslog有三种配置格式<code>basic</code>、<code>advanced</code>和<code>obsolete legacy</code>，它们可以在同一个配置文件中混用，但是官方建议尽量避免使用<code>obsolete legacy</code>配置格式，
+因为这个不健康，官方原话：<code>Do not use obsolete legacy format. It will make your life miserable.</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> basic</span></span><br><span class="line">mail.info /var/log/mail.log</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> advanced</span></span><br><span class="line">mail.info action(type=&quot;omfile&quot; File=&quot;/var/log/mail.log&quot;)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> legacy（下面例子的含义和上面不一样，它定义一个Template）</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 总之一般带着 $ 的语句格式都是 legacy</span></span><br><span class="line"><span class="meta">$</span><span class="bash">template DynFile,<span class="string">&quot;/var/log/%HOSTNAME%/%programname%.log&quot;</span></span></span><br></pre></td></tr></table></figure>
+<p>这里如果要让自己的程序使用rsyslog来记录日志，那么就可以使用<code>LOCAL0~6</code>这些<strong>facility</strong>来进行我们的自定义日志记录，</p>
+<hr>
+<h2 id="配置日志动态路径"><a href="#配置日志动态路径" class="headerlink" title="配置日志动态路径"></a>配置日志动态路径</h2><p>例如一条在rsyslog接收到一条日志之后，希望它能将根据日志附带的tag信息，
+将日志打印到 /logdir/tag/tag.log 文件，这就是动态日志路径。</p>
+<p>要达到这个目的，使用rsyslog配置中的<strong>Templates</strong>语法结构即可。</p>
+<p><a target="_blank" rel="noopener" href="https://www.rsyslog.com/doc/master/configuration/templates.html">Templates</a></p>
+<p>这里可以使用<code>Templates</code>来定义一段字符串，字符串中可以带有变量，这样就可以达到日志记录位置随日志的tag信息而变化的目的。</p>
+<p>修改 /etc/rsyslog.conf :</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">template(name=&quot;MyDynFile&quot; type=&quot;string&quot; string=&quot;/var/log/%programname%/%programname%.log&quot;)</span><br><span class="line"></span><br><span class="line">local0.*   action(type=&quot;omfile&quot; dynaFile=&quot;MyDynFile&quot;)</span><br></pre></td></tr></table></figure>
+<p>上面的配置中，首先定义了一个<strong>string</strong>类型的Template，然后将local0的所有日志输入到这个路径下的日志文件中，</p>
+<p>这里的<code>%programname%</code>即表示：</p>
+<blockquote>
+<p>the “static” part of the tag, as defined by BSD syslogd. For example, when TAG is “named[12345]”, programname is “named”.</p>
+</blockquote>
+<p>也就是说这里将日志保存到<code>/var/log/%programname%/%programname%.log</code>路径之下，更多的字段可以参考<a target="_blank" rel="noopener" href="https://www.rsyslog.com/doc/master/configuration/properties.html">rsyslog Properties</a>。</p>
+<p><strong>测试配置：</strong></p>
+<p>首先使用命令看配置是否有语法错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ &#x2F;usr&#x2F;sbin&#x2F;rsyslogd -f &#x2F;etc&#x2F;rsyslog.conf -N1</span><br></pre></td></tr></table></figure>
+<p>重启rsyslog服务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl restart rsyslog</span></span><br></pre></td></tr></table></figure>
+<p>测试配置是否达到预期：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> logger -t <span class="built_in">test</span> -p local0.info <span class="string">&quot;hello world&quot;</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /var/<span class="built_in">log</span>/<span class="built_in">test</span>/test.log</span></span><br><span class="line"></span><br><span class="line">Sep 23 11:38:32 node1 test: hello world</span><br></pre></td></tr></table></figure>
+<p>可以看到这里动态日志路径配置成功。</p>
+<hr>
+<h1 id="Logrotate-配置"><a href="#Logrotate-配置" class="headerlink" title="Logrotate 配置"></a>Logrotate 配置</h1><p>上面完成了使用rsyslog来进行日志记录，但是如果不对日志进行切割压缩，日志的大小就会无限增长，不仅将来不好查询，而且占存储空间，
+这里可以使用Logrotate来进行日志的切割与压缩。</p>
+<p>Logrotate并不是一个一直运行的linux程序，它的自动运行是linux的计划任务cron来实现的，位于<code>/etc/cron.daily/logrotate</code>，
+它每天执行一次。</p>
+<p>而Logrotate的配置文件则位于<code>/etc/logrotate.conf</code>，这个配置文件里面又包含了目录<code>/etc/logrotate.d/</code>下的所有配置文件，
+所有通常在<code>/etc/logrotate.d/</code>目录下来添加自定义的配置文件。</p>
+<p><strong>切割日志</strong>：</p>
+<ul>
+<li>方法一：将原日志文件重命名，重新创建新的日志文件，通知使用此日志的进程使用新的日志文件。对应Logrotate中的<code>create</code>。</li>
+<li>方法二：先将原日志文件复制，然后截断原文件，这样不需要通知使用此日志的进程，但两个操作之间有短暂的时间间隙，可能会丢失日志。对应Logrotate中的<code>copytruncate</code>。</li>
+<li>方法三：只复制原日志文件。对应Logrotate中的<code>copy</code>。</li>
+</ul>
+<p>这里之所以有三种切割日志的方法，原因在于当一个程序获取到一个文件句柄并向里面写入数据时，即使此时文件名发生了变化，
+也不会影响之前的文件句柄的使用，程序仍然可以通过这个文件句柄写入数据到此文件中，如果不对原程序发出通知，让其重新获取文件句柄，
+那么这个日志文件的大小就会继续增长。</p>
+<p><strong>压缩日志</strong>：经过日志切割，原日志文件已经重命名，已经没有进程再继续使用它，这时便可以进行任意的操作，想要压缩就可以直接进行压缩。</p>
+<p><strong>rotate</strong>：保留日志文件的数量（轮转数量）。例如rotate为3，切割出来日志文件为<code>log.1</code>、<code>log.2</code>和<code>log.3</code>，则下一次再进行切割时，
+会将<code>log.3</code>删除，<code>log.2</code>重命名为<code>log.3</code>，<code>log.1</code>重命名为<code>log.2</code>，新切割出来的日志文件命名为<code>log.1</code>。</p>
+<hr>
+<h2 id="Logrotate的具体配置。"><a href="#Logrotate的具体配置。" class="headerlink" title="Logrotate的具体配置。"></a>Logrotate的具体配置。</h2><p>这里添加一个新的配置文件到<code>/etc/logrotate.d/</code>目录下，内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/var/log/*/*.log &#123;</span><br><span class="line">    create 0644 root root   // 新创建日志文件的权限</span><br><span class="line">    daily                   // 每天执行一次</span><br><span class="line">    rotate 65535            // 轮转数量 65535，基本等于存储所有日志</span><br><span class="line">    size 1M                 // 超过1M才进行切割</span><br><span class="line">    dateext                 // 使用日期作为后缀</span><br><span class="line">    dateformat -%Y%m%d.%s   // 定义日期后缀的格式</span><br><span class="line">    missingok               // 没有找到日志文件也OK</span><br><span class="line">    notifempty              // not ifempty 如过日志文件为空，则不切割</span><br><span class="line">    compress                // 切割后进行压缩</span><br><span class="line">    sharedscripts           // 脚本只执行一次</span><br><span class="line">    postrotate              // 脚本，用于通知rsyslog使用新的日志文件</span><br><span class="line">        /bin/kill -HUP `cat /var/run/syslogd.pid 2&gt; /dev/null` 2&gt; /dev/null || true</span><br><span class="line">    endscript</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里首先配置的路径为<code>/var/log/*/*.log</code>，因为上面rsyslog将LOCAL0的日志记录到了<code>/var/log/%programname%/%programname%.log</code>，
+这样便能够通配到所有LOCAL0的日志文件。</p>
+<p>注意到这里的最后几句配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">postrotate              // 脚本，用于通知rsyslog使用新的日志文件</span><br><span class="line">    /bin/kill -HUP `cat /var/run/syslogd.pid 2&gt; /dev/null` 2&gt; /dev/null || true</span><br><span class="line">endscript</span><br></pre></td></tr></table></figure>
+<p>其中夹在<code>postrotate</code>和<code>endscript</code>中间的就是脚本，<code>postrotate</code>表示脚本在rotate之后运行，也就是此时已经将原日志文件重命名，
+并且创建了新日志文件，但是还没有对原日志文件进行压缩。脚本中使用<code>kill -HUP</code>来通知rsyslog使用新日志文件，脚本执行完毕后，
+Logrotate将对原日志文件使用gzip进行压缩。</p>
+<p><strong>这里切割出来的日志文件将保存在与原日志文件同一目录下</strong>，如果想要将切割出来的日志文件保存到别的目录，可以添加下面的配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">olddir   &#x2F;var&#x2F;log&#x2F;old</span><br></pre></td></tr></table></figure>
+<p>这样切割下来的日志文件就会存储在<code>/var/log/old</code>目录之下（old目录需要手动创建）。</p>
+<hr>
+<h2 id="Logrotate-日志压缩"><a href="#Logrotate-日志压缩" class="headerlink" title="Logrotate 日志压缩"></a>Logrotate 日志压缩</h2><p>默认情况下，Logrotate使用gzip进行压缩，当然也可以配置其它的压缩工具。</p>
+<p>如果要使用<code>bzip2</code>来进行压缩，则可以使用下面的配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">compress</span><br><span class="line">compresscmd  /usr/bin/bzip2</span><br><span class="line">compressext  .bz2</span><br><span class="line">compressoptions -9</span><br></pre></td></tr></table></figure>
+<p>那么在压缩日志时，就会使用<code>/usr/bin/bzip2 -9</code>来进行压缩。</p>
+<p>使用bzip2可以达到更大的压缩比，但是在压缩过程中也会消耗更多的CPU。</p>
+<p>同理也可以配置成其它的压缩工具。</p>
+<hr>
+<h2 id="Logrotate-定期执行"><a href="#Logrotate-定期执行" class="headerlink" title="Logrotate 定期执行"></a>Logrotate 定期执行</h2><p>Logrotate通过cron来定期运行，默认配置在<code>/etc/cron.daily/logrotate</code>，也就是默认每天执行一次。</p>
+<p>使用下面命令可以让Logrotate立即执行某一配置，而不用等待计划任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 立即执行syslog配置</span><br><span class="line"><span class="meta">$</span><span class="bash"> logrotate /etc/logrotate.d/syslog</span></span><br><span class="line"></span><br><span class="line">// 使用debug模式执行，并不改变和生成任何日志文件</span><br><span class="line"><span class="meta">$</span><span class="bash"> logrotate -d /etc/logrotate.d/syslog</span></span><br><span class="line"></span><br><span class="line">// 强制执行，忽略size参数</span><br><span class="line"><span class="meta">$</span><span class="bash"> logrotate -f /etc/logrotate.d/syslog</span></span><br></pre></td></tr></table></figure>
+<p>如果想要更灵活的执行时间配置，就可以在cron中来添加，例如想要Logrotate每分钟执行一次，则可以在<code>/etc/crontab</code>中进行配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/crontab</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /etc/crontab</span></span><br><span class="line"></span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin</span><br><span class="line">MAILTO=root</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> For details see man 4 crontabs</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Example of job definition:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> .---------------- minute (0 - 59)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> |  .------------- hour (0 - 23)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> |  |  .---------- day of month (1 - 31)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> |  |  |  |  |</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> *  *  *  *  * user-name  <span class="built_in">command</span> to be executed</span></span><br><span class="line">*/1  *  *  *  *   root    logrotate /etc/logrotate.d/syslog</span><br></pre></td></tr></table></figure>
+<p>这样就可以使得Logrotate每分钟执行一次。</p>
+<hr>
+<h1 id="配置总结"><a href="#配置总结" class="headerlink" title="配置总结"></a>配置总结</h1><p><strong>rsyslog：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"><span class="built_in">umask</span> 0000</span></span><br><span class="line">template(name=&quot;MyDynFile&quot; type=&quot;string&quot; string=&quot;/data1/log/%programname%/%programname%.log&quot;)</span><br><span class="line">local0.*     action(type=&quot;omfile&quot; dynaFile=&quot;MyDynFile&quot; dirCreateMode=&quot;0755&quot; fileCreateMode=&quot;0644&quot; ioBufferSize=&quot;64K&quot;)</span><br></pre></td></tr></table></figure>
+<p>这里的<code>umask</code>配合<code>dirCreateMode</code>和<code>fileCreateMode</code>来使用，这样便可指定创建出来的文件夹与文件的默认权限。</p>
+<p><strong>Logrotate：</strong></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/data1/log/*/*.log &#123;</span><br><span class="line">    create 0644 root root</span><br><span class="line">    daily</span><br><span class="line">    rotate 65535</span><br><span class="line">    size 1M</span><br><span class="line">    dateext</span><br><span class="line">    dateformat -%Y%m%d.%s</span><br><span class="line">    missingok</span><br><span class="line">    notifempty</span><br><span class="line">    compress</span><br><span class="line">    sharedscripts</span><br><span class="line">    postrotate</span><br><span class="line">        /bin/kill -HUP `cat /var/run/syslogd.pid 2&gt; /dev/null` 2&gt; /dev/null || true</span><br><span class="line">    endscript</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h1 id="补充：docker内使用rsyslog-Logrotate"><a href="#补充：docker内使用rsyslog-Logrotate" class="headerlink" title="补充：docker内使用rsyslog + Logrotate"></a>补充：docker内使用rsyslog + Logrotate</h1><p>今天要在docker中配置rsyslog + Logrotate，发现centos7的docker中没有自带rsyslog和cron，并且没有systemd，所以不能通过systemctl来操作服务。</p>
+<p>首先需要安装rsyslog和cron：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> yum install -y rsyslog cronie</span></span><br></pre></td></tr></table></figure>
+<p><strong>非常重要的一点在于：</strong>rsyslog 默认通过 journal 读取日志信息，但CentOS镜像默认并未安装systemd和journald。</p>
+<p>首先kill掉正在运行的rsyslog进程，然后修改配置：</p>
+<ul>
+<li>注释<code>$ModLoad imjournal</code></li>
+<li>注释<code>$IMJournalStateFile imjournal.state</code></li>
+<li>将<code>$OmitLocalLogging on</code>改为<code>$OmitLocalLogging off</code></li>
+<li>将journal的配置删除：<code>rm -rf /etc/rsyslog.d/listen.conf</code></li>
+</ul>
+<p>启动rsyslog：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># rsyslogd</span><br></pre></td></tr></table></figure>
+<p>启动cron：</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># crond</span><br></pre></td></tr></table></figure></h2><h1 id="补充：修改rsyslog的日志记录格式"><a href="#补充：修改rsyslog的日志记录格式" class="headerlink" title="补充：修改rsyslog的日志记录格式"></a>补充：修改rsyslog的日志记录格式</h1><p>首先可以看到默认的rsyslog的格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Sep 30 17:21:49 localhost test: Hello World!!!</span><br></pre></td></tr></table></figure>
+<p>它所对应的配置格式是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">template(name=&quot;FileFormat&quot; type=&quot;string&quot;</span><br><span class="line">         string= &quot;%TIMESTAMP% %HOSTNAME% %syslogtag%%msg:::sp-if-no-1st-sp%%msg:::drop-last-lf%\n&quot;</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+<p>可以看到其实有点儿丑，为了把它变得好看一点，需要新建一个template来定义它的格式。</p>
+<p>官方文档中这部分定义的字段都可以使用:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.rsyslog.com/doc/master/configuration/properties.html">rsyslog Properties</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.rsyslog.com/doc/master/configuration/property_replacer.html#property-options">The Property Replacer</a></li>
+</ul>
+<p>这里定义的<code>template</code>如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">template(name=&quot;MyOutFmt&quot; type=&quot;list&quot;) &#123;</span><br><span class="line">    constant(value=&quot;[&quot;)</span><br><span class="line">    property(name=&quot;syslogseverity-text&quot;)</span><br><span class="line">    constant(value=&quot;]&quot;)</span><br><span class="line"></span><br><span class="line">    constant(value=&quot;[&quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;year&quot;)</span><br><span class="line">    constant(value=&quot;-&quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;month&quot;)</span><br><span class="line">    constant(value=&quot;-&quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;day&quot;)</span><br><span class="line">    constant(value=&quot; &quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;hour&quot;)</span><br><span class="line">    constant(value=&quot;:&quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;minute&quot;)</span><br><span class="line">    constant(value=&quot;:&quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;second&quot;)</span><br><span class="line">    constant(value=&quot; &quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;tzoffsdirection&quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;tzoffshour&quot;)</span><br><span class="line">    property(name=&quot;timereported&quot; dateformat=&quot;tzoffsmin&quot;)</span><br><span class="line">    constant(value=&quot;]&quot;)</span><br><span class="line"></span><br><span class="line">    constant(value=&quot;[&quot;)</span><br><span class="line">    property(name=&quot;programname&quot; position.from=&quot;1&quot; position.to=&quot;32&quot;)</span><br><span class="line">    constant(value=&quot;]&quot;)</span><br><span class="line">    constant(value=&quot;: &quot;)</span><br><span class="line">    property(name=&quot;msg&quot;)</span><br><span class="line">    constant(value=&quot;\n&quot;)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>配置输出文件的<code>template</code>为<code>MyOutFmt</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">local0.*   action(type=&quot;omfile&quot; dynaFile=&quot;MyDynFile&quot; template=&quot;MyOutFmt&quot;  dirCreateMode=&quot;0755&quot; fileCreateMode=&quot;0644&quot; ioBufferSize=&quot;64K&quot;)</span><br></pre></td></tr></table></figure>
+<p>测试效果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> logger -t <span class="built_in">test</span> -p local0.info <span class="string">&#x27;Hello World!!!&#x27;</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> logger -t <span class="built_in">test</span> -p local0.warning <span class="string">&#x27;Hello World!!!&#x27;</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> logger -t <span class="built_in">test</span> -p local0.err <span class="string">&#x27;Hello World!!!&#x27;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> tail -n3 /data1/<span class="built_in">log</span>/<span class="built_in">test</span>/test.log</span></span><br><span class="line"></span><br><span class="line">[warning][2019-09-30 18:13:25 +0800][test]: Hello World!!!</span><br><span class="line">[err][2019-09-30 18:13:31 +0800][test]: Hello World!!!</span><br><span class="line">[err][2019-09-30 18:14:19 +0800][test]: Hello World!!!</span><br></pre></td></tr></table></figure>
+<p>ok，顺眼多了。</p>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://www.rsyslog.com/">The rocket-fast Syslog Server</a></p>
+<p><a target="_blank" rel="noopener" href="https://linux.die.net/man/8/logrotate">logrotate(8) - Linux man page</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.mamicode.com/info-detail-2685573.html">docker容器中使用rsyslogd</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/centos/" rel="tag"># centos</a>
+              <a href="/tags/rsyslog/" rel="tag"># rsyslog</a>
+              <a href="/tags/logrotate/" rel="tag"># logrotate</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/09/18/2019-09-18-srs-ffmpeg/" rel="prev" title="srs带ffmpeg的安装">
+      <i class="fa fa-chevron-left"></i> srs带ffmpeg的安装
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/09/30/2019-09-30-golang-unsafe_pointer/" rel="next" title="golang中unsafe.Pointer的入门使用">
+      golang中unsafe.Pointer的入门使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">目标描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rsyslog%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">rsyslog的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">基本配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%97%A5%E5%BF%97%E5%8A%A8%E6%80%81%E8%B7%AF%E5%BE%84"><span class="nav-number">2.2.</span> <span class="nav-text">配置日志动态路径</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Logrotate-%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">Logrotate 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Logrotate%E7%9A%84%E5%85%B7%E4%BD%93%E9%85%8D%E7%BD%AE%E3%80%82"><span class="nav-number">3.1.</span> <span class="nav-text">Logrotate的具体配置。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logrotate-%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9"><span class="nav-number">3.2.</span> <span class="nav-text">Logrotate 日志压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logrotate-%E5%AE%9A%E6%9C%9F%E6%89%A7%E8%A1%8C"><span class="nav-number">3.3.</span> <span class="nav-text">Logrotate 定期执行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">配置总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">4.1.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+&#x2F;data1&#x2F;log&#x2F;*&#x2F;*.log &amp;#123;
+    create 0644 root root
+    daily
+    rotate 65535
+    size 1M
+    dateext
+    dateformat -%Y%m%d.%s
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+        &#x2F;bin&#x2F;kill -HUP &#96;cat &#x2F;var&#x2F;run&#x2F;syslogd.pid 2&gt; &#x2F;dev&#x2F;null&#96; 2&gt; &#x2F;dev&#x2F;null || true
+    endscript
+&amp;#125;
+</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9Adocker%E5%86%85%E4%BD%BF%E7%94%A8rsyslog-Logrotate"><span class="nav-number">5.</span> <span class="nav-text">补充：docker内使用rsyslog + Logrotate</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">5.1.</span> <span class="nav-text">1
+# crond
+</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A%E4%BF%AE%E6%94%B9rsyslog%E7%9A%84%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95%E6%A0%BC%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">补充：修改rsyslog的日志记录格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

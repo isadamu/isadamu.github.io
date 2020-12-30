@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="做一些实际的应用，例如使用ffmpeg截图。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cgo+ffmpeg+截图 的简单尝试">
+<meta property="og:url" content="http://example.com/2020/08/26/2020-08-26-cgo+ffmpeg+snapshot/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="做一些实际的应用，例如使用ffmpeg截图。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-26T03:07:00.000Z">
+<meta property="article:modified_time" content="2020-09-24T10:05:34.720Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="live">
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="ffmpeg">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/08/26/2020-08-26-cgo+ffmpeg+snapshot/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>cgo+ffmpeg+截图 的简单尝试 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/08/26/2020-08-26-cgo+ffmpeg+snapshot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          cgo+ffmpeg+截图 的简单尝试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-26 11:07:00" itemprop="dateCreated datePublished" datetime="2020-08-26T11:07:00+08:00">2020-08-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-24 18:05:34" itemprop="dateModified" datetime="2020-09-24T18:05:34+08:00">2020-09-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index"><span itemprop="name">media</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">做一些实际的应用，例如使用ffmpeg截图。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>首先这里的截图是针对视频流而言的，通常是rtmp的流。</p>
+<p>命令行截图：<a target="_blank" rel="noopener" href="http://longrm.com/2019/12/19/2019-11-27-ffmpeg-screenshot/">使用FFmpeg来进行固定时间间隔截图（rtmp直播流）</a></p>
+<p>一般情况下，会通过go代码调用命令行（CMD）来使用ffmpeg进行截图，但是这样的问题在于每一个截图任务都是一个<strong>独立的进程</strong>，
+如果要同时对几千路流进行截图，那么<strong>进程间的开销</strong>会直接占用大半的CPU资源。</p>
+<p>使用命令行调用ffmpeg的另一个问题在于，由于是另外一个独立的进程在进行截图，所以go程序无法直接知道截图的情况，整个截图过程都是<strong>异步</strong>的。
+go程序无法知道什么时候ffmpeg完成了一张截图。简单的方法只能定期扫描ffmpeg产生的list文件来判断是否有新的截图产生，就挺恶心的。</p>
+<p><strong>使用<code>cgo+ffmpeg+截图</code>的方式来解决上述问题，做到以下几点</strong>：</p>
+<ol>
+<li>每一个截图任务都运行在一个<strong>go程</strong>中，而不是进程。</li>
+<li>一张截图完成时，可以直接进行回调。</li>
+<li>可以实时控制截图任务的开始和结束。</li>
+<li>go代码与c代码使用同一个日志打印函数，日志将用同样的格式打印到同样的地方。</li>
+<li>单个截图任务的CPU消耗基本与直接命令行截图相同。</li>
+</ol>
+<p>这样的方式也会有一定<strong>坏处</strong>：</p>
+<ol>
+<li>会增加一定CPU开销。go与c之间的函数调用还是会带来一定额外开销的。</li>
+<li>一个截图任务发生panic，如果不处理，会导致整个程序崩溃。</li>
+</ol>
+<hr>
+<h1 id="如何调用c函数来进行截图"><a href="#如何调用c函数来进行截图" class="headerlink" title="如何调用c函数来进行截图"></a>如何调用c函数来进行截图</h1><p><strong>首先，c没有类的概念，都是基于结构体和函数调用。</strong></p>
+<p>这里尝试了<strong>两种路线</strong>来调用c函数进行截图：</p>
+<hr>
+<p><strong>路线1：</strong></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> CSnapshot <span class="keyword">struct</span> &#123;</span><br><span class="line">	pToCStruct *C.SnapShot <span class="comment">// 指向 c 结构体的指针</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewCSnapshot</span><span class="params">()</span> *<span class="title">CSnapshot</span></span> &#123;</span><br><span class="line">	cs.pToCStruct = C.InitSnapshotStruct()</span><br><span class="line">    <span class="keyword">return</span> cs</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 开始截图</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(cs *CSnapshot)</span> <span class="title">Start</span><span class="params">()</span></span> &#123;</span><br><span class="line">	C.SnapShotStructRun(cs.pToCStruct)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止截图</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(cs *CSnapshot)</span> <span class="title">Stop</span><span class="params">()</span></span> &#123;</span><br><span class="line">	C.SnapShotStructStop(cs.pToCStruct)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先进行结构体初始化，得到一个结构体指针，然后将指针传入<code>Run</code>或<code>Stop</code>函数来控制截图任务的开始与结束。</p>
+<hr>
+<p><strong>路线2：</strong></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(cs *CSnapshot)</span> <span class="title">Start</span><span class="params">()</span></span> &#123;</span><br><span class="line">	taskIdC := C.CString(cs.taskId)</span><br><span class="line">	ret := C.SnapShotStructRun(taskIdC) <span class="comment">// 阻塞</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(cs *CSnapshot)</span> <span class="title">Stop</span><span class="params">()</span></span> &#123;</span><br><span class="line">	taskIdC := C.CString(cs.taskId)</span><br><span class="line">	C.StopTaskForGo(taskIdC)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>直接调用<code>Run</code>函数运行截图任务，传入一个taskId对任务进行标识，且这个函数会阻塞。
+传入taskId到<code>Stop</code>函数来停止任务。</p>
+<p>这个过程中，go内存中并不保存任何c中的变量。</p>
+<hr>
+<p>在实际调试过程，发现第一种方式会出现奇怪的<strong>问题</strong>，结构体经过几次函数传递之后，struct内的string变成了乱码，貌似是char*指针地址直接变了。
+这个问题最后也没看懂，应该是比较底层的问题。</p>
+<p>后来就选择了第二种方式，虽然简陋，但是不会有问题。</p>
+<hr>
+<h1 id="c函数如何将截图回调给go"><a href="#c函数如何将截图回调给go" class="headerlink" title="c函数如何将截图回调给go"></a>c函数如何将截图回调给go</h1><p>在使用cgo的时候，go也没有办法把一个成员函数直接传递给c来进行调用，所以简单的使用一个全局函数来给c进行调用：</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//export SnapshotCallBackForC</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SnapshotCallBackForC</span><span class="params">(taskId, filePath <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 用于c语言回调，貌似只能这么猥琐的来写了</span></span><br><span class="line">    <span class="comment">// 截图成功则调用这个函数来通知go</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;taskId %s, filePath %s\n&quot;</span>, taskId, filePath)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h1 id="如何让c函数日志打印到go的日志函数中"><a href="#如何让c函数日志打印到go的日志函数中" class="headerlink" title="如何让c函数日志打印到go的日志函数中"></a>如何让c函数日志打印到go的日志函数中</h1><p>统一日志打印，整个程序调试起来会简单很多。</p>
+<p>首先go将日志函数export一下：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//export InfoForC</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">InfoForC</span><span class="params">(message <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> loglevel &gt; LevelInfo &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logger.Info(message)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在c中进行一下包装，可以十分方便的直接使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LogDebug(fmt, ...) GoDebug(__FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LogInfo(fmt, ...) GoInfo(__FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LogWarn(fmt, ...) GoWarn(__FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LogError(fmt, ...) GoError(__FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GoInfo</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* file, <span class="keyword">const</span> <span class="keyword">char</span>* func, <span class="keyword">int</span> line, <span class="keyword">char</span>* fmt, ...)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i, j;</span><br><span class="line">	<span class="keyword">char</span> buf[MSG_MAX_LEN];</span><br><span class="line">	i = <span class="built_in">snprintf</span>(buf, MSG_MAX_LEN, <span class="string">&quot;[%s][%s:%d] &quot;</span>, file, func, line);</span><br><span class="line">	va_list arglist;</span><br><span class="line">	va_start(arglist, fmt);</span><br><span class="line">	j = vsnprintf(&amp;buf[i], MSG_MAX_LEN - i, fmt, arglist);</span><br><span class="line">	va_end(arglist);</span><br><span class="line"></span><br><span class="line">	GoString go_str = &#123; p: buf, n : i + j &#125;;</span><br><span class="line">	InfoForC(go_str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就可以在c中使用go的日志打印函数，可以将文件名、函数名和行数都打印出来，对于调试十分友好。</p>
+<hr>
+<h1 id="go如何立即停止c中运行的截图任务"><a href="#go如何立即停止c中运行的截图任务" class="headerlink" title="go如何立即停止c中运行的截图任务"></a>go如何立即停止c中运行的截图任务</h1><p>截图任务运行在另一个go程之中，这里通过简单的修改c的全局变量来改变截图任务的状态，让它在检测到时停止运行。</p>
+<p>go函数调用c函数来修改c函数状态：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(cs *CSnapshot)</span> <span class="title">Stop</span><span class="params">()</span></span> &#123;</span><br><span class="line">	taskIdC := C.CString(cs.taskId)</span><br><span class="line">	<span class="keyword">defer</span> C.free(unsafe.Pointer(taskIdC))</span><br><span class="line"></span><br><span class="line">	C.StopTaskForGo(taskIdC)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>c函数将任务状态存入一个map之中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setTaskState</span><span class="params">(<span class="keyword">char</span>* taskId, <span class="keyword">int</span> state)</span> </span>&#123;</span><br><span class="line">	pthread_mutex_lock(&amp;taskMapMute);</span><br><span class="line">	map_set(&amp;taskStateMap, taskId, state);</span><br><span class="line">	pthread_mutex_unlock(&amp;taskMapMute);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">StopTaskForGo</span><span class="params">(<span class="keyword">char</span>* taskId)</span> </span>&#123;</span><br><span class="line">	setTaskState(taskId, STOP);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每解码一个frame，就去检测一下task的状态：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span>* <span class="title">getTaskState</span><span class="params">(<span class="keyword">char</span>* taskId)</span> </span>&#123;</span><br><span class="line">	pthread_mutex_lock(&amp;taskMapMute);</span><br><span class="line">	<span class="keyword">int</span>* val = map_get(&amp;taskStateMap, taskId);</span><br><span class="line">	pthread_mutex_unlock(&amp;taskMapMute);</span><br><span class="line">	<span class="keyword">return</span> val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isTaskStateRunning</span><span class="params">(<span class="keyword">char</span>* taskId)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>* state = getTaskState(taskId);</span><br><span class="line">	<span class="keyword">if</span> (state == <span class="literal">NULL</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> *state == RUNNING;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (av_read_frame(ss-&gt;ifmt_ctx, ss-&gt;dePkt) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!isTaskStateRunning(ss-&gt;taskId)) &#123;</span><br><span class="line">        LogWarn(<span class="string">&quot;------------- task %s state is stopped, break the loop -------------&quot;</span>, ss-&gt;taskId);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>如何防止av_read_frame出现阻塞</strong>：</p>
+<p>如何什么都不设置，那么一旦直播流没了，也就是<code>av_read_frame</code>获取不到更多的数据的时候，它就会阻塞在哪里，
+如果这时候想要结束这个任务，上面的全局变量就没用了。</p>
+<p>为此，得在结束任务的时候，让<code>av_read_frame</code>也跳出阻塞。这里可以使用<code>interrupt_callback</code>来达到这个目的。</p>
+<p>在ffmpeg的<code>AVFormatContext</code>结构体中，存在一个<code>AVIOInterruptCB</code>结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AVFormatContext</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Custom interrupt callbacks for the I/O layer.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * demuxing: set by the user before avformat_open_input().</span></span><br><span class="line"><span class="comment">     * muxing: set by the user before avformat_write_header()</span></span><br><span class="line"><span class="comment">     * (mainly useful for AVFMT_NOFILE formats). The callback</span></span><br><span class="line"><span class="comment">     * should also be passed to avio_open2() if it&#x27;s used to</span></span><br><span class="line"><span class="comment">     * open the file.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    AVIOInterruptCB interrupt_callback;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Callback for checking whether to abort blocking functions.</span></span><br><span class="line"><span class="comment"> * AVERROR_EXIT is returned in this case by the interrupted</span></span><br><span class="line"><span class="comment"> * function. During blocking operations, callback is called with</span></span><br><span class="line"><span class="comment"> * opaque as parameter. If the callback returns 1, the</span></span><br><span class="line"><span class="comment"> * blocking operation will be aborted.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * No members can be added to this struct without a major bump, if</span></span><br><span class="line"><span class="comment"> * new elements have been added after this struct in AVFormatContext</span></span><br><span class="line"><span class="comment"> * or AVIOContext.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AVIOInterruptCB</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> (*callback)(<span class="keyword">void</span>*);</span><br><span class="line">    <span class="keyword">void</span> *opaque;</span><br><span class="line">&#125; AVIOInterruptCB;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>所以这里设置一个回调函数，在任务状态为<code>Stop</code>的时候返回1即可：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isTaskStateRunning</span><span class="params">(<span class="keyword">char</span>* taskId)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>* state = getTaskState(taskId);</span><br><span class="line">	<span class="keyword">if</span> (state == <span class="literal">NULL</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> *state == RUNNING;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">interruptCallBack</span><span class="params">(<span class="keyword">void</span>* taskId)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (isTaskStateRunning((<span class="keyword">char</span>*)taskId)) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ss-&gt;ifmt_ctx = avformat_alloc_context();</span><br><span class="line"></span><br><span class="line">ss-&gt;ifmt_ctx-&gt;interrupt_callback.callback = interruptCallBack;</span><br><span class="line">ss-&gt;ifmt_ctx-&gt;interrupt_callback.opaque = ss-&gt;taskId;</span><br></pre></td></tr></table></figure>
+<p>通过上面的方法，就可以通过go立即停止正在运行的c截图任务。</p>
+<hr>
+<h1 id="如何自定义ffmpeg的打印函数"><a href="#如何自定义ffmpeg的打印函数" class="headerlink" title="如何自定义ffmpeg的打印函数"></a>如何自定义ffmpeg的打印函数</h1><p>直接可以通过<code>av_log_set_callback</code>函数来自定义日志函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initFFLogCallBack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	pthread_mutex_lock(&amp;ffLogInitMute);</span><br><span class="line">	<span class="keyword">if</span> (!ffLogInit) &#123;</span><br><span class="line">		ffLogInit = <span class="number">1</span>;</span><br><span class="line">		av_log_set_callback(LogForFF);</span><br><span class="line">	&#125;</span><br><span class="line">	pthread_mutex_unlock(&amp;ffLogInitMute);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> <span class="title">FF_LOG_LEVEL</span> &#123;</span></span><br><span class="line">	FF_ERROR,</span><br><span class="line">	FF_WARN,</span><br><span class="line">	FF_INFO,</span><br><span class="line">	FF_DEBUG,</span><br><span class="line">&#125; FF_LOG_LEVEL;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SetFFLogLevel</span><span class="params">(<span class="keyword">enum</span> FF_LOG_LEVEL level)</span> </span>&#123;</span><br><span class="line">	ff_log_level = level;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LogForFF</span><span class="params">(<span class="keyword">void</span>* ptr, <span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list vl)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (level &gt;= AV_LOG_DEBUG) &#123;</span><br><span class="line">		<span class="keyword">if</span> (ff_log_level &gt;= FF_DEBUG) &#123;</span><br><span class="line">			LogDebug(fmt, vl);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (level &gt;= AV_LOG_INFO) &#123;</span><br><span class="line">		<span class="keyword">if</span> (ff_log_level &gt;= FF_INFO) &#123;</span><br><span class="line">			LogInfo(fmt, vl);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (level &gt;= AV_LOG_WARNING) &#123;</span><br><span class="line">		<span class="keyword">if</span> (ff_log_level &gt;= FF_WARN) &#123;</span><br><span class="line">			LogWarn(fmt, vl);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (level &gt;= AV_LOG_QUIET) &#123;</span><br><span class="line">		<span class="keyword">if</span> (ff_log_level &gt;= FF_ERROR) &#123;</span><br><span class="line">			LogError(fmt, vl);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		LogError(fmt, vl);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然这样可以使得ffmpeg也使用go的日志函数来进行打印，但是通常情况下ffmpeg的日志实在太多了，根本没法看，所以不太建议使用。</p>
+<hr>
+<h1 id="如何优化cgo的运行效率"><a href="#如何优化cgo的运行效率" class="headerlink" title="如何优化cgo的运行效率"></a>如何优化cgo的运行效率</h1><p>在写这个代码的过程中，经过反复测试，发现要<strong>尽量减少go和c之间的相互调用</strong>。</p>
+<p>最开始，任务状态检测时，之间让c调用go的函数来进行检测，这样每一次收到一个packet，就会调用一下go的函数。
+结果CPU使用率增加了近一倍多（相比于直接纯c语言截图）。</p>
+<p>后来就改成了上面的方式，c中使用一个全局的map来存储任务的状态，每一次收到一个packet，直接去检测这个全局变量，而不是调用go函数，
+CPU使用率就回到了正常的水平。</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/live/" rel="tag"># live</a>
+              <a href="/tags/golang/" rel="tag"># golang</a>
+              <a href="/tags/ffmpeg/" rel="tag"># ffmpeg</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/20/2020-08-20-cgo+ffmpeg+linux/" rel="prev" title="cgo+ffmpeg+linux的简单使用">
+      <i class="fa fa-chevron-left"></i> cgo+ffmpeg+linux的简单使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/11/24/2020-11-24-webrtc-datachannel-manually/" rel="next" title="webrtc学习笔记-手动建立DataChannel">
+      webrtc学习笔记-手动建立DataChannel <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%B0%83%E7%94%A8c%E5%87%BD%E6%95%B0%E6%9D%A5%E8%BF%9B%E8%A1%8C%E6%88%AA%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">如何调用c函数来进行截图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#c%E5%87%BD%E6%95%B0%E5%A6%82%E4%BD%95%E5%B0%86%E6%88%AA%E5%9B%BE%E5%9B%9E%E8%B0%83%E7%BB%99go"><span class="nav-number">3.</span> <span class="nav-text">c函数如何将截图回调给go</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">3.1.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+&#x2F;&#x2F;export SnapshotCallBackForC
+func SnapshotCallBackForC(taskId, filePath string) &amp;#123;
+	&#x2F;&#x2F; 用于c语言回调，貌似只能这么猥琐的来写了
+    &#x2F;&#x2F; 截图成功则调用这个函数来通知go
+	fmt.Printf(&quot;taskId %s, filePath %s\n&quot;, taskId, filePath)
+&amp;#125;
+</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%AE%A9c%E5%87%BD%E6%95%B0%E6%97%A5%E5%BF%97%E6%89%93%E5%8D%B0%E5%88%B0go%E7%9A%84%E6%97%A5%E5%BF%97%E5%87%BD%E6%95%B0%E4%B8%AD"><span class="nav-number">4.</span> <span class="nav-text">如何让c函数日志打印到go的日志函数中</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go%E5%A6%82%E4%BD%95%E7%AB%8B%E5%8D%B3%E5%81%9C%E6%AD%A2c%E4%B8%AD%E8%BF%90%E8%A1%8C%E7%9A%84%E6%88%AA%E5%9B%BE%E4%BB%BB%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">go如何立即停止c中运行的截图任务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89ffmpeg%E7%9A%84%E6%89%93%E5%8D%B0%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">如何自定义ffmpeg的打印函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96cgo%E7%9A%84%E8%BF%90%E8%A1%8C%E6%95%88%E7%8E%87"><span class="nav-number">7.</span> <span class="nav-text">如何优化cgo的运行效率</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

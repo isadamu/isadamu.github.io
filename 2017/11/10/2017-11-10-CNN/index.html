@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="coursera课程，卷积神经网络笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="卷积神经网络（CNN）笔记">
+<meta property="og:url" content="http://example.com/2017/11/10/2017-11-10-CNN/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="coursera课程，卷积神经网络笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/coursera/CNN_1.png">
+<meta property="og:image" content="http://example.com/images/coursera/CNN_2.png">
+<meta property="og:image" content="http://example.com/images/coursera/CNN_3.png">
+<meta property="article:published_time" content="2017-11-10T05:19:48.000Z">
+<meta property="article:modified_time" content="2017-11-10T08:51:43.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="mechine learning">
+<meta property="article:tag" content="deep learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/coursera/CNN_1.png">
+
+<link rel="canonical" href="http://example.com/2017/11/10/2017-11-10-CNN/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>卷积神经网络（CNN）笔记 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/11/10/2017-11-10-CNN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          卷积神经网络（CNN）笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2017-11-10 13:19:48 / 修改时间：16:51:43" itemprop="dateCreated datePublished" datetime="2017-11-10T13:19:48+08:00">2017-11-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/" itemprop="url" rel="index"><span itemprop="name">coursera</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/deep-learning/" itemprop="url" rel="index"><span itemprop="name">deep learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">coursera课程，卷积神经网络笔记</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="简单描述"><a href="#简单描述" class="headerlink" title="简单描述"></a>简单描述</h2><p><code>Convolutional Neural Networks</code>(CNN)，卷积神经网络主要是为了去解决计算机视觉上的问题，实际上，就是因为
+CNN在计算机视觉上的成功应用，才让它变得这么火。</p>
+<p>学习CNN，不光是为了在计算机视觉上的处理，更为重要的是去理解神经网络中蕴含的道理，事实上，
+会觉得神经网络越来越像是一个搭积木的过程，有着各式各样的积木，你以随意的顺序或结构去搭建它们，
+然后就得到了各式各样的神经网络类型。</p>
+<h2 id="CNN的结构"><a href="#CNN的结构" class="headerlink" title="CNN的结构"></a>CNN的结构</h2><p>CNN其实与全连接神经网络并没有什么太大的区别，它只是在全连接的神经网络中加入了一种新的连接层，<strong>卷积层</strong>。</p>
+<p><img src="/images/coursera/CNN_1.png" alt="image" title="from Andrew Ng"></p>
+<p>如上图，网络先进过一层卷积层（CONV），然后通过一个RELU激活函数，再通过一个POOL层，最后输入到后面的两层全连接层。</p>
+<p>通常CNN的结构就与上图一样，网络首先是一系列的卷积层（包括激活函数与POOL），在网络的最后跟着连接几层的全连接层。</p>
+<h2 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h2><p>这里引用到吴恩达课程作业中的一段演示视频，这一段视频十分的形象，这里引用到它：</p>
+<center>
+<video width="100%" height="100%" src="/images/coursera/conv_kiank.mp4" type="video/mp4" controls></video>
+</center>
+
+
+<p>如上面的视频所示，可以把输入层看作一个矩阵，它的维度为<code>n_H_prev * n_W_prev * n_C_prev</code>（这里先考虑单独一个样本的情况），
+如果这是从输入层开始的话，其中<code>n_H_prev * n_W_prev</code>就可以看成输入图片的<strong>长宽</strong>，
+那么<code>n_C_prev</code>在图片是彩色的情况下就等于<strong>3</strong>，也就是<strong>RGB</strong>三个通道，如果是灰度图，那它就为<strong>1</strong>。
+从英文上来说就是<strong>Height、Weight、Channel</strong>。</p>
+<p>从视频中可以看到这个卷积层中有两个<strong>Filter</strong>，它们之间的运算完全没有关系，对于一个<strong>Filter</strong>来说，它在输入矩阵上从左上角开始，
+左右滑动求取到值，每一次滑动就计算得到一个对应的值。在视频中它计算完毕后就得到一个<strong>3x3</strong>的输出。</p>
+<p>通常情况下，所有<strong>Filter</strong>的维度都是一样的，视频中<strong>Filter</strong>的维度为<code>f * f * n_C_prev</code>，它的深度要与输入的<strong>Channel</strong>数一致
+才能正常的进行计算，所有这里它的第三个维度为<strong>n_C_prev</strong>。设<strong>Filter</strong>对应的输入矩阵上的小格子为 $X$，<strong>Filter</strong>表示为$F$，
+那么它们之间的计算公式为：</p>
+<script type="math/tex; mode=display">
+output = bias + \sum_i^f \sum_j^f \sum_k^{C} X_{(i,j,k)} * F_{(i,j,k)}</script><p>简单来说，就是两个矩阵做点积，然后求和，最后加上一个bias。那么对于一个<strong>Filter</strong>来说，
+它就有 $f \times f \times C + 1$ 个参数。</p>
+<p>最后将每一个<strong>Filter</strong>计算得到的结果作为一个<strong>Channel</strong>，叠在一起，就组成了最后的输出结果。</p>
+<h3 id="Padding"><a href="#Padding" class="headerlink" title="Padding"></a>Padding</h3><p>通过上面的计算步骤，只要<strong>Filter</strong>的长宽不是<strong>1</strong>，输出矩阵的长与宽就一定比输入矩阵的长与宽要小，并且对于矩阵角上的值来说，
+它们参与运算的次数是没有矩阵内部的值参与的次数多的。</p>
+<p>为了不让矩阵长与宽一直变小，让所有值相对公平的参与计算，就可以使用到<strong>Padding</strong>操作。</p>
+<p><img src="/images/coursera/CNN_2.png" alt="image" title="from Andrew Ng"></p>
+<p>它的操作十分简单，就是在矩阵四周补零就可以了。</p>
+<p>通常的深度学习框架中，例如TensorFlow，它在卷积层的参数中可以直接设置<strong>padding</strong>，它有两个取值<code>valid</code>和<code>same</code>，
+其中<code>valid</code>就表示不进行padding，<code>same</code>则是表示进行padding，并且padding的大小刚好保证输入输出的维度大小相同。</p>
+<h3 id="stride"><a href="#stride" class="headerlink" title="stride"></a>stride</h3><p>如上面所说，<strong>Filter</strong>在图片上进行滑动，那么滑动的距离就由<strong>stride</strong>来定义，通常它取值为<strong>1</strong>或<strong>2</strong>。</p>
+<h3 id="输出维度"><a href="#输出维度" class="headerlink" title="输出维度"></a>输出维度</h3><p>进过上面的一顿操作，输出的维度为多少呢？随便就可以推出来，计算输出的维度公式如下：</p>
+<script type="math/tex; mode=display">
+n_H = \left \lfloor \frac{n_{H_{prev}} - f + 2 \times pad }{ stride } \right \rfloor + 1</script><h2 id="POOL层"><a href="#POOL层" class="headerlink" title="POOL层"></a>POOL层</h2><p><strong>POOL层</strong>总是接在卷积层的后面，那么它到的是在干嘛的，它为什么要取名字叫做POOL？在学习卷积神经网络之前一直以为这一层很复杂，
+但是实际上，这一层的操作十分简单。</p>
+<p><img src="/images/coursera/CNN_3.png" alt="image" title="from Andrew Ng"></p>
+<p>如上图所示，左边是<code>Max Pool</code>，右边是<code>Average Pool</code>，它和卷积层的操作几乎一样，也是滑动，每滑动一次计算出一个值。</p>
+<p>它与卷积层操作的区别是它每次取得是区域内的最大值或者是平均值，也就是它计算出的结果只与输入矩阵有关系，
+因为只有输入矩阵的值会参与运算。<strong>另外</strong>，它没有通道的概念，也就是它只有一个通道，所以它不是同时对输入矩阵的多个通道进行操作，
+而是对输入的每个通道分别进行操作。</p>
+<p>所以，输入与输出的维度进行比较的话，长宽通常会发生变化，而深度不会发生变化。</p>
+<p>实际上，通常把POOL层理解为降低数据维度的方法。</p>
+<h2 id="卷积层在做神马？"><a href="#卷积层在做神马？" class="headerlink" title="卷积层在做神马？"></a>卷积层在做神马？</h2><p>在图像中，可以把每一个<strong>Filter</strong>看做一个特征的识别器（毕竟人家名字就叫做<strong>Filter</strong>），或许某个<strong>Filter</strong>的作用就是识别
+一条直线，或者又是识别一个直角等。总之可以把一个<strong>Filter</strong>看成一个特征的识别。</p>
+<p>事实上，全连接网络也能完成卷积层的作用，但是全连接层会带来太多的参数，另外，对于一个卷积层，不知要多少个全连接的网络层才能
+完成与它相同的功能。所以卷积层的出现，带来了图像识别方面的巨大进步。</p>
+<h2 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h2><p>其实<strong>卷积层</strong>与<strong>池化层</strong>的反向传播并不复杂。</p>
+<p>首先注意到<strong>卷积层</strong>，对于它的一个输出值来说，它来源于输入的某一块与其中一个<strong>Filter</strong>运算后得到的结果，那么它对<strong>Filter</strong>
+的求导，就能得到这个<strong>Filter</strong>的一个求导值。</p>
+<p>这样一个一个求取，就能得到每个<strong>Filter</strong>的导数值，进而就能去更新<strong>Filter</strong>的权值。</p>
+<p>对于<strong>POOL层</strong>，它的求导也十分简单，首先对于<strong>Max Pool</strong>，它的一个输出值来自与输入的一个值，那么直接把这个值传回就好。
+对于<strong>Average Pool</strong>，它的一个输出值来源于很多个输入值，并且这些输入值对它的贡献是一样的，所以，将这个输出值平均传回就好。</p>
+<p>未完待续？</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/mechine-learning/" rel="tag"># mechine learning</a>
+              <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/10/10/2017-10-10-java-poi/" rel="prev" title="java使用poi读写excel文件">
+      <i class="fa fa-chevron-left"></i> java使用poi读写excel文件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/17/2017-11-17-SFC/" rel="next" title="SFC分配简单实验">
+      SFC分配简单实验 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简单描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CNN%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">CNN的结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="nav-number">3.</span> <span class="nav-text">卷积层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Padding"><span class="nav-number">3.1.</span> <span class="nav-text">Padding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stride"><span class="nav-number">3.2.</span> <span class="nav-text">stride</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E7%BB%B4%E5%BA%A6"><span class="nav-number">3.3.</span> <span class="nav-text">输出维度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POOL%E5%B1%82"><span class="nav-number">4.</span> <span class="nav-text">POOL层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E5%B1%82%E5%9C%A8%E5%81%9A%E7%A5%9E%E9%A9%AC%EF%BC%9F"><span class="nav-number">5.</span> <span class="nav-text">卷积层在做神马？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="nav-number">6.</span> <span class="nav-text">反向传播</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

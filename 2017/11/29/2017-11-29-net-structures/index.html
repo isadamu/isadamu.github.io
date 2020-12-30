@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Residual Net 以及 Inception Net 的结构笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Residual Net and Inception Net">
+<meta property="og:url" content="http://example.com/2017/11/29/2017-11-29-net-structures/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="Residual Net 以及 Inception Net 的结构笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/paper/ResNet_1.png">
+<meta property="og:image" content="http://example.com/images/paper/ResNet_2.png">
+<meta property="og:image" content="http://example.com/images/paper/ResNet_3.png">
+<meta property="og:image" content="http://example.com/images/paper/ResNet_4.png">
+<meta property="og:image" content="http://example.com/images/paper/ResNet_6.png">
+<meta property="og:image" content="http://example.com/images/paper/ResNet_5.png">
+<meta property="og:image" content="http://example.com/images/paper/Inception_net_0.png">
+<meta property="og:image" content="http://example.com/images/paper/Inception_net_1.png">
+<meta property="og:image" content="http://example.com/images/paper/Inception_net_2.png">
+<meta property="og:image" content="http://example.com/images/paper/Inception_net_3.png">
+<meta property="og:image" content="http://example.com/images/paper/Inception_net_4.png">
+<meta property="og:image" content="http://example.com/images/paper/Inception_net_5.png">
+<meta property="article:published_time" content="2017-11-29T13:45:40.000Z">
+<meta property="article:modified_time" content="2017-11-30T08:06:19.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="deep learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/paper/ResNet_1.png">
+
+<link rel="canonical" href="http://example.com/2017/11/29/2017-11-29-net-structures/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Residual Net and Inception Net | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/11/29/2017-11-29-net-structures/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Residual Net and Inception Net
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-29 21:45:40" itemprop="dateCreated datePublished" datetime="2017-11-29T21:45:40+08:00">2017-11-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-11-30 16:06:19" itemprop="dateModified" datetime="2017-11-30T16:06:19+08:00">2017-11-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/deep-learning/" itemprop="url" rel="index"><span itemprop="name">deep learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Residual Net 以及 Inception Net 的结构笔记</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Residual-Net"><a href="#Residual-Net" class="headerlink" title="Residual Net"></a>Residual Net</h1><p>参考：
+<a target="_blank" rel="noopener" href="https://www.coursera.org/learn/convolutional-neural-networks/lecture/HAhz9/resnets">coursera-convolutional-neural-networks-resnets</a></p>
+<p>论文:
+<a target="_blank" rel="noopener" href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html">He, Kaiming, et al. “Deep residual learning for image recognition.” Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.</a></p>
+<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><div align="center"><img src="/images/paper/ResNet_1.png" style="zoom:70%" title="ResNet结构" /></div>
+
+<p><strong>VGG-19</strong>:2014年ImageNet亚军，top-5错误率7.3%，19层神经网络。（那一年的冠军是InceptionNet，top-5错误率6.7%，22层神经网络）</p>
+<p><strong>plain</strong>:为了与ResNet区分，给中间的网络取名为“平坦”。</p>
+<p><strong>residual</strong>:残差网络。为2015年ImageNet冠军，top-5错误率3.57%，152层神经网络。</p>
+<h2 id="为什么使用残差网络？"><a href="#为什么使用残差网络？" class="headerlink" title="为什么使用残差网络？"></a>为什么使用残差网络？</h2><p><strong>原因</strong>，神经网络现在越来越深，但是简单的堆砌，使得网络深度增加，并不一定能使网络的精度增加。</p>
+<div align="center"><img src="/images/paper/ResNet_2.png" style="zoom:60%" title="误差对比" /></div>
+
+<p>图上56层的神经网络的精度反而比20层的神经网络精度低。</p>
+<p>造成这个问题的原因有：</p>
+<ol>
+<li>梯度消失、梯度爆炸。虽然这个问题很大程度上被<code>normalization</code>解决了，但是可能还是会带来一些影响。</li>
+<li>随着网络深度的增加，网络精度达到饱和，这时再增加网络层数，会使得网络精度迅速下降。这不是由于过拟合而造成的，可能是由于更深的网络更加难训练造成的。</li>
+</ol>
+<p>为此，引入残差网络的结构：</p>
+<div align="center"><img src="/images/paper/ResNet_3.png" style="zoom:60%" title="Residual Block"/></div>
+
+<p>将前几层的输出加到后几层的输出之上，上面的X是经过激活函数之后的输出，F(X)还未经过激活函数，
+F(X)加上X之后再共同的经过激活函数。</p>
+<p>这个结构的直接好处就是，<strong>如果网络精度已经饱和，中间新加入的层没有价值，残差网络将十分容易的将新加入层置为0（也就是F(X)=0，F(X)+X=X），这就不会影响到网络的精度。</strong></p>
+<div align="center"><img src="/images/paper/ResNet_4.png" style="zoom:60%" title="误差对比"/></div>
+
+<p>上面左图中34层的<code>plain</code>网络反而比18层的网络训练精度要低，而对于右图中的<code>ResNet</code>不会存在这种情况，</p>
+<h2 id="对残差网络的另一种理解"><a href="#对残差网络的另一种理解" class="headerlink" title="对残差网络的另一种理解"></a>对残差网络的另一种理解</h2><p>文献：<a target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Andreas_Veit/publication/303409435_Residual_Networks_are_Exponential_Ensembles_of_Relatively_Shallow_Networks/links/57e2985b08aefabc9bb886c8/Residual-Networks-are-Exponential-Ensembles-of-Relatively-Shallow-Networks.pdf">Veit, Andreas, Michael Wilber, and Serge Belongie. “Residual networks are exponential ensembles of relatively shallow networks.” arXiv preprint arXiv:1605.06431 1 (2016).</a></p>
+<p>通过下图可以表现出残差网络的另一种形式：</p>
+<div align="center"><img src="/images/paper/ResNet_6.png" style="zoom:60%" title="Residual Blocks"/></div>
+
+<p>把左图变形一下就变成右图，那么这里注意到<strong>残差网络其实就相当于是多个网络的叠加，结果就相当于是这些网络一起投票投出来的，有一种Ensembling的意思在里面。</strong></p>
+<h2 id="实现上的一些技巧"><a href="#实现上的一些技巧" class="headerlink" title="实现上的一些技巧"></a>实现上的一些技巧</h2><p>在实际的残差网络实现中，有一些技巧：</p>
+<div align="center"><img src="/images/paper/ResNet_5.png" style="zoom:60%" title="Residual Blocks"/></div>
+
+<p><strong>限制</strong>，进入<code>block</code>的输入与出去<code>block</code>的输出维度要一致，包括长、宽以及深度。那么图中的卷积使用的都是<code>same</code>，也就是保持长宽不变的卷积。</p>
+<p><strong>技巧</strong>，假设这里输入长宽是<code>64 x 64</code>，那么对于右图来说，如果没有前后的<code>1 x 1 x 64</code>、<code>1 x 1 x 256</code>的两个卷积，输入直接进行<code>3 x 3 x 256</code>的卷积:</p>
+<script type="math/tex; mode=display">
+Calculation = 64 \times 64 \times 3 \times 3 \times 256 \times 256 = 24'1591'9104</script><p>加上<code>1 x 1 x 64</code>、<code>1 x 1 x 256</code>两个卷积层：</p>
+<script type="math/tex; mode=display">
+\begin{equation}\begin{split}
+Calculation &= 64 \times 64 \times 1 \times 1 \times 256 \times 64 +
+64 \times 64 \times 3 \times 3 \times 64 \times 64 + 
+64 \times 64 \times 1 \times 1 \times 64 \times 256 \\
+&= 67108864 + 150994944 + 67108864 \\
+&= 2'8521'2672
+\end{split}\end{equation}</script><p>通过这样的方法，计算量可以减少一个数量级，其中<code>1 x 1 x 64</code>的卷积把它称为<code>bottleneck</code>，它在这就类似于一个瓶颈。<strong>在实际中表明，</strong>这样的方法并不会对神经网络的精度造成损害，所以通常使用这样的方式来构建block，降低计算量。</p>
+<hr>
+<hr>
+<h1 id="Incepution-Net"><a href="#Incepution-Net" class="headerlink" title="Incepution Net"></a>Incepution Net</h1><p>2014年ImageNet冠军，top-5错误率6.7%，22层神经网络。那么实际上<code>Incepution Net</code>比<code>residual net</code>要早。</p>
+<div align="center"><img src="/images/paper/Inception_net_0.png" style="zoom:70%" title="We need to go deeper"/></div>
+
+<p>论文：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1409.4842">Going Deeper with Convolutions,2014</a></p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1512.00567">Rethinking the Inception Architecture for Computer Vision,2015</a></p>
+<h2 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h2><p>在进行一次卷积操作时，不知道该选择<code>1 x 1</code>还是<code>3 x 3</code>还是<code>5 x 5</code>，怎么办？<strong>答：那么就在一层里面把它们全部都用上。</strong></p>
+<div align="center"><img src="/images/paper/Inception_net_1.png" style="zoom:70%" title="Inception module"/></div>
+
+<p>在同一层里面使用<code>1 x 1</code>、<code>3 x 3</code>、<code>5 x 5</code>以及<code>max pooling</code>，它们都使用<code>same</code>的卷积方式，
+最后将它们的结果<strong>叠</strong>在一起就可以了。</p>
+<p>同样的，这里也可以使用降维的思想（它的思想在ResNet之前）：</p>
+<div align="center"><img src="/images/paper/Inception_net_2.png" style="zoom:70%" title="Inception module with dimensionality reduction"/></div>
+
+<p>中间加入了几个<code>1 x 1</code>卷积，用于降低总的计算量。</p>
+<p>比赛中使用的网络叫做<strong>GoogLeNet</strong>，整个网络的结构如下：</p>
+<div align="center"><img src="/images/paper/Inception_net_3.png" style="zoom:90%" title="GoogLeNet"/></div>
+
+<p>注意到中间有两个额外的输出，<strong>这是为了避免梯度消失，网络额外增加了2个辅助的softmax用于向前传导梯度。</strong>（博客上面看的，具体文章中还没看）</p>
+<h2 id="升级版本"><a href="#升级版本" class="headerlink" title="升级版本"></a>升级版本</h2><p>在<code>Rethinking the Inception Architecture for Computer Vision,2015</code>这篇文章中有新的思路，目前还没有看。</p>
+<div align="center"><img src="/images/paper/Inception_net_4.png" style="zoom:80%" title="Inception modules after the factorization of the n x n convolutions"/></div>
+
+<p>其中大概多了下面的操作：</p>
+<div align="center"><img src="/images/paper/Inception_net_5.png" style="zoom:80%" title="New module"/></div>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/11/28/2017-11-28-Sibyl/" rel="prev" title="Sibyl 论文笔记">
+      <i class="fa fa-chevron-left"></i> Sibyl 论文笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/12/08/2017-12-08-html-color/" rel="next" title="HTML颜色表">
+      HTML颜色表 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Residual-Net"><span class="nav-number">1.</span> <span class="nav-text">Residual Net</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E6%AE%8B%E5%B7%AE%E7%BD%91%E7%BB%9C%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">为什么使用残差网络？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AE%8B%E5%B7%AE%E7%BD%91%E7%BB%9C%E7%9A%84%E5%8F%A6%E4%B8%80%E7%A7%8D%E7%90%86%E8%A7%A3"><span class="nav-number">1.3.</span> <span class="nav-text">对残差网络的另一种理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%8A%E7%9A%84%E4%B8%80%E4%BA%9B%E6%8A%80%E5%B7%A7"><span class="nav-number">1.4.</span> <span class="nav-text">实现上的一些技巧</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Incepution-Net"><span class="nav-number">2.</span> <span class="nav-text">Incepution Net</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84-1"><span class="nav-number">2.1.</span> <span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E7%89%88%E6%9C%AC"><span class="nav-number">2.2.</span> <span class="nav-text">升级版本</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

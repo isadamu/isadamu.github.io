@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Coursera deep-learning part-2 week-2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mini-batch 和 权重更新策略">
+<meta property="og:url" content="http://example.com/2017/08/29/2017-08-29-dnn_3/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="Coursera deep-learning part-2 week-2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/coursera/mini-advance_1.png">
+<meta property="og:image" content="http://example.com/images/coursera/mini-advance_2.png">
+<meta property="og:image" content="http://example.com/images/coursera/mini-advance_3.png">
+<meta property="og:image" content="http://example.com/images/coursera/mini-advance_6.png">
+<meta property="og:image" content="http://example.com/images/coursera/mini-advance_4.png">
+<meta property="og:image" content="http://example.com/images/coursera/mini-advance_5.png">
+<meta property="article:published_time" content="2017-08-29T03:13:44.000Z">
+<meta property="article:modified_time" content="2017-10-30T10:44:53.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="mechine learning">
+<meta property="article:tag" content="deep learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/coursera/mini-advance_1.png">
+
+<link rel="canonical" href="http://example.com/2017/08/29/2017-08-29-dnn_3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Mini-batch 和 权重更新策略 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/08/29/2017-08-29-dnn_3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mini-batch 和 权重更新策略
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-29 11:13:44" itemprop="dateCreated datePublished" datetime="2017-08-29T11:13:44+08:00">2017-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-10-30 18:44:53" itemprop="dateModified" datetime="2017-10-30T18:44:53+08:00">2017-10-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/" itemprop="url" rel="index"><span itemprop="name">coursera</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/deep-learning/" itemprop="url" rel="index"><span itemprop="name">deep learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Coursera deep-learning part-2 week-2</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
+<ol>
+<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
+<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
+<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
+</ol>
+<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
+这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
+另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
+<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
+虽然这样计算块，更新快，但是随机性也太大了。</p>
+<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
+每次计算不会太复杂，也能降低一点随机性。</p>
+<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
+选取<strong>64、128、256、512</strong>。</p>
+<hr>
+<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
+<p><strong>Exponentially weighted averages:</strong></p>
+<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
+<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
+<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
+<script type="math/tex; mode=display">
+v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
+当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
+<p>大概平均的天数为：</p>
+<script type="math/tex; mode=display">
+days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
+<p>计算时，就一步一步运算就行了，</p>
+<script type="math/tex; mode=display">
+v_\theta = 0</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
+...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
+<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
+<p>所以，这里需要加入<code>Bias correction</code>，</p>
+<script type="math/tex; mode=display">
+v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
+这样，就能矫正这个初始值太低的问题。</p>
+<p><strong>Momentum:</strong></p>
+<p>属于权重更新的初级魔法：</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
+w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
+b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
+<p><strong>RMSprop:</strong></p>
+<p>属于权重更新的中级魔法：</p>
+<script type="math/tex; mode=display">
+S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
+<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
+<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
+<script type="math/tex; mode=display">
+Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
+V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
+V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
+S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
+<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
+<p>另外这里还要用到矫正：</p>
+<script type="math/tex; mode=display">
+V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
+S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
+<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
+<hr>
+<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
+<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
+<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
+另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
+<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
+<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
+<p>首选的策略是：</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
+<script type="math/tex; mode=display">
+\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
+<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
+<hr>
+<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
+<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
+<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
+它更像是下面的马鞍面，</p>
+<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
+<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
+模型因为各种措施，它也并不会卡在这个点上。</p>
+<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/mechine-learning/" rel="tag"># mechine learning</a>
+              <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/25/2017-08-25-dnn_2/" rel="prev" title="神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查等等">
+      <i class="fa fa-chevron-left"></i> 神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查等等
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/29/2017-08-29-dnn_4/" rel="next" title="Hyperparameter tuning, Batch Norm and TensorFlow">
+      Hyperparameter tuning, Batch Norm and TensorFlow <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mini-batch"><span class="nav-number">1.</span> <span class="nav-text">Mini-batch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%87%8D%E6%9B%B4%E6%96%B0"><span class="nav-number">2.</span> <span class="nav-text">权重更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Learning-rate-decay"><span class="nav-number">3.</span> <span class="nav-text">Learning rate decay</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%B1%80%E9%83%A8%E6%9C%80%E4%BC%98"><span class="nav-number">4.</span> <span class="nav-text">关于局部最优</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

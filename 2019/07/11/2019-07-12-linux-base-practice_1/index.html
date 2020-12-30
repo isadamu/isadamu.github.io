@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="centos上的一些linux基本命令的训练">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux基础练习-1">
+<meta property="og:url" content="http://example.com/2019/07/11/2019-07-12-linux-base-practice_1/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="centos上的一些linux基本命令的训练">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2019-08-23T08:14:35.920Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="centos">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2019/07/11/2019-07-12-linux-base-practice_1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>linux基础练习-1 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/07/11/2019-07-12-linux-base-practice_1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux基础练习-1
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-11 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-11T00:00:00+08:00">2019-07-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-23 16:14:35" itemprop="dateModified" datetime="2019-08-23T16:14:35+08:00">2019-08-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">centos上的一些linux基本命令的训练</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="创建文件并挂载到swap"><a href="#创建文件并挂载到swap" class="headerlink" title="创建文件并挂载到swap"></a>创建文件并挂载到swap</h2><p>通过<code>free</code>命令查看当前内存使用情况：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ free -m</span><br><span class="line"></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line"><span class="function">Mem:           3790         122        3467           8         200        3435</span></span><br><span class="line"><span class="function"><span class="title">Swap</span>:          3071           0        3071</span></span><br></pre></td></tr></table></figure>
+<p>首先，需要使用<code>dd</code>命令创建一个固定大小的空文件:</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ dd <span class="keyword">if</span>=/dev/zero of=test.file bs=<span class="number">1</span>M count=<span class="number">1024</span></span><br><span class="line"></span><br><span class="line"><span class="number">1024</span>+<span class="number">0</span> records <span class="keyword">in</span></span><br><span class="line"><span class="number">1024</span>+<span class="number">0</span> records out</span><br><span class="line"><span class="number">1073741824</span> bytes (<span class="number">1</span>.<span class="number">1</span> GB) copied, <span class="number">0</span>.<span class="number">696093</span> s, <span class="number">1</span>.<span class="number">5</span> GB/s</span><br></pre></td></tr></table></figure>
+<p>以上命令就创建了一个大小为1G的文件<code>test.file</code>。</p>
+<p>注意到其中<code>if=/dev/zero</code>就是指定输入文件为<code>/dev/zero</code>，类似的还有<code>/dev/null</code>、<code>/dev/random</code>、<code>/dev/urandom</code>。</p>
+<ul>
+<li><code>/dev/null</code>，“空”设备，也有人称它为黑洞。任何输入到这个“设备”的数据都将被直接丢弃。最常用的用法是把不需要的输出重定向到这个文件。</li>
+<li><code>/dev/zero</code>，“零”设备，可以无限的提供空字符（0x00，ASCII代码NUL）。常用来生成一个特定大小的文件。</li>
+<li><code>/dev/random</code>，随机数设备，提供不间断的随机字节流。产生随机数据依赖系统中断，当系统中断不足时，/dev/random设备会“挂起”，因而产生数据速度较慢，但随机性好。</li>
+<li><code>/dev/urandom</code>，随机数设备，提供不间断的随机字节流。不依赖系统中断，数据产生速度快，但随机性较低。</li>
+</ul>
+<p>然后，将这个文件转换为swap格式，并挂载：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ mkswap test.file</span><br><span class="line"></span><br><span class="line">Setting up swapspace version <span class="number">1</span>, size = <span class="number">1048572</span> KiB</span><br><span class="line"><span class="function">no label, <span class="title">UUID</span>=<span class="title">ddb65a66</span>-7<span class="title">f6b</span>-4394-8014-8<span class="title">ad22a10a953</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ swapon test.file</span><br><span class="line"></span><br><span class="line"><span class="function">swapon: /<span class="title">home</span>/<span class="title">long</span>/<span class="title">test.file</span>: <span class="title">insecure</span> <span class="title">permissions</span> 0664, 0600 <span class="title">suggested</span>.</span></span><br><span class="line"><span class="function"><span class="title">swapon</span>: /<span class="title">home</span>/<span class="title">long</span>/<span class="title">test.file</span>: <span class="title">insecure</span> <span class="title">file</span> <span class="title">owner</span> 1000, 0 (<span class="title">root</span>) <span class="title">suggested</span>.</span></span><br></pre></td></tr></table></figure>
+<p>再次通过<code>free</code>命令查看当前内存使用情况：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ free -m</span><br><span class="line"></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line"><span class="function">Mem:           3790         122        2414           8        1252        3408</span></span><br><span class="line"><span class="function"><span class="title">Swap</span>:          4095           0        4095</span></span><br></pre></td></tr></table></figure>
+<p>可以看到swap空间增加了1G。</p>
+<p>也许你想要将这个swap文件开机自动挂起：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/fstab</span><br><span class="line"></span><br><span class="line">在文件中添加一行：</span><br><span class="line">/home/long/test.file swap swap defaults <span class="number">0</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>重启之后可以看到：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ free -m</span><br><span class="line"></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line"><span class="function">Mem:           3790         123        3462           8         205        3433</span></span><br><span class="line"><span class="function"><span class="title">Swap</span>:          4095           0        4095</span></span><br><span class="line"><span class="function"></span></span><br></pre></td></tr></table></figure>
+<p>可以看到完成了开机自动挂载。</p>
+<p>最后，可以相应的通过使用<code>swapoff</code>命令来进行卸载：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ swapoff test.file</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$ free -m</span><br><span class="line"></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line"><span class="function">Mem:           3790         117        3486           8         186        3448</span></span><br><span class="line"><span class="function"><span class="title">Swap</span>:          3071           0        3071</span></span><br></pre></td></tr></table></figure>
+<p>当然还要<strong>删除</strong><code>/etc/fstab</code>中的开机自动挂载的命令。</p>
+<hr>
+<h2 id="配置静态ip，重启后也能生效，系统可以访问公网"><a href="#配置静态ip，重启后也能生效，系统可以访问公网" class="headerlink" title="配置静态ip，重启后也能生效，系统可以访问公网"></a>配置静态ip，重启后也能生效，系统可以访问公网</h2><p>首先使用<code>ip addr</code>查询当前接口：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ ip addr</span><br><span class="line"></span><br><span class="line"><span class="number">1</span>: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span class="number">65536</span> qdisc noqueue state UNKNOWN group default qlen <span class="number">1000</span></span><br><span class="line">    link/loopback <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> brd <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">    inet <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>/<span class="number">8</span> scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::<span class="number">1</span>/<span class="number">128</span> scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line"><span class="number">2</span>: enp0s3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span class="number">1500</span> qdisc pfifo_fast state UNKNOWN group default qlen <span class="number">1000</span></span><br><span class="line">    link/ether <span class="number">08</span>:<span class="number">00</span>:<span class="number">27</span>:<span class="number">26</span>:e4:<span class="number">08</span> brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet <span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">202</span>/<span class="number">24</span> brd <span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">255</span> scope global noprefixroute enp0s3</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::ac:cc04:a87b:<span class="number">74</span>ae/<span class="number">64</span> scope link noprefixroute </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<p>可以看到网卡名为<code>enp0s3</code>，网卡的配置文件在<code>/etc/sysconfig/network-script/</code>目录下，
+在其中可以看到当前的网卡配置：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ cat /etc/sysconfig/network-scripts/ifcfg-enp0s3</span><br><span class="line"></span><br><span class="line"><span class="built_in">TYPE</span>=Ethernet</span><br><span class="line">PROXY_METHOD=none</span><br><span class="line">BROWSER_ONLY=no</span><br><span class="line">BOOTPROTO=dhcp</span><br><span class="line">DEFROUTE=yes</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">IPV6INIT=yes</span><br><span class="line">IPV6_AUTOCONF=yes</span><br><span class="line">IPV6_DEFROUTE=yes</span><br><span class="line">IPV6_FAILURE_FATAL=no</span><br><span class="line">IPV6_ADDR_GEN_MODE=stable-privacy</span><br><span class="line">NAME=enp0s3</span><br><span class="line">UUID=<span class="number">0</span>ee98256-fc86-<span class="number">4</span>fbf-aba5-<span class="number">8</span>c46e914fa89</span><br><span class="line">DEVICE=enp0s3</span><br><span class="line">ONBOOT=yes</span><br><span class="line">DNS1=<span class="number">8</span>.<span class="number">8</span>.<span class="number">8</span>.<span class="number">8</span></span><br><span class="line">DNS2=<span class="number">9</span>.<span class="number">9</span>.<span class="number">9</span>.<span class="number">9</span></span><br></pre></td></tr></table></figure>
+<p>将其中的<code>BOOTPROTO</code>修改为<code>static</code>，再加入静态ip的相关配置，如下：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BOOTPROTO=static</span><br><span class="line">IPADDR=<span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">202</span></span><br><span class="line">NETMASK=<span class="number">255</span>.<span class="number">255</span>.<span class="number">255</span>.<span class="number">0</span></span><br><span class="line">GATEWAY=<span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">254</span></span><br></pre></td></tr></table></figure>
+<p>重启网络服务：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl restart network</span><br><span class="line"></span><br><span class="line">$ ip addr</span><br><span class="line"></span><br><span class="line"><span class="number">1</span>: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span class="number">65536</span> qdisc noqueue state UNKNOWN group default qlen <span class="number">1000</span></span><br><span class="line">    link/loopback <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> brd <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">    inet <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>/<span class="number">8</span> scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::<span class="number">1</span>/<span class="number">128</span> scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line"><span class="number">2</span>: enp0s3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span class="number">1500</span> qdisc pfifo_fast state UNKNOWN group default qlen <span class="number">1000</span></span><br><span class="line">    link/ether <span class="number">08</span>:<span class="number">00</span>:<span class="number">27</span>:<span class="number">26</span>:e4:<span class="number">08</span> brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet <span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">202</span>/<span class="number">24</span> brd <span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">255</span> scope global noprefixroute enp0s3</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::ac:cc04:a87b:<span class="number">74</span>ae/<span class="number">64</span> scope link noprefixroute </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<p>可以看到已经完成了静态ip的设置，测试连通性：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ping</span> www.baidu.com</span><br><span class="line"></span><br><span class="line"><span class="built_in">PING</span> www.a.shifen.com (<span class="number">14</span>.<span class="number">215</span>.<span class="number">177</span>.<span class="number">38</span>) <span class="number">56</span>(<span class="number">84</span>) bytes of data.</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">14</span>.<span class="number">215</span>.<span class="number">177</span>.<span class="number">38</span> (<span class="number">14</span>.<span class="number">215</span>.<span class="number">177</span>.<span class="number">38</span>): icmp_seq=<span class="number">1</span> ttl=<span class="number">53</span> <span class="built_in">time</span>=<span class="number">7</span>.<span class="number">23</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">14</span>.<span class="number">215</span>.<span class="number">177</span>.<span class="number">38</span> (<span class="number">14</span>.<span class="number">215</span>.<span class="number">177</span>.<span class="number">38</span>): icmp_seq=<span class="number">2</span> ttl=<span class="number">53</span> <span class="built_in">time</span>=<span class="number">6</span>.<span class="number">77</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">14</span>.<span class="number">215</span>.<span class="number">177</span>.<span class="number">38</span> (<span class="number">14</span>.<span class="number">215</span>.<span class="number">177</span>.<span class="number">38</span>): icmp_seq=<span class="number">3</span> ttl=<span class="number">53</span> <span class="built_in">time</span>=<span class="number">7</span>.<span class="number">00</span> ms</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>可以看到网络连接正常，也就完成了静态ip的设置。</p>
+<p><strong>问题：</strong></p>
+<p>在测试连通性的过程中，会发现主机（win 10）可以ping通虚拟机（centos7.5），但是虚拟机却无法ping通主机，
+通过查询博客，发现问题主要是由于win10自带的防火墙造成的，可以通过以下方法来解决这个问题：</p>
+<ul>
+<li>控制面板-系统和安全-Windows Defender防火墙-高级设置-入站规则-文件和打印机共享(回显请求 - ICMPv4-In)</li>
+</ul>
+<p>将两条上面名字的入站规则启用，虚拟机就可以向外ping通主机了。</p>
+<hr>
+<h2 id="手动释放掉系统的全部buffer-cache，使得内存的free增加"><a href="#手动释放掉系统的全部buffer-cache，使得内存的free增加" class="headerlink" title="手动释放掉系统的全部buffer/cache，使得内存的free增加"></a>手动释放掉系统的全部buffer/cache，使得内存的free增加</h2><p>这里需要手动释放内存，主要涉及到的文件就是<code>/proc/sys/vm/drop_caches</code>，通过查询可以了解到，
+“/proc/sys是一个虚拟文件系统，可以通过对它的读写操作做为与kernel实体间进行通信的一种手段”，
+可以对它进行不同的修改来让内核释放内存：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Writing to this file causes the kernel to drop clean caches,</span><br><span class="line">dentries and inodes from memory, causing that memory to become free.</span><br><span class="line"></span><br><span class="line">To free pagecache, use</span><br><span class="line">    </span><br><span class="line">    echo 1 &gt; &#x2F;proc&#x2F;sys&#x2F;vm&#x2F;drop_caches;</span><br><span class="line"></span><br><span class="line">to free dentries and inodes, use</span><br><span class="line"></span><br><span class="line">    echo 2 &gt; &#x2F;proc&#x2F;sys&#x2F;vm&#x2F;drop_caches;</span><br><span class="line"></span><br><span class="line">to free pagecache, dentries and inodes, use</span><br><span class="line"></span><br><span class="line">    echo 3 &gt;&#x2F;proc&#x2F;sys&#x2F;vm&#x2F;drop_caches.</span><br><span class="line"></span><br><span class="line">Because this is a non-destructive operation and dirty objects </span><br><span class="line">are not freeable, the user should run sync first.</span><br></pre></td></tr></table></figure>
+<p>可以看到，这里建议在清除内存之间执行<code>sync</code>命令，它将”将有关文件系统的存储器常驻信息送入物理介质内”。</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ free -h</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line"><span class="function">Mem:           3.7<span class="title">G</span>        115<span class="title">M</span>        3.4<span class="title">G</span>        8.5<span class="title">M</span>        161<span class="title">M</span>        3.4<span class="title">G</span></span></span><br><span class="line"><span class="function"><span class="title">Swap</span>:          3.0<span class="title">G</span>          0<span class="title">B</span>        3.0<span class="title">G</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">$ <span class="title">sync</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">$ <span class="title">echo</span> 1 &gt; /<span class="title">proc</span>/<span class="title">sys</span>/<span class="title">vm</span>/<span class="title">drop_caches</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">$ <span class="title">free</span> -<span class="title">h</span></span></span><br><span class="line"><span class="function">              <span class="title">total</span>        <span class="title">used</span>        <span class="title">free</span>      <span class="title">shared</span>  <span class="title">buff</span>/<span class="title">cache</span>   <span class="title">available</span></span></span><br><span class="line"><span class="function"><span class="title">Mem</span>:           3.7<span class="title">G</span>        116<span class="title">M</span>        3.5<span class="title">G</span>        8.5<span class="title">M</span>         89<span class="title">M</span>        3.4<span class="title">G</span></span></span><br><span class="line"><span class="function"><span class="title">Swap</span>:          3.0<span class="title">G</span>          0<span class="title">B</span>        3.0<span class="title">G</span></span></span><br><span class="line"><span class="function"></span></span><br></pre></td></tr></table></figure>
+<p>可以看到<code>buff/cache</code>从<code>161M</code>变化到了<code>89M</code>。</p>
+<hr>
+<h2 id="使用systemd的管理方式定制一个开机启动服务"><a href="#使用systemd的管理方式定制一个开机启动服务" class="headerlink" title="使用systemd的管理方式定制一个开机启动服务"></a>使用systemd的管理方式定制一个开机启动服务</h2><p><strong>原理：</strong></p>
+<p>systemctl的每一个服务对应一个服务配置文件，以<code>.service</code>结尾，所有有效的服务配置文件默认存放在两个地方，
+<code>/usr/lib/systemd/system/</code>这个目录存放的是服务的真实配置文件，<code>/etc/systemd/system/</code>这个目录存放的是
+开机自启动的服务，多数为软连接。</p>
+<p>启动顺序：</p>
+<ol>
+<li><p>当运行systemctl命令时，systemctl先去上面/etc/systemd/system目录中找目标service文件，找不到则
+去/usr/lib/systemd/system/中找，还找不到就失败。</p>
+</li>
+<li><p>找到service后，会读取service文件并将@后面的参数传给服务。</p>
+</li>
+<li><p>开始监控这个服务，接管它的基本操作。</p>
+</li>
+</ol>
+<hr>
+<p><strong>目标：</strong></p>
+<p>建立一个开机启动服务，每次开机时打印当前时间到<code>/tmp/hello</code>。</p>
+<hr>
+<p>首先，写好shell脚本：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cat my_hello.sh</span><br><span class="line"></span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line"><span class="built_in">date</span> +&quot;<span class="variable">%Y-%</span>m-%d <span class="variable">%H:%</span>M:%S --- hello systemd&quot; &gt;&gt; /tmp/hello</span><br></pre></td></tr></table></figure>
+<p>然后，编写服务脚本：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ cat my_hello.service</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=systemd test</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line"><span class="built_in">Type</span>=simple</span><br><span class="line">ExecStart=/home/long/my_hello.sh</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>可以看到这里将<strong>Type</strong>指定为<code>simple</code>，将<code>my_hello.sh</code>作为启动脚本。
+更多的<strong>Type</strong>可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/yuesichiu/article/details/51485147">CentOS 7之Systemd详解之服务单元设置system.service</a>。</p>
+<p>将服务脚本复制到<code>/usr/lib/systemd/system/</code>目录下：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cp my_hello.service /usr/lib/systemd/system/</span><br></pre></td></tr></table></figure>
+<p>启动服务看是否能够成功：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl <span class="built_in">start</span> my_hello</span><br><span class="line"></span><br><span class="line">$ cat /tmp/hello</span><br><span class="line"></span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">12</span> <span class="number">15</span>:<span class="number">23</span>:<span class="number">33</span> --- hello systemd</span><br></pre></td></tr></table></figure>
+<p>可以看到服务启动成功，下面将它设置为开机自启：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl enable my_hello</span><br><span class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/my_hello.service</span><br><span class="line">to /usr/lib/systemd/system/my_hello.service.</span><br></pre></td></tr></table></figure>
+<p>可以看到它为服务在<code>/etc/systemd/system</code>目录下创建了软连接。</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ reboot</span><br><span class="line"></span><br><span class="line">$ cat /tmp/hello</span><br><span class="line"></span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">12</span> <span class="number">15</span>:<span class="number">23</span>:<span class="number">33</span> --- hello systemd</span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">12</span> <span class="number">15</span>:<span class="number">35</span>:<span class="number">44</span> --- hello systemd</span><br></pre></td></tr></table></figure>
+<p>可以看到服务自启动成功。</p>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_26058371/article/details/86754683">Linux中的虚拟设备/dev/null、/dev/zero、/dev/random和/dev/urandom</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c5344cfffc20">VirtualBox虚拟机ping不通宿主机解决方案</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/016f7cf0380d">echo N&gt;/proc/sys/vm/drop_caches清理缓存</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/vict_wang/article/details/81099544">Linux sync命令的作用</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhouhbing/p/3909408.html">Linux sync命令的作用分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/yuesichiu/article/details/51485147">CentOS 7之Systemd详解之服务单元设置system.service</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/centos/" rel="tag"># centos</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/19/2018-07-19-java-array-copy-bench/" rel="prev" title="Java数组拷贝Benchmark">
+      <i class="fa fa-chevron-left"></i> Java数组拷贝Benchmark
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/15/2019-07-15-linux-base-practice_2/" rel="next" title="linux基础练习-2">
+      linux基础练习-2 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E5%B9%B6%E6%8C%82%E8%BD%BD%E5%88%B0swap"><span class="nav-number">1.</span> <span class="nav-text">创建文件并挂载到swap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip%EF%BC%8C%E9%87%8D%E5%90%AF%E5%90%8E%E4%B9%9F%E8%83%BD%E7%94%9F%E6%95%88%EF%BC%8C%E7%B3%BB%E7%BB%9F%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E5%85%AC%E7%BD%91"><span class="nav-number">2.</span> <span class="nav-text">配置静态ip，重启后也能生效，系统可以访问公网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BE%E6%8E%89%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%85%A8%E9%83%A8buffer-cache%EF%BC%8C%E4%BD%BF%E5%BE%97%E5%86%85%E5%AD%98%E7%9A%84free%E5%A2%9E%E5%8A%A0"><span class="nav-number">3.</span> <span class="nav-text">手动释放掉系统的全部buffer&#x2F;cache，使得内存的free增加</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8systemd%E7%9A%84%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F%E5%AE%9A%E5%88%B6%E4%B8%80%E4%B8%AA%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">使用systemd的管理方式定制一个开机启动服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

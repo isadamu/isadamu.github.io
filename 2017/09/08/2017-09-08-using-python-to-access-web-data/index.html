@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="课程的第三个子课程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using Python to Access Web Data 笔记">
+<meta property="og:url" content="http://example.com/2017/09/08/2017-09-08-using-python-to-access-web-data/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="课程的第三个子课程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-09-08T07:24:50.000Z">
+<meta property="article:modified_time" content="2017-09-12T05:03:27.000Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2017/09/08/2017-09-08-using-python-to-access-web-data/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Using Python to Access Web Data 笔记 | 龙</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/09/08/2017-09-08-using-python-to-access-web-data/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Using Python to Access Web Data 笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-08 15:24:50" itemprop="dateCreated datePublished" datetime="2017-09-08T15:24:50+08:00">2017-09-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-09-12 13:03:27" itemprop="dateModified" datetime="2017-09-12T13:03:27+08:00">2017-09-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/" itemprop="url" rel="index"><span itemprop="name">coursera</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/coursera/python-for-everybody/" itemprop="url" rel="index"><span itemprop="name">python for everybody</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">课程的第三个子课程。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>前两个子课程的笔记就不记了，因为非常的基础。</strong></p>
+<hr>
+<h2 id="Regular-Expressions"><a href="#Regular-Expressions" class="headerlink" title="Regular Expressions"></a>Regular Expressions</h2><p>正则表达式之前就没好好学，这里正好可以学一下。</p>
+<p>首先<strong>python</strong>中的正则表达式和<strong>java</strong>中基本一致，也可以说所有编程语言中的正则表达式其实都是差不多的，还可以说正则表达式是一个独立的特征，这些语言都要支持这个特征。所有学习的是哪一门语言的正则表达式并不关键。</p>
+<p>首先，官方文档<a target="_blank" rel="noopener" href="https://docs.python.org/3/howto/regex.html">Regular Expression HOWTO</a>。</p>
+<p>课程资料中所列：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>character</th>
+<th>mean</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^</td>
+<td>Matches the beginning of a line</td>
+</tr>
+<tr>
+<td>$</td>
+<td>Matches the end of the line</td>
+</tr>
+<tr>
+<td>.</td>
+<td>Matches any character</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>Matches whitespace</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>Matches any non-whitespace character</td>
+</tr>
+<tr>
+<td>*</td>
+<td>Repeats a character zero or more times</td>
+</tr>
+<tr>
+<td><code>*?</code></td>
+<td>Repeats a character zero or more times (non-greedy)</td>
+</tr>
+<tr>
+<td>+</td>
+<td>Repeats a character one or more times</td>
+</tr>
+<tr>
+<td>+?</td>
+<td>Repeats a character one or more times (non-greedy)</td>
+</tr>
+<tr>
+<td>[aeiou]</td>
+<td>Matches a single character in the listed set</td>
+</tr>
+<tr>
+<td><sup><a href="#fn_XYZ" id="reffn_XYZ">XYZ</a></sup></td>
+<td>Matches a single character not in the listed set</td>
+</tr>
+<tr>
+<td>[a-z0-9]</td>
+<td>The set of characters can include a range</td>
+</tr>
+<tr>
+<td>(</td>
+<td>Indicates where string extraction is to start</td>
+</tr>
+<tr>
+<td>)</td>
+<td>Indicates where string extraction is to end</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>使用正则表达式需要导包：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br></pre></td></tr></table></figure>
+<p>函数以及语法直接看官方文档吧,<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/re.html#module-re">Regular expression operations</a></p>
+<p>直接上题：</p>
+<p><strong>题目：extract all the numbers in the file and compute the sum of the numbers</strong></p>
+<p>代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;test.txt&#x27;</span>) <span class="comment"># 测试文件</span></span><br><span class="line">one_line = file.read()  <span class="comment"># 把文件读成一行</span></span><br><span class="line">nums = re.findall(<span class="string">&#x27;[^0-9]*([0-9]+)[^0-9]*&#x27;</span>, one_line) <span class="comment"># 取出所有整数</span></span><br><span class="line"></span><br><span class="line">print(<span class="built_in">len</span>(nums))</span><br><span class="line">total = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> nums:</span><br><span class="line">    total += <span class="built_in">int</span>(num)</span><br><span class="line">    print(<span class="string">&#x27;$&#x27;</span>,num)</span><br><span class="line"></span><br><span class="line">print(total)</span><br></pre></td></tr></table></figure>
+<p>这里的正则表达式为<code>[^0-9]*([0-9]+)[^0-9]*</code>，也就是中间数字，前后存在除了数字之外的任意字符。</p>
+<p>虽然上面的逻辑十分简单并且正确，但是最开始我并不是这样写的，我最开始想的是<code>[^0-9]([0-9]+)[^0-9]</code>，
+数字前后一定存在一个非数字字符，<strong>but对于例子：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Why should you learn to write programs? 7746</span><br><span class="line">12 1929 8827</span><br><span class="line">Writing programs (or programming) is a very creative</span><br><span class="line">7 and rewarding activity.  You can write programs for</span><br><span class="line">many reasons, ranging from making your living to solving</span><br><span class="line">8837 a difficult data analysis problem to having fun to helping 128</span><br><span class="line">someone else solve a problem.  This book assumes that</span><br><span class="line">everyone needs to know how to program ...</span><br></pre></td></tr></table></figure>
+<p>输出为：</p>
+<blockquote>
+<p>5<br>$ 7746<br>$ 1929<br>$ 7<br>$ 8837<br>$ 128<br>18647  </p>
+</blockquote>
+<p>正常输出应该为：</p>
+<blockquote>
+<p>7<br>$ 7746<br>$ 12<br>$ 1929<br>$ 8827<br>$ 7<br>$ 8837<br>$ 128<br>27486  </p>
+</blockquote>
+<p>那么这里就少了12以及8827。难道这里是因为在匹配7746的时候，匹配的是<code>7746\n</code>，所以到了匹配12的时候，前面的<code>\n</code>被匹配了，所以它不能再使用。同样的，匹配1929时，它匹配的是<code>1929</code>，导致后面8827前面没有字符能够匹配了？</p>
+<p>可能在<code>findall()</code>的时候就是使用的字符不再使用吧…</p>
+<p>未完待续…</p>
+<hr>
+<h2 id="Networks-and-Sockets"><a href="#Networks-and-Sockets" class="headerlink" title="Networks and Sockets"></a>Networks and Sockets</h2><p>感觉我自己是个假的学网络的，对于网络的了解还是太窄太片面了，<strong>以后恶补一下。</strong></p>
+<p>在python里面使用<strong>socket</strong>十分的简单，</p>
+<p>下面的代码就能访问课程提供的一个网页，并且将这个html文件给打印出来，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">mysock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">mysock.connect((<span class="string">&#x27;data.pr4e.org&#x27;</span>, <span class="number">80</span>))</span><br><span class="line">cmd = <span class="string">&#x27;GET http://data.pr4e.org/intro-short.txt HTTP/1.0\r\n\r\n&#x27;</span>.encode()</span><br><span class="line">mysock.send(cmd)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    data = mysock.recv(<span class="number">512</span>)</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">len</span>(data) &lt; <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    print(data.decode())</span><br><span class="line"></span><br><span class="line">mysock.close()</span><br></pre></td></tr></table></figure>
+<p>这里直接使用域名就能进行连接（之前学习socket都是用的ip，毕竟局域网，然而现在学的都<strong>退回</strong>去了），
+80端口就是web端口，然后可以直接加上文件来进行访问，这后面的<code>HTTP/1.0\r\n\r\n</code>现在还不能明白。
+<code>encode()</code>和<code>decode()</code>到底进行了什么操作也还不能明白。</p>
+<p>另外注意这里的域名协议是<code>http</code>，它和<code>https</code>好像是有一些区别的。</p>
+<hr>
+<h2 id="Programs-that-Surf-the-Web"><a href="#Programs-that-Surf-the-Web" class="headerlink" title="Programs that Surf the Web"></a>Programs that Surf the Web</h2><p>这一节主要讲了一下python与网络中的一些编码。</p>
+<p>首先解释了为什么在上面的socket中，要在发出request之前进行<code>encode()</code>，在接收信息后要先进行<code>decode()</code>。
+<strong>第一</strong>，现在网络编码绝大多数都是<code>UTF-8</code>，甚至可以默认一定是它，毕竟<code>UTF-8</code>包含了所有的常用语言文字。
+<strong>第二</strong>，在python内部，所有的字符都是<code>unicode</code>编码，那么问题就来了，<code>unicode</code>与<code>UTF-8</code>并不能直接通用，所有在字符出入的时候就要加上<code>encode()</code>与<code>decode()</code>。</p>
+<p>关于<code>UTF-8</code>与<code>unicode</code>。
+首先快速参考一下知乎<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23374078">Unicode 和 UTF-8 有何区别?</a></p>
+<p><strong>首先</strong>，<code>unicode</code>是为了解决之前编码只考虑英文字符的问题而出现的，因为以前的<code>ascii</code>码只使用一个字节来表示字符，所以它最多也只能表示<strong>256</strong>个字符，
+如果只使用英文是够用的，但是事实是世界要发展，所以出现各种字符，那么它就不够用了。于是就出现了许多的编码方式，例如中国就出了<code>GBK</code>编码。
+但是这是不适于国家与国家之间的交流的，于是<code>ISO</code>就指定了<code>unicode</code>这个编码标准。</p>
+<p><code>unicode</code>现在通常是使用两个字节来表示一个字符，但是其实它可以被看成一个字符集，它将所有字符都定义了一个唯一的<strong>ID</strong>，这样网络就能有一个统一的字符表，不再出现之前的需要相互转化的问题。</p>
+<p>那么新的问题就是直接使用<code>unicode</code>来表示字符时，它有时候会浪费空间，在编码表中靠前的字符，例如英文字符，它前一字节就是<code>0000</code>，后一字节才是它真正的序号。
+<strong>于是</strong>，在网络传输中，由于网络带宽并没有这么的理想，大家肯定就会嫌弃<code>unicode</code>编码浪费带宽，所以，于1992年创建，由<strong>Ken Thompson</strong>创建了<code>UTF</code>传输标准，它的全名是<code>Unicode Transformation Format</code>，这个全名就能明白了<code>UTF</code>的意思。</p>
+<p><code>UTF</code>是针对<code>unicode</code>的一种网络传输标准，按照我们通信的人来说，它就是一种针对<code>unicode</code>的编码方式。
+它现在有<code>UTF-7</code>、<code>UTF-7.5</code>、<code>UTF-8</code>、<code>UTF-16</code>、<code>UTF-32</code>几种格式，当然现在最为流行的就是其中的<code>UTF-8</code>。
+它是一种变长的编码方式，这样就能减少网络传输中的数据量，所以在网络传输中，大家都用它。</p>
+<p><strong>下面直接看作业代码：</strong></p>
+<p>作业的目标是将一个网页中的<code>span</code>标签中的整数进行求和，当然可以使用<code>socket</code>读取到网页，然后再使用<code>正则表达式</code>来去到整数。</p>
+<p>但是这个作业规定使用<code>BeautifulSoup</code>来进行这个过程，它能够直接把网页给解析了，不过这个不是<code>BeautifulSoup</code>的功能，
+在python中原有就有支持这个功能的函数，<code>BeautifulSoup</code>主要是将网页中一些不规范的表达的地方的雷点给你踩了。也就是它总结了网页中很多不规范的<code>奇葩写法</code>，然后过滤这些，使得<code>Soup</code>更加好喝。</p>
+<p>另外<code>BeautifulSoup</code>是一个额外的模块，可以使用<code>pip install BeautifulSoup</code>来安装。</p>
+<p><strong>注：</strong> 主要是<code>html</code>语言太强了，很多奇葩的写法，它也不报错…</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.request <span class="keyword">import</span> urlopen</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> ssl</span><br><span class="line"></span><br><span class="line"><span class="comment"># Ignore SSL certificate errors</span></span><br><span class="line">ctx = ssl.create_default_context()</span><br><span class="line">ctx.check_hostname = <span class="literal">False</span></span><br><span class="line">ctx.verify_mode = ssl.CERT_NONE</span><br><span class="line"></span><br><span class="line">url = <span class="built_in">input</span>(<span class="string">&#x27;Enter - &#x27;</span>)</span><br><span class="line">html = urlopen(url, context=ctx).read()</span><br><span class="line"></span><br><span class="line"><span class="comment"># html.parser is the HTML parser included in the standard Python 3 library.</span></span><br><span class="line"><span class="comment"># information on other HTML parsers is here:</span></span><br><span class="line"><span class="comment"># http://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser</span></span><br><span class="line">soup = BeautifulSoup(html, <span class="string">&quot;html.parser&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Retrieve all of the anchor tags</span></span><br><span class="line">tags = soup(<span class="string">&#x27;span&#x27;</span>)</span><br><span class="line">count = <span class="number">0</span></span><br><span class="line"><span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> tag <span class="keyword">in</span> tags:</span><br><span class="line">    <span class="comment"># Look at the parts of a tag</span></span><br><span class="line">    <span class="built_in">sum</span> += <span class="built_in">int</span>(tag.contents[<span class="number">0</span>])</span><br><span class="line">    count += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">&quot;Count&quot;</span>, count)</span><br><span class="line">print(<span class="string">&quot;Sum&quot;</span>, <span class="built_in">sum</span>)</span><br></pre></td></tr></table></figure>
+<p>代码就是调用方式，网页<code>http://py4e-data.dr-chuck.net/comments_29102.html</code>。</p>
+<p>其中格式为<code>&lt;tr&gt;&lt;td&gt;Modu&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;comments&quot;&gt;90&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;</code>。
+这里就是去取其中的<strong>90</strong>。</p>
+<p><strong>代码二：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.request, urllib.parse, urllib.error</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> ssl</span><br><span class="line"></span><br><span class="line"><span class="comment"># Ignore SSL certificate errors</span></span><br><span class="line">ctx = ssl.create_default_context()</span><br><span class="line">ctx.check_hostname = <span class="literal">False</span></span><br><span class="line">ctx.verify_mode = ssl.CERT_NONE</span><br><span class="line"></span><br><span class="line">url = <span class="built_in">input</span>(<span class="string">&#x27;Enter URL: &#x27;</span>)</span><br><span class="line">c = <span class="built_in">input</span>(<span class="string">&#x27;Enter count: &#x27;</span>)</span><br><span class="line">p = <span class="built_in">input</span>(<span class="string">&#x27;Enter position: &#x27;</span>)</span><br><span class="line"></span><br><span class="line">count = <span class="built_in">int</span>(c)</span><br><span class="line">posi = <span class="built_in">int</span>(p)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(count+<span class="number">1</span>):</span><br><span class="line">    print(<span class="string">&quot;Retrieving: &quot;</span>, url)</span><br><span class="line">    html = urllib.request.urlopen(url, context=ctx).read()</span><br><span class="line">    soup = BeautifulSoup(html, <span class="string">&#x27;html.parser&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Retrieve all of the anchor tags</span></span><br><span class="line">    tags = soup(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">    url = tags[posi-<span class="number">1</span>].get(<span class="string">&#x27;href&#x27;</span>, <span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>输入链接，跳转次数，从第几个链接跳转，这就像一个网络爬虫一样。</p>
+<p>具体的细节完全都不懂，现在只知道表象。</p>
+<hr>
+<h2 id="Web-Services-and-XML"><a href="#Web-Services-and-XML" class="headerlink" title="Web Services and XML"></a>Web Services and XML</h2><p>这一节将的主要是<strong>XML</strong>语言，以及python对<strong>XML</strong>的一个解析，内容很简单。</p>
+<p>直接上代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.request, urllib.parse, urllib.error</span><br><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line">address = <span class="built_in">input</span>(<span class="string">&#x27;Enter location: &#x27;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(address) &lt; <span class="number">1</span>: </span><br><span class="line">    print(<span class="string">&#x27;invalid location! Enter a location like \&quot;http://py4e-data.dr-chuck.net/comments_42.xml\&quot;&#x27;</span>)</span><br><span class="line">    exit()</span><br><span class="line"></span><br><span class="line">url = address</span><br><span class="line">print(<span class="string">&#x27;Retrieving&#x27;</span>, url, <span class="string">&#x27;...&#x27;</span>)</span><br><span class="line">uh = urllib.request.urlopen(url)</span><br><span class="line">data = uh.read()</span><br><span class="line">print(<span class="string">&#x27;Retrieved&#x27;</span>, <span class="built_in">len</span>(data), <span class="string">&#x27;characters&#x27;</span>)</span><br><span class="line"><span class="comment"># print(data.decode())</span></span><br><span class="line">tree = ET.fromstring(data)</span><br><span class="line"></span><br><span class="line">items = tree.findall(<span class="string">&#x27;.//count&#x27;</span>)</span><br><span class="line">print(<span class="string">&quot;Count&quot;</span>, <span class="built_in">len</span>(items))</span><br><span class="line"></span><br><span class="line">total = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> items:</span><br><span class="line">    total += <span class="built_in">int</span>(item.text)</span><br><span class="line"></span><br><span class="line">print(<span class="string">&quot;Sum:&quot;</span>, total)</span><br></pre></td></tr></table></figure>
+<p>输入一个地址，使用<strong>urllib</strong>库来进行连接，然后调用<code>xml.etree.ElementTree</code>来解析其中的data，
+解析得到的就是一个<strong>XML</strong>树结构。然后将其中所有count节点的值加起来就行。</p>
+<hr>
+<h2 id="JSON-and-the-REST-Architecture"><a href="#JSON-and-the-REST-Architecture" class="headerlink" title="JSON and the REST Architecture"></a>JSON and the REST Architecture</h2><p>这一节其实主要讲了<strong>JSON</strong>的解析，它和<strong>XML</strong>类似，但是<strong>JSON</strong>更加轻量级，更加简单，可以使用python解析得到字典或者列表等数据结构。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.request, urllib.parse, urllib.error</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="comment"># Note that Google is increasingly requiring keys</span></span><br><span class="line"><span class="comment"># for this API</span></span><br><span class="line">serviceurl = <span class="string">&#x27;http://py4e-data.dr-chuck.net/geojson?&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    address = <span class="built_in">input</span>(<span class="string">&#x27;Enter location: &#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(address) &lt; <span class="number">1</span>: <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    url = serviceurl + urllib.parse.urlencode(</span><br><span class="line">        &#123;<span class="string">&#x27;address&#x27;</span>: address&#125;)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">&#x27;Retrieving&#x27;</span>, url)</span><br><span class="line">    uh = urllib.request.urlopen(url)</span><br><span class="line">    data = uh.read().decode()</span><br><span class="line">    print(<span class="string">&#x27;Retrieved&#x27;</span>, <span class="built_in">len</span>(data), <span class="string">&#x27;characters&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        js = json.loads(data)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        js = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> js <span class="keyword">or</span> <span class="string">&#x27;status&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> js <span class="keyword">or</span> js[<span class="string">&#x27;status&#x27;</span>] != <span class="string">&#x27;OK&#x27;</span>:</span><br><span class="line">        print(<span class="string">&#x27;==== Failure To Retrieve ====&#x27;</span>)</span><br><span class="line">        print(data)</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">    print(<span class="string">&quot;Place_id&quot;</span>, js[<span class="string">&quot;results&quot;</span>][<span class="number">0</span>][<span class="string">&quot;place_id&quot;</span>])</span><br></pre></td></tr></table></figure>
+<p>这里使用了<strong>google</strong>提供的<strong>api</strong>，来查询到输入地址的位置信息。当然这里实际上调用的是<strong>py4e</strong>的接口，
+因为地址的位置信息可能会变，为了批改作业，它就把它改成了<strong>py4e</strong>的接口，这样就不会有变动。</p>
+<p>可以看到<strong>json</strong>的解析十分简单，这是它的一大优势。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/09/06/2017-09-06-leetcode_44/" rel="prev" title="LeetCode 44 Wildcard Matching">
+      <i class="fa fa-chevron-left"></i> LeetCode 44 Wildcard Matching
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/09/09/2017-09-09-leetcode_37/" rel="next" title="LeetCode 37 Sudoku Solver">
+      LeetCode 37 Sudoku Solver <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Regular-Expressions"><span class="nav-number">1.</span> <span class="nav-text">Regular Expressions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Networks-and-Sockets"><span class="nav-number">2.</span> <span class="nav-text">Networks and Sockets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Programs-that-Surf-the-Web"><span class="nav-number">3.</span> <span class="nav-text">Programs that Surf the Web</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web-Services-and-XML"><span class="nav-number">4.</span> <span class="nav-text">Web Services and XML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON-and-the-REST-Architecture"><span class="nav-number">5.</span> <span class="nav-text">JSON and the REST Architecture</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
