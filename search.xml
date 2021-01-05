@@ -1,35 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>LeetCode 16.3Sum Cloest</title>
-    <url>/2017/08/18/2017-08-18-3Sum-Closest/</url>
-    <content><![CDATA[<h2 id="16-3Sum-Cloest"><a href="#16-3Sum-Cloest" class="headerlink" title="16.3Sum Cloest"></a>16.3Sum Cloest</h2><blockquote>
-<p>Description:</p>
-<blockquote>
-<p>Given an array S of n integers, find three integers in S such that the sum is closest to a given number, target. Return the sum of the three integers. You may assume that each input would have exactly one solution.</p>
-</blockquote>
-<p>example</p>
-<blockquote>
-<p>For example, given array S = {-1 2 1 -4}, and target = 1.</p>
-<p>The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).</p>
-</blockquote>
-</blockquote>
-<hr>
-<p>题目理解：输入一个数组和一个目标值，求数组中三个数的和，返回和与目标值之间的最小差值。</p>
-<hr>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">threeSumClosest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> dis = Integer.MAX_VALUE, result = -<span class="number">1</span>, m = nums.length;</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>, bound = m - <span class="number">2</span> ; i &lt; bound &amp;&amp; dis != <span class="number">0</span> &amp;&amp; nums[i] - target &lt; dis; ) &#123;</span><br><span class="line">            <span class="keyword">int</span> l = i + <span class="number">1</span>, r = m - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">                <span class="keyword">int</span> sum = nums[i] + nums[l] + nums[r];</span><br><span class="line">                <span class="keyword">int</span> temp_dis = sum - target;</span><br><span class="line">                temp_dis = temp_dis &gt; <span class="number">0</span> ? temp_dis : -temp_dis;</span><br><span class="line">                <span class="keyword">if</span> ( temp_dis &lt; dis ) &#123;</span><br><span class="line">                    dis = temp_dis;</span><br><span class="line">                    result = sum;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( sum - target &lt; <span class="number">0</span> ) l++;</span><br><span class="line">                <span class="keyword">else</span> r--;</span><br><span class="line">            &#125;</span><br><span class="line">            i++;</span><br><span class="line">            <span class="keyword">while</span> ( i &lt; bound &amp;&amp; nums[i] == nums[i-<span class="number">1</span>] ) i++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>方法和3Sum几乎一样，只是多进行一下距离的比较。</p>
-<p>复杂度 n^2, 运行时间 18ms.</p>
-<p><img src="/images/leetcode/3Sum_Closest.png" alt="images"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 15.3Sum</title>
     <url>/2017/08/18/2017-08-18-3Sum/</url>
     <content><![CDATA[<h2 id="15-3Sum"><a href="#15-3Sum" class="headerlink" title="15.3Sum"></a>15.3Sum</h2><blockquote>
@@ -93,86 +64,32 @@
       </tags>
   </entry>
   <entry>
-    <title>我的第一篇博客 for jekyll</title>
-    <url>/2017/08/18/2017-08-18-my-first-blog/</url>
-    <content><![CDATA[<h2 id="写博客"><a href="#写博客" class="headerlink" title="写博客"></a>写博客</h2><p><a href="http://theme-next.iissnan.com/">主题说明书</a></p>
-<p>写博客直接在_post文件夹里面写，直接新建md文件即可。</p>
-<p>图片放入到<code>source/images</code>里面。</p>
-<p>这里文件名格式是：时间+题目。</p>
-<p>其中文件名中的空格用”-“来代替，不能用中文名，否则报错找不到路径。</p>
-<p>写博客时，可以使用 <code>bundle exec jekyll serve --watch</code> 命令来运行jekyll。</p>
-<p>然后打开 <code>127.0.0.1:4000</code> 来查看实时效果。</p>
-<p>写完之后，使用github客户端进行push即可。</p>
-<p>之后便可打开<a href="https://isadamu.github.io/">我的博客</a>
-<code>https://isadamu.github.io/</code>
-查看了。当然，可能刷新要几分钟左右。</p>
-<h2 id="博客头部常用的关键字："><a href="#博客头部常用的关键字：" class="headerlink" title="博客头部常用的关键字："></a>博客头部常用的关键字：</h2><pre><code>---
-title:        // 文章题目 
-date:         // 文章日期
-description:  // 对这篇文章的简单描述
-categories:   // 对文章的分类，细分，多添加，ps:只能英文
-tags:         // 文章的标签，广义，多添加，ps:只能英文
-link:         // 对文章标题加上超链接
-image:        // 相当于加上一个图片封面
-photos:       // 多添加，感觉与上面类似？
-type:         // 没看出来作用。。。
----
-</code></pre><p>需要注意的是category、tag不能包含中文。</p>
-<h2 id="代码高亮"><a href="#代码高亮" class="headerlink" title="代码高亮"></a>代码高亮</h2><p>不高亮代码就直接缩进四个空格，</p>
-<pre><code>public static void main(String[] args) &#123;
-    System.out.println(&quot;高亮前&quot;);
-&#125;
-</code></pre><p>或者，</p>
-<pre><code>`\``
-public static void main(String[] args) &#123;
-    System.out.println(&quot;高亮前&quot;);
-&#125;
-`\``
-</code></pre><p>高亮代码语法(主要去掉”\“)：</p>
-<pre><code>`\``java
-public static void main(String[] args) &#123;
-    System.out.println(&quot;高亮后&quot;);
-&#125;
-`\``
-</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;高亮后&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="公式"><a href="#公式" class="headerlink" title="公式"></a>公式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 行间公式：</span><br><span class="line">$$Y&#x3D;W^&#123;T&#125;X+b$$</span><br></pre></td></tr></table></figure>
-<script type="math/tex; mode=display">Y=W^{T}X+b</script><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">行内公式：$ Y&#x3D;W^&#123;T&#125;X+b $</span><br></pre></td></tr></table></figure>
-<p>行内$ Y=W^{T}X+b $公式</p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>插入图片，内链，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">![image](\&#123;\&#123;site.url\&#125;\&#125;&#x2F;source&#x2F;images&#x2F;head&#x2F;head_bigfan.png)</span><br></pre></td></tr></table></figure>
-<p>去掉<code>site.url</code>旁边的4个’\‘。</p>
-<p><img src="/images/head/head_bigfan.png" alt="image"></p>
-<p>当然这里也可以用外链，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">![image](https:&#x2F;&#x2F;img3.doubanio.com&#x2F;view&#x2F;photo&#x2F;photo&#x2F;public&#x2F;p2022836553.webp)</span><br></pre></td></tr></table></figure>
-<div align="center"><img src="https://img3.doubanio.com/view/photo/photo/public/p2022836553.webp"
-width="400" height="400" title="今年的湖畔会很冷" /></div>
-
-<p>插入图片大小的调整：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">align</span>=<span class="string">&quot;center&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&#123;&#123;site.url&#125;&#125;/source/images/head/head_bigfan.png&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">style</span>=<span class="string">&quot;zoom:50%&quot;</span> <span class="attr">title</span>=<span class="string">&quot;大范&quot;</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<div align="center"><img src="/images/head/head_bigfan.png"
-style="zoom:50%" title="大范" /></div>
-
-<p>也可以用，</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">align</span>=<span class="string">&quot;center&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&#123;&#123;site.url&#125;&#125;/source/images/head/head_bigfan.png&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">width</span>=<span class="string">&quot;200&quot;</span> <span class="attr">height</span>=<span class="string">&quot;200&quot;</span> <span class="attr">title</span>=<span class="string">&quot;大范&quot;</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<div align="center"><img src="/images/head/head_bigfan.png"
-width="200" height="200" title="大范" /></div>
-
-<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p><a href="http://wowubuntu.com/markdown/#code">Markdown语法</a></p>
-<p><a href="http://blog.csdn.net/ethmery/article/details/50670297">MathJax基本语法</a></p>
-<p><a href="http://latex.codecogs.com/eqneditor/editor.php">在线公式编辑器，快速知道语法</a></p>
-<p>如果想要换行，在一行的后面空两个空格就行，例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">这一行后没有两个空格</span><br><span class="line">所以不能换行</span><br></pre></td></tr></table></figure>
-<p>这一行后没有两个空格
-所以不能换行</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">这一行后有两个空格  </span><br><span class="line">所以能换行</span><br></pre></td></tr></table></figure>
-<p>这一行后有两个空格<br>所以能换行</p>
+    <title>LeetCode 16.3Sum Cloest</title>
+    <url>/2017/08/18/2017-08-18-3Sum-Closest/</url>
+    <content><![CDATA[<h2 id="16-3Sum-Cloest"><a href="#16-3Sum-Cloest" class="headerlink" title="16.3Sum Cloest"></a>16.3Sum Cloest</h2><blockquote>
+<p>Description:</p>
+<blockquote>
+<p>Given an array S of n integers, find three integers in S such that the sum is closest to a given number, target. Return the sum of the three integers. You may assume that each input would have exactly one solution.</p>
+</blockquote>
+<p>example</p>
+<blockquote>
+<p>For example, given array S = {-1 2 1 -4}, and target = 1.</p>
+<p>The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).</p>
+</blockquote>
+</blockquote>
+<hr>
+<p>题目理解：输入一个数组和一个目标值，求数组中三个数的和，返回和与目标值之间的最小差值。</p>
+<hr>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">threeSumClosest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> dis = Integer.MAX_VALUE, result = -<span class="number">1</span>, m = nums.length;</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>, bound = m - <span class="number">2</span> ; i &lt; bound &amp;&amp; dis != <span class="number">0</span> &amp;&amp; nums[i] - target &lt; dis; ) &#123;</span><br><span class="line">            <span class="keyword">int</span> l = i + <span class="number">1</span>, r = m - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">                <span class="keyword">int</span> sum = nums[i] + nums[l] + nums[r];</span><br><span class="line">                <span class="keyword">int</span> temp_dis = sum - target;</span><br><span class="line">                temp_dis = temp_dis &gt; <span class="number">0</span> ? temp_dis : -temp_dis;</span><br><span class="line">                <span class="keyword">if</span> ( temp_dis &lt; dis ) &#123;</span><br><span class="line">                    dis = temp_dis;</span><br><span class="line">                    result = sum;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( sum - target &lt; <span class="number">0</span> ) l++;</span><br><span class="line">                <span class="keyword">else</span> r--;</span><br><span class="line">            &#125;</span><br><span class="line">            i++;</span><br><span class="line">            <span class="keyword">while</span> ( i &lt; bound &amp;&amp; nums[i] == nums[i-<span class="number">1</span>] ) i++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>方法和3Sum几乎一样，只是多进行一下距离的比较。</p>
+<p>复杂度 n^2, 运行时间 18ms.</p>
+<p><img src="/images/leetcode/3Sum_Closest.png" alt="images"></p>
 ]]></content>
       <categories>
-        <category>guide</category>
-        <category>jekyll</category>
+        <category>leetcode</category>
       </categories>
       <tags>
-        <tag>guide</tag>
+        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -272,6 +189,89 @@ Everflow利用这一点来减少追踪的负载，
       <tags>
         <tag>study</tag>
         <tag>read</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的第一篇博客 for jekyll</title>
+    <url>/2017/08/18/2017-08-18-my-first-blog/</url>
+    <content><![CDATA[<h2 id="写博客"><a href="#写博客" class="headerlink" title="写博客"></a>写博客</h2><p><a href="http://theme-next.iissnan.com/">主题说明书</a></p>
+<p>写博客直接在_post文件夹里面写，直接新建md文件即可。</p>
+<p>图片放入到<code>source/images</code>里面。</p>
+<p>这里文件名格式是：时间+题目。</p>
+<p>其中文件名中的空格用”-“来代替，不能用中文名，否则报错找不到路径。</p>
+<p>写博客时，可以使用 <code>bundle exec jekyll serve --watch</code> 命令来运行jekyll。</p>
+<p>然后打开 <code>127.0.0.1:4000</code> 来查看实时效果。</p>
+<p>写完之后，使用github客户端进行push即可。</p>
+<p>之后便可打开<a href="https://isadamu.github.io/">我的博客</a>
+<code>https://isadamu.github.io/</code>
+查看了。当然，可能刷新要几分钟左右。</p>
+<h2 id="博客头部常用的关键字："><a href="#博客头部常用的关键字：" class="headerlink" title="博客头部常用的关键字："></a>博客头部常用的关键字：</h2><pre><code>---
+title:        // 文章题目 
+date:         // 文章日期
+description:  // 对这篇文章的简单描述
+categories:   // 对文章的分类，细分，多添加，ps:只能英文
+tags:         // 文章的标签，广义，多添加，ps:只能英文
+link:         // 对文章标题加上超链接
+image:        // 相当于加上一个图片封面
+photos:       // 多添加，感觉与上面类似？
+type:         // 没看出来作用。。。
+---
+</code></pre><p>需要注意的是category、tag不能包含中文。</p>
+<h2 id="代码高亮"><a href="#代码高亮" class="headerlink" title="代码高亮"></a>代码高亮</h2><p>不高亮代码就直接缩进四个空格，</p>
+<pre><code>public static void main(String[] args) &#123;
+    System.out.println(&quot;高亮前&quot;);
+&#125;
+</code></pre><p>或者，</p>
+<pre><code>`\``
+public static void main(String[] args) &#123;
+    System.out.println(&quot;高亮前&quot;);
+&#125;
+`\``
+</code></pre><p>高亮代码语法(主要去掉”\“)：</p>
+<pre><code>`\``java
+public static void main(String[] args) &#123;
+    System.out.println(&quot;高亮后&quot;);
+&#125;
+`\``
+</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;高亮后&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="公式"><a href="#公式" class="headerlink" title="公式"></a>公式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 行间公式：</span><br><span class="line">$$Y&#x3D;W^&#123;T&#125;X+b$$</span><br></pre></td></tr></table></figure>
+<script type="math/tex; mode=display">Y=W^{T}X+b</script><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">行内公式：$ Y&#x3D;W^&#123;T&#125;X+b $</span><br></pre></td></tr></table></figure>
+<p>行内$ Y=W^{T}X+b $公式</p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>插入图片，内链，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">![image](\&#123;\&#123;site.url\&#125;\&#125;&#x2F;source&#x2F;images&#x2F;head&#x2F;head_bigfan.png)</span><br></pre></td></tr></table></figure>
+<p>去掉<code>site.url</code>旁边的4个’\‘。</p>
+<p><img src="/images/head/head_bigfan.png" alt="image"></p>
+<p>当然这里也可以用外链，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">![image](https:&#x2F;&#x2F;img3.doubanio.com&#x2F;view&#x2F;photo&#x2F;photo&#x2F;public&#x2F;p2022836553.webp)</span><br></pre></td></tr></table></figure>
+<div align="center"><img src="https://img3.doubanio.com/view/photo/photo/public/p2022836553.webp"
+width="400" height="400" title="今年的湖畔会很冷" /></div>
+
+<p>插入图片大小的调整：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">align</span>=<span class="string">&quot;center&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&#123;&#123;site.url&#125;&#125;/source/images/head/head_bigfan.png&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">style</span>=<span class="string">&quot;zoom:50%&quot;</span> <span class="attr">title</span>=<span class="string">&quot;大范&quot;</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<div align="center"><img src="/images/head/head_bigfan.png"
+style="zoom:50%" title="大范" /></div>
+
+<p>也可以用，</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">align</span>=<span class="string">&quot;center&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&#123;&#123;site.url&#125;&#125;/source/images/head/head_bigfan.png&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">width</span>=<span class="string">&quot;200&quot;</span> <span class="attr">height</span>=<span class="string">&quot;200&quot;</span> <span class="attr">title</span>=<span class="string">&quot;大范&quot;</span> /&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<div align="center"><img src="/images/head/head_bigfan.png"
+width="200" height="200" title="大范" /></div>
+
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p><a href="http://wowubuntu.com/markdown/#code">Markdown语法</a></p>
+<p><a href="http://blog.csdn.net/ethmery/article/details/50670297">MathJax基本语法</a></p>
+<p><a href="http://latex.codecogs.com/eqneditor/editor.php">在线公式编辑器，快速知道语法</a></p>
+<p>如果想要换行，在一行的后面空两个空格就行，例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">这一行后没有两个空格</span><br><span class="line">所以不能换行</span><br></pre></td></tr></table></figure>
+<p>这一行后没有两个空格
+所以不能换行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">这一行后有两个空格  </span><br><span class="line">所以能换行</span><br></pre></td></tr></table></figure>
+<p>这一行后有两个空格<br>所以能换行</p>
+]]></content>
+      <categories>
+        <category>guide</category>
+        <category>jekyll</category>
+      </categories>
+      <tags>
+        <tag>guide</tag>
       </tags>
   </entry>
   <entry>
@@ -414,6 +414,51 @@ Everflow利用这一点来减少追踪的负载，
       </tags>
   </entry>
   <entry>
+    <title>朴素贝叶斯+垃圾邮件分类器</title>
+    <url>/2017/08/21/2017-08-21-spam-classifier/</url>
+    <content><![CDATA[<hr>
+<h2 id="Naive-Bayes-朴素贝叶斯"><a href="#Naive-Bayes-朴素贝叶斯" class="headerlink" title="Naive Bayes 朴素贝叶斯"></a>Naive Bayes 朴素贝叶斯</h2><p>关于吴恩达的cs229课程的一份笔记，关于朴素贝叶斯分类器在垃圾邮件分类上的应用。</p>
+<hr>
+<h2 id="spam-classifier-垃圾邮件分类器"><a href="#spam-classifier-垃圾邮件分类器" class="headerlink" title="spam classifier 垃圾邮件分类器"></a>spam classifier 垃圾邮件分类器</h2><p>样本: 过去时间收到的所有邮件，共$m$封。</p>
+<p>步骤：</p>
+<p>1.首先建立词典$X$，词典中共有$n$个词。</p>
+<p>2.通过样本估计概率，</p>
+<script type="math/tex; mode=display">
+P(X_i = 1|y = 1)=\Phi_{i|y=1}</script><p>其中$X_i \in {0,1}$，表示词典中的第$i$个词是否出现，$X_i = 1$表示出现。</p>
+<script type="math/tex; mode=display">
+P(X_i = 1|y = 0)=\Phi_{i|y=0}</script><p>上面的$y \in {0,1}$，并且$y=1$表示邮件为<strong>垃圾邮件</strong>。令</p>
+<script type="math/tex; mode=display">
+P(y=1)=\Phi_y</script><p>然后利用极大似然法估计概率值。</p>
+<p>3.通过上面得到 $P(X|y)$ 与 $P(y)$的概率，
+对于新的输入$X$，
+就可以用$P(y|X)$就可判断$y$。</p>
+<hr>
+<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><p>这里考虑词的出现次数，对上面的分类器进行改进。</p>
+<p>这个模型称为：<strong>Multinomial Event Model</strong>。</p>
+<p>步骤：</p>
+<p>1.建立词典，词典的词的总数为$V$。</p>
+<p>2.对于一封邮件，将其转化为向量<script type="math/tex">X</script>，<script type="math/tex">X_i</script>的表示第<script type="math/tex">i</script>个词在词典中的位置。
+例如，邮件开头为<code>A NIPS ...</code>，其中<code>A</code>在词典的第<strong>1</strong>个，
+<code>NIPS</code>在词典的<strong>35000</strong>个，则<script type="math/tex">X_1 = 1, \  X_2 = 35000</script>。</p>
+<p>3.通过样本估计概率，</p>
+<script type="math/tex; mode=display">
+P(X_j = k | y = 1)= \Phi_{k|y=1}</script><p>其中$k \in {0,1,…,n}$，对$X_j=k$表示邮件中的第$j$个词在词典中的位置为$k$。</p>
+<script type="math/tex; mode=display">
+P(X_j = k | y = 0)= \Phi_{k|y=0}</script><p>同样的，上面$y \in {0,1}$，对于$y=1$，它就表示邮件为垃圾邮件。令：</p>
+<script type="math/tex; mode=display">
+P(y = 1)= \Phi_y</script><p>同样的，利用极大似然法估计概率值。</p>
+<p>4.通过上面得到$P(X|y)$与$P(y)$的概率，
+对于新的输入$X$，
+就可以用$P(y | X)$来判断$y$。</p>
+]]></content>
+      <categories>
+        <category>cs229</category>
+      </categories>
+      <tags>
+        <tag>mechine learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>购买域名并绑定博客原地址</title>
     <url>/2017/08/20/2017-08-20-add-domain-name/</url>
     <content><![CDATA[<p>其实我也不知道为什么要买一个域名，对我自己来说没什么卵用，
@@ -524,48 +569,23 @@ github会自动按这个域名来转。  </p>
       </tags>
   </entry>
   <entry>
-    <title>朴素贝叶斯+垃圾邮件分类器</title>
-    <url>/2017/08/21/2017-08-21-spam-classifier/</url>
-    <content><![CDATA[<hr>
-<h2 id="Naive-Bayes-朴素贝叶斯"><a href="#Naive-Bayes-朴素贝叶斯" class="headerlink" title="Naive Bayes 朴素贝叶斯"></a>Naive Bayes 朴素贝叶斯</h2><p>关于吴恩达的cs229课程的一份笔记，关于朴素贝叶斯分类器在垃圾邮件分类上的应用。</p>
+    <title>jekyll博客顶端背景修改</title>
+    <url>/2017/08/22/2017-08-22-head-color/</url>
+    <content><![CDATA[<p>由于NexT是Hexo上的主题，搬运到jekyll上面之后，目录结构完全不一样，所以网上的参考基本没什么用。</p>
 <hr>
-<h2 id="spam-classifier-垃圾邮件分类器"><a href="#spam-classifier-垃圾邮件分类器" class="headerlink" title="spam classifier 垃圾邮件分类器"></a>spam classifier 垃圾邮件分类器</h2><p>样本: 过去时间收到的所有邮件，共$m$封。</p>
-<p>步骤：</p>
-<p>1.首先建立词典$X$，词典中共有$n$个词。</p>
-<p>2.通过样本估计概率，</p>
-<script type="math/tex; mode=display">
-P(X_i = 1|y = 1)=\Phi_{i|y=1}</script><p>其中$X_i \in {0,1}$，表示词典中的第$i$个词是否出现，$X_i = 1$表示出现。</p>
-<script type="math/tex; mode=display">
-P(X_i = 1|y = 0)=\Phi_{i|y=0}</script><p>上面的$y \in {0,1}$，并且$y=1$表示邮件为<strong>垃圾邮件</strong>。令</p>
-<script type="math/tex; mode=display">
-P(y=1)=\Phi_y</script><p>然后利用极大似然法估计概率值。</p>
-<p>3.通过上面得到 $P(X|y)$ 与 $P(y)$的概率，
-对于新的输入$X$，
-就可以用$P(y|X)$就可判断$y$。</p>
-<hr>
-<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><p>这里考虑词的出现次数，对上面的分类器进行改进。</p>
-<p>这个模型称为：<strong>Multinomial Event Model</strong>。</p>
-<p>步骤：</p>
-<p>1.建立词典，词典的词的总数为$V$。</p>
-<p>2.对于一封邮件，将其转化为向量<script type="math/tex">X</script>，<script type="math/tex">X_i</script>的表示第<script type="math/tex">i</script>个词在词典中的位置。
-例如，邮件开头为<code>A NIPS ...</code>，其中<code>A</code>在词典的第<strong>1</strong>个，
-<code>NIPS</code>在词典的<strong>35000</strong>个，则<script type="math/tex">X_1 = 1, \  X_2 = 35000</script>。</p>
-<p>3.通过样本估计概率，</p>
-<script type="math/tex; mode=display">
-P(X_j = k | y = 1)= \Phi_{k|y=1}</script><p>其中$k \in {0,1,…,n}$，对$X_j=k$表示邮件中的第$j$个词在词典中的位置为$k$。</p>
-<script type="math/tex; mode=display">
-P(X_j = k | y = 0)= \Phi_{k|y=0}</script><p>同样的，上面$y \in {0,1}$，对于$y=1$，它就表示邮件为垃圾邮件。令：</p>
-<script type="math/tex; mode=display">
-P(y = 1)= \Phi_y</script><p>同样的，利用极大似然法估计概率值。</p>
-<p>4.通过上面得到$P(X|y)$与$P(y)$的概率，
-对于新的输入$X$，
-就可以用$P(y | X)$来判断$y$。</p>
+<h2 id="修改head颜色"><a href="#修改head颜色" class="headerlink" title="修改head颜色"></a>修改head颜色</h2><p>在<code>_sass/_schemes/Mist/_header.scss</code>下面修改，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: $whitesmoke; &#125;</span><br></pre></td></tr></table></figure>
+<p>为，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: #FFC78E; &#125;</span><br></pre></td></tr></table></figure>
+<p>然后就变成下面的颜色，</p>
+<p><img src="/images/guide/head-color_1.png" alt="image" title="改为了橘黄色"></p>
 ]]></content>
       <categories>
-        <category>cs229</category>
+        <category>guide</category>
+        <category>jekyll</category>
       </categories>
       <tags>
-        <tag>mechine learning</tag>
+        <tag>guide</tag>
       </tags>
   </entry>
   <entry>
@@ -853,117 +873,6 @@ b^{[i]} \in R^{n^{[i]} \times 1}</script><hr>
       </tags>
   </entry>
   <entry>
-    <title>Logistic Regression 简单总结</title>
-    <url>/2017/08/22/2017-08-22-logistic-regression/</url>
-    <content><![CDATA[<hr>
-<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p>把它看成只有一个神经元的神经网络，激活函数就是<code>sigmoid</code>函数。</p>
-<hr>
-<h2 id="模型："><a href="#模型：" class="headerlink" title="模型："></a>模型：</h2><script type="math/tex; mode=display">
-\hat y = \sigma (W^T x + b)</script><p>其中，</p>
-<script type="math/tex; mode=display">
-\sigma(Z) = \frac{1}{1+e^{-Z}}</script><hr>
-<h2 id="代价函数："><a href="#代价函数：" class="headerlink" title="代价函数："></a>代价函数：</h2><script type="math/tex; mode=display">
-J(W,b) = \frac{1}{m} \sum_{i=1}^m L(\hat y^{(i)},y^{(i)} )
-= - \frac{1}{m} \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
-+ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>视频中好像没有具体说这个损失函数的一个推导，这里自己简单推一推。</p>
-<p>首先对于$\sigma(Z)$这个函数，它其实就是经常说到的<strong>sigmoid</strong>函数，
-它的函数图像如下：</p>
-<div align="center"><img src="/images/coursera/nndl-note_1.png"
-style="zoom:50%" title="sigmoid函数" /></div>
-
-<p>可以看出sigmoid函数的值域范围是0~1，所以通常把它当成一个概率来看待，
-那么，可以写出<code>y</code>的概率表达式为：</p>
-<script type="math/tex; mode=display">
-P(y) = (\hat y)^y (1 - \hat y)^{1-y}</script><p>其中$\hat y$就是预测$y$为1的概率，区分两种情况，
-上面的式子分开写就是下面的式子，合并在一起有利于公式化：</p>
-<script type="math/tex; mode=display">
-P(y) =
-\begin{cases}
-\hat y \ \ \ \ \ \ \ \ \ \ ,y = 1 \\
-1 - \hat y \ \ \ ,y = 0
-\end{cases}</script><p>所以我们采用<strong>极大似然法</strong>来进行对$W$的求解，似然函数就可以写为：</p>
-<script type="math/tex; mode=display">
-\prod_{i=1}^m (\hat y^{(i)})^{y^{(i)}}(1 - \hat y^{(i)})^{1 - y^{(i)}}</script><p>对数似然写为：</p>
-<script type="math/tex; mode=display">
-L(\hat y) = \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
-+ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>加上$- \frac{1}{m}$就得到了上面的代价函数，同时也从最大化变成了最小化。</p>
-<hr>
-<h2 id="梯度："><a href="#梯度：" class="headerlink" title="梯度："></a>梯度：</h2><p>首先需要对代价函数进行求导，下面进行推导，令：</p>
-<script type="math/tex; mode=display">
-Z^{(i)} = W^Tx^{(i)} + b \\
-\alpha^{(i)}=\sigma (W^Tx^{(i)} + b)</script><p>单独看一个样本<script type="math/tex">(x^{(i)},y^{(i)})</script>，它的代价函数为，</p>
-<script type="math/tex; mode=display">
-J^{(i)} = y^{(i)}log(\alpha^{(i)})+ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>对其中一个<script type="math/tex">W_i</script>进行求导,这里先忽略上标<script type="math/tex">(i)</script>：</p>
-<script type="math/tex; mode=display">
-\frac{\partial J}{\partial W_i}=
-\frac{y}{a} \frac{\partial \alpha}{\partial W_i} -
-\frac{1-y}{1-\alpha}\frac{\partial \alpha}{\partial W_i}
-= ( \frac{y}{a} - \frac{1-y}{1-\alpha} )\frac{\partial \alpha}{\partial W_i}</script><p>然后其中的$\frac{\partial \alpha}{\partial W_i}$继续计算：</p>
-<script type="math/tex; mode=display">
-\frac{\partial \alpha}{\partial W_i}=
-\frac{e^{-Z}}{(1+e^{-Z})^2} \frac{\partial Z}{\partial W_i}
-= \frac {1}{1+e^{-Z}}\frac{e^{-Z} + 1 - 1}{1+e^{-Z}} \frac{\partial Z}{\partial W_i}
-= \alpha(1 - \alpha)\frac{\partial Z}{\partial W_i}</script><p>继续对$\frac{\partial Z}{\partial W_i}$进行计算：</p>
-<script type="math/tex; mode=display">
-\frac{\partial Z}{\partial W_i} = x_i</script><p>将上面的合起来，写为：</p>
-<script type="math/tex; mode=display">
-\frac{\partial J}{\partial W_i} =
-( \frac{y}{a} - \frac{1-y}{1-\alpha} )\alpha(1 - \alpha)x_i =
-(y - \alpha)x_i</script><p>注意到代价函数为：</p>
-<script type="math/tex; mode=display">
-J(W,b) =
-- \frac{1}{m} \sum_{i=1}^m y^{(i)}log(\alpha^{(i)})
-+ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>所以考虑到向量化处理，同时加上前面的因子$-\frac{1}{m}$，<strong>最终可以写为</strong>：</p>
-<script type="math/tex; mode=display">
-\begin{cases}
-\frac {\partial J}{\partial W} = \frac{1}{m}X(A - Y)^T \\
-\frac {\partial J}{\partial b} = \frac{1}{m} \sum_{i=1}^m(\alpha^{(i)} - y^{(i)})
-\end{cases}</script><p>其中，</p>
-<script type="math/tex; mode=display">
-A = [\alpha^{(1)},\alpha^{(2)},...,\alpha^{(m-1)},\alpha^{(m)}] \\
-
-X = [x^{(1)},x^{(2)},...,x^{(m-1)},x^{(m)}] \\
-
-Y = [y^{(1)},y^{(2)},...,y^{(m-1)},y^{(m)}]</script><hr>
-<h2 id="参数更新"><a href="#参数更新" class="headerlink" title="参数更新"></a>参数更新</h2><p>权值的更新就按照梯度下降的原则更新就行，</p>
-<script type="math/tex; mode=display">
-\begin{cases}
-W = W - \alpha \frac {\partial J}{\partial W} \\
-b = b - \alpha \frac {\partial J}{\partial b}
-\end{cases}</script><p>这里的$\alpha$代表学习因子。</p>
-<hr>
-<h2 id="存疑"><a href="#存疑" class="headerlink" title="存疑"></a>存疑</h2><p><strong>如果直接使用最小二乘损失函数呢？</strong></p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>jekyll博客顶端背景修改</title>
-    <url>/2017/08/22/2017-08-22-head-color/</url>
-    <content><![CDATA[<p>由于NexT是Hexo上的主题，搬运到jekyll上面之后，目录结构完全不一样，所以网上的参考基本没什么用。</p>
-<hr>
-<h2 id="修改head颜色"><a href="#修改head颜色" class="headerlink" title="修改head颜色"></a>修改head颜色</h2><p>在<code>_sass/_schemes/Mist/_header.scss</code>下面修改，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: $whitesmoke; &#125;</span><br></pre></td></tr></table></figure>
-<p>为，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: #FFC78E; &#125;</span><br></pre></td></tr></table></figure>
-<p>然后就变成下面的颜色，</p>
-<p><img src="/images/guide/head-color_1.png" alt="image" title="改为了橘黄色"></p>
-]]></content>
-      <categories>
-        <category>guide</category>
-        <category>jekyll</category>
-      </categories>
-      <tags>
-        <tag>guide</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>hexo使用next主题建站全过程</title>
     <url>/2017/08/23/2017-08-23-build-hexo/</url>
     <content><![CDATA[<hr>
@@ -1138,6 +1047,14 @@ github会在它上面启动<a href="https://pages.github.com/">github pages</a>�
 <p>这个版本的next对于中文用户有一个很严重的bug，你会发现有些博客页面打开是空白的，然后查看F12发现浏览器报了一个<code>Cannot read property &#39;replace&#39; of null</code>的错误，
 然后在这里找到了解决办法<a href="https://issuehunt.io/r/hexojs/hexo/issues/4486">https://issuehunt.io/r/hexojs/hexo/issues/4486</a>，即使用<code>hexo-theme-next:master</code>中的文件<code>next\source\js\utils.js</code>覆盖<code>themes\next\source\js\utils.js</code>即可。</p>
 <p>以后当然直接使用更新版本的next即可，这个bug会在后续版本修复。</p>
+<hr>
+<h2 id="添加tags和categories"><a href="#添加tags和categories" class="headerlink" title="添加tags和categories"></a>添加tags和categories</h2><p>这里有一点和之前不太一样的地方，参考<a href="https://theme-next.js.org/docs/theme-settings/custom-pages.html">Custom Pages</a>。</p>
+<p>首先在博客根目录执行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo new page tags</span></span><br></pre></td></tr></table></figure>
+<p>然后在source目录下会出现一个tags目录，里面有一个<code>index.md</code>文件，修改成如下样式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: tags</span><br><span class="line">date: 2014-12-22 12:39:04</span><br><span class="line">type: tags</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<p>最后在<code>next/_config.yml</code>中打开tags即可：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: &#x2F; || fa fa-home</span><br><span class="line">  archives: &#x2F;archives&#x2F; || fa fa-archive</span><br><span class="line">  tags: &#x2F;tags&#x2F; || fa fa-tags</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>guide</category>
@@ -1191,6 +1108,97 @@ want to strive closer to the rising kramdown standard.</p>
       </categories>
       <tags>
         <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Logistic Regression 简单总结</title>
+    <url>/2017/08/22/2017-08-22-logistic-regression/</url>
+    <content><![CDATA[<hr>
+<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p>把它看成只有一个神经元的神经网络，激活函数就是<code>sigmoid</code>函数。</p>
+<hr>
+<h2 id="模型："><a href="#模型：" class="headerlink" title="模型："></a>模型：</h2><script type="math/tex; mode=display">
+\hat y = \sigma (W^T x + b)</script><p>其中，</p>
+<script type="math/tex; mode=display">
+\sigma(Z) = \frac{1}{1+e^{-Z}}</script><hr>
+<h2 id="代价函数："><a href="#代价函数：" class="headerlink" title="代价函数："></a>代价函数：</h2><script type="math/tex; mode=display">
+J(W,b) = \frac{1}{m} \sum_{i=1}^m L(\hat y^{(i)},y^{(i)} )
+= - \frac{1}{m} \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
++ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>视频中好像没有具体说这个损失函数的一个推导，这里自己简单推一推。</p>
+<p>首先对于$\sigma(Z)$这个函数，它其实就是经常说到的<strong>sigmoid</strong>函数，
+它的函数图像如下：</p>
+<div align="center"><img src="/images/coursera/nndl-note_1.png"
+style="zoom:50%" title="sigmoid函数" /></div>
+
+<p>可以看出sigmoid函数的值域范围是0~1，所以通常把它当成一个概率来看待，
+那么，可以写出<code>y</code>的概率表达式为：</p>
+<script type="math/tex; mode=display">
+P(y) = (\hat y)^y (1 - \hat y)^{1-y}</script><p>其中$\hat y$就是预测$y$为1的概率，区分两种情况，
+上面的式子分开写就是下面的式子，合并在一起有利于公式化：</p>
+<script type="math/tex; mode=display">
+P(y) =
+\begin{cases}
+\hat y \ \ \ \ \ \ \ \ \ \ ,y = 1 \\
+1 - \hat y \ \ \ ,y = 0
+\end{cases}</script><p>所以我们采用<strong>极大似然法</strong>来进行对$W$的求解，似然函数就可以写为：</p>
+<script type="math/tex; mode=display">
+\prod_{i=1}^m (\hat y^{(i)})^{y^{(i)}}(1 - \hat y^{(i)})^{1 - y^{(i)}}</script><p>对数似然写为：</p>
+<script type="math/tex; mode=display">
+L(\hat y) = \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
++ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>加上$- \frac{1}{m}$就得到了上面的代价函数，同时也从最大化变成了最小化。</p>
+<hr>
+<h2 id="梯度："><a href="#梯度：" class="headerlink" title="梯度："></a>梯度：</h2><p>首先需要对代价函数进行求导，下面进行推导，令：</p>
+<script type="math/tex; mode=display">
+Z^{(i)} = W^Tx^{(i)} + b \\
+\alpha^{(i)}=\sigma (W^Tx^{(i)} + b)</script><p>单独看一个样本<script type="math/tex">(x^{(i)},y^{(i)})</script>，它的代价函数为，</p>
+<script type="math/tex; mode=display">
+J^{(i)} = y^{(i)}log(\alpha^{(i)})+ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>对其中一个<script type="math/tex">W_i</script>进行求导,这里先忽略上标<script type="math/tex">(i)</script>：</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial W_i}=
+\frac{y}{a} \frac{\partial \alpha}{\partial W_i} -
+\frac{1-y}{1-\alpha}\frac{\partial \alpha}{\partial W_i}
+= ( \frac{y}{a} - \frac{1-y}{1-\alpha} )\frac{\partial \alpha}{\partial W_i}</script><p>然后其中的$\frac{\partial \alpha}{\partial W_i}$继续计算：</p>
+<script type="math/tex; mode=display">
+\frac{\partial \alpha}{\partial W_i}=
+\frac{e^{-Z}}{(1+e^{-Z})^2} \frac{\partial Z}{\partial W_i}
+= \frac {1}{1+e^{-Z}}\frac{e^{-Z} + 1 - 1}{1+e^{-Z}} \frac{\partial Z}{\partial W_i}
+= \alpha(1 - \alpha)\frac{\partial Z}{\partial W_i}</script><p>继续对$\frac{\partial Z}{\partial W_i}$进行计算：</p>
+<script type="math/tex; mode=display">
+\frac{\partial Z}{\partial W_i} = x_i</script><p>将上面的合起来，写为：</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial W_i} =
+( \frac{y}{a} - \frac{1-y}{1-\alpha} )\alpha(1 - \alpha)x_i =
+(y - \alpha)x_i</script><p>注意到代价函数为：</p>
+<script type="math/tex; mode=display">
+J(W,b) =
+- \frac{1}{m} \sum_{i=1}^m y^{(i)}log(\alpha^{(i)})
++ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>所以考虑到向量化处理，同时加上前面的因子$-\frac{1}{m}$，<strong>最终可以写为</strong>：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\frac {\partial J}{\partial W} = \frac{1}{m}X(A - Y)^T \\
+\frac {\partial J}{\partial b} = \frac{1}{m} \sum_{i=1}^m(\alpha^{(i)} - y^{(i)})
+\end{cases}</script><p>其中，</p>
+<script type="math/tex; mode=display">
+A = [\alpha^{(1)},\alpha^{(2)},...,\alpha^{(m-1)},\alpha^{(m)}] \\
+
+X = [x^{(1)},x^{(2)},...,x^{(m-1)},x^{(m)}] \\
+
+Y = [y^{(1)},y^{(2)},...,y^{(m-1)},y^{(m)}]</script><hr>
+<h2 id="参数更新"><a href="#参数更新" class="headerlink" title="参数更新"></a>参数更新</h2><p>权值的更新就按照梯度下降的原则更新就行，</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+W = W - \alpha \frac {\partial J}{\partial W} \\
+b = b - \alpha \frac {\partial J}{\partial b}
+\end{cases}</script><p>这里的$\alpha$代表学习因子。</p>
+<hr>
+<h2 id="存疑"><a href="#存疑" class="headerlink" title="存疑"></a>存疑</h2><p><strong>如果直接使用最小二乘损失函数呢？</strong></p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1270,6 +1278,159 @@ style="zoom:150%"/></div>
       </categories>
       <tags>
         <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Coursera Improving Deep Neural Networks 笔记</title>
+    <url>/2017/08/25/2017-08-25-dnn/</url>
+    <content><![CDATA[<p>第二个专项课程的完整题目是</p>
+<blockquote>
+<p>Improving Deep Neural Networks:
+Hyperparameter tuning, Regularization and Optimization.</p>
+</blockquote>
+<p>通过标题就可以看出课程的主要内容就是在第一个课程的基础上，
+对深度神经网络进行加固。</p>
+<p>一共三周的课程，每周课程题目分别为：</p>
+<ul>
+<li>Practical aspects of Deep Learning</li>
+<li>Optimization algorithms</li>
+<li>Hyperparameter tuning, Batch Normalization and Programming Frameworks</li>
+</ul>
+<p>第一周讲了划分数据集、正则化、权值初始化以及梯度检查。</p>
+<p>第二周讲了<strong>mini-batch</strong>以及<strong>RMSprop</strong>等参数更新方法。</p>
+<p>第三周讲了超参数的选择、标准化以及TensorFlow。</p>
+<hr>
+<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><p><a href="http://longrm.com/2017/08/25/2017-08-25-dnn_2/">神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查</a></p>
+<hr>
+<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_3/">Mini-batch 和 权重更新策略</a></p>
+<hr>
+<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">Hyperparameter tuning, Batch Norm and TensorFlow</a></p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mini-batch 和 权重更新策略</title>
+    <url>/2017/08/29/2017-08-29-dnn_3/</url>
+    <content><![CDATA[<hr>
+<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
+<ol>
+<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
+<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
+<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
+</ol>
+<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
+这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
+另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
+<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
+虽然这样计算块，更新快，但是随机性也太大了。</p>
+<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
+每次计算不会太复杂，也能降低一点随机性。</p>
+<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
+选取<strong>64、128、256、512</strong>。</p>
+<hr>
+<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
+<p><strong>Exponentially weighted averages:</strong></p>
+<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
+<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
+<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
+<script type="math/tex; mode=display">
+v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
+当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
+<p>大概平均的天数为：</p>
+<script type="math/tex; mode=display">
+days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
+<p>计算时，就一步一步运算就行了，</p>
+<script type="math/tex; mode=display">
+v_\theta = 0</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
+...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
+<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
+<p>所以，这里需要加入<code>Bias correction</code>，</p>
+<script type="math/tex; mode=display">
+v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
+这样，就能矫正这个初始值太低的问题。</p>
+<p><strong>Momentum:</strong></p>
+<p>属于权重更新的初级魔法：</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
+w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
+b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
+<p><strong>RMSprop:</strong></p>
+<p>属于权重更新的中级魔法：</p>
+<script type="math/tex; mode=display">
+S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
+<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
+<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
+<script type="math/tex; mode=display">
+Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
+V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
+V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
+S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
+<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
+<p>另外这里还要用到矫正：</p>
+<script type="math/tex; mode=display">
+V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
+S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
+<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
+<hr>
+<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
+<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
+<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
+另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
+<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
+<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
+<p>首选的策略是：</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
+<script type="math/tex; mode=display">
+\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
+<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
+<hr>
+<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
+<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
+<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
+它更像是下面的马鞍面，</p>
+<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
+<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
+模型因为各种措施，它也并不会卡在这个点上。</p>
+<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1424,159 +1585,6 @@ check \ \ \
 <li>Doesn’t work with dropout.（会变得不好计算，先关闭dropout，检查完毕再开启）</li>
 <li>Run at random initialization; perhaps again after some training.</li>
 </ul>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Coursera Improving Deep Neural Networks 笔记</title>
-    <url>/2017/08/25/2017-08-25-dnn/</url>
-    <content><![CDATA[<p>第二个专项课程的完整题目是</p>
-<blockquote>
-<p>Improving Deep Neural Networks:
-Hyperparameter tuning, Regularization and Optimization.</p>
-</blockquote>
-<p>通过标题就可以看出课程的主要内容就是在第一个课程的基础上，
-对深度神经网络进行加固。</p>
-<p>一共三周的课程，每周课程题目分别为：</p>
-<ul>
-<li>Practical aspects of Deep Learning</li>
-<li>Optimization algorithms</li>
-<li>Hyperparameter tuning, Batch Normalization and Programming Frameworks</li>
-</ul>
-<p>第一周讲了划分数据集、正则化、权值初始化以及梯度检查。</p>
-<p>第二周讲了<strong>mini-batch</strong>以及<strong>RMSprop</strong>等参数更新方法。</p>
-<p>第三周讲了超参数的选择、标准化以及TensorFlow。</p>
-<hr>
-<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><p><a href="http://longrm.com/2017/08/25/2017-08-25-dnn_2/">神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查</a></p>
-<hr>
-<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_3/">Mini-batch 和 权重更新策略</a></p>
-<hr>
-<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">Hyperparameter tuning, Batch Norm and TensorFlow</a></p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mini-batch 和 权重更新策略</title>
-    <url>/2017/08/29/2017-08-29-dnn_3/</url>
-    <content><![CDATA[<hr>
-<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
-<ol>
-<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
-<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
-<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
-</ol>
-<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
-这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
-另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
-<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
-虽然这样计算块，更新快，但是随机性也太大了。</p>
-<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
-每次计算不会太复杂，也能降低一点随机性。</p>
-<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
-选取<strong>64、128、256、512</strong>。</p>
-<hr>
-<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
-<p><strong>Exponentially weighted averages:</strong></p>
-<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
-<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
-<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
-<script type="math/tex; mode=display">
-v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
-当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
-<p>大概平均的天数为：</p>
-<script type="math/tex; mode=display">
-days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
-<p>计算时，就一步一步运算就行了，</p>
-<script type="math/tex; mode=display">
-v_\theta = 0</script><script type="math/tex; mode=display">
-v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
-v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
-...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
-<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
-<p>所以，这里需要加入<code>Bias correction</code>，</p>
-<script type="math/tex; mode=display">
-v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
-这样，就能矫正这个初始值太低的问题。</p>
-<p><strong>Momentum:</strong></p>
-<p>属于权重更新的初级魔法：</p>
-<script type="math/tex; mode=display">
-V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
-V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
-w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
-b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
-<script type="math/tex; mode=display">
-V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
-V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
-<p><strong>RMSprop:</strong></p>
-<p>属于权重更新的中级魔法：</p>
-<script type="math/tex; mode=display">
-S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
-S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
-w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
-<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
-<script type="math/tex; mode=display">
-w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
-<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
-<script type="math/tex; mode=display">
-Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
-V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
-V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
-S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
-S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
-<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
-<p>另外这里还要用到矫正：</p>
-<script type="math/tex; mode=display">
-V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
-V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
-S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
-S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
-<script type="math/tex; mode=display">
-w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
-<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
-<hr>
-<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
-<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
-<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
-另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
-<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
-<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
-<p>首选的策略是：</p>
-<script type="math/tex; mode=display">
-\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
-<script type="math/tex; mode=display">
-\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
-\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
-<script type="math/tex; mode=display">
-\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
-<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
-<hr>
-<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
-<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
-<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
-它更像是下面的马鞍面，</p>
-<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
-<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
-模型因为各种措施，它也并不会卡在这个点上。</p>
-<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
 ]]></content>
       <categories>
         <category>coursera</category>
@@ -1863,73 +1871,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>LeetCode 10 Regular Expression Matching</title>
-    <url>/2017/09/05/2017-09-05-leetcode_10/</url>
-    <content><![CDATA[<p>Description:</p>
-<blockquote>
-<p>‘.’ Matches any single character.<br>‘*‘ Matches zero or more of the preceding element.  </p>
-<p>The matching should cover the entire input string (not partial).  </p>
-<p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
-<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “a*“) → true<br>isMatch(“aa”, “.*“) → true<br>isMatch(“ab”, “.*“) → true<br>isMatch(“aab”, “c*a*b”) → true  </p>
-</blockquote>
-<hr>
-<p><strong>题目理解：</strong>给两个字符串，用第二个字符串去匹配第一个字符串，意思就是第一个字符串中的字符不转义，
-只有第二个字符串才需要转义。</p>
-<p>需要注意的是，一个字符后面如果跟上<code>*</code>，那么这个字符一定要转义，也就是例如<code>a*</code>与<code>a*</code>不能匹配，因为第一个<code>a*</code>不转义，
-第二个<code>a*</code>转义，所以第一个<code>a*</code>中的<code>*</code>将匹配不上。</p>
-<p><strong>思路：</strong>几个月之前，显然不知道动态规划，就直接递归，非常二。当然也能击败一半人…</p>
-<p>刚看了动态规划，这个问题典型的动态规划问题，使用自顶向下的策略，速度得到提升。</p>
-<hr>
-<p><strong>代码一：直接递归版本</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] s_array = s.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] p_array = p.toCharArray();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> si = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> pi = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (  pi &lt; p_array.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pi + <span class="number">1</span> != p_array.length &amp;&amp; p_array[ pi + <span class="number">1</span> ] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">int</span> si_back = s_array.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">int</span> pi_back = p_array.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( pi_back &gt; pi + <span class="number">1</span> &amp;&amp; si_back &gt;= si ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( p_array[pi_back] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">if</span> ( p_array[pi_back] != s_array[si_back] &amp;&amp; p_array[pi_back] != <span class="string">&#x27;.&#x27;</span> ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi_back--;</span><br><span class="line">                    si_back--;</span><br><span class="line">                &#125;</span><br><span class="line">                pi_back++;</span><br><span class="line">                si_back++;</span><br><span class="line">                String p_sub = p.substring( pi + <span class="number">2</span> , pi_back );</span><br><span class="line">                <span class="keyword">if</span> ( p_array[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( si &lt;= si_back ) &#123;</span><br><span class="line">                        <span class="keyword">if</span> ( isMatch( s.substring( si , si_back ) , p_sub ) )</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                        si++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( si &lt; si_back &amp;&amp; s_array[si] == p_array[pi] ) &#123;</span><br><span class="line">                        <span class="keyword">if</span> ( isMatch( s.substring( si , si_back ) , p_sub ) )</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                        si++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> isMatch( s.substring( si , si_back ) , p_sub );</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( p_array[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( si == s_array.length ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi++;</span><br><span class="line">                    si++;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( si == s_array.length || s_array[si] != p_array[pi] ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi++;</span><br><span class="line">                    si++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> si == s_array.length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：指数级别。<br>运行时间：33ms。<br>击败：44.25%。</p>
-<p><img src="/images/leetcode/10_1.png" alt="image"></p>
-<hr>
-<p><strong>代码二：动态规划（自顶向下）</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( matchs, ss, pp, <span class="number">0</span>, <span class="number">0</span>) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">( <span class="keyword">char</span>[][] matchs, <span class="keyword">char</span>[] s, <span class="keyword">char</span>[] p, <span class="keyword">int</span> si, <span class="keyword">int</span> pi )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> || matchs[si][pi] == <span class="string">&#x27;0&#x27;</span> )</span><br><span class="line">            <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">        <span class="keyword">if</span> ( pi + <span class="number">1</span> &lt; p.length &amp;&amp; p[pi + <span class="number">1</span>] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[si][pi] = myMatch( matchs, s, p, si, pi + <span class="number">2</span> );</span><br><span class="line">            <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">            <span class="keyword">if</span> ( p[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> i = si + <span class="number">1</span>; i &lt;= s.length; i++ ) &#123;</span><br><span class="line">                    matchs[si][pi] = myMatch( matchs, s, p, i, pi + <span class="number">2</span> );</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">int</span> i = si;</span><br><span class="line">                <span class="keyword">while</span> ( i &lt; s.length &amp;&amp; s[i] == p[pi] ) &#123;</span><br><span class="line">                    matchs[si][pi] = myMatch( matchs, s, p, i + <span class="number">1</span>, pi + <span class="number">2</span> );</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">                    i++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;   </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( p[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( si == s.length )</span><br><span class="line">                matchs[si][pi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[si][pi] = myMatch( matchs, s, p, si + <span class="number">1</span>, pi + <span class="number">1</span> );</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( si == s.length || s[si] != p[pi] )</span><br><span class="line">                matchs[si][pi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[si][pi] = myMatch( matchs, s, p, si + <span class="number">1</span>, pi + <span class="number">1</span> );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(n^2)???<br>运行时间：25ms。<br>击败：99.48%</p>
-<p><img src="/images/leetcode/10_2.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Introduction to ML Strategy</title>
-    <url>/2017/09/06/2017-09-06-coursera-ml-strategy/</url>
-    <content><![CDATA[<h2 id="Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。"><a href="#Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。" class="headerlink" title="Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。"></a>Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。</h2><p>这一子课程一共分了2周的课程，没有讲实质的算法，讲的是在实际中如果去解决一个机器学习问题，
-或者说是在实现算法过程中，该如何一步一步去提升算法，它又应该基于一个怎么样的策略。</p>
-<p>实话说，这一部分听着比较无聊，一是因为自己没有这样的一个经历，不能感同身受，二是这一部分主要是一个<code>intuition</code>上的东西，
-比较的玄，三是这一部分确实有一点无聊。</p>
-<p>由于以上原因，这一部分笔记先简单记一下，待到之后或许会重新来看一遍视频。</p>
-<h2 id="正交化"><a href="#正交化" class="headerlink" title="正交化"></a>正交化</h2><p>意思是参数的正交化，也就是尽量使得要调整的参数正交化，这样参数调整起来才不会互相影响。（暂时并不能太理解具体的操作）</p>
-<h2 id="模型的目标"><a href="#模型的目标" class="headerlink" title="模型的目标"></a>模型的目标</h2><p>对于整个机器学习系统来说，提高算法精度是肯定的，但是还可能需要考虑到很多其它的问题，例如计算速度、内存占用、假真率啊等等。</p>
-<p>有的目标是越小/大越好，有的是只要满足就行，这就叫做<code>Optimizing metric and Satisficing</code>。</p>
-<p>另外要注意到<code>train set</code>与<code>dev set</code>以及<code>test set</code>它们之间的分布关系，如果分布区别很大，或者说训练的目标就不是我们本来的目标的话（不同的分布导致不同的目标），
-显然算法的表现将不会很好。</p>
-<h2 id="Avoidable-bias-and-variance"><a href="#Avoidable-bias-and-variance" class="headerlink" title="Avoidable bias and variance"></a>Avoidable bias and variance</h2><p>首先对于一个机器学习问题，它存在着一个精度的上限，叫做<code>Bayes Error</code>，它从数学上证明了这个问题它的一个精度上限，没有任何算法或者人能超过它。</p>
-<p>第二在这么一个问题上，可能有一个人类的精度上限<code>human-level performance</code>，代表着直接让人来做的误差。</p>
-<p>然后在<code>train set</code>上的误差就是<code>training error</code>，<code>dev set</code>上的误差就把它叫做<code>dev error</code>。</p>
-<p><strong>那么</strong>，对于<code>Bayes Error</code>，没法直接知道，所以通常使用<code>human-level performance</code>来表示我们算法想要达到的一个精度目标，
-所以<code>training error</code>与<code>human-level performance</code>之间的差值就叫做<code>avoidable bias</code>，也就是算法还差多少拟合能力。
-<code>training error</code>与<code>dev set</code>之间的差值就叫做<code>variance</code>，表示模型的泛化能力。</p>
-<p>这两个精度差就可以指示我们，当前的模型问题出在哪个地方。</p>
-<h2 id="后一周"><a href="#后一周" class="headerlink" title="后一周"></a>后一周</h2><p>不好总结，需要时可以再去看一遍…</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>TensorFlow 笔记一</title>
     <url>/2017/09/02/2017-09-02-tensorflow/</url>
     <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
@@ -1974,40 +1915,32 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>LeetCode 44 Wildcard Matching</title>
-    <url>/2017/09/06/2017-09-06-leetcode_44/</url>
-    <content><![CDATA[<blockquote>
-<p>Implement wildcard pattern matching with support for ‘?’ and ‘*‘.  </p>
-<p>‘?’ Matches any single character.<br>‘*‘ Matches any sequence of characters (including the empty sequence).  </p>
+    <title>LeetCode 10 Regular Expression Matching</title>
+    <url>/2017/09/05/2017-09-05-leetcode_10/</url>
+    <content><![CDATA[<p>Description:</p>
+<blockquote>
+<p>‘.’ Matches any single character.<br>‘*‘ Matches zero or more of the preceding element.  </p>
 <p>The matching should cover the entire input string (not partial).  </p>
 <p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
-<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “*“) → true<br>isMatch(“aa”, “a*“) → true<br>isMatch(“ab”, “?*“) → true<br>isMatch(“aab”, “c*a*b”) → false  </p>
+<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “a*“) → true<br>isMatch(“aa”, “.*“) → true<br>isMatch(“ab”, “.*“) → true<br>isMatch(“aab”, “c*a*b”) → true  </p>
 </blockquote>
-<p>题目理解：</p>
-<p>经典的字符串匹配问题。</p>
-<p>首先想到的方法，顺着走，但是第一次写得非常复杂，这里忽略不计（但是速度还可以）。</p>
-<p>今天所想的方法，动态规划，自顶向下，或者自底向上。</p>
-<p>看了别人的顺着走的算法，原来思路也是很简单的。</p>
-<p><strong>所以不是看到这种问题就想着动态规划，也许顺着想就能简单解决。</strong></p>
-<p><strong>另外，这道题的java运行时间十分不稳定，重复提交可以差30ms。</strong></p>
 <hr>
-<p>代码一：</p>
-<p>自顶向下。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="comment">// 为了先合并连续的&#x27;*&#x27;</span></span><br><span class="line">        <span class="keyword">char</span>[] ppp = <span class="keyword">new</span> <span class="keyword">char</span>[pp.length];</span><br><span class="line">        <span class="keyword">int</span> ppp_idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">boolean</span> last_not_star = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pp.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pp[i] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( last_not_star )</span><br><span class="line">                    ppp[ppp_idx++] = pp[i];</span><br><span class="line">                last_not_star = <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                last_not_star = <span class="keyword">true</span>;</span><br><span class="line">                ppp[ppp_idx++] = pp[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] pppp = <span class="keyword">new</span> <span class="keyword">char</span>[ppp_idx];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ppp_idx; i++ )</span><br><span class="line">            pppp[i] = ppp[i];</span><br><span class="line">        pp = pppp;</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( ss, pp, <span class="number">0</span>, <span class="number">0</span>, matchs) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">(<span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> ai, <span class="keyword">int</span> bi, <span class="keyword">char</span>[][] matchs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;\0&#x27;</span> ) </span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        <span class="keyword">if</span> ( ai == a.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;?&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( a[ai] == b[bi] )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)？？？<br>运行时间：大约100ms。<br>击败：大约16.73%</p>
-<p><img src="/images/leetcode/44_1.png" alt="image"></p>
+<p><strong>题目理解：</strong>给两个字符串，用第二个字符串去匹配第一个字符串，意思就是第一个字符串中的字符不转义，
+只有第二个字符串才需要转义。</p>
+<p>需要注意的是，一个字符后面如果跟上<code>*</code>，那么这个字符一定要转义，也就是例如<code>a*</code>与<code>a*</code>不能匹配，因为第一个<code>a*</code>不转义，
+第二个<code>a*</code>转义，所以第一个<code>a*</code>中的<code>*</code>将匹配不上。</p>
+<p><strong>思路：</strong>几个月之前，显然不知道动态规划，就直接递归，非常二。当然也能击败一半人…</p>
+<p>刚看了动态规划，这个问题典型的动态规划问题，使用自顶向下的策略，速度得到提升。</p>
 <hr>
-<p>代码二：</p>
-<p>自底向上。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length;</span><br><span class="line">        <span class="keyword">boolean</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">boolean</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            matchs[i][<span class="number">0</span>] = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n &amp;&amp; pp[i] == <span class="string">&#x27;*&#x27;</span>; i++ )</span><br><span class="line">            matchs[<span class="number">0</span>][i+<span class="number">1</span>] = <span class="keyword">true</span>;</span><br><span class="line">        matchs[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">int</span> ii = i - <span class="number">1</span>, jj = j - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;?&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][jj];</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][j] || matchs[i][jj];</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[ii][jj] ) </span><br><span class="line">                        matchs[i][j] = (ss[ii] == pp[jj]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[m][n];</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)。<br>运行时间：大约75ms。<br>击败：大约50%</p>
-<p><img src="/images/leetcode/44_2.png" alt="image"></p>
+<p><strong>代码一：直接递归版本</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] s_array = s.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] p_array = p.toCharArray();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> si = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> pi = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (  pi &lt; p_array.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pi + <span class="number">1</span> != p_array.length &amp;&amp; p_array[ pi + <span class="number">1</span> ] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">int</span> si_back = s_array.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">int</span> pi_back = p_array.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( pi_back &gt; pi + <span class="number">1</span> &amp;&amp; si_back &gt;= si ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( p_array[pi_back] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">if</span> ( p_array[pi_back] != s_array[si_back] &amp;&amp; p_array[pi_back] != <span class="string">&#x27;.&#x27;</span> ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi_back--;</span><br><span class="line">                    si_back--;</span><br><span class="line">                &#125;</span><br><span class="line">                pi_back++;</span><br><span class="line">                si_back++;</span><br><span class="line">                String p_sub = p.substring( pi + <span class="number">2</span> , pi_back );</span><br><span class="line">                <span class="keyword">if</span> ( p_array[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( si &lt;= si_back ) &#123;</span><br><span class="line">                        <span class="keyword">if</span> ( isMatch( s.substring( si , si_back ) , p_sub ) )</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                        si++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( si &lt; si_back &amp;&amp; s_array[si] == p_array[pi] ) &#123;</span><br><span class="line">                        <span class="keyword">if</span> ( isMatch( s.substring( si , si_back ) , p_sub ) )</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                        si++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> isMatch( s.substring( si , si_back ) , p_sub );</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( p_array[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( si == s_array.length ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi++;</span><br><span class="line">                    si++;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( si == s_array.length || s_array[si] != p_array[pi] ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi++;</span><br><span class="line">                    si++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> si == s_array.length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：指数级别。<br>运行时间：33ms。<br>击败：44.25%。</p>
+<p><img src="/images/leetcode/10_1.png" alt="image"></p>
 <hr>
-<p>代码三：</p>
-<p>顺序扫描。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length, i = <span class="number">0</span>, j = <span class="number">0</span>, star_idx = -<span class="number">1</span>, match = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( i &lt; m ) &#123;</span><br><span class="line">            <span class="keyword">if</span>  ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                match = i;</span><br><span class="line">                star_idx = j;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( j &lt; n &amp;&amp; ( pp[j] == <span class="string">&#x27;?&#x27;</span> || pp[j] == ss[i] ) ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( star_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                i = match++;</span><br><span class="line">                j = star_idx + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">            j++;</span><br><span class="line">        <span class="keyword">return</span> j == n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：应该介于O(mn)到O(m + n)之间。<br>运行时间： 大约60ms。<br>击败：大约80%</p>
-<p><img src="/images/leetcode/44_3.png" alt="image"></p>
+<p><strong>代码二：动态规划（自顶向下）</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( matchs, ss, pp, <span class="number">0</span>, <span class="number">0</span>) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">( <span class="keyword">char</span>[][] matchs, <span class="keyword">char</span>[] s, <span class="keyword">char</span>[] p, <span class="keyword">int</span> si, <span class="keyword">int</span> pi )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> || matchs[si][pi] == <span class="string">&#x27;0&#x27;</span> )</span><br><span class="line">            <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">        <span class="keyword">if</span> ( pi + <span class="number">1</span> &lt; p.length &amp;&amp; p[pi + <span class="number">1</span>] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[si][pi] = myMatch( matchs, s, p, si, pi + <span class="number">2</span> );</span><br><span class="line">            <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">            <span class="keyword">if</span> ( p[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> i = si + <span class="number">1</span>; i &lt;= s.length; i++ ) &#123;</span><br><span class="line">                    matchs[si][pi] = myMatch( matchs, s, p, i, pi + <span class="number">2</span> );</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">int</span> i = si;</span><br><span class="line">                <span class="keyword">while</span> ( i &lt; s.length &amp;&amp; s[i] == p[pi] ) &#123;</span><br><span class="line">                    matchs[si][pi] = myMatch( matchs, s, p, i + <span class="number">1</span>, pi + <span class="number">2</span> );</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">                    i++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;   </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( p[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( si == s.length )</span><br><span class="line">                matchs[si][pi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[si][pi] = myMatch( matchs, s, p, si + <span class="number">1</span>, pi + <span class="number">1</span> );</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( si == s.length || s[si] != p[pi] )</span><br><span class="line">                matchs[si][pi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[si][pi] = myMatch( matchs, s, p, si + <span class="number">1</span>, pi + <span class="number">1</span> );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(n^2)???<br>运行时间：25ms。<br>击败：99.48%</p>
+<p><img src="/images/leetcode/10_2.png" alt="image"></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -2059,6 +1992,81 @@ z^{[L]} =
 <p><img src="/images/leetcode/72_2.png" alt="image"></p>
 <p><strong>注：</strong></p>
 <p><strong>自顶向上比自底向上快？？？想了一下，应该是因为在自顶向下的过程中，并不需要去将所有的子问题都计算出来。</strong></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Introduction to ML Strategy</title>
+    <url>/2017/09/06/2017-09-06-coursera-ml-strategy/</url>
+    <content><![CDATA[<h2 id="Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。"><a href="#Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。" class="headerlink" title="Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。"></a>Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。</h2><p>这一子课程一共分了2周的课程，没有讲实质的算法，讲的是在实际中如果去解决一个机器学习问题，
+或者说是在实现算法过程中，该如何一步一步去提升算法，它又应该基于一个怎么样的策略。</p>
+<p>实话说，这一部分听着比较无聊，一是因为自己没有这样的一个经历，不能感同身受，二是这一部分主要是一个<code>intuition</code>上的东西，
+比较的玄，三是这一部分确实有一点无聊。</p>
+<p>由于以上原因，这一部分笔记先简单记一下，待到之后或许会重新来看一遍视频。</p>
+<h2 id="正交化"><a href="#正交化" class="headerlink" title="正交化"></a>正交化</h2><p>意思是参数的正交化，也就是尽量使得要调整的参数正交化，这样参数调整起来才不会互相影响。（暂时并不能太理解具体的操作）</p>
+<h2 id="模型的目标"><a href="#模型的目标" class="headerlink" title="模型的目标"></a>模型的目标</h2><p>对于整个机器学习系统来说，提高算法精度是肯定的，但是还可能需要考虑到很多其它的问题，例如计算速度、内存占用、假真率啊等等。</p>
+<p>有的目标是越小/大越好，有的是只要满足就行，这就叫做<code>Optimizing metric and Satisficing</code>。</p>
+<p>另外要注意到<code>train set</code>与<code>dev set</code>以及<code>test set</code>它们之间的分布关系，如果分布区别很大，或者说训练的目标就不是我们本来的目标的话（不同的分布导致不同的目标），
+显然算法的表现将不会很好。</p>
+<h2 id="Avoidable-bias-and-variance"><a href="#Avoidable-bias-and-variance" class="headerlink" title="Avoidable bias and variance"></a>Avoidable bias and variance</h2><p>首先对于一个机器学习问题，它存在着一个精度的上限，叫做<code>Bayes Error</code>，它从数学上证明了这个问题它的一个精度上限，没有任何算法或者人能超过它。</p>
+<p>第二在这么一个问题上，可能有一个人类的精度上限<code>human-level performance</code>，代表着直接让人来做的误差。</p>
+<p>然后在<code>train set</code>上的误差就是<code>training error</code>，<code>dev set</code>上的误差就把它叫做<code>dev error</code>。</p>
+<p><strong>那么</strong>，对于<code>Bayes Error</code>，没法直接知道，所以通常使用<code>human-level performance</code>来表示我们算法想要达到的一个精度目标，
+所以<code>training error</code>与<code>human-level performance</code>之间的差值就叫做<code>avoidable bias</code>，也就是算法还差多少拟合能力。
+<code>training error</code>与<code>dev set</code>之间的差值就叫做<code>variance</code>，表示模型的泛化能力。</p>
+<p>这两个精度差就可以指示我们，当前的模型问题出在哪个地方。</p>
+<h2 id="后一周"><a href="#后一周" class="headerlink" title="后一周"></a>后一周</h2><p>不好总结，需要时可以再去看一遍…</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 44 Wildcard Matching</title>
+    <url>/2017/09/06/2017-09-06-leetcode_44/</url>
+    <content><![CDATA[<blockquote>
+<p>Implement wildcard pattern matching with support for ‘?’ and ‘*‘.  </p>
+<p>‘?’ Matches any single character.<br>‘*‘ Matches any sequence of characters (including the empty sequence).  </p>
+<p>The matching should cover the entire input string (not partial).  </p>
+<p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
+<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “*“) → true<br>isMatch(“aa”, “a*“) → true<br>isMatch(“ab”, “?*“) → true<br>isMatch(“aab”, “c*a*b”) → false  </p>
+</blockquote>
+<p>题目理解：</p>
+<p>经典的字符串匹配问题。</p>
+<p>首先想到的方法，顺着走，但是第一次写得非常复杂，这里忽略不计（但是速度还可以）。</p>
+<p>今天所想的方法，动态规划，自顶向下，或者自底向上。</p>
+<p>看了别人的顺着走的算法，原来思路也是很简单的。</p>
+<p><strong>所以不是看到这种问题就想着动态规划，也许顺着想就能简单解决。</strong></p>
+<p><strong>另外，这道题的java运行时间十分不稳定，重复提交可以差30ms。</strong></p>
+<hr>
+<p>代码一：</p>
+<p>自顶向下。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="comment">// 为了先合并连续的&#x27;*&#x27;</span></span><br><span class="line">        <span class="keyword">char</span>[] ppp = <span class="keyword">new</span> <span class="keyword">char</span>[pp.length];</span><br><span class="line">        <span class="keyword">int</span> ppp_idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">boolean</span> last_not_star = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pp.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pp[i] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( last_not_star )</span><br><span class="line">                    ppp[ppp_idx++] = pp[i];</span><br><span class="line">                last_not_star = <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                last_not_star = <span class="keyword">true</span>;</span><br><span class="line">                ppp[ppp_idx++] = pp[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] pppp = <span class="keyword">new</span> <span class="keyword">char</span>[ppp_idx];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ppp_idx; i++ )</span><br><span class="line">            pppp[i] = ppp[i];</span><br><span class="line">        pp = pppp;</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( ss, pp, <span class="number">0</span>, <span class="number">0</span>, matchs) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">(<span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> ai, <span class="keyword">int</span> bi, <span class="keyword">char</span>[][] matchs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;\0&#x27;</span> ) </span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        <span class="keyword">if</span> ( ai == a.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;?&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( a[ai] == b[bi] )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)？？？<br>运行时间：大约100ms。<br>击败：大约16.73%</p>
+<p><img src="/images/leetcode/44_1.png" alt="image"></p>
+<hr>
+<p>代码二：</p>
+<p>自底向上。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length;</span><br><span class="line">        <span class="keyword">boolean</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">boolean</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            matchs[i][<span class="number">0</span>] = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n &amp;&amp; pp[i] == <span class="string">&#x27;*&#x27;</span>; i++ )</span><br><span class="line">            matchs[<span class="number">0</span>][i+<span class="number">1</span>] = <span class="keyword">true</span>;</span><br><span class="line">        matchs[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">int</span> ii = i - <span class="number">1</span>, jj = j - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;?&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][jj];</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][j] || matchs[i][jj];</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[ii][jj] ) </span><br><span class="line">                        matchs[i][j] = (ss[ii] == pp[jj]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[m][n];</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)。<br>运行时间：大约75ms。<br>击败：大约50%</p>
+<p><img src="/images/leetcode/44_2.png" alt="image"></p>
+<hr>
+<p>代码三：</p>
+<p>顺序扫描。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length, i = <span class="number">0</span>, j = <span class="number">0</span>, star_idx = -<span class="number">1</span>, match = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( i &lt; m ) &#123;</span><br><span class="line">            <span class="keyword">if</span>  ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                match = i;</span><br><span class="line">                star_idx = j;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( j &lt; n &amp;&amp; ( pp[j] == <span class="string">&#x27;?&#x27;</span> || pp[j] == ss[i] ) ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( star_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                i = match++;</span><br><span class="line">                j = star_idx + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">            j++;</span><br><span class="line">        <span class="keyword">return</span> j == n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：应该介于O(mn)到O(m + n)之间。<br>运行时间： 大约60ms。<br>击败：大约80%</p>
+<p><img src="/images/leetcode/44_3.png" alt="image"></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -3025,6 +3033,19 @@ D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
       </tags>
   </entry>
   <entry>
+    <title>深度学习第二章《线性代数》</title>
+    <url>/2017/11/23/2017-11-23-linear-algebra/</url>
+    <content><![CDATA[<h2 id="标量、向量、矩阵和张量"><a href="#标量、向量、矩阵和张量" class="headerlink" title="标量、向量、矩阵和张量"></a>标量、向量、矩阵和张量</h2>]]></content>
+      <categories>
+        <category>deep learning</category>
+        <category>math</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Sibyl 论文笔记</title>
     <url>/2017/11/28/2017-11-28-Sibyl/</url>
     <content><![CDATA[<h2 id="Sibyl-A-Practical-Internet-Route-Oracle"><a href="#Sibyl-A-Practical-Internet-Route-Oracle" class="headerlink" title="Sibyl: A Practical Internet Route Oracle"></a>Sibyl: A Practical Internet Route Oracle</h2><p>论文<a href="https://pdfs.semanticscholar.org/0d89/37cad20f57a0453111691efe0ddbc90604b3.pdf">Calder, Matt, Yi-Ching Chiu, and Brandon Schlinker. “Sibyl: A Practical Internet Route Oracle.”</a></p>
@@ -3233,19 +3254,6 @@ Calculation &= 64 \times 64 \times 1 \times 1 \times 256 \times 64 +
       </tags>
   </entry>
   <entry>
-    <title>深度学习第二章《线性代数》</title>
-    <url>/2017/11/23/2017-11-23-linear-algebra/</url>
-    <content><![CDATA[<h2 id="标量、向量、矩阵和张量"><a href="#标量、向量、矩阵和张量" class="headerlink" title="标量、向量、矩阵和张量"></a>标量、向量、矩阵和张量</h2>]]></content>
-      <categories>
-        <category>deep learning</category>
-        <category>math</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Keras 自定义 generator</title>
     <url>/2017/12/29/2017-12-29-keras-generator/</url>
     <content><![CDATA[<h2 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h2><p>在做kaggle上的<code>Facial Keypoints Detection</code>时候，它输入是一些人脸的图片，
@@ -3373,6 +3381,70 @@ google之后，大概确定了这个是没有线程安全而导致的问题。</
       </tags>
   </entry>
   <entry>
+    <title>2017年华为软件精英挑战赛记录</title>
+    <url>/2018/05/02/2018-05-02-2017_codecraft/</url>
+    <content><![CDATA[<hr>
+<h1 id="初赛"><a href="#初赛" class="headerlink" title="初赛"></a>初赛</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>很好，网上找了一会也没有找到题目，我只想说，华为你把往年的题的链接给一下可好？</p>
+<p>凭借记忆，初赛的题目大概是，有一个网络，要在上面部署cdn服务器，怎么部署既能满足用户需求，
+又能使得部署费用最少。</p>
+<p>具体一点，相当于一个无向图，有一些点是小区，每个小区都有视频业务的需求，而且需求量不一样，每条边是一条链路，
+链路有它的带宽限制。现在需要部署cdn服务器，让每一个小区的视频业务都能满足，同时部署cdn服务器的费用越低越好。</p>
+<p>每一个点都可以部署cdn服务器（包括是小区的点），每一个小区有一个需求值，每一条边是一条链路，每条链路都是双向的，
+每条链路有一个链路容量和一个单位费用（使用链路上一个单位的流量需要多少钱）。cdn服务器数量无限，cdn服务器输出能力无限，
+同样cdn服务器也有一个单价。</p>
+<p>限制：不能使用第三方库，程序运行时间不超过60s。</p>
+<h2 id="简单分析"><a href="#简单分析" class="headerlink" title="简单分析"></a>简单分析</h2><p>这个需要一步一步来分析：</p>
+<ol>
+<li>该选择哪些点来部署服务器？</li>
+<li>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</li>
+</ol>
+<p>这就是这个题目的两个核心问题。</p>
+<h3 id="该选择哪些点来部署服务器？"><a href="#该选择哪些点来部署服务器？" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>这是这个题目最难的一部分，因为这个选择是一个NP难的问题，所以是没有现成的解法来教你如何求解这个问题的，
+通常都是将它变成一个整数规划模型，然后使用求解器来求解。但是由于不能使用第三方库，所以代码全靠手写，
+那么这个问题基本上只能使用启发式算法来解。</p>
+<p>那么有哪些常用的启发式算法呢？遗传算法、模拟退火、蚁群算法、粒子群算法等。</p>
+<p>很好，那么从哪个算法开始呢？显然都不用，第一步当然是写一个最简单的版本，先熟悉问题，在深入问题。</p>
+<p><strong>最简单的版本（原始想法）：</strong></p>
+<p>版本1：初始每一个小区都给一个cdn，然后再尝试一个个cdn删除，直到不能降低费用，或者不能满足用户需求为止。</p>
+<p>版本2：初始没有cdn，然后尝试一个小区一个小区添加cdn，直到需求满足且不能降低费用为止。</p>
+<p><strong>初始版本的想法非常简单，但是很遗憾，这个想法在初赛的简单用例上能直接跑出最优解…</strong></p>
+<p>(有时候问题就是这么简单，只不过很多人还没开始就觉得难，然后就没有然后了)</p>
+<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>解决这个问题很简单，使用<a href="待补充">最小费用最大流</a>就解决了。</p>
+<p>使用最简单的增广路写法就好。</p>
+<h2 id="进阶分析"><a href="#进阶分析" class="headerlink" title="进阶分析"></a>进阶分析</h2><p>同样的，两个步骤的想法。</p>
+<h3 id="该选择哪些点来部署服务器？-1"><a href="#该选择哪些点来部署服务器？-1" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>由于最初始的版本效果很好，那么在这个基础上还能加强吗？</p>
+<p>当然能，很简单就能想到几个操作方法：</p>
+<ol>
+<li>cdn移动。现在cdn都是直接放在小区上面的，所以自然可以尝试移动cdn，只移动一步，
+如果移动能降低费用就移动，否则维持原状。</li>
+<li>cdn删除。这个删除不同于上面的原始想法中的删除，这个删除是根据cdn移动来的，如果有cdn移动成功了，
+那么意味着图的结构变了，有的点就也许就可以删除了。</li>
+</ol>
+<p><strong>很遗憾，初赛使用的就是这个思路做的，最后大概成渝前3的水平…</strong></p>
+<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>上面选择了增广路写法。</p>
+<p>但是，注意到时间限制60s，在这种分两步走的策略里面，需要跑很多次费用流，
+这时候的问题就是如何解决好这个问题，也就是用时尽量少。</p>
+<p><strong>最小费用最大流：</strong></p>
+<p>这里我首先使用的是增广路解法，使用SPFA计算增广路的最短路径。</p>
+<p>由于在一次求解最小费用最大流的过程中，需要反复的调用SPFA，那么<strong>在重复进行SPFA的过程中，不用每一次都重头开始</strong>，
+也就是一部分最短路径的结果可以保留，这样在下一次计算时就可以少很多的计算量。</p>
+<p>使用这样的方法，跑高级用例也没有问题，否则高级用例会有压力。</p>
+<p>由于上面部署的思路太简单了，这个最小费用最大流的魔改是我觉得自己最有意思的地方了。</p>
+<p>（具体用时忘记了…太过久远）</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>参见github<a href="https://github.com/isadamu/2017-codecraft">2017-codecraft</a></p>
+<p>在一年之后，看自己一年之前写的代码，真的写得稀烂…估计再过一年又会嫌弃现在。</p>
+<h1 id="复赛"><a href="#复赛" class="headerlink" title="复赛"></a>复赛</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>和上面的题目其实一样，</p>
+<p>// TODO</p>
+]]></content>
+      <categories>
+        <category>competition</category>
+      </categories>
+      <tags>
+        <tag>competition</tag>
+        <tag>algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>jar包的运行以及jre精简</title>
     <url>/2018/03/19/2018-03-19-java_jar_jre_reduce/</url>
     <content><![CDATA[<h2 id="工程打包"><a href="#工程打包" class="headerlink" title="工程打包"></a>工程打包</h2><p>无论是什么IDE，打包都是一件十分简单的事。（这里不讨论自己手动打包的情形）</p>
@@ -3467,70 +3539,6 @@ java中可以使用下面语句来取到：</p>
       <tags>
         <tag>guide</tag>
         <tag>java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2017年华为软件精英挑战赛记录</title>
-    <url>/2018/05/02/2018-05-02-2017_codecraft/</url>
-    <content><![CDATA[<hr>
-<h1 id="初赛"><a href="#初赛" class="headerlink" title="初赛"></a>初赛</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>很好，网上找了一会也没有找到题目，我只想说，华为你把往年的题的链接给一下可好？</p>
-<p>凭借记忆，初赛的题目大概是，有一个网络，要在上面部署cdn服务器，怎么部署既能满足用户需求，
-又能使得部署费用最少。</p>
-<p>具体一点，相当于一个无向图，有一些点是小区，每个小区都有视频业务的需求，而且需求量不一样，每条边是一条链路，
-链路有它的带宽限制。现在需要部署cdn服务器，让每一个小区的视频业务都能满足，同时部署cdn服务器的费用越低越好。</p>
-<p>每一个点都可以部署cdn服务器（包括是小区的点），每一个小区有一个需求值，每一条边是一条链路，每条链路都是双向的，
-每条链路有一个链路容量和一个单位费用（使用链路上一个单位的流量需要多少钱）。cdn服务器数量无限，cdn服务器输出能力无限，
-同样cdn服务器也有一个单价。</p>
-<p>限制：不能使用第三方库，程序运行时间不超过60s。</p>
-<h2 id="简单分析"><a href="#简单分析" class="headerlink" title="简单分析"></a>简单分析</h2><p>这个需要一步一步来分析：</p>
-<ol>
-<li>该选择哪些点来部署服务器？</li>
-<li>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</li>
-</ol>
-<p>这就是这个题目的两个核心问题。</p>
-<h3 id="该选择哪些点来部署服务器？"><a href="#该选择哪些点来部署服务器？" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>这是这个题目最难的一部分，因为这个选择是一个NP难的问题，所以是没有现成的解法来教你如何求解这个问题的，
-通常都是将它变成一个整数规划模型，然后使用求解器来求解。但是由于不能使用第三方库，所以代码全靠手写，
-那么这个问题基本上只能使用启发式算法来解。</p>
-<p>那么有哪些常用的启发式算法呢？遗传算法、模拟退火、蚁群算法、粒子群算法等。</p>
-<p>很好，那么从哪个算法开始呢？显然都不用，第一步当然是写一个最简单的版本，先熟悉问题，在深入问题。</p>
-<p><strong>最简单的版本（原始想法）：</strong></p>
-<p>版本1：初始每一个小区都给一个cdn，然后再尝试一个个cdn删除，直到不能降低费用，或者不能满足用户需求为止。</p>
-<p>版本2：初始没有cdn，然后尝试一个小区一个小区添加cdn，直到需求满足且不能降低费用为止。</p>
-<p><strong>初始版本的想法非常简单，但是很遗憾，这个想法在初赛的简单用例上能直接跑出最优解…</strong></p>
-<p>(有时候问题就是这么简单，只不过很多人还没开始就觉得难，然后就没有然后了)</p>
-<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>解决这个问题很简单，使用<a href="待补充">最小费用最大流</a>就解决了。</p>
-<p>使用最简单的增广路写法就好。</p>
-<h2 id="进阶分析"><a href="#进阶分析" class="headerlink" title="进阶分析"></a>进阶分析</h2><p>同样的，两个步骤的想法。</p>
-<h3 id="该选择哪些点来部署服务器？-1"><a href="#该选择哪些点来部署服务器？-1" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>由于最初始的版本效果很好，那么在这个基础上还能加强吗？</p>
-<p>当然能，很简单就能想到几个操作方法：</p>
-<ol>
-<li>cdn移动。现在cdn都是直接放在小区上面的，所以自然可以尝试移动cdn，只移动一步，
-如果移动能降低费用就移动，否则维持原状。</li>
-<li>cdn删除。这个删除不同于上面的原始想法中的删除，这个删除是根据cdn移动来的，如果有cdn移动成功了，
-那么意味着图的结构变了，有的点就也许就可以删除了。</li>
-</ol>
-<p><strong>很遗憾，初赛使用的就是这个思路做的，最后大概成渝前3的水平…</strong></p>
-<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>上面选择了增广路写法。</p>
-<p>但是，注意到时间限制60s，在这种分两步走的策略里面，需要跑很多次费用流，
-这时候的问题就是如何解决好这个问题，也就是用时尽量少。</p>
-<p><strong>最小费用最大流：</strong></p>
-<p>这里我首先使用的是增广路解法，使用SPFA计算增广路的最短路径。</p>
-<p>由于在一次求解最小费用最大流的过程中，需要反复的调用SPFA，那么<strong>在重复进行SPFA的过程中，不用每一次都重头开始</strong>，
-也就是一部分最短路径的结果可以保留，这样在下一次计算时就可以少很多的计算量。</p>
-<p>使用这样的方法，跑高级用例也没有问题，否则高级用例会有压力。</p>
-<p>由于上面部署的思路太简单了，这个最小费用最大流的魔改是我觉得自己最有意思的地方了。</p>
-<p>（具体用时忘记了…太过久远）</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>参见github<a href="https://github.com/isadamu/2017-codecraft">2017-codecraft</a></p>
-<p>在一年之后，看自己一年之前写的代码，真的写得稀烂…估计再过一年又会嫌弃现在。</p>
-<h1 id="复赛"><a href="#复赛" class="headerlink" title="复赛"></a>复赛</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>和上面的题目其实一样，</p>
-<p>// TODO</p>
-]]></content>
-      <categories>
-        <category>competition</category>
-      </categories>
-      <tags>
-        <tag>competition</tag>
-        <tag>algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -5072,7 +5080,7 @@ webrtc会自动的将同一个<code>stream</code>下的<code>track</code>绑定�
 <p>直接将所有信息打印出来：</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 每秒钟打印 stats 信息</span></span><br><span class="line"><span class="built_in">window</span>.setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    pc.getStats(<span class="literal">null</span>).then(<span class="function"><span class="params">stats</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> statsOutput = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">        stats.forEach(<span class="function"><span class="params">report</span> =&gt;</span> &#123;</span><br><span class="line">            statsOutput += <span class="string">`&lt;h2&gt;Report: <span class="subst">$&#123;report.type&#125;</span>&lt;/h3&gt;\n&lt;strong&gt;ID:&lt;/strong&gt; <span class="subst">$&#123;report.id&#125;</span>&lt;br&gt;\n`</span> +</span><br><span class="line">                <span class="string">`&lt;strong&gt;Timestamp:&lt;/strong&gt; <span class="subst">$&#123;report.timestamp&#125;</span>&lt;br&gt;\n`</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Now the statistics for this report; we intentially drop the ones we</span></span><br><span class="line">            <span class="comment">// sorted to the top above</span></span><br><span class="line"></span><br><span class="line">            <span class="built_in">Object</span>.keys(report).forEach(<span class="function"><span class="params">statName</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (statName !== <span class="string">&quot;id&quot;</span> &amp;&amp; statName !== <span class="string">&quot;timestamp&quot;</span> &amp;&amp; statName !== <span class="string">&quot;type&quot;</span>) &#123;</span><br><span class="line">                    statsOutput += <span class="string">`&lt;strong&gt;<span class="subst">$&#123;statName&#125;</span>:&lt;/strong&gt; <span class="subst">$&#123;report[statName]&#125;</span>&lt;br&gt;\n`</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">document</span>.getElementById(<span class="string">&quot;stats-box&quot;</span>).innerHTML = statsOutput;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
 <p>这样打印出来的信息非常多，很多都是我们不需要的，所以可以传入track，来过滤出我们需要的信息：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 处理远端 track</span><br><span class="line">let videoElem &#x3D; document.getElementById(&#39;video2&#39;);</span><br><span class="line">let mediaTracks &#x3D; [];    &#x2F;&#x2F; 用于统计</span><br><span class="line">pc.ontrack &#x3D; ev &#x3D;&gt; &#123;</span><br><span class="line">    if (ev.streams &amp;&amp; ev.streams[0]) &#123;</span><br><span class="line">        console.log(&quot;on track&quot; + ev.streams[0]);</span><br><span class="line">        videoElem.srcObject &#x3D; ev.streams[0];</span><br><span class="line">        mediaTracks.push(ev.track);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 这里稍微过滤了一下,只统计输入的音视频流,并计算出实时码率(简单平滑了一下)</span><br><span class="line">const statIntervalBase &#x3D; 1000;</span><br><span class="line">const statInterval &#x3D; 1;</span><br><span class="line">let lastRecvByteVideo &#x3D; 0;</span><br><span class="line">let lastRecvByteAudio &#x3D; 0;</span><br><span class="line">window.setInterval(function() &#123;</span><br><span class="line">    if (mediaTracks.length &lt;&#x3D; 0) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mediaTracks.forEach(track &#x3D;&gt; &#123;</span><br><span class="line"></span><br><span class="line">        pc.getStats(track).then(stats &#x3D;&gt; &#123;</span><br><span class="line">            stats.forEach(report &#x3D;&gt; &#123;</span><br><span class="line">                if (report.type &#x3D;&#x3D;&#x3D; &quot;inbound-rtp&quot;) &#123;</span><br><span class="line">                    let statsOutput &#x3D; &quot;&quot;;</span><br><span class="line">                    statsOutput +&#x3D; &#96;&lt;h2&gt;Report: $&#123;report.type&#125;&lt;&#x2F;h3&gt;\n&lt;strong&gt;ID:&lt;&#x2F;strong&gt; $&#123;report.id&#125;&lt;br&gt;\n&#96; +</span><br><span class="line">                        &#96;&lt;strong&gt;Timestamp:&lt;&#x2F;strong&gt; $&#123;report.timestamp&#125;&lt;br&gt;\n&#96;;</span><br><span class="line"></span><br><span class="line">                    Object.keys(report).forEach(statName &#x3D;&gt; &#123;</span><br><span class="line">                        if (statName !&#x3D;&#x3D; &quot;id&quot; &amp;&amp; statName !&#x3D;&#x3D; &quot;timestamp&quot; &amp;&amp; statName !&#x3D;&#x3D; &quot;type&quot;) &#123;</span><br><span class="line">                            statsOutput +&#x3D; &#96;&lt;strong&gt;$&#123;statName&#125;:&lt;&#x2F;strong&gt; $&#123;report[statName]&#125;&lt;br&gt;\n&#96;;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line">                    let RecvByte &#x3D; report.bytesReceived;</span><br><span class="line"></span><br><span class="line">                    if (report.mediaType &#x3D;&#x3D;&#x3D; &quot;video&quot;) &#123;</span><br><span class="line">                        document.getElementById(&quot;stats-video&quot;).innerHTML &#x3D; statsOutput;</span><br><span class="line"></span><br><span class="line">                        let bitRate &#x3D; ((RecvByte - lastRecvByteVideo) * 8) &#x2F; (statInterval * 1000);</span><br><span class="line">                        lastRecvByteVideo &#x3D; RecvByte;</span><br><span class="line"></span><br><span class="line">                        document.getElementById(&quot;remote-stat-video-show&quot;).innerHTML &#x3D; &quot;video: &quot; + bitRate + &quot; kbps&quot;;</span><br><span class="line"></span><br><span class="line">                    &#125; else if (report.mediaType &#x3D;&#x3D;&#x3D; &quot;audio&quot;) &#123;</span><br><span class="line">                        document.getElementById(&quot;stats-audio&quot;).innerHTML &#x3D; statsOutput;</span><br><span class="line"></span><br><span class="line">                        let bitRate &#x3D; ((RecvByte - lastRecvByteAudio) * 8) &#x2F; (statInterval * 1000);</span><br><span class="line">                        lastRecvByteAudio &#x3D; RecvByte;</span><br><span class="line"></span><br><span class="line">                        document.getElementById(&quot;remote-stat-audio-show&quot;).innerHTML &#x3D; &quot;audio: &quot; + bitRate + &quot; kbps&quot;;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;, statIntervalBase * statInterval);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 处理远端 track</span></span><br><span class="line"><span class="keyword">let</span> videoElem = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;video2&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> mediaTracks = [];    <span class="comment">// 用于统计</span></span><br><span class="line">pc.ontrack = <span class="function"><span class="params">ev</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (ev.streams &amp;&amp; ev.streams[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&quot;on track&quot;</span> + ev.streams[<span class="number">0</span>]);</span><br><span class="line">        videoElem.srcObject = ev.streams[<span class="number">0</span>];</span><br><span class="line">        mediaTracks.push(ev.track);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里稍微过滤了一下,只统计输入的音视频流,并计算出实时码率(简单平滑了一下)</span></span><br><span class="line"><span class="keyword">const</span> statIntervalBase = <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">const</span> statInterval = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">let</span> lastRecvByteVideo = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> lastRecvByteAudio = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">window</span>.setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mediaTracks.length &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mediaTracks.forEach(<span class="function"><span class="params">track</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">        pc.getStats(track).then(<span class="function"><span class="params">stats</span> =&gt;</span> &#123;</span><br><span class="line">            stats.forEach(<span class="function"><span class="params">report</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (report.type === <span class="string">&quot;inbound-rtp&quot;</span>) &#123;</span><br><span class="line">                    <span class="keyword">let</span> statsOutput = <span class="string">&quot;&quot;</span>;</span><br><span class="line">                    statsOutput += <span class="string">`&lt;h2&gt;Report: <span class="subst">$&#123;report.type&#125;</span>&lt;/h3&gt;\n&lt;strong&gt;ID:&lt;/strong&gt; <span class="subst">$&#123;report.id&#125;</span>&lt;br&gt;\n`</span> +</span><br><span class="line">                        <span class="string">`&lt;strong&gt;Timestamp:&lt;/strong&gt; <span class="subst">$&#123;report.timestamp&#125;</span>&lt;br&gt;\n`</span>;</span><br><span class="line"></span><br><span class="line">                    <span class="built_in">Object</span>.keys(report).forEach(<span class="function"><span class="params">statName</span> =&gt;</span> &#123;</span><br><span class="line">                        <span class="keyword">if</span> (statName !== <span class="string">&quot;id&quot;</span> &amp;&amp; statName !== <span class="string">&quot;timestamp&quot;</span> &amp;&amp; statName !== <span class="string">&quot;type&quot;</span>) &#123;</span><br><span class="line">                            statsOutput += <span class="string">`&lt;strong&gt;<span class="subst">$&#123;statName&#125;</span>:&lt;/strong&gt; <span class="subst">$&#123;report[statName]&#125;</span>&lt;br&gt;\n`</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">let</span> RecvByte = report.bytesReceived;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (report.mediaType === <span class="string">&quot;video&quot;</span>) &#123;</span><br><span class="line">                        <span class="built_in">document</span>.getElementById(<span class="string">&quot;stats-video&quot;</span>).innerHTML = statsOutput;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> bitRate = ((RecvByte - lastRecvByteVideo) * <span class="number">8</span>) / (statInterval * <span class="number">1000</span>);</span><br><span class="line">                        lastRecvByteVideo = RecvByte;</span><br><span class="line"></span><br><span class="line">                        <span class="built_in">document</span>.getElementById(<span class="string">&quot;remote-stat-video-show&quot;</span>).innerHTML = <span class="string">&quot;video: &quot;</span> + bitRate + <span class="string">&quot; kbps&quot;</span>;</span><br><span class="line"></span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (report.mediaType === <span class="string">&quot;audio&quot;</span>) &#123;</span><br><span class="line">                        <span class="built_in">document</span>.getElementById(<span class="string">&quot;stats-audio&quot;</span>).innerHTML = statsOutput;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> bitRate = ((RecvByte - lastRecvByteAudio) * <span class="number">8</span>) / (statInterval * <span class="number">1000</span>);</span><br><span class="line">                        lastRecvByteAudio = RecvByte;</span><br><span class="line"></span><br><span class="line">                        <span class="built_in">document</span>.getElementById(<span class="string">&quot;remote-stat-audio-show&quot;</span>).innerHTML = <span class="string">&quot;audio: &quot;</span> + bitRate + <span class="string">&quot; kbps&quot;</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;, statIntervalBase * statInterval);</span><br></pre></td></tr></table></figure>
 <p>上面的代码，在<code>ontrack</code>时将远端的track临时保存一下，然后传入到<code>getStats()</code>中，这样筛选出我们所需要的<code>inbound-rtp</code>信息，如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Report: inbound-rtp</span><br><span class="line"></span><br><span class="line">    ID: RTCInboundRTPVideoStream_3091018575</span><br><span class="line">    Timestamp: 1609225346268</span><br><span class="line">    ssrc: 3091018575</span><br><span class="line">    isRemote: false</span><br><span class="line">    mediaType: video</span><br><span class="line">    kind: video</span><br><span class="line">    trackId: RTCMediaStreamTrack_receiver_2</span><br><span class="line">    transportId: RTCTransport_0_1</span><br><span class="line">    codecId: RTCCodec_1_Inbound_102</span><br><span class="line">    firCount: 0</span><br><span class="line">    pliCount: 2</span><br><span class="line">    nackCount: 0</span><br><span class="line">    packetsReceived: 383830</span><br><span class="line">    bytesReceived: 323599556</span><br><span class="line">    headerBytesReceived: 9330284</span><br><span class="line">    packetsLost: 0</span><br><span class="line">    lastPacketReceivedTimestamp: 1663077.686</span><br><span class="line">    framesReceived: 45982</span><br><span class="line">    frameWidth: 640</span><br><span class="line">    frameHeight: 480</span><br><span class="line">    framesPerSecond: 29</span><br><span class="line">    framesDecoded: 45952</span><br><span class="line">    keyFramesDecoded: 768</span><br><span class="line">    framesDropped: 11</span><br><span class="line">    totalDecodeTime: 30.94</span><br><span class="line">    totalInterFrameDelay: 1533.7619999993074</span><br><span class="line">    totalSquaredInterFrameDelay: 53.32035400000804</span><br><span class="line">    estimatedPlayoutTimestamp: 3818214146152</span><br><span class="line">    decoderImplementation: ExternalDecoder</span><br><span class="line"></span><br><span class="line">Report: inbound-rtp</span><br><span class="line"></span><br><span class="line">    ID: RTCInboundRTPAudioStream_3120593010</span><br><span class="line">    Timestamp: 1609225361268</span><br><span class="line">    ssrc: 3120593010</span><br><span class="line">    isRemote: false</span><br><span class="line">    mediaType: audio</span><br><span class="line">    kind: audio</span><br><span class="line">    trackId: RTCMediaStreamTrack_receiver_1</span><br><span class="line">    transportId: RTCTransport_0_1</span><br><span class="line">    codecId: RTCCodec_0_Inbound_111</span><br><span class="line">    packetsReceived: 77452</span><br><span class="line">    fecPacketsReceived: 0</span><br><span class="line">    fecPacketsDiscarded: 0</span><br><span class="line">    bytesReceived: 4679465</span><br><span class="line">    headerBytesReceived: 2168656</span><br><span class="line">    packetsLost: 0</span><br><span class="line">    lastPacketReceivedTimestamp: 1663092.678</span><br><span class="line">    jitter: 0.002</span><br><span class="line">    jitterBufferDelay: 3664896</span><br><span class="line">    jitterBufferEmittedCount: 74351040</span><br><span class="line">    totalSamplesReceived: 74406560</span><br><span class="line">    concealedSamples: 53120</span><br><span class="line">    silentConcealedSamples: 52600</span><br><span class="line">    concealmentEvents: 1</span><br><span class="line">    insertedSamplesForDeceleration: 4197</span><br><span class="line">    removedSamplesForAcceleration: 1663</span><br><span class="line">    audioLevel: 0</span><br><span class="line">    totalAudioEnergy: 0</span><br><span class="line">    totalSamplesDuration: 1552.3499999987332</span><br><span class="line">    estimatedPlayoutTimestamp: 3818214161171</span><br></pre></td></tr></table></figure>
 <p>首先可以看到视频的信息中的<code>codecId: RTCCodec_1_Inbound_102</code>说明当前视频编码为102，也就是<code>a=rtpmap:102 H264/90000</code>，即H264，说明上面对编码的修改成功生效。</p>
