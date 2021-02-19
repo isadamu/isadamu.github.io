@@ -18,25 +18,25 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"longrm.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="Coursera deep-learning part-2 week-3">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hyperparameter tuning, Batch Norm and TensorFlow">
-<meta property="og:url" content="http://example.com/2017/08/29/2017-08-29-dnn_4/index.html">
+<meta property="og:url" content="http://longrm.com/2017/08/29/2017-08-29-dnn_4/index.html">
 <meta property="og:site_name" content="龙">
 <meta property="og:description" content="Coursera deep-learning part-2 week-3">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_1.png">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_2.png">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_3.png">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_4.png">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_5.png">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_6.png">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_7.png">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_8.png">
-<meta property="og:image" content="http://example.com/images/coursera/HBT_9.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_1.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_2.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_3.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_4.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_5.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_6.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_7.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_8.png">
+<meta property="og:image" content="http://longrm.com/images/coursera/HBT_9.png">
 <meta property="article:published_time" content="2017-08-29T11:55:00.000Z">
 <meta property="article:modified_time" content="2017-09-08T13:42:59.000Z">
 <meta property="article:author" content="龙">
@@ -44,9 +44,9 @@
 <meta property="article:tag" content="mechine learning">
 <meta property="article:tag" content="deep learning">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/coursera/HBT_1.png">
+<meta name="twitter:image" content="http://longrm.com/images/coursera/HBT_1.png">
 
-<link rel="canonical" href="http://example.com/2017/08/29/2017-08-29-dnn_4/">
+<link rel="canonical" href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">
 
 
 <script id="page-configurations">
@@ -226,7 +226,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2017/08/29/2017-08-29-dnn_4/">
+    <link itemprop="mainEntityOfPage" href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head/head_bigfan.png">
@@ -366,12 +366,12 @@ z^{[l]} = w^{[l]}a^{[l-1]} + b^{[l]}</script><p>那么在对$z^{[l]}$进行<code
 <p><strong>梯度怎么求？</strong></p>
 <p>这个现在先避开，感觉上就不好算，按吴恩达的说法，通常不会去手写这个的，让学习框架来就好。</p>
 <hr>
-<h2 id="Softmax-Regression"><a href="#Softmax-Regression" class="headerlink" title="Softmax Regression"></a>Softmax Regression</h2><p><a target="_blank" rel="noopener" href="http://longrm.com/2017/08/30/2017-08-30-softmax/">Softmax Regression 总结</a></p>
+<h2 id="Softmax-Regression"><a href="#Softmax-Regression" class="headerlink" title="Softmax Regression"></a>Softmax Regression</h2><p><a href="http://longrm.com/2017/08/30/2017-08-30-softmax/">Softmax Regression 总结</a></p>
 <hr>
 <h2 id="深度学习框架"><a href="#深度学习框架" class="headerlink" title="深度学习框架"></a>深度学习框架</h2><p>不知道视频是什么时间做的，总之上面列出了很多深度学习的框架，但就现在这个时间点来说，<strong>TensorFlow</strong>肯定是主流的，
 当然，课程里面用的也是<strong>TensorFlow</strong>。</p>
 <p>当神经网络的结构变得复杂的时候，手写代码就真的会比较辛苦，还容易出现<strong>bug</strong>，这个时候，就需要框架来帮忙了。</p>
-<p><a target="_blank" rel="noopener" href="http://longrm.com/2017/09/02/2017-09-02-tensorflow/">TensorFlow笔记一</a></p>
+<p><a href="http://longrm.com/2017/09/02/2017-09-02-tensorflow/">TensorFlow笔记一</a></p>
 
     </div>
 

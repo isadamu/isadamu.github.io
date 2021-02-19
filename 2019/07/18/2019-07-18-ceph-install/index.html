@@ -18,19 +18,19 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"longrm.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="究竟什么才是正确的ceph安装姿势？">
 <meta property="og:type" content="article">
 <meta property="og:title" content="centos7上的ceph指定版本安装方法">
-<meta property="og:url" content="http://example.com/2019/07/18/2019-07-18-ceph-install/index.html">
+<meta property="og:url" content="http://longrm.com/2019/07/18/2019-07-18-ceph-install/index.html">
 <meta property="og:site_name" content="龙">
 <meta property="og:description" content="究竟什么才是正确的ceph安装姿势？">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-install-step1.png">
-<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-install-manual.png">
-<meta property="og:image" content="http://example.com/images/linux/ceph/ceph-install-step2.png">
+<meta property="og:image" content="http://longrm.com/images/linux/ceph/ceph-install-step1.png">
+<meta property="og:image" content="http://longrm.com/images/linux/ceph/ceph-install-manual.png">
+<meta property="og:image" content="http://longrm.com/images/linux/ceph/ceph-install-step2.png">
 <meta property="article:published_time" content="2019-07-17T16:00:00.000Z">
 <meta property="article:modified_time" content="2019-08-23T08:14:18.812Z">
 <meta property="article:author" content="龙">
@@ -38,9 +38,9 @@
 <meta property="article:tag" content="centos">
 <meta property="article:tag" content="ceph">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/linux/ceph/ceph-install-step1.png">
+<meta name="twitter:image" content="http://longrm.com/images/linux/ceph/ceph-install-step1.png">
 
-<link rel="canonical" href="http://example.com/2019/07/18/2019-07-18-ceph-install/">
+<link rel="canonical" href="http://longrm.com/2019/07/18/2019-07-18-ceph-install/">
 
 
 <script id="page-configurations">
@@ -220,7 +220,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2019/07/18/2019-07-18-ceph-install/">
+    <link itemprop="mainEntityOfPage" href="http://longrm.com/2019/07/18/2019-07-18-ceph-install/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head/head_bigfan.png">
@@ -351,7 +351,7 @@
 <ol>
 <li>安装一个minimum版本的centos7.5（非必须，但这样保证没有问题）。</li>
 <li><code>sudo yum install --downloadonly --downloaddir=/home/long/yum/ceph-13.2.5 ceph-13.2.5 ceph-radosgw-13.2.5</code>获取所有依赖。</li>
-<li>参考之前的方法建立局域网源<a target="_blank" rel="noopener" href="http://longrm.com/2019/07/15/2019-07-15-linux-base-practice_2/">linux基础练习-2</a></li>
+<li>参考之前的方法建立局域网源<a href="http://longrm.com/2019/07/15/2019-07-15-linux-base-practice_2/">linux基础练习-2</a></li>
 <li>在需要安装ceph的虚拟机上修改repo为局域网repo，然后进行ceph安装。</li>
 </ol>
 <hr>

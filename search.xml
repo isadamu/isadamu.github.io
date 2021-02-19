@@ -275,78 +275,6 @@ width="200" height="200" title="大范" /></div>
       </tags>
   </entry>
   <entry>
-    <title>购买域名并绑定博客原地址</title>
-    <url>/2017/08/20/2017-08-20-add-domain-name/</url>
-    <content><![CDATA[<p>其实我也不知道为什么要买一个域名，对我自己来说没什么卵用，
-但是这样很爽，虽然挺贵的…</p>
-<hr>
-<h2 id="购买域名"><a href="#购买域名" class="headerlink" title="购买域名"></a>购买域名</h2><p>这里我的域名是在<a href="https://dcc.godaddy.com/">godaddy</a> 上购买的，
-就买一个<code>.com</code>的域名就行，另外还买了隐私保护，不管有没有什么大用，
-反正已经买了。</p>
-<p>这里我买了5年的，主要买的时候使用优惠码，直接搜索引擎搜索“godaddy 优惠码”就行，
-隐私服务可买可不买，买了之后，购买信息就变了，</p>
-<p><img src="/images/guide/add-domain-name_1.png" alt="image"></p>
-<p>域名花费300￥，隐私保护200￥，一共5年，就当我自己买了个移动硬盘…</p>
-<hr>
-<h2 id="域名绑定"><a href="#域名绑定" class="headerlink" title="域名绑定"></a>域名绑定</h2><p>先操作github，在github的工程下面建一个CNAME文件，加入一行域名，我的<code>longrm.com</code>。
-github会自动按这个域名来转。  </p>
-<p><img src="/images/guide/add-domain-name_2.png" alt="image" title="CNAME"></p>
-<p><img src="/images/guide/add-domain-name_3.png" alt="image" title="CNAME Content"></p>
-<p>或者这里也可以不建这个文件，进入repository的setting里面，custom一下也行，</p>
-<p><img src="/images/guide/add-domain-name_4.png" alt="image" title="setting"></p>
-<p><img src="/images/guide/add-domain-name_5.png" alt="image" title="custom domain"></p>
-<p>第二步就是去godaddy下面改域名的设置，参考：</p>
-<ul>
-<li><a href="http://andrewsturges.com/blog/jekyll/tutorial/2014/11/06/github-and-godaddy.html">Configuring a Godaddy domain name with github pages</a></li>
-<li><a href="https://help.github.com/articles/setting-up-an-apex-domain/">Setting up an apex domain</a></li>
-</ul>
-<p>简单总结参考里面的内容，更改下图两条变成所示就行了:</p>
-<ul>
-<li>将<code>A</code>的值改成<code>192.30.252.153</code>。</li>
-<li>将<code>CNAME</code>的<code>www</code>那一条改成<code>用户名.github.io</code>，这里我的就是<code>isadamu.github.io</code>。</li>
-</ul>
-<p><img src="/images/guide/add-domain-name_6.png" alt="image"></p>
-<hr>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>浏览器输入买的域名，<code>longrm.com</code>，大功告成：</p>
-<p><img src="/images/guide/add-domain-name_7.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>guide</category>
-      </categories>
-      <tags>
-        <tag>guide</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 71.Simplify Path</title>
-    <url>/2017/08/21/2017-08-21-simplfiy-path/</url>
-    <content><![CDATA[<h2 id="71-Simplify-Path"><a href="#71-Simplify-Path" class="headerlink" title="71.Simplify Path"></a>71.Simplify Path</h2><p>题目：</p>
-<blockquote>
-<p>Given an absolute path for a file (Unix-style), simplify it.  </p>
-<p>For example,<br>path = <code>&quot;/home/&quot;</code>, =&gt; <code>&quot;/home&quot;</code><br>path = <code>&quot;/a/./../../c/&quot;</code>, =&gt; <code>&quot;/c&quot;</code></p>
-</blockquote>
-<p>另外题目需要注意的是当出现<code>&quot;/../&quot;</code>时，返回<code>&quot;/&quot;</code>,<br>多个<code>&quot;/&quot;</code>看成一个就行。</p>
-<p>理解：</p>
-<p>输入一个路径，将路径简单化，也就是去掉其中的<code>&quot;..&quot;</code>,<code>&quot;.&quot;</code>
-以及多余的<code>&quot;/&quot;</code>,另外路径的最后不要加上<code>&quot;/&quot;</code>。</p>
-<p>代码：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">simplifyPath</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        String[] strs = path.split(<span class="string">&quot;/&quot;</span>);</span><br><span class="line">        String[] res = <span class="keyword">new</span> String[strs.length];</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( String str : strs ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( str.length() == <span class="number">0</span> || str.equals(<span class="string">&quot;.&quot;</span>) ) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( str.equals(<span class="string">&quot;..&quot;</span>) ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( idx != <span class="number">0</span> ) &#123;</span><br><span class="line">                    idx--;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                res[idx++] = str;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( idx == <span class="number">0</span> ) </span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;/&quot;</span>;</span><br><span class="line">        StringBuilder res_str = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; idx; i++ ) &#123;</span><br><span class="line">            res_str.append(<span class="string">&quot;/&quot;</span>).append(res[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res_str.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(n)，运行时间7ms。</p>
-<p><img src="/images/leetcode/simplify-path_1.png" alt="image"></p>
-<p>这里有一个值得注意的地方，最开始，我是这样写的：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] strs = path.split(<span class="string">&quot;/+&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p>之后改成了，</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] strs = path.split(<span class="string">&quot;/&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p>瞬间从15ms击败25%，变成了击败95%。所以<code>split</code>的多字符匹配还是要慢得多。</p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 1.Two Sum</title>
     <url>/2017/08/18/2017-08-18-two-sum/</url>
     <content><![CDATA[<h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1 Two Sum"></a>1 Two Sum</h2><p>题目描述：Given an array of integers, return indices of the two numbers such that they add up to a specific target.</p>
@@ -486,6 +414,78 @@ github会自动按这个域名来转。  </p>
       </tags>
   </entry>
   <entry>
+    <title>购买域名并绑定博客原地址</title>
+    <url>/2017/08/20/2017-08-20-add-domain-name/</url>
+    <content><![CDATA[<p>其实我也不知道为什么要买一个域名，对我自己来说没什么卵用，
+但是这样很爽，虽然挺贵的…</p>
+<hr>
+<h2 id="购买域名"><a href="#购买域名" class="headerlink" title="购买域名"></a>购买域名</h2><p>这里我的域名是在<a href="https://dcc.godaddy.com/">godaddy</a> 上购买的，
+就买一个<code>.com</code>的域名就行，另外还买了隐私保护，不管有没有什么大用，
+反正已经买了。</p>
+<p>这里我买了5年的，主要买的时候使用优惠码，直接搜索引擎搜索“godaddy 优惠码”就行，
+隐私服务可买可不买，买了之后，购买信息就变了，</p>
+<p><img src="/images/guide/add-domain-name_1.png" alt="image"></p>
+<p>域名花费300￥，隐私保护200￥，一共5年，就当我自己买了个移动硬盘…</p>
+<hr>
+<h2 id="域名绑定"><a href="#域名绑定" class="headerlink" title="域名绑定"></a>域名绑定</h2><p>先操作github，在github的工程下面建一个CNAME文件，加入一行域名，我的<code>longrm.com</code>。
+github会自动按这个域名来转。  </p>
+<p><img src="/images/guide/add-domain-name_2.png" alt="image" title="CNAME"></p>
+<p><img src="/images/guide/add-domain-name_3.png" alt="image" title="CNAME Content"></p>
+<p>或者这里也可以不建这个文件，进入repository的setting里面，custom一下也行，</p>
+<p><img src="/images/guide/add-domain-name_4.png" alt="image" title="setting"></p>
+<p><img src="/images/guide/add-domain-name_5.png" alt="image" title="custom domain"></p>
+<p>第二步就是去godaddy下面改域名的设置，参考：</p>
+<ul>
+<li><a href="http://andrewsturges.com/blog/jekyll/tutorial/2014/11/06/github-and-godaddy.html">Configuring a Godaddy domain name with github pages</a></li>
+<li><a href="https://help.github.com/articles/setting-up-an-apex-domain/">Setting up an apex domain</a></li>
+</ul>
+<p>简单总结参考里面的内容，更改下图两条变成所示就行了:</p>
+<ul>
+<li>将<code>A</code>的值改成<code>192.30.252.153</code>。</li>
+<li>将<code>CNAME</code>的<code>www</code>那一条改成<code>用户名.github.io</code>，这里我的就是<code>isadamu.github.io</code>。</li>
+</ul>
+<p><img src="/images/guide/add-domain-name_6.png" alt="image"></p>
+<hr>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>浏览器输入买的域名，<code>longrm.com</code>，大功告成：</p>
+<p><img src="/images/guide/add-domain-name_7.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>guide</category>
+      </categories>
+      <tags>
+        <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 71.Simplify Path</title>
+    <url>/2017/08/21/2017-08-21-simplfiy-path/</url>
+    <content><![CDATA[<h2 id="71-Simplify-Path"><a href="#71-Simplify-Path" class="headerlink" title="71.Simplify Path"></a>71.Simplify Path</h2><p>题目：</p>
+<blockquote>
+<p>Given an absolute path for a file (Unix-style), simplify it.  </p>
+<p>For example,<br>path = <code>&quot;/home/&quot;</code>, =&gt; <code>&quot;/home&quot;</code><br>path = <code>&quot;/a/./../../c/&quot;</code>, =&gt; <code>&quot;/c&quot;</code></p>
+</blockquote>
+<p>另外题目需要注意的是当出现<code>&quot;/../&quot;</code>时，返回<code>&quot;/&quot;</code>,<br>多个<code>&quot;/&quot;</code>看成一个就行。</p>
+<p>理解：</p>
+<p>输入一个路径，将路径简单化，也就是去掉其中的<code>&quot;..&quot;</code>,<code>&quot;.&quot;</code>
+以及多余的<code>&quot;/&quot;</code>,另外路径的最后不要加上<code>&quot;/&quot;</code>。</p>
+<p>代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">simplifyPath</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        String[] strs = path.split(<span class="string">&quot;/&quot;</span>);</span><br><span class="line">        String[] res = <span class="keyword">new</span> String[strs.length];</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( String str : strs ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( str.length() == <span class="number">0</span> || str.equals(<span class="string">&quot;.&quot;</span>) ) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( str.equals(<span class="string">&quot;..&quot;</span>) ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( idx != <span class="number">0</span> ) &#123;</span><br><span class="line">                    idx--;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                res[idx++] = str;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( idx == <span class="number">0</span> ) </span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;/&quot;</span>;</span><br><span class="line">        StringBuilder res_str = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; idx; i++ ) &#123;</span><br><span class="line">            res_str.append(<span class="string">&quot;/&quot;</span>).append(res[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res_str.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(n)，运行时间7ms。</p>
+<p><img src="/images/leetcode/simplify-path_1.png" alt="image"></p>
+<p>这里有一个值得注意的地方，最开始，我是这样写的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] strs = path.split(<span class="string">&quot;/+&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>之后改成了，</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] strs = path.split(<span class="string">&quot;/&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>瞬间从15ms击败25%，变成了击败95%。所以<code>split</code>的多字符匹配还是要慢得多。</p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>朴素贝叶斯+垃圾邮件分类器</title>
     <url>/2017/08/21/2017-08-21-spam-classifier/</url>
     <content><![CDATA[<hr>
@@ -528,26 +528,6 @@ P(y = 1)= \Phi_y</script><p>同样的，利用极大似然法估计概率值。<
       </categories>
       <tags>
         <tag>mechine learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>jekyll博客顶端背景修改</title>
-    <url>/2017/08/22/2017-08-22-head-color/</url>
-    <content><![CDATA[<p>由于NexT是Hexo上的主题，搬运到jekyll上面之后，目录结构完全不一样，所以网上的参考基本没什么用。</p>
-<hr>
-<h2 id="修改head颜色"><a href="#修改head颜色" class="headerlink" title="修改head颜色"></a>修改head颜色</h2><p>在<code>_sass/_schemes/Mist/_header.scss</code>下面修改，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: $whitesmoke; &#125;</span><br></pre></td></tr></table></figure>
-<p>为，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: #FFC78E; &#125;</span><br></pre></td></tr></table></figure>
-<p>然后就变成下面的颜色，</p>
-<p><img src="/images/guide/head-color_1.png" alt="image" title="改为了橘黄色"></p>
-]]></content>
-      <categories>
-        <category>guide</category>
-        <category>jekyll</category>
-      </categories>
-      <tags>
-        <tag>guide</tag>
       </tags>
   </entry>
   <entry>
@@ -961,6 +941,26 @@ b = b - \alpha \frac {\partial J}{\partial b}
       <tags>
         <tag>study</tag>
         <tag>mechine learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>jekyll博客顶端背景修改</title>
+    <url>/2017/08/22/2017-08-22-head-color/</url>
+    <content><![CDATA[<p>由于NexT是Hexo上的主题，搬运到jekyll上面之后，目录结构完全不一样，所以网上的参考基本没什么用。</p>
+<hr>
+<h2 id="修改head颜色"><a href="#修改head颜色" class="headerlink" title="修改head颜色"></a>修改head颜色</h2><p>在<code>_sass/_schemes/Mist/_header.scss</code>下面修改，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: $whitesmoke; &#125;</span><br></pre></td></tr></table></figure>
+<p>为，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.header &#123; background: #FFC78E; &#125;</span><br></pre></td></tr></table></figure>
+<p>然后就变成下面的颜色，</p>
+<p><img src="/images/guide/head-color_1.png" alt="image" title="改为了橘黄色"></p>
+]]></content>
+      <categories>
+        <category>guide</category>
+        <category>jekyll</category>
+      </categories>
+      <tags>
+        <tag>guide</tag>
       </tags>
   </entry>
   <entry>
@@ -1812,65 +1812,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>LeetCode 5 Longest Palindromic Substring</title>
-    <url>/2017/09/01/2017-09-01-longest-palindromic-substring/</url>
-    <content><![CDATA[<hr>
-<p>Description:</p>
-<blockquote>
-<p>Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.</p>
-</blockquote>
-<p>Example:</p>
-<blockquote>
-<p>Input: “babad”<br>Output: “bab”<br>Note: “aba” is also a valid answer.</p>
-</blockquote>
-<hr>
-<p>想法，最简单的，就是以每个字母为中心，向两边扩散，这样的复杂度就是O(n^2)。</p>
-<p>那么下面就是第一份代码，就是简单的向两边扩充。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">char</span>[] s_split = s.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> p, q;</span><br><span class="line">        <span class="keyword">int</span> index1 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> index2 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; s_split.length ; i++) &#123;</span><br><span class="line">            p = i - <span class="number">1</span>;</span><br><span class="line">            q = i + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> ( p &gt;= <span class="number">0</span> &amp;&amp; q &lt; s_split.length ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( s_split[p] == (s_split[q]) ) &#123;</span><br><span class="line">                    p--;</span><br><span class="line">                    q++;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( ( q - p - <span class="number">1</span> ) &gt; ( index2 - index1 + <span class="number">1</span> ) ) &#123;</span><br><span class="line">                index1 = p + <span class="number">1</span>;</span><br><span class="line">                index2 = q - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">                    </span><br><span class="line">            <span class="keyword">if</span> ( i - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; s_split[i] == s_split[i-<span class="number">1</span>] ) &#123;</span><br><span class="line">                p = i - <span class="number">2</span>;</span><br><span class="line">                q = i + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( p &gt;= <span class="number">0</span> &amp;&amp; q &lt; s_split.length ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( s_split[p] == s_split[q] ) &#123;</span><br><span class="line">                        p--;</span><br><span class="line">                        q++;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( ( q - p - <span class="number">1</span> ) &gt; ( index2 - index1 + <span class="number">1</span> ) ) &#123;</span><br><span class="line">                index1 = p + <span class="number">1</span>;</span><br><span class="line">                index2 = q - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ( <span class="keyword">new</span> String(s_split, index1, index2 - index1 + <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="/images/leetcode/5_1.png" alt="image"></p>
-<p>击败38.60%，从图上就可以看出来，很垃圾。</p>
-<hr>
-<p>时隔不知道多少个月，重新回来发现这么垃圾，索性修改了一下，现在的想法就比较复杂了。</p>
-<p>首先，对于一个回文串，它的构成是例如<code>abcdcba</code>的形式，当去掉两边的<code>a</code>时，它依旧是一个回文串<code>bcdcb</code>。</p>
-<p>那么如果想要降低复杂度，那么循环到一个字符时，一定要用到之前的信息，这样就能降低复杂度。</p>
-<p>通过这种信息论的想法，加上上面回文串的特点，下面是新的算法思路：</p>
-<ul>
-<li>循环一遍字符串。</li>
-<li>以前一个字符所在的回文串，看<strong>以当前字符串为右边界</strong>能否去扩张这些字符串。</li>
-<li>查看当前字符与前两个字符能否组成回文串，查看能否与前一个字符组成回文串。</li>
-<li>保存下当前字符所在的回文串。</li>
-<li>当前回文串的长度是否超过之前保存的最长，是则保存。</li>
-</ul>
-<p>例如字符串<code>sabckcbaga</code>，假如现在循环到了后一个<code>b</code>，也就是现在前面的字符串是<code>sabckcb</code>，那么前一个字符就是<code>c</code>，
-它所在的一个回文串就是<code>ckc</code>，那么现在就尝试用<code>b</code>去扩充它，发现<code>bckcb</code>，可以扩充，所以最长支付串保存为<code>bckcb</code>，
-当前所在回文串保存<code>bckcb</code>。再查看<code>kcb</code>是否回文串，不是，查看<code>cb</code>是否回文串，也不是。
-那么当前回文串就是<code>bckcb</code>。</p>
-<p>循环到下一个字符是<code>a</code>，尝试用<code>a</code>扩充<code>bckcb</code>，扩充成功，当前字符串保存<code>abckcba</code>，最长长度更新，
-查看<code>cba</code>不是回文串，查看<code>ba</code>不是回文串。当前回文串<code>abckcba</code>。</p>
-<p>再循环到<code>g</code>，尝试扩充<code>abckcba</code>失败，<code>bag</code>、<code>ag</code>也不是回文串，当前回文串没有。</p>
-<p>循环到<code>a</code>，上一个回文串没有，查看<code>aga</code>是回文串，<code>ga</code>不是回文串。当前回文串<code>aga</code>。</p>
-<p><strong>再例如</strong>字符串<code>abababa</code>。</p>
-<p>循环到第二个<code>b</code>，它不能扩充前一个回文串<code>aba</code>，<code>bab</code>是回文串，<code>ab</code>不是。当前回文串<code>bab</code>。</p>
-<p>循环到<code>a</code>，它能扩充<code>bab</code>，为<code>ababa</code>，同时<code>aba</code>也是回文串，<code>ba</code>不是。当前回文串<code>ababa</code>、<code>aba</code>。</p>
-<p>循环到<code>b</code>，它不能扩充<code>ababa</code>，它能扩充<code>aba</code>为<code>babab</code>，同时<code>bab</code>是回文串，<code>ab</code>不是。当前回文串<code>babab</code>、<code>bab</code>。</p>
-<p>…</p>
-<p><strong>代码里面还考虑了重复</strong>，例如<code>aaaaaa</code>，按照上面的操作到第5个<code>a</code>时，它的当前回文串会有<code>aaaaa</code>、<code>aaaa</code>、<code>aaa</code>、<code>aa</code>，这样很不好，
-实时上，这里只需要<code>aaaaa</code>，在存一个是否连续的标志位。</p>
-<p>例如循环到最后一个<code>a</code>，它上一个回文串为<code>aaaaa</code>，同时连续标志位为<strong>true</strong>，首先它不能扩充<code>aaaaa</code>，当连续标志位为<strong>true</strong>时，
-看它能否右扩充<code>aaaaa</code>，也就是<code>aaaaa</code> + <code>a</code>是否为为回文串，这里显然<code>aaaaaa</code>是回文串。同时由于连续标志位为<strong>true</strong>，这里不再需要查看<code>aaa</code>和<code>aa</code>是否为回文串。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> begin = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> max_len = <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> p_idx = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> t_idx = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addLen</span><span class="params">( <span class="keyword">int</span>[] a, <span class="keyword">int</span> i, <span class="keyword">int</span> len )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( max_len &lt; len ) &#123;</span><br><span class="line">            max_len = len;</span><br><span class="line">            begin = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( i - <span class="number">1</span> &gt;= <span class="number">0</span> )</span><br><span class="line">            a[t_idx++] = i - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || s.length() == <span class="number">0</span> ) <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> succ_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span>[] p = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt; ss.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt; p_idx ; j++ )</span><br><span class="line">                <span class="keyword">if</span> ( ss[p[j]] == ss[i] ) </span><br><span class="line">                    addLen(p, p[j], i - p[j] + <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">if</span> ( succ_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( ss[succ_idx] == ss[i] )</span><br><span class="line">                    addLen(p, succ_idx, i - succ_idx + <span class="number">1</span> );</span><br><span class="line">                <span class="keyword">else</span> succ_idx = -<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( i - <span class="number">2</span> &gt;= <span class="number">0</span> &amp;&amp; ss[i - <span class="number">2</span>] == ss[i] )</span><br><span class="line">                    addLen(p, i - <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">                <span class="keyword">if</span> ( i - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; ss[i - <span class="number">1</span>] == ss[i] ) &#123;</span><br><span class="line">                    succ_idx = i - <span class="number">1</span>;</span><br><span class="line">                    addLen(p, i - <span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            p_idx = t_idx;</span><br><span class="line">            t_idx = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ( <span class="keyword">new</span> String(ss, begin, max_len));</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>期望复杂度O(n)？反正最差复杂度O(n^2)。</p>
-<p><img src="/images/leetcode/5_2.png" alt="image"></p>
-<p>击败84.26%，我觉得还行。我甚至觉得如果用例再多一些，可以击败更多的人！！！</p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>TensorFlow 笔记一</title>
     <url>/2017/09/02/2017-09-02-tensorflow/</url>
     <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
@@ -1950,6 +1891,65 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 5 Longest Palindromic Substring</title>
+    <url>/2017/09/01/2017-09-01-longest-palindromic-substring/</url>
+    <content><![CDATA[<hr>
+<p>Description:</p>
+<blockquote>
+<p>Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.</p>
+</blockquote>
+<p>Example:</p>
+<blockquote>
+<p>Input: “babad”<br>Output: “bab”<br>Note: “aba” is also a valid answer.</p>
+</blockquote>
+<hr>
+<p>想法，最简单的，就是以每个字母为中心，向两边扩散，这样的复杂度就是O(n^2)。</p>
+<p>那么下面就是第一份代码，就是简单的向两边扩充。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">char</span>[] s_split = s.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> p, q;</span><br><span class="line">        <span class="keyword">int</span> index1 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> index2 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; s_split.length ; i++) &#123;</span><br><span class="line">            p = i - <span class="number">1</span>;</span><br><span class="line">            q = i + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> ( p &gt;= <span class="number">0</span> &amp;&amp; q &lt; s_split.length ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( s_split[p] == (s_split[q]) ) &#123;</span><br><span class="line">                    p--;</span><br><span class="line">                    q++;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( ( q - p - <span class="number">1</span> ) &gt; ( index2 - index1 + <span class="number">1</span> ) ) &#123;</span><br><span class="line">                index1 = p + <span class="number">1</span>;</span><br><span class="line">                index2 = q - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">                    </span><br><span class="line">            <span class="keyword">if</span> ( i - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; s_split[i] == s_split[i-<span class="number">1</span>] ) &#123;</span><br><span class="line">                p = i - <span class="number">2</span>;</span><br><span class="line">                q = i + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( p &gt;= <span class="number">0</span> &amp;&amp; q &lt; s_split.length ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( s_split[p] == s_split[q] ) &#123;</span><br><span class="line">                        p--;</span><br><span class="line">                        q++;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( ( q - p - <span class="number">1</span> ) &gt; ( index2 - index1 + <span class="number">1</span> ) ) &#123;</span><br><span class="line">                index1 = p + <span class="number">1</span>;</span><br><span class="line">                index2 = q - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ( <span class="keyword">new</span> String(s_split, index1, index2 - index1 + <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/leetcode/5_1.png" alt="image"></p>
+<p>击败38.60%，从图上就可以看出来，很垃圾。</p>
+<hr>
+<p>时隔不知道多少个月，重新回来发现这么垃圾，索性修改了一下，现在的想法就比较复杂了。</p>
+<p>首先，对于一个回文串，它的构成是例如<code>abcdcba</code>的形式，当去掉两边的<code>a</code>时，它依旧是一个回文串<code>bcdcb</code>。</p>
+<p>那么如果想要降低复杂度，那么循环到一个字符时，一定要用到之前的信息，这样就能降低复杂度。</p>
+<p>通过这种信息论的想法，加上上面回文串的特点，下面是新的算法思路：</p>
+<ul>
+<li>循环一遍字符串。</li>
+<li>以前一个字符所在的回文串，看<strong>以当前字符串为右边界</strong>能否去扩张这些字符串。</li>
+<li>查看当前字符与前两个字符能否组成回文串，查看能否与前一个字符组成回文串。</li>
+<li>保存下当前字符所在的回文串。</li>
+<li>当前回文串的长度是否超过之前保存的最长，是则保存。</li>
+</ul>
+<p>例如字符串<code>sabckcbaga</code>，假如现在循环到了后一个<code>b</code>，也就是现在前面的字符串是<code>sabckcb</code>，那么前一个字符就是<code>c</code>，
+它所在的一个回文串就是<code>ckc</code>，那么现在就尝试用<code>b</code>去扩充它，发现<code>bckcb</code>，可以扩充，所以最长支付串保存为<code>bckcb</code>，
+当前所在回文串保存<code>bckcb</code>。再查看<code>kcb</code>是否回文串，不是，查看<code>cb</code>是否回文串，也不是。
+那么当前回文串就是<code>bckcb</code>。</p>
+<p>循环到下一个字符是<code>a</code>，尝试用<code>a</code>扩充<code>bckcb</code>，扩充成功，当前字符串保存<code>abckcba</code>，最长长度更新，
+查看<code>cba</code>不是回文串，查看<code>ba</code>不是回文串。当前回文串<code>abckcba</code>。</p>
+<p>再循环到<code>g</code>，尝试扩充<code>abckcba</code>失败，<code>bag</code>、<code>ag</code>也不是回文串，当前回文串没有。</p>
+<p>循环到<code>a</code>，上一个回文串没有，查看<code>aga</code>是回文串，<code>ga</code>不是回文串。当前回文串<code>aga</code>。</p>
+<p><strong>再例如</strong>字符串<code>abababa</code>。</p>
+<p>循环到第二个<code>b</code>，它不能扩充前一个回文串<code>aba</code>，<code>bab</code>是回文串，<code>ab</code>不是。当前回文串<code>bab</code>。</p>
+<p>循环到<code>a</code>，它能扩充<code>bab</code>，为<code>ababa</code>，同时<code>aba</code>也是回文串，<code>ba</code>不是。当前回文串<code>ababa</code>、<code>aba</code>。</p>
+<p>循环到<code>b</code>，它不能扩充<code>ababa</code>，它能扩充<code>aba</code>为<code>babab</code>，同时<code>bab</code>是回文串，<code>ab</code>不是。当前回文串<code>babab</code>、<code>bab</code>。</p>
+<p>…</p>
+<p><strong>代码里面还考虑了重复</strong>，例如<code>aaaaaa</code>，按照上面的操作到第5个<code>a</code>时，它的当前回文串会有<code>aaaaa</code>、<code>aaaa</code>、<code>aaa</code>、<code>aa</code>，这样很不好，
+实时上，这里只需要<code>aaaaa</code>，在存一个是否连续的标志位。</p>
+<p>例如循环到最后一个<code>a</code>，它上一个回文串为<code>aaaaa</code>，同时连续标志位为<strong>true</strong>，首先它不能扩充<code>aaaaa</code>，当连续标志位为<strong>true</strong>时，
+看它能否右扩充<code>aaaaa</code>，也就是<code>aaaaa</code> + <code>a</code>是否为为回文串，这里显然<code>aaaaaa</code>是回文串。同时由于连续标志位为<strong>true</strong>，这里不再需要查看<code>aaa</code>和<code>aa</code>是否为回文串。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> begin = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> max_len = <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> p_idx = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> t_idx = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addLen</span><span class="params">( <span class="keyword">int</span>[] a, <span class="keyword">int</span> i, <span class="keyword">int</span> len )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( max_len &lt; len ) &#123;</span><br><span class="line">            max_len = len;</span><br><span class="line">            begin = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( i - <span class="number">1</span> &gt;= <span class="number">0</span> )</span><br><span class="line">            a[t_idx++] = i - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || s.length() == <span class="number">0</span> ) <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> succ_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span>[] p = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt; ss.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt; p_idx ; j++ )</span><br><span class="line">                <span class="keyword">if</span> ( ss[p[j]] == ss[i] ) </span><br><span class="line">                    addLen(p, p[j], i - p[j] + <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">if</span> ( succ_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( ss[succ_idx] == ss[i] )</span><br><span class="line">                    addLen(p, succ_idx, i - succ_idx + <span class="number">1</span> );</span><br><span class="line">                <span class="keyword">else</span> succ_idx = -<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( i - <span class="number">2</span> &gt;= <span class="number">0</span> &amp;&amp; ss[i - <span class="number">2</span>] == ss[i] )</span><br><span class="line">                    addLen(p, i - <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">                <span class="keyword">if</span> ( i - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; ss[i - <span class="number">1</span>] == ss[i] ) &#123;</span><br><span class="line">                    succ_idx = i - <span class="number">1</span>;</span><br><span class="line">                    addLen(p, i - <span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            p_idx = t_idx;</span><br><span class="line">            t_idx = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ( <span class="keyword">new</span> String(ss, begin, max_len));</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>期望复杂度O(n)？反正最差复杂度O(n^2)。</p>
+<p><img src="/images/leetcode/5_2.png" alt="image"></p>
+<p>击败84.26%，我觉得还行。我甚至觉得如果用例再多一些，可以击败更多的人！！！</p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Introduction to ML Strategy</title>
     <url>/2017/09/06/2017-09-06-coursera-ml-strategy/</url>
     <content><![CDATA[<h2 id="Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。"><a href="#Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。" class="headerlink" title="Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。"></a>Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。</h2><p>这一子课程一共分了2周的课程，没有讲实质的算法，讲的是在实际中如果去解决一个机器学习问题，
@@ -2016,57 +2016,6 @@ z^{[L]} =
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length, i = <span class="number">0</span>, j = <span class="number">0</span>, star_idx = -<span class="number">1</span>, match = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( i &lt; m ) &#123;</span><br><span class="line">            <span class="keyword">if</span>  ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                match = i;</span><br><span class="line">                star_idx = j;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( j &lt; n &amp;&amp; ( pp[j] == <span class="string">&#x27;?&#x27;</span> || pp[j] == ss[i] ) ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( star_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                i = match++;</span><br><span class="line">                j = star_idx + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">            j++;</span><br><span class="line">        <span class="keyword">return</span> j == n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>复杂度：应该介于O(mn)到O(m + n)之间。<br>运行时间： 大约60ms。<br>击败：大约80%</p>
 <p><img src="/images/leetcode/44_3.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 72 Edit Distance</title>
-    <url>/2017/09/06/2017-09-06-leetcode_72/</url>
-    <content><![CDATA[<p>Description:</p>
-<blockquote>
-<p>Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)  </p>
-<p>You have the following 3 operations permitted on a word:<br>a) Insert a character<br>b) Delete a character<br>c) Replace a character</p>
-</blockquote>
-<p>题目理解，就是求将第一个字符串转化到第二个字符串所需要的最少步数，可以使用插入、删除、替换，三种策略。</p>
-<p>这其实就是算法导论第15章，动态规划的思考题15-5，但是这道题会更加简单，
-因为书上还有旋转操作。反正就是说这道题如果不使用动态规划，那么一定是过不了的。</p>
-<p>思路一：先写一个递归算法，将它转化为自顶向上的动态规划。</p>
-<p>思路二：自底向上。</p>
-<hr>
-<p>代码一：</p>
-<p>先考虑递归的情况，也就是取两个字符串的头字符$a_0$和$b_0$比较，然后按照：</p>
-<ul>
-<li>$a_0$和$b_0$匹配，向下递归$a_1$和$b_1$。</li>
-<li>$a_0$和$b_0$不匹配，<ul>
-<li>使用<code>replace</code>，也就是将$a_0$替换为$b_0$，向下递归$a_1$和$b_1$。</li>
-<li>使用<code>Insert</code>，也就是在$a_0$前面插入$b_0$，向下递归$a_0$和$b_1$。</li>
-<li>使用<code>Delete</code>，也就是删除$a_0$，向下递归$a_1$和$b_0$。</li>
-</ul>
-</li>
-</ul>
-<p>上面的递归就可以求出少的操作次数，但是这样的递归将是<strong>指数复杂度</strong>的，所以更改其变为动态规划，减少子问题的重复计算。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] a = word1.toCharArray(), b = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = a.length, n = b.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dis = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++ )</span><br><span class="line">            Arrays.fill(dis[i], -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            dis[i][n] = m - i;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++ )</span><br><span class="line">            dis[m][j] = n - j;</span><br><span class="line">        <span class="keyword">return</span> myDis( a, b, <span class="number">0</span>, <span class="number">0</span>, dis );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">myDis</span><span class="params">( <span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span>[][] dis )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( dis[i][j] != -<span class="number">1</span> )</span><br><span class="line">            <span class="keyword">return</span> dis[i][j];</span><br><span class="line">        <span class="keyword">if</span> ( a[i] == b[j] ) &#123;</span><br><span class="line">            dis[i][j] = myDis( a, b, i + <span class="number">1</span>, j + <span class="number">1</span>, dis );</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> dis1 = myDis( a, b, i, j + <span class="number">1</span>, dis );</span><br><span class="line">            <span class="keyword">int</span> dis2 = myDis( a, b, i + <span class="number">1</span>, j, dis );</span><br><span class="line">            <span class="keyword">int</span> dis3 = myDis( a, b, i + <span class="number">1</span>, j + <span class="number">1</span>, dis );</span><br><span class="line">            <span class="keyword">int</span> min = dis1 &lt; dis2 ? dis1 : dis2;</span><br><span class="line">            min = min &lt; dis3 ? min : dis3;</span><br><span class="line">            dis[i][j] = min + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dis[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度O(mn)。<br>运行时间8ms。<br>击败97.43%</p>
-<p><img src="/images/leetcode/72_1.png" alt="image"></p>
-<hr>
-<p>代码二：</p>
-<p>自底向上。</p>
-<p>对照P223，定理15的定义法，先清晰一下思路。</p>
-<p>令$a=(a_1,a_2,…,a_m)$和$b=(b_1,b_2,…,b_n)$两个序列，将第一个序列转化到第二个，那么：</p>
-<ul>
-<li>如果$a_m == b_n$，则次数等于$(a(m-1),b(n-1))$。</li>
-<li>如果$a_m \neq b_n$，则次数等于$(a(m-1),b(n-1))$与$(a(m),b(n-1))$与$(a(m-1),b(n))$的最小值加一。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] a = word1.toCharArray(), b = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = a.length, n = b.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dis = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            dis[i][<span class="number">0</span>] = i;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++ )</span><br><span class="line">            dis[<span class="number">0</span>][j] = j;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( a[i - <span class="number">1</span>] == b[j - <span class="number">1</span>] ) &#123;</span><br><span class="line">                    dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>];</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( dis[i-<span class="number">1</span>][j] &gt; dis[i][j-<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( dis[i][j-<span class="number">1</span>] &gt; dis[i-<span class="number">1</span>][j-<span class="number">1</span>] )</span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        dis[i][j] = dis[i][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( dis[i-<span class="number">1</span>][j] &gt; dis[i-<span class="number">1</span>][j-<span class="number">1</span>] )</span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j] + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dis[m][n];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度O(mn)。<br>运行时间10ms。<br>击败92.12%</p>
-<p><img src="/images/leetcode/72_2.png" alt="image"></p>
-<p><strong>注：</strong></p>
-<p><strong>自顶向上比自底向上快？？？想了一下，应该是因为在自顶向下的过程中，并不需要去将所有的子问题都计算出来。</strong></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -2235,6 +2184,57 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 72 Edit Distance</title>
+    <url>/2017/09/06/2017-09-06-leetcode_72/</url>
+    <content><![CDATA[<p>Description:</p>
+<blockquote>
+<p>Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)  </p>
+<p>You have the following 3 operations permitted on a word:<br>a) Insert a character<br>b) Delete a character<br>c) Replace a character</p>
+</blockquote>
+<p>题目理解，就是求将第一个字符串转化到第二个字符串所需要的最少步数，可以使用插入、删除、替换，三种策略。</p>
+<p>这其实就是算法导论第15章，动态规划的思考题15-5，但是这道题会更加简单，
+因为书上还有旋转操作。反正就是说这道题如果不使用动态规划，那么一定是过不了的。</p>
+<p>思路一：先写一个递归算法，将它转化为自顶向上的动态规划。</p>
+<p>思路二：自底向上。</p>
+<hr>
+<p>代码一：</p>
+<p>先考虑递归的情况，也就是取两个字符串的头字符$a_0$和$b_0$比较，然后按照：</p>
+<ul>
+<li>$a_0$和$b_0$匹配，向下递归$a_1$和$b_1$。</li>
+<li>$a_0$和$b_0$不匹配，<ul>
+<li>使用<code>replace</code>，也就是将$a_0$替换为$b_0$，向下递归$a_1$和$b_1$。</li>
+<li>使用<code>Insert</code>，也就是在$a_0$前面插入$b_0$，向下递归$a_0$和$b_1$。</li>
+<li>使用<code>Delete</code>，也就是删除$a_0$，向下递归$a_1$和$b_0$。</li>
+</ul>
+</li>
+</ul>
+<p>上面的递归就可以求出少的操作次数，但是这样的递归将是<strong>指数复杂度</strong>的，所以更改其变为动态规划，减少子问题的重复计算。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] a = word1.toCharArray(), b = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = a.length, n = b.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dis = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++ )</span><br><span class="line">            Arrays.fill(dis[i], -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            dis[i][n] = m - i;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++ )</span><br><span class="line">            dis[m][j] = n - j;</span><br><span class="line">        <span class="keyword">return</span> myDis( a, b, <span class="number">0</span>, <span class="number">0</span>, dis );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">myDis</span><span class="params">( <span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span>[][] dis )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( dis[i][j] != -<span class="number">1</span> )</span><br><span class="line">            <span class="keyword">return</span> dis[i][j];</span><br><span class="line">        <span class="keyword">if</span> ( a[i] == b[j] ) &#123;</span><br><span class="line">            dis[i][j] = myDis( a, b, i + <span class="number">1</span>, j + <span class="number">1</span>, dis );</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> dis1 = myDis( a, b, i, j + <span class="number">1</span>, dis );</span><br><span class="line">            <span class="keyword">int</span> dis2 = myDis( a, b, i + <span class="number">1</span>, j, dis );</span><br><span class="line">            <span class="keyword">int</span> dis3 = myDis( a, b, i + <span class="number">1</span>, j + <span class="number">1</span>, dis );</span><br><span class="line">            <span class="keyword">int</span> min = dis1 &lt; dis2 ? dis1 : dis2;</span><br><span class="line">            min = min &lt; dis3 ? min : dis3;</span><br><span class="line">            dis[i][j] = min + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dis[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度O(mn)。<br>运行时间8ms。<br>击败97.43%</p>
+<p><img src="/images/leetcode/72_1.png" alt="image"></p>
+<hr>
+<p>代码二：</p>
+<p>自底向上。</p>
+<p>对照P223，定理15的定义法，先清晰一下思路。</p>
+<p>令$a=(a_1,a_2,…,a_m)$和$b=(b_1,b_2,…,b_n)$两个序列，将第一个序列转化到第二个，那么：</p>
+<ul>
+<li>如果$a_m == b_n$，则次数等于$(a(m-1),b(n-1))$。</li>
+<li>如果$a_m \neq b_n$，则次数等于$(a(m-1),b(n-1))$与$(a(m),b(n-1))$与$(a(m-1),b(n))$的最小值加一。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] a = word1.toCharArray(), b = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = a.length, n = b.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dis = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            dis[i][<span class="number">0</span>] = i;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++ )</span><br><span class="line">            dis[<span class="number">0</span>][j] = j;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( a[i - <span class="number">1</span>] == b[j - <span class="number">1</span>] ) &#123;</span><br><span class="line">                    dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>];</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( dis[i-<span class="number">1</span>][j] &gt; dis[i][j-<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( dis[i][j-<span class="number">1</span>] &gt; dis[i-<span class="number">1</span>][j-<span class="number">1</span>] )</span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        dis[i][j] = dis[i][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( dis[i-<span class="number">1</span>][j] &gt; dis[i-<span class="number">1</span>][j-<span class="number">1</span>] )</span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j] + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dis[m][n];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度O(mn)。<br>运行时间10ms。<br>击败92.12%</p>
+<p><img src="/images/leetcode/72_2.png" alt="image"></p>
+<p><strong>注：</strong></p>
+<p><strong>自顶向上比自底向上快？？？想了一下，应该是因为在自顶向下的过程中，并不需要去将所有的子问题都计算出来。</strong></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 37 Sudoku Solver</title>
     <url>/2017/09/09/2017-09-09-leetcode_37/</url>
     <content><![CDATA[<p>Description:</p>
@@ -2294,59 +2294,6 @@ z^{[L]} =
 <p>额外空间只使用了三个<code>int</code>，循环每次都操作一个数，或是放到最后，或者正确位置，并且同一个位置最多会被交换一次，所以复杂度是O(n)的。</p>
 <p>复杂度：O(n)。<br>运行时间：12ms。<br>击败：56.77%</p>
 <p><img src="/images/leetcode/41_1.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 30 Substring with Concatenation of All Words</title>
-    <url>/2017/09/15/2017-09-15-leetcode_30/</url>
-    <content><![CDATA[<p>Description:</p>
-<blockquote>
-<p>You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.  </p>
-<p>For example, given:<br>s: “barfoothefoobarman”<br>words: [“foo”, “bar”]  </p>
-<p>You should return the indices: [0,9].<br>(order does not matter).  </p>
-</blockquote>
-<hr>
-<p>题目理解：</p>
-<p>乍一看这是一个字符串匹配问题，但是其实这样想的话就完全错误了，这比字符串匹配问题要复杂多了。</p>
-<p>还好的是它所给的单词都是一样长的，这就已经简化了很多的问题，但是它可以给重复的单词，
-那么这个问题又不那么简单了，因为这些单词之间可以随意的排列组合，重复的单词会带来很多问题。</p>
-<p>那么首先一定要去除重复，不然会对重复的单词进行重复的匹配，并且对排列组合很不利。通常想到的肯定是使用
-<code>HashMap</code>来做，这样很快能统计出重复的单词，以及这个单词重复的次数。</p>
-<p>因为总长度固定，那么只需要在一个固定长度的窗内去检测是否匹配就好，那么就可以将这个窗从左向右进行滑动，
-来一个单词一个单词的匹配。</p>
-<p>那么如何进行单词的匹配呢？首先想到的是字符串匹配问题，可以使用<strong>KMP</strong>算法来匹配字符串与每一个单词，记录下所有匹配的位置，
-注意到每个单词都不同（去除重复之后），单词长度一样，那么它们之间匹配的位置就不会重复。
-所有可以直接使用一个与字符串同样长的数组来存储这些下标。</p>
-<p>如何查看是否匹配？这时就需要发挥想象力，首先滑动窗是肯定的，在滑动窗中统计很有技巧，这里：</p>
-<ul>
-<li>设置一个总距离<strong>dis</strong>，表示窗口中单词与字典之间的距离。一个单词的距离就是<strong>1</strong>，所以初始的时候距离为字典的总单词数。</li>
-<li>滑动窗口，从字符串上<strong>切割</strong>出一个新的单词，如果这个单词与字典中的单词<strong>不匹配</strong>，则不操作。否则<strong>匹配</strong>上单词<strong>A</strong>：<ul>
-<li>单词<strong>A</strong>现在的计数<strong>超过</strong>所需个数，距离加一。</li>
-<li>单词<strong>A</strong>现在的计数<strong>不超过</strong>所需个数，距离减一。</li>
-</ul>
-</li>
-<li>滑动窗口，需要将最左端的一个单词<strong>弹出</strong>，进行与上面<strong>相反</strong>的操作。</li>
-</ul>
-<hr>
-<p>代码一：</p>
-<p><strong>注：</strong>这里没有使用<code>HashMap</code>来除去重复。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] matchs;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || words == <span class="keyword">null</span> || ( words[<span class="number">0</span>].length()*words.length &gt; s.length() ) ) <span class="keyword">return</span> res;</span><br><span class="line">        <span class="keyword">if</span> ( words[<span class="number">0</span>].equals(<span class="string">&quot;&quot;</span>) ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= s.length() ; i++ ) </span><br><span class="line">                res.add(i);</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        matchs = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        Arrays.fill( matchs, -<span class="number">1</span> );</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[words.length];</span><br><span class="line">        String[] words_wipe = <span class="keyword">new</span> String[words.length];</span><br><span class="line">        <span class="keyword">boolean</span>[] used = <span class="keyword">new</span> <span class="keyword">boolean</span>[words.length];</span><br><span class="line">        <span class="keyword">int</span> counts_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( !used[i] ) &#123;</span><br><span class="line">                words_wipe[counts_len] = words[i];</span><br><span class="line">                counts[counts_len] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; words.length; j++ ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( words[i].equals(words[j]) ) &#123;</span><br><span class="line">                        counts[counts_len]++;</span><br><span class="line">                        used[j] = <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                counts_len++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; counts_len; i++ ) &#123;</span><br><span class="line">            KMP(ss, words_wipe[i].toCharArray(), i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> step = words_wipe[<span class="number">0</span>].length(), dis = words.length, total_len = dis * step;</span><br><span class="line">        <span class="keyword">int</span>[] sub_count = <span class="keyword">new</span> <span class="keyword">int</span>[counts_len];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(sub_count, <span class="number">0</span>);</span><br><span class="line">            dis = words.length;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt; ss.length; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = sub_count[matchs[head]] &lt;= counts[matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    sub_count[matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = sub_count[matchs[j]] &gt;= counts[matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                sub_count[matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">KMP</span><span class="params">(<span class="keyword">char</span>[] t, <span class="keyword">char</span>[] p, <span class="keyword">int</span> widx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = computePai(p);</span><br><span class="line">        <span class="keyword">int</span> match_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; t.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( match_idx &gt; -<span class="number">1</span> &amp;&amp; p[match_idx + <span class="number">1</span>] != t[i] )</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            <span class="keyword">if</span> ( p[match_idx + <span class="number">1</span>] == t[i] )</span><br><span class="line">                match_idx++;</span><br><span class="line">            <span class="keyword">if</span> ( match_idx == p.length - <span class="number">1</span> ) &#123;</span><br><span class="line">                matchs[i - p.length + <span class="number">1</span>] = widx;</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] computePai(<span class="keyword">char</span>[] p) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = <span class="keyword">new</span> <span class="keyword">int</span>[p.length];</span><br><span class="line">        pai[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx = <span class="number">1</span>; idx &lt; p.length; idx++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( k &gt; -<span class="number">1</span> &amp;&amp; p[k+<span class="number">1</span>] != p[idx] )</span><br><span class="line">                k = pai[k];</span><br><span class="line">            <span class="keyword">if</span> ( p[k+<span class="number">1</span>] == p[idx] )</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line">            pai[idx] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pai;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)?<br>运行时间：50ms<br>击败：57.51%</p>
-<p><img src="/images/leetcode/30_1.png" alt="image"></p>
-<hr>
-<p>代码还是很垃圾，所以和别人的差距在哪里，实在是想不出来，查看别人代码后发现，别人使用的是<code>HashMap</code>的<strong>Hash</strong>功能来匹配单词的，
-这样通过<strong>Hash</strong>来进行两个个单词的匹配，复杂度是<strong>O(1)</strong>，额，原来<strong>Hash</strong>是这样使用的…</p>
-<p>另外这里还要翻转一下思维，上面是用单词去匹配字符串，这里由于先建好了一个单词的<code>HashMap</code>，所以直接将字符串切割，
-然后使用切出的单词使用<code>HashMap</code>查询就能知道它的次数。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> m = s.length(), n = words.length, step = words[<span class="number">0</span>].length(), bound = m - step, total_len = step * n;</span><br><span class="line">        <span class="comment">// Count the repeated words</span></span><br><span class="line">        Map&lt; String, Integer&gt; words_list = <span class="keyword">new</span> HashMap&lt;&gt;(n);</span><br><span class="line">        <span class="keyword">int</span>[][] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>][n];</span><br><span class="line">        Integer index = <span class="number">0</span>, temp;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( ( temp = words_list.get(words[i])) != <span class="keyword">null</span> ) counts[<span class="number">0</span>][temp]++;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                words_list.put( words[i], index);</span><br><span class="line">                counts[<span class="number">0</span>][index++] = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// from s.start to s.end, match all the substring</span></span><br><span class="line">        <span class="keyword">int</span>[] matchs = <span class="keyword">new</span> <span class="keyword">int</span>[bound + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= bound; i++ ) &#123;</span><br><span class="line">            String s_sub = s.substring(i, i + step);</span><br><span class="line">            matchs[i] = ((temp = words_list.get(s_sub)) != <span class="keyword">null</span>) ? temp : -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// move window from head to end, dis = 0 means the current window contains all the words</span></span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(counts[<span class="number">1</span>], <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">int</span> dis = n;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt;= bound; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = counts[<span class="number">1</span>][matchs[head]] &lt;= counts[<span class="number">0</span>][matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    counts[<span class="number">1</span>][matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = counts[<span class="number">1</span>][matchs[j]] &gt;= counts[<span class="number">0</span>][matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                counts[<span class="number">1</span>][matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(n)。<br>运行时间：27ms。<br>击败：92.37%</p>
-<p><img src="/images/leetcode/30_2.png" alt="image"></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -2502,6 +2449,59 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 30 Substring with Concatenation of All Words</title>
+    <url>/2017/09/15/2017-09-15-leetcode_30/</url>
+    <content><![CDATA[<p>Description:</p>
+<blockquote>
+<p>You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.  </p>
+<p>For example, given:<br>s: “barfoothefoobarman”<br>words: [“foo”, “bar”]  </p>
+<p>You should return the indices: [0,9].<br>(order does not matter).  </p>
+</blockquote>
+<hr>
+<p>题目理解：</p>
+<p>乍一看这是一个字符串匹配问题，但是其实这样想的话就完全错误了，这比字符串匹配问题要复杂多了。</p>
+<p>还好的是它所给的单词都是一样长的，这就已经简化了很多的问题，但是它可以给重复的单词，
+那么这个问题又不那么简单了，因为这些单词之间可以随意的排列组合，重复的单词会带来很多问题。</p>
+<p>那么首先一定要去除重复，不然会对重复的单词进行重复的匹配，并且对排列组合很不利。通常想到的肯定是使用
+<code>HashMap</code>来做，这样很快能统计出重复的单词，以及这个单词重复的次数。</p>
+<p>因为总长度固定，那么只需要在一个固定长度的窗内去检测是否匹配就好，那么就可以将这个窗从左向右进行滑动，
+来一个单词一个单词的匹配。</p>
+<p>那么如何进行单词的匹配呢？首先想到的是字符串匹配问题，可以使用<strong>KMP</strong>算法来匹配字符串与每一个单词，记录下所有匹配的位置，
+注意到每个单词都不同（去除重复之后），单词长度一样，那么它们之间匹配的位置就不会重复。
+所有可以直接使用一个与字符串同样长的数组来存储这些下标。</p>
+<p>如何查看是否匹配？这时就需要发挥想象力，首先滑动窗是肯定的，在滑动窗中统计很有技巧，这里：</p>
+<ul>
+<li>设置一个总距离<strong>dis</strong>，表示窗口中单词与字典之间的距离。一个单词的距离就是<strong>1</strong>，所以初始的时候距离为字典的总单词数。</li>
+<li>滑动窗口，从字符串上<strong>切割</strong>出一个新的单词，如果这个单词与字典中的单词<strong>不匹配</strong>，则不操作。否则<strong>匹配</strong>上单词<strong>A</strong>：<ul>
+<li>单词<strong>A</strong>现在的计数<strong>超过</strong>所需个数，距离加一。</li>
+<li>单词<strong>A</strong>现在的计数<strong>不超过</strong>所需个数，距离减一。</li>
+</ul>
+</li>
+<li>滑动窗口，需要将最左端的一个单词<strong>弹出</strong>，进行与上面<strong>相反</strong>的操作。</li>
+</ul>
+<hr>
+<p>代码一：</p>
+<p><strong>注：</strong>这里没有使用<code>HashMap</code>来除去重复。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] matchs;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || words == <span class="keyword">null</span> || ( words[<span class="number">0</span>].length()*words.length &gt; s.length() ) ) <span class="keyword">return</span> res;</span><br><span class="line">        <span class="keyword">if</span> ( words[<span class="number">0</span>].equals(<span class="string">&quot;&quot;</span>) ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= s.length() ; i++ ) </span><br><span class="line">                res.add(i);</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        matchs = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        Arrays.fill( matchs, -<span class="number">1</span> );</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[words.length];</span><br><span class="line">        String[] words_wipe = <span class="keyword">new</span> String[words.length];</span><br><span class="line">        <span class="keyword">boolean</span>[] used = <span class="keyword">new</span> <span class="keyword">boolean</span>[words.length];</span><br><span class="line">        <span class="keyword">int</span> counts_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( !used[i] ) &#123;</span><br><span class="line">                words_wipe[counts_len] = words[i];</span><br><span class="line">                counts[counts_len] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; words.length; j++ ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( words[i].equals(words[j]) ) &#123;</span><br><span class="line">                        counts[counts_len]++;</span><br><span class="line">                        used[j] = <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                counts_len++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; counts_len; i++ ) &#123;</span><br><span class="line">            KMP(ss, words_wipe[i].toCharArray(), i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> step = words_wipe[<span class="number">0</span>].length(), dis = words.length, total_len = dis * step;</span><br><span class="line">        <span class="keyword">int</span>[] sub_count = <span class="keyword">new</span> <span class="keyword">int</span>[counts_len];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(sub_count, <span class="number">0</span>);</span><br><span class="line">            dis = words.length;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt; ss.length; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = sub_count[matchs[head]] &lt;= counts[matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    sub_count[matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = sub_count[matchs[j]] &gt;= counts[matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                sub_count[matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">KMP</span><span class="params">(<span class="keyword">char</span>[] t, <span class="keyword">char</span>[] p, <span class="keyword">int</span> widx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = computePai(p);</span><br><span class="line">        <span class="keyword">int</span> match_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; t.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( match_idx &gt; -<span class="number">1</span> &amp;&amp; p[match_idx + <span class="number">1</span>] != t[i] )</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            <span class="keyword">if</span> ( p[match_idx + <span class="number">1</span>] == t[i] )</span><br><span class="line">                match_idx++;</span><br><span class="line">            <span class="keyword">if</span> ( match_idx == p.length - <span class="number">1</span> ) &#123;</span><br><span class="line">                matchs[i - p.length + <span class="number">1</span>] = widx;</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] computePai(<span class="keyword">char</span>[] p) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = <span class="keyword">new</span> <span class="keyword">int</span>[p.length];</span><br><span class="line">        pai[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx = <span class="number">1</span>; idx &lt; p.length; idx++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( k &gt; -<span class="number">1</span> &amp;&amp; p[k+<span class="number">1</span>] != p[idx] )</span><br><span class="line">                k = pai[k];</span><br><span class="line">            <span class="keyword">if</span> ( p[k+<span class="number">1</span>] == p[idx] )</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line">            pai[idx] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pai;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)?<br>运行时间：50ms<br>击败：57.51%</p>
+<p><img src="/images/leetcode/30_1.png" alt="image"></p>
+<hr>
+<p>代码还是很垃圾，所以和别人的差距在哪里，实在是想不出来，查看别人代码后发现，别人使用的是<code>HashMap</code>的<strong>Hash</strong>功能来匹配单词的，
+这样通过<strong>Hash</strong>来进行两个个单词的匹配，复杂度是<strong>O(1)</strong>，额，原来<strong>Hash</strong>是这样使用的…</p>
+<p>另外这里还要翻转一下思维，上面是用单词去匹配字符串，这里由于先建好了一个单词的<code>HashMap</code>，所以直接将字符串切割，
+然后使用切出的单词使用<code>HashMap</code>查询就能知道它的次数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> m = s.length(), n = words.length, step = words[<span class="number">0</span>].length(), bound = m - step, total_len = step * n;</span><br><span class="line">        <span class="comment">// Count the repeated words</span></span><br><span class="line">        Map&lt; String, Integer&gt; words_list = <span class="keyword">new</span> HashMap&lt;&gt;(n);</span><br><span class="line">        <span class="keyword">int</span>[][] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>][n];</span><br><span class="line">        Integer index = <span class="number">0</span>, temp;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( ( temp = words_list.get(words[i])) != <span class="keyword">null</span> ) counts[<span class="number">0</span>][temp]++;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                words_list.put( words[i], index);</span><br><span class="line">                counts[<span class="number">0</span>][index++] = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// from s.start to s.end, match all the substring</span></span><br><span class="line">        <span class="keyword">int</span>[] matchs = <span class="keyword">new</span> <span class="keyword">int</span>[bound + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= bound; i++ ) &#123;</span><br><span class="line">            String s_sub = s.substring(i, i + step);</span><br><span class="line">            matchs[i] = ((temp = words_list.get(s_sub)) != <span class="keyword">null</span>) ? temp : -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// move window from head to end, dis = 0 means the current window contains all the words</span></span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(counts[<span class="number">1</span>], <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">int</span> dis = n;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt;= bound; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = counts[<span class="number">1</span>][matchs[head]] &lt;= counts[<span class="number">0</span>][matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    counts[<span class="number">1</span>][matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = counts[<span class="number">1</span>][matchs[j]] &gt;= counts[<span class="number">0</span>][matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                counts[<span class="number">1</span>][matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(n)。<br>运行时间：27ms。<br>击败：92.37%</p>
+<p><img src="/images/leetcode/30_2.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 76 Minimum Window Substring</title>
     <url>/2017/09/15/2017-09-15-leetcode_76/</url>
     <content><![CDATA[<p>Description:</p>
@@ -2564,35 +2564,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>python argparse 模块笔记</title>
-    <url>/2017/09/26/2017-09-26-python-argparse/</url>
-    <content><![CDATA[<p><strong>argparse</strong>是python中的一个模块，参考官方文档来理解它
-<a href="https://docs.python.org/3/library/argparse.html?highlight=argparse#module-argparse">argparse — Parser for command-line options, arguments and sub-commands</a></p>
-<p>第一句介绍就是<code>The argparse module makes it easy to write user-friendly command-line interfaces</code>，
-所以这个模块是用于写命令行接口的，使得脚本友好的从命令行传入参数。</p>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br></pre></td></tr></table></figure>
-<h2 id="创建一个parser对象"><a href="#创建一个parser对象" class="headerlink" title="创建一个parser对象"></a>创建一个parser对象</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser = argparse.ArgumentParser()</span><br></pre></td></tr></table></figure>
-<h2 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&#x27;integers&#x27;</span>, metavar=<span class="string">&#x27;N&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, nargs=<span class="string">&#x27;+&#x27;</span>,</span><br><span class="line">                    <span class="built_in">help</span>=<span class="string">&#x27;an integer for the accumulator&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>这里添加了一个叫做<code>integers</code>的参数，它的类型是<code>int</code>，<br><code>metavar</code>是用于在help里面来表示这个数的，本来是help里面会使用<code>integers</code>这个名字，这里就会被替换为<code>N</code>，<br><code>nargs</code>表示这个参数后面可以跟的输入的个数，这里的’+’表示一个或者多个，<br><code>help</code>是在打印help信息时给出的提示。</p>
-<p> 例如下面脚本：</p>
- <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&#x27;--foo&#x27;</span>, nargs=<span class="number">2</span>, metavar=<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&#x27;bar&#x27;</span>, nargs=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args)</span><br></pre></td></tr></table></figure>
-<p>先在命令行中调用帮助信息，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py -h</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo f f] bar</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  bar</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line">  --foo f f</span><br></pre></td></tr></table></figure>
-<p>输入正确的参数个数和错误的参数个数，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py --foo a b 1</span><br><span class="line"></span><br><span class="line">Namespace(bar&#x3D;[&#39;1&#39;], foo&#x3D;[&#39;a&#39;, &#39;b&#39;])</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: the following arguments are required: bar</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b c 2</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: unrecognized arguments: 2</span><br></pre></td></tr></table></figure>
-<p>另外有时候，可能需要使用下面的函数来返回输入参数，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FLAGS, unparsed = parser.parse_known_args()</span><br></pre></td></tr></table></figure>
-<p>这里的意思就是说对于认识的参数，存到<code>FLAGS</code>里面，对于不认识的参数，存到<code>unparsed</code>里面。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/a50aead61319">argparser模块学习</a></p>
-]]></content>
-      <categories>
-        <category>python modules</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Anaconda 使用记录</title>
     <url>/2017/09/18/2017-09-18-anaconda/</url>
     <content><![CDATA[<hr>
@@ -2637,6 +2608,35 @@ z^{[L]} =
       </categories>
       <tags>
         <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python argparse 模块笔记</title>
+    <url>/2017/09/26/2017-09-26-python-argparse/</url>
+    <content><![CDATA[<p><strong>argparse</strong>是python中的一个模块，参考官方文档来理解它
+<a href="https://docs.python.org/3/library/argparse.html?highlight=argparse#module-argparse">argparse — Parser for command-line options, arguments and sub-commands</a></p>
+<p>第一句介绍就是<code>The argparse module makes it easy to write user-friendly command-line interfaces</code>，
+所以这个模块是用于写命令行接口的，使得脚本友好的从命令行传入参数。</p>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br></pre></td></tr></table></figure>
+<h2 id="创建一个parser对象"><a href="#创建一个parser对象" class="headerlink" title="创建一个parser对象"></a>创建一个parser对象</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser = argparse.ArgumentParser()</span><br></pre></td></tr></table></figure>
+<h2 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&#x27;integers&#x27;</span>, metavar=<span class="string">&#x27;N&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, nargs=<span class="string">&#x27;+&#x27;</span>,</span><br><span class="line">                    <span class="built_in">help</span>=<span class="string">&#x27;an integer for the accumulator&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>这里添加了一个叫做<code>integers</code>的参数，它的类型是<code>int</code>，<br><code>metavar</code>是用于在help里面来表示这个数的，本来是help里面会使用<code>integers</code>这个名字，这里就会被替换为<code>N</code>，<br><code>nargs</code>表示这个参数后面可以跟的输入的个数，这里的’+’表示一个或者多个，<br><code>help</code>是在打印help信息时给出的提示。</p>
+<p> 例如下面脚本：</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&#x27;--foo&#x27;</span>, nargs=<span class="number">2</span>, metavar=<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&#x27;bar&#x27;</span>, nargs=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args)</span><br></pre></td></tr></table></figure>
+<p>先在命令行中调用帮助信息，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py -h</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo f f] bar</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  bar</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line">  --foo f f</span><br></pre></td></tr></table></figure>
+<p>输入正确的参数个数和错误的参数个数，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py --foo a b 1</span><br><span class="line"></span><br><span class="line">Namespace(bar&#x3D;[&#39;1&#39;], foo&#x3D;[&#39;a&#39;, &#39;b&#39;])</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: the following arguments are required: bar</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b c 2</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: unrecognized arguments: 2</span><br></pre></td></tr></table></figure>
+<p>另外有时候，可能需要使用下面的函数来返回输入参数，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FLAGS, unparsed = parser.parse_known_args()</span><br></pre></td></tr></table></figure>
+<p>这里的意思就是说对于认识的参数，存到<code>FLAGS</code>里面，对于不认识的参数，存到<code>unparsed</code>里面。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/a50aead61319">argparser模块学习</a></p>
+]]></content>
+      <categories>
+        <category>python modules</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -3046,91 +3046,6 @@ D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
       </tags>
   </entry>
   <entry>
-    <title>Residual Net and Inception Net</title>
-    <url>/2017/11/29/2017-11-29-net-structures/</url>
-    <content><![CDATA[<h1 id="Residual-Net"><a href="#Residual-Net" class="headerlink" title="Residual Net"></a>Residual Net</h1><p>参考：
-<a href="https://www.coursera.org/learn/convolutional-neural-networks/lecture/HAhz9/resnets">coursera-convolutional-neural-networks-resnets</a></p>
-<p>论文:
-<a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html">He, Kaiming, et al. “Deep residual learning for image recognition.” Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.</a></p>
-<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><div align="center"><img src="/images/paper/ResNet_1.png" style="zoom:70%" title="ResNet结构" /></div>
-
-<p><strong>VGG-19</strong>:2014年ImageNet亚军，top-5错误率7.3%，19层神经网络。（那一年的冠军是InceptionNet，top-5错误率6.7%，22层神经网络）</p>
-<p><strong>plain</strong>:为了与ResNet区分，给中间的网络取名为“平坦”。</p>
-<p><strong>residual</strong>:残差网络。为2015年ImageNet冠军，top-5错误率3.57%，152层神经网络。</p>
-<h2 id="为什么使用残差网络？"><a href="#为什么使用残差网络？" class="headerlink" title="为什么使用残差网络？"></a>为什么使用残差网络？</h2><p><strong>原因</strong>，神经网络现在越来越深，但是简单的堆砌，使得网络深度增加，并不一定能使网络的精度增加。</p>
-<div align="center"><img src="/images/paper/ResNet_2.png" style="zoom:60%" title="误差对比" /></div>
-
-<p>图上56层的神经网络的精度反而比20层的神经网络精度低。</p>
-<p>造成这个问题的原因有：</p>
-<ol>
-<li>梯度消失、梯度爆炸。虽然这个问题很大程度上被<code>normalization</code>解决了，但是可能还是会带来一些影响。</li>
-<li>随着网络深度的增加，网络精度达到饱和，这时再增加网络层数，会使得网络精度迅速下降。这不是由于过拟合而造成的，可能是由于更深的网络更加难训练造成的。</li>
-</ol>
-<p>为此，引入残差网络的结构：</p>
-<div align="center"><img src="/images/paper/ResNet_3.png" style="zoom:60%" title="Residual Block"/></div>
-
-<p>将前几层的输出加到后几层的输出之上，上面的X是经过激活函数之后的输出，F(X)还未经过激活函数，
-F(X)加上X之后再共同的经过激活函数。</p>
-<p>这个结构的直接好处就是，<strong>如果网络精度已经饱和，中间新加入的层没有价值，残差网络将十分容易的将新加入层置为0（也就是F(X)=0，F(X)+X=X），这就不会影响到网络的精度。</strong></p>
-<div align="center"><img src="/images/paper/ResNet_4.png" style="zoom:60%" title="误差对比"/></div>
-
-<p>上面左图中34层的<code>plain</code>网络反而比18层的网络训练精度要低，而对于右图中的<code>ResNet</code>不会存在这种情况，</p>
-<h2 id="对残差网络的另一种理解"><a href="#对残差网络的另一种理解" class="headerlink" title="对残差网络的另一种理解"></a>对残差网络的另一种理解</h2><p>文献：<a href="https://www.researchgate.net/profile/Andreas_Veit/publication/303409435_Residual_Networks_are_Exponential_Ensembles_of_Relatively_Shallow_Networks/links/57e2985b08aefabc9bb886c8/Residual-Networks-are-Exponential-Ensembles-of-Relatively-Shallow-Networks.pdf">Veit, Andreas, Michael Wilber, and Serge Belongie. “Residual networks are exponential ensembles of relatively shallow networks.” arXiv preprint arXiv:1605.06431 1 (2016).</a></p>
-<p>通过下图可以表现出残差网络的另一种形式：</p>
-<div align="center"><img src="/images/paper/ResNet_6.png" style="zoom:60%" title="Residual Blocks"/></div>
-
-<p>把左图变形一下就变成右图，那么这里注意到<strong>残差网络其实就相当于是多个网络的叠加，结果就相当于是这些网络一起投票投出来的，有一种Ensembling的意思在里面。</strong></p>
-<h2 id="实现上的一些技巧"><a href="#实现上的一些技巧" class="headerlink" title="实现上的一些技巧"></a>实现上的一些技巧</h2><p>在实际的残差网络实现中，有一些技巧：</p>
-<div align="center"><img src="/images/paper/ResNet_5.png" style="zoom:60%" title="Residual Blocks"/></div>
-
-<p><strong>限制</strong>，进入<code>block</code>的输入与出去<code>block</code>的输出维度要一致，包括长、宽以及深度。那么图中的卷积使用的都是<code>same</code>，也就是保持长宽不变的卷积。</p>
-<p><strong>技巧</strong>，假设这里输入长宽是<code>64 x 64</code>，那么对于右图来说，如果没有前后的<code>1 x 1 x 64</code>、<code>1 x 1 x 256</code>的两个卷积，输入直接进行<code>3 x 3 x 256</code>的卷积:</p>
-<script type="math/tex; mode=display">
-Calculation = 64 \times 64 \times 3 \times 3 \times 256 \times 256 = 24'1591'9104</script><p>加上<code>1 x 1 x 64</code>、<code>1 x 1 x 256</code>两个卷积层：</p>
-<script type="math/tex; mode=display">
-\begin{equation}\begin{split}
-Calculation &= 64 \times 64 \times 1 \times 1 \times 256 \times 64 +
-64 \times 64 \times 3 \times 3 \times 64 \times 64 + 
-64 \times 64 \times 1 \times 1 \times 64 \times 256 \\
-&= 67108864 + 150994944 + 67108864 \\
-&= 2'8521'2672
-\end{split}\end{equation}</script><p>通过这样的方法，计算量可以减少一个数量级，其中<code>1 x 1 x 64</code>的卷积把它称为<code>bottleneck</code>，它在这就类似于一个瓶颈。<strong>在实际中表明，</strong>这样的方法并不会对神经网络的精度造成损害，所以通常使用这样的方式来构建block，降低计算量。</p>
-<hr>
-<hr>
-<h1 id="Incepution-Net"><a href="#Incepution-Net" class="headerlink" title="Incepution Net"></a>Incepution Net</h1><p>2014年ImageNet冠军，top-5错误率6.7%，22层神经网络。那么实际上<code>Incepution Net</code>比<code>residual net</code>要早。</p>
-<div align="center"><img src="/images/paper/Inception_net_0.png" style="zoom:70%" title="We need to go deeper"/></div>
-
-<p>论文：<a href="https://arxiv.org/abs/1409.4842">Going Deeper with Convolutions,2014</a></p>
-<p><a href="https://arxiv.org/abs/1512.00567">Rethinking the Inception Architecture for Computer Vision,2015</a></p>
-<h2 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h2><p>在进行一次卷积操作时，不知道该选择<code>1 x 1</code>还是<code>3 x 3</code>还是<code>5 x 5</code>，怎么办？<strong>答：那么就在一层里面把它们全部都用上。</strong></p>
-<div align="center"><img src="/images/paper/Inception_net_1.png" style="zoom:70%" title="Inception module"/></div>
-
-<p>在同一层里面使用<code>1 x 1</code>、<code>3 x 3</code>、<code>5 x 5</code>以及<code>max pooling</code>，它们都使用<code>same</code>的卷积方式，
-最后将它们的结果<strong>叠</strong>在一起就可以了。</p>
-<p>同样的，这里也可以使用降维的思想（它的思想在ResNet之前）：</p>
-<div align="center"><img src="/images/paper/Inception_net_2.png" style="zoom:70%" title="Inception module with dimensionality reduction"/></div>
-
-<p>中间加入了几个<code>1 x 1</code>卷积，用于降低总的计算量。</p>
-<p>比赛中使用的网络叫做<strong>GoogLeNet</strong>，整个网络的结构如下：</p>
-<div align="center"><img src="/images/paper/Inception_net_3.png" style="zoom:90%" title="GoogLeNet"/></div>
-
-<p>注意到中间有两个额外的输出，<strong>这是为了避免梯度消失，网络额外增加了2个辅助的softmax用于向前传导梯度。</strong>（博客上面看的，具体文章中还没看）</p>
-<h2 id="升级版本"><a href="#升级版本" class="headerlink" title="升级版本"></a>升级版本</h2><p>在<code>Rethinking the Inception Architecture for Computer Vision,2015</code>这篇文章中有新的思路，目前还没有看。</p>
-<div align="center"><img src="/images/paper/Inception_net_4.png" style="zoom:80%" title="Inception modules after the factorization of the n x n convolutions"/></div>
-
-<p>其中大概多了下面的操作：</p>
-<div align="center"><img src="/images/paper/Inception_net_5.png" style="zoom:80%" title="New module"/></div>
-
-]]></content>
-      <categories>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Sibyl 论文笔记</title>
     <url>/2017/11/28/2017-11-28-Sibyl/</url>
     <content><![CDATA[<h2 id="Sibyl-A-Practical-Internet-Route-Oracle"><a href="#Sibyl-A-Practical-Internet-Route-Oracle" class="headerlink" title="Sibyl: A Practical Internet Route Oracle"></a>Sibyl: A Practical Internet Route Oracle</h2><p>论文<a href="https://pdfs.semanticscholar.org/0d89/37cad20f57a0453111691efe0ddbc90604b3.pdf">Calder, Matt, Yi-Ching Chiu, and Brandon Schlinker. “Sibyl: A Practical Internet Route Oracle.”</a></p>
@@ -3251,6 +3166,91 @@ r-.*-s$</script><p><code>Detecting prefix hijacks with iSpy</code>：查询所�
       </categories>
       <tags>
         <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Residual Net and Inception Net</title>
+    <url>/2017/11/29/2017-11-29-net-structures/</url>
+    <content><![CDATA[<h1 id="Residual-Net"><a href="#Residual-Net" class="headerlink" title="Residual Net"></a>Residual Net</h1><p>参考：
+<a href="https://www.coursera.org/learn/convolutional-neural-networks/lecture/HAhz9/resnets">coursera-convolutional-neural-networks-resnets</a></p>
+<p>论文:
+<a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html">He, Kaiming, et al. “Deep residual learning for image recognition.” Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.</a></p>
+<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><div align="center"><img src="/images/paper/ResNet_1.png" style="zoom:70%" title="ResNet结构" /></div>
+
+<p><strong>VGG-19</strong>:2014年ImageNet亚军，top-5错误率7.3%，19层神经网络。（那一年的冠军是InceptionNet，top-5错误率6.7%，22层神经网络）</p>
+<p><strong>plain</strong>:为了与ResNet区分，给中间的网络取名为“平坦”。</p>
+<p><strong>residual</strong>:残差网络。为2015年ImageNet冠军，top-5错误率3.57%，152层神经网络。</p>
+<h2 id="为什么使用残差网络？"><a href="#为什么使用残差网络？" class="headerlink" title="为什么使用残差网络？"></a>为什么使用残差网络？</h2><p><strong>原因</strong>，神经网络现在越来越深，但是简单的堆砌，使得网络深度增加，并不一定能使网络的精度增加。</p>
+<div align="center"><img src="/images/paper/ResNet_2.png" style="zoom:60%" title="误差对比" /></div>
+
+<p>图上56层的神经网络的精度反而比20层的神经网络精度低。</p>
+<p>造成这个问题的原因有：</p>
+<ol>
+<li>梯度消失、梯度爆炸。虽然这个问题很大程度上被<code>normalization</code>解决了，但是可能还是会带来一些影响。</li>
+<li>随着网络深度的增加，网络精度达到饱和，这时再增加网络层数，会使得网络精度迅速下降。这不是由于过拟合而造成的，可能是由于更深的网络更加难训练造成的。</li>
+</ol>
+<p>为此，引入残差网络的结构：</p>
+<div align="center"><img src="/images/paper/ResNet_3.png" style="zoom:60%" title="Residual Block"/></div>
+
+<p>将前几层的输出加到后几层的输出之上，上面的X是经过激活函数之后的输出，F(X)还未经过激活函数，
+F(X)加上X之后再共同的经过激活函数。</p>
+<p>这个结构的直接好处就是，<strong>如果网络精度已经饱和，中间新加入的层没有价值，残差网络将十分容易的将新加入层置为0（也就是F(X)=0，F(X)+X=X），这就不会影响到网络的精度。</strong></p>
+<div align="center"><img src="/images/paper/ResNet_4.png" style="zoom:60%" title="误差对比"/></div>
+
+<p>上面左图中34层的<code>plain</code>网络反而比18层的网络训练精度要低，而对于右图中的<code>ResNet</code>不会存在这种情况，</p>
+<h2 id="对残差网络的另一种理解"><a href="#对残差网络的另一种理解" class="headerlink" title="对残差网络的另一种理解"></a>对残差网络的另一种理解</h2><p>文献：<a href="https://www.researchgate.net/profile/Andreas_Veit/publication/303409435_Residual_Networks_are_Exponential_Ensembles_of_Relatively_Shallow_Networks/links/57e2985b08aefabc9bb886c8/Residual-Networks-are-Exponential-Ensembles-of-Relatively-Shallow-Networks.pdf">Veit, Andreas, Michael Wilber, and Serge Belongie. “Residual networks are exponential ensembles of relatively shallow networks.” arXiv preprint arXiv:1605.06431 1 (2016).</a></p>
+<p>通过下图可以表现出残差网络的另一种形式：</p>
+<div align="center"><img src="/images/paper/ResNet_6.png" style="zoom:60%" title="Residual Blocks"/></div>
+
+<p>把左图变形一下就变成右图，那么这里注意到<strong>残差网络其实就相当于是多个网络的叠加，结果就相当于是这些网络一起投票投出来的，有一种Ensembling的意思在里面。</strong></p>
+<h2 id="实现上的一些技巧"><a href="#实现上的一些技巧" class="headerlink" title="实现上的一些技巧"></a>实现上的一些技巧</h2><p>在实际的残差网络实现中，有一些技巧：</p>
+<div align="center"><img src="/images/paper/ResNet_5.png" style="zoom:60%" title="Residual Blocks"/></div>
+
+<p><strong>限制</strong>，进入<code>block</code>的输入与出去<code>block</code>的输出维度要一致，包括长、宽以及深度。那么图中的卷积使用的都是<code>same</code>，也就是保持长宽不变的卷积。</p>
+<p><strong>技巧</strong>，假设这里输入长宽是<code>64 x 64</code>，那么对于右图来说，如果没有前后的<code>1 x 1 x 64</code>、<code>1 x 1 x 256</code>的两个卷积，输入直接进行<code>3 x 3 x 256</code>的卷积:</p>
+<script type="math/tex; mode=display">
+Calculation = 64 \times 64 \times 3 \times 3 \times 256 \times 256 = 24'1591'9104</script><p>加上<code>1 x 1 x 64</code>、<code>1 x 1 x 256</code>两个卷积层：</p>
+<script type="math/tex; mode=display">
+\begin{equation}\begin{split}
+Calculation &= 64 \times 64 \times 1 \times 1 \times 256 \times 64 +
+64 \times 64 \times 3 \times 3 \times 64 \times 64 + 
+64 \times 64 \times 1 \times 1 \times 64 \times 256 \\
+&= 67108864 + 150994944 + 67108864 \\
+&= 2'8521'2672
+\end{split}\end{equation}</script><p>通过这样的方法，计算量可以减少一个数量级，其中<code>1 x 1 x 64</code>的卷积把它称为<code>bottleneck</code>，它在这就类似于一个瓶颈。<strong>在实际中表明，</strong>这样的方法并不会对神经网络的精度造成损害，所以通常使用这样的方式来构建block，降低计算量。</p>
+<hr>
+<hr>
+<h1 id="Incepution-Net"><a href="#Incepution-Net" class="headerlink" title="Incepution Net"></a>Incepution Net</h1><p>2014年ImageNet冠军，top-5错误率6.7%，22层神经网络。那么实际上<code>Incepution Net</code>比<code>residual net</code>要早。</p>
+<div align="center"><img src="/images/paper/Inception_net_0.png" style="zoom:70%" title="We need to go deeper"/></div>
+
+<p>论文：<a href="https://arxiv.org/abs/1409.4842">Going Deeper with Convolutions,2014</a></p>
+<p><a href="https://arxiv.org/abs/1512.00567">Rethinking the Inception Architecture for Computer Vision,2015</a></p>
+<h2 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h2><p>在进行一次卷积操作时，不知道该选择<code>1 x 1</code>还是<code>3 x 3</code>还是<code>5 x 5</code>，怎么办？<strong>答：那么就在一层里面把它们全部都用上。</strong></p>
+<div align="center"><img src="/images/paper/Inception_net_1.png" style="zoom:70%" title="Inception module"/></div>
+
+<p>在同一层里面使用<code>1 x 1</code>、<code>3 x 3</code>、<code>5 x 5</code>以及<code>max pooling</code>，它们都使用<code>same</code>的卷积方式，
+最后将它们的结果<strong>叠</strong>在一起就可以了。</p>
+<p>同样的，这里也可以使用降维的思想（它的思想在ResNet之前）：</p>
+<div align="center"><img src="/images/paper/Inception_net_2.png" style="zoom:70%" title="Inception module with dimensionality reduction"/></div>
+
+<p>中间加入了几个<code>1 x 1</code>卷积，用于降低总的计算量。</p>
+<p>比赛中使用的网络叫做<strong>GoogLeNet</strong>，整个网络的结构如下：</p>
+<div align="center"><img src="/images/paper/Inception_net_3.png" style="zoom:90%" title="GoogLeNet"/></div>
+
+<p>注意到中间有两个额外的输出，<strong>这是为了避免梯度消失，网络额外增加了2个辅助的softmax用于向前传导梯度。</strong>（博客上面看的，具体文章中还没看）</p>
+<h2 id="升级版本"><a href="#升级版本" class="headerlink" title="升级版本"></a>升级版本</h2><p>在<code>Rethinking the Inception Architecture for Computer Vision,2015</code>这篇文章中有新的思路，目前还没有看。</p>
+<div align="center"><img src="/images/paper/Inception_net_4.png" style="zoom:80%" title="Inception modules after the factorization of the n x n convolutions"/></div>
+
+<p>其中大概多了下面的操作：</p>
+<div align="center"><img src="/images/paper/Inception_net_5.png" style="zoom:80%" title="New module"/></div>
+
+]]></content>
+      <categories>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -3381,70 +3381,6 @@ google之后，大概确定了这个是没有线程安全而导致的问题。</
       </tags>
   </entry>
   <entry>
-    <title>2017年华为软件精英挑战赛记录</title>
-    <url>/2018/05/02/2018-05-02-2017_codecraft/</url>
-    <content><![CDATA[<hr>
-<h1 id="初赛"><a href="#初赛" class="headerlink" title="初赛"></a>初赛</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>很好，网上找了一会也没有找到题目，我只想说，华为你把往年的题的链接给一下可好？</p>
-<p>凭借记忆，初赛的题目大概是，有一个网络，要在上面部署cdn服务器，怎么部署既能满足用户需求，
-又能使得部署费用最少。</p>
-<p>具体一点，相当于一个无向图，有一些点是小区，每个小区都有视频业务的需求，而且需求量不一样，每条边是一条链路，
-链路有它的带宽限制。现在需要部署cdn服务器，让每一个小区的视频业务都能满足，同时部署cdn服务器的费用越低越好。</p>
-<p>每一个点都可以部署cdn服务器（包括是小区的点），每一个小区有一个需求值，每一条边是一条链路，每条链路都是双向的，
-每条链路有一个链路容量和一个单位费用（使用链路上一个单位的流量需要多少钱）。cdn服务器数量无限，cdn服务器输出能力无限，
-同样cdn服务器也有一个单价。</p>
-<p>限制：不能使用第三方库，程序运行时间不超过60s。</p>
-<h2 id="简单分析"><a href="#简单分析" class="headerlink" title="简单分析"></a>简单分析</h2><p>这个需要一步一步来分析：</p>
-<ol>
-<li>该选择哪些点来部署服务器？</li>
-<li>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</li>
-</ol>
-<p>这就是这个题目的两个核心问题。</p>
-<h3 id="该选择哪些点来部署服务器？"><a href="#该选择哪些点来部署服务器？" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>这是这个题目最难的一部分，因为这个选择是一个NP难的问题，所以是没有现成的解法来教你如何求解这个问题的，
-通常都是将它变成一个整数规划模型，然后使用求解器来求解。但是由于不能使用第三方库，所以代码全靠手写，
-那么这个问题基本上只能使用启发式算法来解。</p>
-<p>那么有哪些常用的启发式算法呢？遗传算法、模拟退火、蚁群算法、粒子群算法等。</p>
-<p>很好，那么从哪个算法开始呢？显然都不用，第一步当然是写一个最简单的版本，先熟悉问题，在深入问题。</p>
-<p><strong>最简单的版本（原始想法）：</strong></p>
-<p>版本1：初始每一个小区都给一个cdn，然后再尝试一个个cdn删除，直到不能降低费用，或者不能满足用户需求为止。</p>
-<p>版本2：初始没有cdn，然后尝试一个小区一个小区添加cdn，直到需求满足且不能降低费用为止。</p>
-<p><strong>初始版本的想法非常简单，但是很遗憾，这个想法在初赛的简单用例上能直接跑出最优解…</strong></p>
-<p>(有时候问题就是这么简单，只不过很多人还没开始就觉得难，然后就没有然后了)</p>
-<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>解决这个问题很简单，使用<a href="待补充">最小费用最大流</a>就解决了。</p>
-<p>使用最简单的增广路写法就好。</p>
-<h2 id="进阶分析"><a href="#进阶分析" class="headerlink" title="进阶分析"></a>进阶分析</h2><p>同样的，两个步骤的想法。</p>
-<h3 id="该选择哪些点来部署服务器？-1"><a href="#该选择哪些点来部署服务器？-1" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>由于最初始的版本效果很好，那么在这个基础上还能加强吗？</p>
-<p>当然能，很简单就能想到几个操作方法：</p>
-<ol>
-<li>cdn移动。现在cdn都是直接放在小区上面的，所以自然可以尝试移动cdn，只移动一步，
-如果移动能降低费用就移动，否则维持原状。</li>
-<li>cdn删除。这个删除不同于上面的原始想法中的删除，这个删除是根据cdn移动来的，如果有cdn移动成功了，
-那么意味着图的结构变了，有的点就也许就可以删除了。</li>
-</ol>
-<p><strong>很遗憾，初赛使用的就是这个思路做的，最后大概成渝前3的水平…</strong></p>
-<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>上面选择了增广路写法。</p>
-<p>但是，注意到时间限制60s，在这种分两步走的策略里面，需要跑很多次费用流，
-这时候的问题就是如何解决好这个问题，也就是用时尽量少。</p>
-<p><strong>最小费用最大流：</strong></p>
-<p>这里我首先使用的是增广路解法，使用SPFA计算增广路的最短路径。</p>
-<p>由于在一次求解最小费用最大流的过程中，需要反复的调用SPFA，那么<strong>在重复进行SPFA的过程中，不用每一次都重头开始</strong>，
-也就是一部分最短路径的结果可以保留，这样在下一次计算时就可以少很多的计算量。</p>
-<p>使用这样的方法，跑高级用例也没有问题，否则高级用例会有压力。</p>
-<p>由于上面部署的思路太简单了，这个最小费用最大流的魔改是我觉得自己最有意思的地方了。</p>
-<p>（具体用时忘记了…太过久远）</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>参见github<a href="https://github.com/isadamu/2017-codecraft">2017-codecraft</a></p>
-<p>在一年之后，看自己一年之前写的代码，真的写得稀烂…估计再过一年又会嫌弃现在。</p>
-<h1 id="复赛"><a href="#复赛" class="headerlink" title="复赛"></a>复赛</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>和上面的题目其实一样，</p>
-<p>// TODO</p>
-]]></content>
-      <categories>
-        <category>competition</category>
-      </categories>
-      <tags>
-        <tag>competition</tag>
-        <tag>algorithm</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>jar包的运行以及jre精简</title>
     <url>/2018/03/19/2018-03-19-java_jar_jre_reduce/</url>
     <content><![CDATA[<h2 id="工程打包"><a href="#工程打包" class="headerlink" title="工程打包"></a>工程打包</h2><p>无论是什么IDE，打包都是一件十分简单的事。（这里不讨论自己手动打包的情形）</p>
@@ -3539,6 +3475,70 @@ java中可以使用下面语句来取到：</p>
       <tags>
         <tag>guide</tag>
         <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2017年华为软件精英挑战赛记录</title>
+    <url>/2018/05/02/2018-05-02-2017_codecraft/</url>
+    <content><![CDATA[<hr>
+<h1 id="初赛"><a href="#初赛" class="headerlink" title="初赛"></a>初赛</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>很好，网上找了一会也没有找到题目，我只想说，华为你把往年的题的链接给一下可好？</p>
+<p>凭借记忆，初赛的题目大概是，有一个网络，要在上面部署cdn服务器，怎么部署既能满足用户需求，
+又能使得部署费用最少。</p>
+<p>具体一点，相当于一个无向图，有一些点是小区，每个小区都有视频业务的需求，而且需求量不一样，每条边是一条链路，
+链路有它的带宽限制。现在需要部署cdn服务器，让每一个小区的视频业务都能满足，同时部署cdn服务器的费用越低越好。</p>
+<p>每一个点都可以部署cdn服务器（包括是小区的点），每一个小区有一个需求值，每一条边是一条链路，每条链路都是双向的，
+每条链路有一个链路容量和一个单位费用（使用链路上一个单位的流量需要多少钱）。cdn服务器数量无限，cdn服务器输出能力无限，
+同样cdn服务器也有一个单价。</p>
+<p>限制：不能使用第三方库，程序运行时间不超过60s。</p>
+<h2 id="简单分析"><a href="#简单分析" class="headerlink" title="简单分析"></a>简单分析</h2><p>这个需要一步一步来分析：</p>
+<ol>
+<li>该选择哪些点来部署服务器？</li>
+<li>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</li>
+</ol>
+<p>这就是这个题目的两个核心问题。</p>
+<h3 id="该选择哪些点来部署服务器？"><a href="#该选择哪些点来部署服务器？" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>这是这个题目最难的一部分，因为这个选择是一个NP难的问题，所以是没有现成的解法来教你如何求解这个问题的，
+通常都是将它变成一个整数规划模型，然后使用求解器来求解。但是由于不能使用第三方库，所以代码全靠手写，
+那么这个问题基本上只能使用启发式算法来解。</p>
+<p>那么有哪些常用的启发式算法呢？遗传算法、模拟退火、蚁群算法、粒子群算法等。</p>
+<p>很好，那么从哪个算法开始呢？显然都不用，第一步当然是写一个最简单的版本，先熟悉问题，在深入问题。</p>
+<p><strong>最简单的版本（原始想法）：</strong></p>
+<p>版本1：初始每一个小区都给一个cdn，然后再尝试一个个cdn删除，直到不能降低费用，或者不能满足用户需求为止。</p>
+<p>版本2：初始没有cdn，然后尝试一个小区一个小区添加cdn，直到需求满足且不能降低费用为止。</p>
+<p><strong>初始版本的想法非常简单，但是很遗憾，这个想法在初赛的简单用例上能直接跑出最优解…</strong></p>
+<p>(有时候问题就是这么简单，只不过很多人还没开始就觉得难，然后就没有然后了)</p>
+<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>解决这个问题很简单，使用<a href="待补充">最小费用最大流</a>就解决了。</p>
+<p>使用最简单的增广路写法就好。</p>
+<h2 id="进阶分析"><a href="#进阶分析" class="headerlink" title="进阶分析"></a>进阶分析</h2><p>同样的，两个步骤的想法。</p>
+<h3 id="该选择哪些点来部署服务器？-1"><a href="#该选择哪些点来部署服务器？-1" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>由于最初始的版本效果很好，那么在这个基础上还能加强吗？</p>
+<p>当然能，很简单就能想到几个操作方法：</p>
+<ol>
+<li>cdn移动。现在cdn都是直接放在小区上面的，所以自然可以尝试移动cdn，只移动一步，
+如果移动能降低费用就移动，否则维持原状。</li>
+<li>cdn删除。这个删除不同于上面的原始想法中的删除，这个删除是根据cdn移动来的，如果有cdn移动成功了，
+那么意味着图的结构变了，有的点就也许就可以删除了。</li>
+</ol>
+<p><strong>很遗憾，初赛使用的就是这个思路做的，最后大概成渝前3的水平…</strong></p>
+<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>上面选择了增广路写法。</p>
+<p>但是，注意到时间限制60s，在这种分两步走的策略里面，需要跑很多次费用流，
+这时候的问题就是如何解决好这个问题，也就是用时尽量少。</p>
+<p><strong>最小费用最大流：</strong></p>
+<p>这里我首先使用的是增广路解法，使用SPFA计算增广路的最短路径。</p>
+<p>由于在一次求解最小费用最大流的过程中，需要反复的调用SPFA，那么<strong>在重复进行SPFA的过程中，不用每一次都重头开始</strong>，
+也就是一部分最短路径的结果可以保留，这样在下一次计算时就可以少很多的计算量。</p>
+<p>使用这样的方法，跑高级用例也没有问题，否则高级用例会有压力。</p>
+<p>由于上面部署的思路太简单了，这个最小费用最大流的魔改是我觉得自己最有意思的地方了。</p>
+<p>（具体用时忘记了…太过久远）</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>参见github<a href="https://github.com/isadamu/2017-codecraft">2017-codecraft</a></p>
+<p>在一年之后，看自己一年之前写的代码，真的写得稀烂…估计再过一年又会嫌弃现在。</p>
+<h1 id="复赛"><a href="#复赛" class="headerlink" title="复赛"></a>复赛</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>和上面的题目其实一样，</p>
+<p>// TODO</p>
+]]></content>
+      <categories>
+        <category>competition</category>
+      </categories>
+      <tags>
+        <tag>competition</tag>
+        <tag>algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -3692,6 +3692,87 @@ java中可以使用下面语句来取到：</p>
       </tags>
   </entry>
   <entry>
+    <title>linux基础练习-2</title>
+    <url>/2019/07/15/2019-07-15-linux-base-practice_2/</url>
+    <content><![CDATA[<hr>
+<h2 id="练习目标"><a href="#练习目标" class="headerlink" title="练习目标"></a>练习目标</h2><p>使用iso镜像搭建一个本地源，安装httpd服务并局域网<code>yum install</code>成功</p>
+<h2 id="所需准备"><a href="#所需准备" class="headerlink" title="所需准备"></a>所需准备</h2><ol>
+<li>两台centos虚拟机（一般是mini安装），一台作为yum源，一台测试yum源。</li>
+<li>一个centos的iso镜像，这里选择的是<code>CentOS-7-x86_64-Everything-1804.iso</code>。</li>
+<li>配置好网络，起码两台虚拟机能相互ping通。</li>
+</ol>
+<hr>
+<h2 id="配置本地yum源"><a href="#配置本地yum源" class="headerlink" title="配置本地yum源"></a>配置本地yum源</h2><p><strong>本地yum源</strong>，意思就是只有本机能够使用的yum源，这里需要先配置本地yum源，
+然后再将其公布到局域网。</p>
+<p>使用iso镜像搭建本地yum源，这里首先将iso镜像进行挂载：</p>
+<p><img src="/images/linux/centos/practice/virtualbox挂载镜像.png" alt="images" title="virtualbox挂载镜像"></p>
+<p>完成后，iso镜像就已经挂到了<code>/dev/cdrom</code>目录上，新建一个目录将它挂载：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> /mnt/iso</span><br><span class="line">$ mount /dev/cdrom /mnt/iso</span><br><span class="line"></span><br><span class="line"><span class="function">mount: /<span class="title">dev</span>/<span class="title">sr0</span> <span class="title">is</span> <span class="title">write</span>-<span class="title">protected</span>, <span class="title">mounting</span> <span class="title">read</span>-<span class="title">only</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">$ <span class="title">ll</span> /<span class="title">mnt</span>/<span class="title">iso</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">total</span> 1640</span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>      14 <span class="title">May</span>  2  2018 <span class="title">CentOS_BuildTag</span></span></span><br><span class="line"><span class="function"><span class="title">drwxr</span>-<span class="title">xr</span>-<span class="title">x</span> 3 <span class="title">root</span> <span class="title">root</span>    2048 <span class="title">May</span>  4  2018 <span class="title">EFI</span></span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>     227 <span class="title">Aug</span> 30  2017 <span class="title">EULA</span></span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>   18009 <span class="title">Dec</span> 10  2015 <span class="title">GPL</span></span></span><br><span class="line"><span class="function"><span class="title">drwxr</span>-<span class="title">xr</span>-<span class="title">x</span> 3 <span class="title">root</span> <span class="title">root</span>    2048 <span class="title">May</span>  4  2018 <span class="title">images</span></span></span><br><span class="line"><span class="function"><span class="title">drwxr</span>-<span class="title">xr</span>-<span class="title">x</span> 2 <span class="title">root</span> <span class="title">root</span>    2048 <span class="title">May</span>  4  2018 <span class="title">isolinux</span></span></span><br><span class="line"><span class="function"><span class="title">drwxr</span>-<span class="title">xr</span>-<span class="title">x</span> 2 <span class="title">root</span> <span class="title">root</span>    2048 <span class="title">May</span>  4  2018 <span class="title">LiveOS</span></span></span><br><span class="line"><span class="function"><span class="title">drwxrwxr</span>-<span class="title">x</span> 2 <span class="title">root</span> <span class="title">root</span> 1640448 <span class="title">May</span>  3  2018 <span class="title">Packages</span></span></span><br><span class="line"><span class="function"><span class="title">drwxrwxr</span>-<span class="title">x</span> 2 <span class="title">root</span> <span class="title">root</span>    4096 <span class="title">May</span>  7  2018 <span class="title">repodata</span></span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>    1690 <span class="title">Dec</span> 10  2015 <span class="title">RPM</span>-<span class="title">GPG</span>-<span class="title">KEY</span>-<span class="title">CentOS</span>-7</span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>    1690 <span class="title">Dec</span> 10  2015 <span class="title">RPM</span>-<span class="title">GPG</span>-<span class="title">KEY</span>-<span class="title">CentOS</span>-<span class="title">Testing</span>-7</span></span><br><span class="line"><span class="function">-<span class="title">r</span>--<span class="title">r</span>--<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>    2883 <span class="title">May</span>  7  2018 <span class="title">TRANS.TBL</span></span></span><br></pre></td></tr></table></figure>
+<p>然后将这些文件都复制出来（貌似也可以不复制出来，直接使用<code>/mnt/iso</code>目录作为本地源目录）：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> /home/long/yum</span><br><span class="line">$ cp -r /mnt/iso/* /home/long/yum</span><br></pre></td></tr></table></figure>
+<p>将现有的.repo文件备份，随便新建或者复制一个.repo文件，修改其中的内容：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /etc/yum.repos.d/</span><br><span class="line">$ <span class="built_in">mkdir</span> bak</span><br><span class="line">$ mv *.repo bak</span><br><span class="line">$ cp bak/CentOS-Base.repo .</span><br><span class="line">$ vim CentOS-Base.repo</span><br><span class="line"></span><br><span class="line">[base]      # yun源的名字，唯一即可</span><br><span class="line">name=CentOS-$releasever - Base  # 注释信息，随便</span><br><span class="line">baseurl=file:///home/long/yum         # yum源路径，支持三种协议：http、ftp、file</span><br><span class="line">enabled=<span class="number">1</span>     # <span class="number">1</span>表示启用，<span class="number">0</span>表示禁用</span><br><span class="line">gpgcheck=<span class="number">0</span>     # 指纹校验，为<span class="number">0</span>表示不校验</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-<span class="number">7</span>     #校验参考的文件</span><br></pre></td></tr></table></figure>
+<p>清除默认源，重新缓存本地源：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ yum clean all</span><br><span class="line"></span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Cleaning repos: base</span><br><span class="line">Cleaning up everything</span><br><span class="line">Maybe you want: rm -rf /var/cache/yum, to also free up space taken by orphaned data from disabled or removed repos</span><br><span class="line">Cleaning up list of fastest mirrors</span><br><span class="line"></span><br><span class="line">$ yum makecache</span><br><span class="line"></span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Determining fastest mirrors</span><br><span class="line">base                                                                                                                                                | <span class="number">3</span>.<span class="number">6</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">(<span class="number">1</span>/<span class="number">4</span>): base/group_gz                                                                                                                                | <span class="number">166</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">(<span class="number">2</span>/<span class="number">4</span>): base/primary_db                                                                                                                              | <span class="number">5</span>.<span class="number">9</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">(<span class="number">3</span>/<span class="number">4</span>): base/filelists_db                                                                                                                            | <span class="number">6</span>.<span class="number">9</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">(<span class="number">4</span>/<span class="number">4</span>): base/other_db                                                                                                                                | <span class="number">2</span>.<span class="number">5</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">Metadata Cache Created</span><br><span class="line"></span><br><span class="line">$ yum list</span><br></pre></td></tr></table></figure>
+<p>测试本地yum源是否配置成功：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ yum install httpd</span><br><span class="line">$ yum install wget</span><br></pre></td></tr></table></figure>
+<p>到这里本地yum源就搭建成功了</p>
+<h2 id="配置局域网yum源"><a href="#配置局域网yum源" class="headerlink" title="配置局域网yum源"></a>配置局域网yum源</h2><p>上面已经安装了httpd服务（<code>yum install httpd</code>），它默认的目录是<code>/var/www/html</code>，这里需要对它进行修改：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ rm -rf /var/www/html</span><br><span class="line">$ ln -s /home/long/yum /var/www/html </span><br></pre></td></tr></table></figure>
+<p>下面启动httpd服务，随便把它设置为开机自启：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ systemctl enable httpd</span><br><span class="line">$ systemctl <span class="built_in">start</span> httpd</span><br></pre></td></tr></table></figure>
+<p>验证是否启动成功，在另一台虚拟机上进行测试：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ wget http://<span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">201</span>/RPM-GPG-KEY-CentOS-<span class="number">7</span></span><br><span class="line"></span><br><span class="line">--<span class="number">2019</span>-<span class="number">07</span>-<span class="number">15</span> <span class="number">17</span>:<span class="number">55</span>:<span class="number">08</span>--  http://<span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">201</span>/RPM-GPG-KEY-CentOS-<span class="number">7</span></span><br><span class="line">Connecting to <span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">201</span>:<span class="number">80</span>... connected.</span><br><span class="line">HTTP request sent, awaiting response... <span class="number">200</span> OK</span><br><span class="line"><span class="function">Length: 1690 (1.7<span class="title">K</span>)</span></span><br><span class="line"><span class="function"><span class="title">Saving</span> <span class="title">to</span>: ‘<span class="title">RPM</span>-<span class="title">GPG</span>-<span class="title">KEY</span>-<span class="title">CentOS</span>-7’</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">100%[=================================================================================================================================&gt;] 1,690       --.-<span class="title">K</span>/<span class="title">s</span>   <span class="title">in</span> 0<span class="title">s</span>      </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">2019-07-15 17:55:08 (3.62 <span class="title">MB</span>/<span class="title">s</span>) - ‘<span class="title">RPM</span>-<span class="title">GPG</span>-<span class="title">KEY</span>-<span class="title">CentOS</span>-7’ <span class="title">saved</span> [1690/1690]</span></span><br></pre></td></tr></table></figure>
+<p>这里就完成了局域网yum源的配置。</p>
+<h2 id="使用局域网yum源"><a href="#使用局域网yum源" class="headerlink" title="使用局域网yum源"></a>使用局域网yum源</h2><p>方法和使用本地yum源一样，唯一不一样的地方在于将file修改为http:</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ vim CentOS-Base.repo</span><br><span class="line"></span><br><span class="line">[base]</span><br><span class="line">name=CentOS-$releasever - Base</span><br><span class="line">baseurl=http://<span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">201</span>:<span class="number">80</span>/</span><br><span class="line">enabled=<span class="number">1</span></span><br><span class="line">gpgcheck=<span class="number">0</span></span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-<span class="number">7</span></span><br></pre></td></tr></table></figure>
+<p>尝试使用：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ yum install vim</span><br><span class="line"></span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line">Package matching <span class="number">2</span>:vim-enhanced-<span class="number">7</span>.<span class="number">4</span>.<span class="number">160</span>-<span class="number">4</span>.el7.x86_64 already installed. Checking <span class="keyword">for</span> update.</span><br><span class="line">Nothing to <span class="keyword">do</span></span><br></pre></td></tr></table></figure>
+<p><strong>ok</strong></p>
+<h2 id="过程中的问题"><a href="#过程中的问题" class="headerlink" title="过程中的问题"></a>过程中的问题</h2><p><strong>403 Forbidden:</strong></p>
+<p>在执行<code>wget http://192.168.31.201/RPM-GPG-KEY-CentOS-7</code>命令时，出现403错误。</p>
+<p>这里可能是由于一下的问题造成的：</p>
+<ul>
+<li>防火墙问题。解决办法：关闭防火墙。</li>
+</ul>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ systemctl status firewalld</span><br><span class="line">$ systemctl disable firewalld</span><br><span class="line">$ systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+<ul>
+<li>selinux问题。解决办法：关闭selinux。</li>
+</ul>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ getenforce</span><br><span class="line"></span><br><span class="line">Enforcing</span><br><span class="line"></span><br><span class="line">$ vim /etc/sysconfig/selinux</span><br><span class="line"></span><br><span class="line">SELINUX=disabled</span><br><span class="line"></span><br><span class="line">$ reboot</span><br><span class="line"></span><br><span class="line">$ getenforce</span><br><span class="line"></span><br><span class="line">Disabled</span><br></pre></td></tr></table></figure>
+<ul>
+<li>权限问题。解决办法：修改yum源目录的权限。</li>
+</ul>
+<p>在centos上，httpd的log文件记录在<code>/var/log/httpd/</code>目录下，有<code>access_log</code>和<code>error_log</code>，
+在<code>access_log</code>中可以看到接入信息，<code>error_log</code>中可以看到错误信息，这些信息十分有用。</p>
+<p>查看<code>error_log</code>:</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ sudo tail /var/log/httpd/error_log</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">[Mon Jul <span class="number">15</span> <span class="number">09</span>:<span class="number">50</span>:<span class="number">49</span>.<span class="number">577353</span> <span class="number">2019</span>] [core:error] [pid <span class="number">1303</span>] [client <span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">202</span>:<span class="number">37660</span>] AH00037: Symbolic link <span class="keyword">not</span> allowed or link target <span class="keyword">not</span> accessible: /var/www/html</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>可以看到问题在于权限不够，这里需要将<code>/home/long/yum</code>从上到下这几个目录都添加执行权限：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ chmod -R +x /home</span><br></pre></td></tr></table></figure>
+<p>当然这样将所有的文件和文件夹都添加了执行权限，实际上应该只需要将文件夹添加可执行权限就好。</p>
+<h2 id="2019-07-18补充"><a href="#2019-07-18补充" class="headerlink" title="2019-07-18补充"></a>2019-07-18补充</h2><p>在上面的操作过程中，使用的是iso镜像，镜像是已经建立成repo仓库的，所以可以直接使用。
+<strong>但是</strong>，如果现在有一堆rpm文件在一个文件夹下，直接像上面那样是不行的，因为它还不是一个repo仓库，
+简单来说就是文件中不包含<code>repodata</code>文件夹。</p>
+<p>所以这里引入<strong>createrepo</strong>命令来将一个文件夹做成一个repo仓库。</p>
+<p>可以直接使用yum安装它：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ sudo yum install createrepo</span><br></pre></td></tr></table></figure>
+<p>比如将文件夹/home/tmp创建为repo仓库：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ createrepo -p -d -o /home/tmp /home/tmp</span><br></pre></td></tr></table></figure>
+<p>如果在文件夹中又加入了新的rpm文件，则需要更新仓库：</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ createrepo --update /home/tmp</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.csdn.net/Karloo/article/details/80282488">CentOS7 配置局域网内软件源 http模式</a></p>
+<p><a href="https://blog.csdn.net/xin_y/article/details/79007986">临时和永久关闭Selinux</a></p>
+<p><a href="https://allenzhang.iteye.com/blog/1098700">解决Symbolic link not allowed or link target not accessible问题一例</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>centos</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>centos7上的ceph指定版本安装方法</title>
     <url>/2019/07/18/2019-07-18-ceph-install/</url>
     <content><![CDATA[<hr>
@@ -3793,87 +3874,6 @@ java中可以使用下面语句来取到：</p>
         <tag>linux</tag>
         <tag>centos</tag>
         <tag>ceph</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>linux基础练习-2</title>
-    <url>/2019/07/15/2019-07-15-linux-base-practice_2/</url>
-    <content><![CDATA[<hr>
-<h2 id="练习目标"><a href="#练习目标" class="headerlink" title="练习目标"></a>练习目标</h2><p>使用iso镜像搭建一个本地源，安装httpd服务并局域网<code>yum install</code>成功</p>
-<h2 id="所需准备"><a href="#所需准备" class="headerlink" title="所需准备"></a>所需准备</h2><ol>
-<li>两台centos虚拟机（一般是mini安装），一台作为yum源，一台测试yum源。</li>
-<li>一个centos的iso镜像，这里选择的是<code>CentOS-7-x86_64-Everything-1804.iso</code>。</li>
-<li>配置好网络，起码两台虚拟机能相互ping通。</li>
-</ol>
-<hr>
-<h2 id="配置本地yum源"><a href="#配置本地yum源" class="headerlink" title="配置本地yum源"></a>配置本地yum源</h2><p><strong>本地yum源</strong>，意思就是只有本机能够使用的yum源，这里需要先配置本地yum源，
-然后再将其公布到局域网。</p>
-<p>使用iso镜像搭建本地yum源，这里首先将iso镜像进行挂载：</p>
-<p><img src="/images/linux/centos/practice/virtualbox挂载镜像.png" alt="images" title="virtualbox挂载镜像"></p>
-<p>完成后，iso镜像就已经挂到了<code>/dev/cdrom</code>目录上，新建一个目录将它挂载：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> /mnt/iso</span><br><span class="line">$ mount /dev/cdrom /mnt/iso</span><br><span class="line"></span><br><span class="line"><span class="function">mount: /<span class="title">dev</span>/<span class="title">sr0</span> <span class="title">is</span> <span class="title">write</span>-<span class="title">protected</span>, <span class="title">mounting</span> <span class="title">read</span>-<span class="title">only</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">$ <span class="title">ll</span> /<span class="title">mnt</span>/<span class="title">iso</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">total</span> 1640</span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>      14 <span class="title">May</span>  2  2018 <span class="title">CentOS_BuildTag</span></span></span><br><span class="line"><span class="function"><span class="title">drwxr</span>-<span class="title">xr</span>-<span class="title">x</span> 3 <span class="title">root</span> <span class="title">root</span>    2048 <span class="title">May</span>  4  2018 <span class="title">EFI</span></span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>     227 <span class="title">Aug</span> 30  2017 <span class="title">EULA</span></span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>   18009 <span class="title">Dec</span> 10  2015 <span class="title">GPL</span></span></span><br><span class="line"><span class="function"><span class="title">drwxr</span>-<span class="title">xr</span>-<span class="title">x</span> 3 <span class="title">root</span> <span class="title">root</span>    2048 <span class="title">May</span>  4  2018 <span class="title">images</span></span></span><br><span class="line"><span class="function"><span class="title">drwxr</span>-<span class="title">xr</span>-<span class="title">x</span> 2 <span class="title">root</span> <span class="title">root</span>    2048 <span class="title">May</span>  4  2018 <span class="title">isolinux</span></span></span><br><span class="line"><span class="function"><span class="title">drwxr</span>-<span class="title">xr</span>-<span class="title">x</span> 2 <span class="title">root</span> <span class="title">root</span>    2048 <span class="title">May</span>  4  2018 <span class="title">LiveOS</span></span></span><br><span class="line"><span class="function"><span class="title">drwxrwxr</span>-<span class="title">x</span> 2 <span class="title">root</span> <span class="title">root</span> 1640448 <span class="title">May</span>  3  2018 <span class="title">Packages</span></span></span><br><span class="line"><span class="function"><span class="title">drwxrwxr</span>-<span class="title">x</span> 2 <span class="title">root</span> <span class="title">root</span>    4096 <span class="title">May</span>  7  2018 <span class="title">repodata</span></span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>    1690 <span class="title">Dec</span> 10  2015 <span class="title">RPM</span>-<span class="title">GPG</span>-<span class="title">KEY</span>-<span class="title">CentOS</span>-7</span></span><br><span class="line"><span class="function">-<span class="title">rw</span>-<span class="title">rw</span>-<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>    1690 <span class="title">Dec</span> 10  2015 <span class="title">RPM</span>-<span class="title">GPG</span>-<span class="title">KEY</span>-<span class="title">CentOS</span>-<span class="title">Testing</span>-7</span></span><br><span class="line"><span class="function">-<span class="title">r</span>--<span class="title">r</span>--<span class="title">r</span>-- 1 <span class="title">root</span> <span class="title">root</span>    2883 <span class="title">May</span>  7  2018 <span class="title">TRANS.TBL</span></span></span><br></pre></td></tr></table></figure>
-<p>然后将这些文件都复制出来（貌似也可以不复制出来，直接使用<code>/mnt/iso</code>目录作为本地源目录）：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> /home/long/yum</span><br><span class="line">$ cp -r /mnt/iso/* /home/long/yum</span><br></pre></td></tr></table></figure>
-<p>将现有的.repo文件备份，随便新建或者复制一个.repo文件，修改其中的内容：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /etc/yum.repos.d/</span><br><span class="line">$ <span class="built_in">mkdir</span> bak</span><br><span class="line">$ mv *.repo bak</span><br><span class="line">$ cp bak/CentOS-Base.repo .</span><br><span class="line">$ vim CentOS-Base.repo</span><br><span class="line"></span><br><span class="line">[base]      # yun源的名字，唯一即可</span><br><span class="line">name=CentOS-$releasever - Base  # 注释信息，随便</span><br><span class="line">baseurl=file:///home/long/yum         # yum源路径，支持三种协议：http、ftp、file</span><br><span class="line">enabled=<span class="number">1</span>     # <span class="number">1</span>表示启用，<span class="number">0</span>表示禁用</span><br><span class="line">gpgcheck=<span class="number">0</span>     # 指纹校验，为<span class="number">0</span>表示不校验</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-<span class="number">7</span>     #校验参考的文件</span><br></pre></td></tr></table></figure>
-<p>清除默认源，重新缓存本地源：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ yum clean all</span><br><span class="line"></span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Cleaning repos: base</span><br><span class="line">Cleaning up everything</span><br><span class="line">Maybe you want: rm -rf /var/cache/yum, to also free up space taken by orphaned data from disabled or removed repos</span><br><span class="line">Cleaning up list of fastest mirrors</span><br><span class="line"></span><br><span class="line">$ yum makecache</span><br><span class="line"></span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Determining fastest mirrors</span><br><span class="line">base                                                                                                                                                | <span class="number">3</span>.<span class="number">6</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">(<span class="number">1</span>/<span class="number">4</span>): base/group_gz                                                                                                                                | <span class="number">166</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">(<span class="number">2</span>/<span class="number">4</span>): base/primary_db                                                                                                                              | <span class="number">5</span>.<span class="number">9</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">(<span class="number">3</span>/<span class="number">4</span>): base/filelists_db                                                                                                                            | <span class="number">6</span>.<span class="number">9</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">(<span class="number">4</span>/<span class="number">4</span>): base/other_db                                                                                                                                | <span class="number">2</span>.<span class="number">5</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>     </span><br><span class="line">Metadata Cache Created</span><br><span class="line"></span><br><span class="line">$ yum list</span><br></pre></td></tr></table></figure>
-<p>测试本地yum源是否配置成功：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ yum install httpd</span><br><span class="line">$ yum install wget</span><br></pre></td></tr></table></figure>
-<p>到这里本地yum源就搭建成功了</p>
-<h2 id="配置局域网yum源"><a href="#配置局域网yum源" class="headerlink" title="配置局域网yum源"></a>配置局域网yum源</h2><p>上面已经安装了httpd服务（<code>yum install httpd</code>），它默认的目录是<code>/var/www/html</code>，这里需要对它进行修改：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ rm -rf /var/www/html</span><br><span class="line">$ ln -s /home/long/yum /var/www/html </span><br></pre></td></tr></table></figure>
-<p>下面启动httpd服务，随便把它设置为开机自启：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ systemctl enable httpd</span><br><span class="line">$ systemctl <span class="built_in">start</span> httpd</span><br></pre></td></tr></table></figure>
-<p>验证是否启动成功，在另一台虚拟机上进行测试：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ wget http://<span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">201</span>/RPM-GPG-KEY-CentOS-<span class="number">7</span></span><br><span class="line"></span><br><span class="line">--<span class="number">2019</span>-<span class="number">07</span>-<span class="number">15</span> <span class="number">17</span>:<span class="number">55</span>:<span class="number">08</span>--  http://<span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">201</span>/RPM-GPG-KEY-CentOS-<span class="number">7</span></span><br><span class="line">Connecting to <span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">201</span>:<span class="number">80</span>... connected.</span><br><span class="line">HTTP request sent, awaiting response... <span class="number">200</span> OK</span><br><span class="line"><span class="function">Length: 1690 (1.7<span class="title">K</span>)</span></span><br><span class="line"><span class="function"><span class="title">Saving</span> <span class="title">to</span>: ‘<span class="title">RPM</span>-<span class="title">GPG</span>-<span class="title">KEY</span>-<span class="title">CentOS</span>-7’</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">100%[=================================================================================================================================&gt;] 1,690       --.-<span class="title">K</span>/<span class="title">s</span>   <span class="title">in</span> 0<span class="title">s</span>      </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">2019-07-15 17:55:08 (3.62 <span class="title">MB</span>/<span class="title">s</span>) - ‘<span class="title">RPM</span>-<span class="title">GPG</span>-<span class="title">KEY</span>-<span class="title">CentOS</span>-7’ <span class="title">saved</span> [1690/1690]</span></span><br></pre></td></tr></table></figure>
-<p>这里就完成了局域网yum源的配置。</p>
-<h2 id="使用局域网yum源"><a href="#使用局域网yum源" class="headerlink" title="使用局域网yum源"></a>使用局域网yum源</h2><p>方法和使用本地yum源一样，唯一不一样的地方在于将file修改为http:</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ vim CentOS-Base.repo</span><br><span class="line"></span><br><span class="line">[base]</span><br><span class="line">name=CentOS-$releasever - Base</span><br><span class="line">baseurl=http://<span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">201</span>:<span class="number">80</span>/</span><br><span class="line">enabled=<span class="number">1</span></span><br><span class="line">gpgcheck=<span class="number">0</span></span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-<span class="number">7</span></span><br></pre></td></tr></table></figure>
-<p>尝试使用：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ yum install vim</span><br><span class="line"></span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line">Package matching <span class="number">2</span>:vim-enhanced-<span class="number">7</span>.<span class="number">4</span>.<span class="number">160</span>-<span class="number">4</span>.el7.x86_64 already installed. Checking <span class="keyword">for</span> update.</span><br><span class="line">Nothing to <span class="keyword">do</span></span><br></pre></td></tr></table></figure>
-<p><strong>ok</strong></p>
-<h2 id="过程中的问题"><a href="#过程中的问题" class="headerlink" title="过程中的问题"></a>过程中的问题</h2><p><strong>403 Forbidden:</strong></p>
-<p>在执行<code>wget http://192.168.31.201/RPM-GPG-KEY-CentOS-7</code>命令时，出现403错误。</p>
-<p>这里可能是由于一下的问题造成的：</p>
-<ul>
-<li>防火墙问题。解决办法：关闭防火墙。</li>
-</ul>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ systemctl status firewalld</span><br><span class="line">$ systemctl disable firewalld</span><br><span class="line">$ systemctl stop firewalld</span><br></pre></td></tr></table></figure>
-<ul>
-<li>selinux问题。解决办法：关闭selinux。</li>
-</ul>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ getenforce</span><br><span class="line"></span><br><span class="line">Enforcing</span><br><span class="line"></span><br><span class="line">$ vim /etc/sysconfig/selinux</span><br><span class="line"></span><br><span class="line">SELINUX=disabled</span><br><span class="line"></span><br><span class="line">$ reboot</span><br><span class="line"></span><br><span class="line">$ getenforce</span><br><span class="line"></span><br><span class="line">Disabled</span><br></pre></td></tr></table></figure>
-<ul>
-<li>权限问题。解决办法：修改yum源目录的权限。</li>
-</ul>
-<p>在centos上，httpd的log文件记录在<code>/var/log/httpd/</code>目录下，有<code>access_log</code>和<code>error_log</code>，
-在<code>access_log</code>中可以看到接入信息，<code>error_log</code>中可以看到错误信息，这些信息十分有用。</p>
-<p>查看<code>error_log</code>:</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ sudo tail /var/log/httpd/error_log</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">[Mon Jul <span class="number">15</span> <span class="number">09</span>:<span class="number">50</span>:<span class="number">49</span>.<span class="number">577353</span> <span class="number">2019</span>] [core:error] [pid <span class="number">1303</span>] [client <span class="number">192</span>.<span class="number">168</span>.<span class="number">31</span>.<span class="number">202</span>:<span class="number">37660</span>] AH00037: Symbolic link <span class="keyword">not</span> allowed or link target <span class="keyword">not</span> accessible: /var/www/html</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>可以看到问题在于权限不够，这里需要将<code>/home/long/yum</code>从上到下这几个目录都添加执行权限：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ chmod -R +x /home</span><br></pre></td></tr></table></figure>
-<p>当然这样将所有的文件和文件夹都添加了执行权限，实际上应该只需要将文件夹添加可执行权限就好。</p>
-<h2 id="2019-07-18补充"><a href="#2019-07-18补充" class="headerlink" title="2019-07-18补充"></a>2019-07-18补充</h2><p>在上面的操作过程中，使用的是iso镜像，镜像是已经建立成repo仓库的，所以可以直接使用。
-<strong>但是</strong>，如果现在有一堆rpm文件在一个文件夹下，直接像上面那样是不行的，因为它还不是一个repo仓库，
-简单来说就是文件中不包含<code>repodata</code>文件夹。</p>
-<p>所以这里引入<strong>createrepo</strong>命令来将一个文件夹做成一个repo仓库。</p>
-<p>可以直接使用yum安装它：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ sudo yum install createrepo</span><br></pre></td></tr></table></figure>
-<p>比如将文件夹/home/tmp创建为repo仓库：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ createrepo -p -d -o /home/tmp /home/tmp</span><br></pre></td></tr></table></figure>
-<p>如果在文件夹中又加入了新的rpm文件，则需要更新仓库：</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">$ createrepo --update /home/tmp</span><br></pre></td></tr></table></figure>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.csdn.net/Karloo/article/details/80282488">CentOS7 配置局域网内软件源 http模式</a></p>
-<p><a href="https://blog.csdn.net/xin_y/article/details/79007986">临时和永久关闭Selinux</a></p>
-<p><a href="https://allenzhang.iteye.com/blog/1098700">解决Symbolic link not allowed or link target not accessible问题一例</a></p>
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-        <tag>centos</tag>
       </tags>
   </entry>
   <entry>
@@ -4982,6 +4982,63 @@ CPU使用率就回到了正常的水平。</p>
       </tags>
   </entry>
   <entry>
+    <title>webrtc学习笔记-手动建立DataChannel</title>
+    <url>/2020/11/24/2020-11-24-webrtc-datachannel-manually/</url>
+    <content><![CDATA[<hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>例子来自一个golang的webrtc项目<a href="https://github.com/pion/webrtc">https://github.com/pion/webrtc</a>，这个项目提供了webrtc的go语言实现。</p>
+<hr>
+<h1 id="DataChannel"><a href="#DataChannel" class="headerlink" title="DataChannel"></a>DataChannel</h1><p><a href="https://webrtcforthecurious.com/docs/06-data-communication/">Data Communication</a></p>
+<p>DataChannel使用<strong>SCTP</strong>来传输数据，提供可靠传输，确保数据有序发送。</p>
+<p>DataChannel可以发送文本或者二进制数据，意思就是发送什么数据都可以。</p>
+<hr>
+<h1 id="DataChannel的连接建立过程"><a href="#DataChannel的连接建立过程" class="headerlink" title="DataChannel的连接建立过程"></a>DataChannel的连接建立过程</h1><p>下面这张图来自博客<a href="https://blog.csdn.net/ice_ly000/article/details/103204327">WebRTC源码分析——呼叫建立过程之三(创建PeerConnection)</a>:</p>
+<p><img src="/images/media/webrtc/webrtc-connect.png" alt="image" title="连接建立过程"></p>
+<p>这张图可以清晰的看出整个连接建立的过程，其中除了两个客户端之外，还有两个重要的角色<strong>Signal-Server</strong>和<strong>Stun-Server</strong>：</p>
+<ul>
+<li><strong>Signal-Server</strong>，信令服务器。两个客户端要首先连上信令服务器，这样才能互相知道对方的存在，而且在P2P的连接真正建立成功之前，两端的数据交互全部依靠信令服务器来传输。</li>
+<li><strong>Stun-Server</strong>，stun服务器。客户端需要去询问它来得到自己的NAT地址，这样最后两端才能进行直接连接。</li>
+</ul>
+<p>这里主要关注这个地方：</p>
+<ol>
+<li>caller调用<code>SetLocalDescription</code>，然后发送<strong>offer</strong>到callee（经过信令服务器）。</li>
+<li>callee收到<strong>offer</strong>，先调用<code>SetRemoteDescription</code>，然后生成<strong>answer</strong>，同样的<code>SetLocalDescription</code>，最后发送<strong>answer</strong>到caller（经过信令服务器）。</li>
+</ol>
+<hr>
+<h1 id="手动建立DataChannel代码"><a href="#手动建立DataChannel代码" class="headerlink" title="手动建立DataChannel代码"></a>手动建立DataChannel代码</h1><p>代码就是webrtc项目下自带的例子，简单改了几行，让两边都可以互相发送消息。</p>
+<p>caller:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/pion/webrtc/v3&quot;</span></span><br><span class="line">	<span class="string">&quot;myWebrtc1/signal&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Configure and create a new PeerConnection.</span></span><br><span class="line">	config := webrtc.Configuration&#123;</span><br><span class="line">		ICEServers: []webrtc.ICEServer&#123;</span><br><span class="line">			&#123;</span><br><span class="line">				URLs: []<span class="keyword">string</span>&#123;<span class="string">&quot;stun:stun.l.google.com:19302&quot;</span>&#125;,</span><br><span class="line">			&#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 可以设置日志级别</span></span><br><span class="line">	<span class="comment">//err := os.Setenv(&quot;PION_LOG_INFO&quot;, &quot;ALL&quot;)</span></span><br><span class="line">	<span class="comment">//if err != nil &#123;</span></span><br><span class="line">	<span class="comment">//	panic(err)</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line"></span><br><span class="line">	pc, err := webrtc.NewPeerConnection(config)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create DataChannel.</span></span><br><span class="line">	sendChannel, err := pc.CreateDataChannel(<span class="string">&quot;foo&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	sendChannel.OnClose(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;sendChannel has closed&quot;</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">	sendChannel.OnOpen(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;sendChannel has opened&quot;</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">	sendChannel.OnMessage(<span class="function"><span class="keyword">func</span><span class="params">(msg webrtc.DataChannelMessage)</span></span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;Message from DataChannel %s payload %s\n&quot;</span>, sendChannel.Label(), <span class="keyword">string</span>(msg.Data))</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Add handlers for setting up the connection.</span></span><br><span class="line">	pc.OnICEConnectionStateChange(<span class="function"><span class="keyword">func</span><span class="params">(state webrtc.ICEConnectionState)</span></span> &#123;</span><br><span class="line">		fmt.Println(state)</span><br><span class="line">	&#125;)</span><br><span class="line">	pc.OnICECandidate(<span class="function"><span class="keyword">func</span><span class="params">(candidate *webrtc.ICECandidate)</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> candidate != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(signal.Encode(*pc.LocalDescription()))</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create offer</span></span><br><span class="line">	offer, err := pc.CreateOffer(<span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := pc.SetLocalDescription(offer); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 设置对面的 Description</span></span><br><span class="line">	answer := webrtc.SessionDescription&#123;&#125;</span><br><span class="line">	signal.Decode(signal.MustReadStdin(), &amp;answer)</span><br><span class="line"></span><br><span class="line">	err = pc.SetRemoteDescription(answer)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 发送消息</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			message := signal.MustReadStdin()</span><br><span class="line">			<span class="keyword">if</span> err := sendChannel.SendText(message); err != <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="built_in">panic</span>(err)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Stay alive</span></span><br><span class="line">	<span class="keyword">select</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>callee:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/pion/webrtc/v3&quot;</span></span><br><span class="line">	<span class="string">&quot;myWebrtc1/signal&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	config := webrtc.Configuration&#123;</span><br><span class="line">		ICEServers: []webrtc.ICEServer&#123;</span><br><span class="line">			&#123;</span><br><span class="line">				URLs: []<span class="keyword">string</span>&#123;<span class="string">&quot;stun:stun.l.google.com:19302&quot;</span>&#125;,</span><br><span class="line">			&#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 可以设置日志级别</span></span><br><span class="line">	<span class="comment">//err := os.Setenv(&quot;PION_LOG_INFO&quot;, &quot;ALL&quot;)</span></span><br><span class="line">	<span class="comment">//if err != nil &#123;</span></span><br><span class="line">	<span class="comment">//	panic(err)</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line"></span><br><span class="line">	peerConnection, err := webrtc.NewPeerConnection(config)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	peerConnection.OnICEConnectionStateChange(<span class="function"><span class="keyword">func</span><span class="params">(connectionState webrtc.ICEConnectionState)</span></span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;ICE Connection State has changed: %s\n&quot;</span>, connectionState.String())</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	peerConnection.OnDataChannel(<span class="function"><span class="keyword">func</span><span class="params">(d *webrtc.DataChannel)</span></span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;New DataChannel %s %d\n&quot;</span>, d.Label(), d.ID())</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Register channel opening handling</span></span><br><span class="line">		d.OnOpen(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;Data channel &#x27;%s&#x27;-&#x27;%d&#x27; open.\n&quot;</span>, d.Label(), d.ID())</span><br><span class="line">		&#125;)</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Register text message handling</span></span><br><span class="line">		d.OnMessage(<span class="function"><span class="keyword">func</span><span class="params">(msg webrtc.DataChannelMessage)</span></span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;Message from DataChannel &#x27;%s&#x27;: &#x27;%s&#x27;\n&quot;</span>, d.Label(), <span class="keyword">string</span>(msg.Data))</span><br><span class="line">		&#125;)</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 发送消息</span></span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			<span class="keyword">for</span> &#123;</span><br><span class="line">				message := signal.MustReadStdin()</span><br><span class="line">				<span class="keyword">if</span> err := d.SendText(message); err != <span class="literal">nil</span> &#123;</span><br><span class="line">					<span class="built_in">panic</span>(err)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	offer := webrtc.SessionDescription&#123;&#125;</span><br><span class="line">	signal.Decode(signal.MustReadStdin(), &amp;offer)</span><br><span class="line"></span><br><span class="line">	err = peerConnection.SetRemoteDescription(offer)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create an answer</span></span><br><span class="line">	answer, err := peerConnection.CreateAnswer(<span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create channel that is blocked until ICE Gathering is complete</span></span><br><span class="line">	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Sets the LocalDescription, and starts our UDP listeners</span></span><br><span class="line">	err = peerConnection.SetLocalDescription(answer)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Block until ICE Gathering is complete, disabling trickle ICE</span></span><br><span class="line">	<span class="comment">// we do this because we only can exchange one signaling message</span></span><br><span class="line">	<span class="comment">// in a production application you should exchange ICE Candidates via OnICECandidate</span></span><br><span class="line">	&lt;-gatherComplete</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Output the answer in base64 so we can paste it in browser</span></span><br><span class="line">	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Block forever</span></span><br><span class="line">	<span class="keyword">select</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中的辅助函数也是例子里面的：</p>
+<ul>
+<li><code>MustReadStdin()</code>从输入读入一行数据。</li>
+<li><code>Encode()</code>和<code>Decode()</code>，将一个对象先进行marshall或者unmarshall，然后编解码成base64格式。</li>
+</ul>
+<hr>
+<p>注意到上面对连接过程的描述中，除了caller和callee，还有两个重要角色<strong>stun</strong>和<strong>信令服务器</strong>。</p>
+<p>这里<strong>stun</strong>可以直接使用公开的服务器<code>stun:stun.l.google.com:19302</code>，也可以自己搭建一个。</p>
+<p><strong>信令服务器则就是人，也就是人工手动操作：</strong></p>
+<ol>
+<li>启动caller，将输出的<code>Description</code>复制下来。</li>
+<li>启动callee，将caller的<code>Description</code>输入进去。</li>
+<li>callee输出<code>Description</code>，同样的复制下来。</li>
+<li>将callee的<code>Description</code>输入到caller。</li>
+<li>连接建立成功，两边可以开始互相发送消息。</li>
+</ol>
+<hr>
+<h1 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h1><p>有时候在完成两边的<code>Description</code>交换之后，会卡住，然后连接建立超时，目前未研究出原因。</p>
+<hr>
+]]></content>
+      <categories>
+        <category>media</category>
+      </categories>
+      <tags>
+        <tag>live</tag>
+        <tag>golang</tag>
+        <tag>webrtc</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>webrtc学习笔记-使用js编写并调用摄像头同时进行码率统计</title>
     <url>/2020/12/28/2020-12-28-webrtc-stream-test/</url>
     <content><![CDATA[<hr>
@@ -5030,63 +5087,6 @@ webrtc会自动的将同一个<code>stream</code>下的<code>track</code>绑定�
 <p>然后很明显，我们可以通过<code>bytesReceived: 323599556</code>信息来对音视频的实时码率进行计算，正如上面代码中所展示的那样。</p>
 <p><img src="/images/media/webrtc/bitrate-show.png" alt="image" title="码率统计"></p>
 <p>上图可以看到视频码率在1700kbps左右，音频在20kbps左右。本地连接之间的延迟大概在70ms。</p>
-<hr>
-]]></content>
-      <categories>
-        <category>media</category>
-      </categories>
-      <tags>
-        <tag>live</tag>
-        <tag>golang</tag>
-        <tag>webrtc</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>webrtc学习笔记-手动建立DataChannel</title>
-    <url>/2020/11/24/2020-11-24-webrtc-datachannel-manually/</url>
-    <content><![CDATA[<hr>
-<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>例子来自一个golang的webrtc项目<a href="https://github.com/pion/webrtc">https://github.com/pion/webrtc</a>，这个项目提供了webrtc的go语言实现。</p>
-<hr>
-<h1 id="DataChannel"><a href="#DataChannel" class="headerlink" title="DataChannel"></a>DataChannel</h1><p><a href="https://webrtcforthecurious.com/docs/06-data-communication/">Data Communication</a></p>
-<p>DataChannel使用<strong>SCTP</strong>来传输数据，提供可靠传输，确保数据有序发送。</p>
-<p>DataChannel可以发送文本或者二进制数据，意思就是发送什么数据都可以。</p>
-<hr>
-<h1 id="DataChannel的连接建立过程"><a href="#DataChannel的连接建立过程" class="headerlink" title="DataChannel的连接建立过程"></a>DataChannel的连接建立过程</h1><p>下面这张图来自博客<a href="https://blog.csdn.net/ice_ly000/article/details/103204327">WebRTC源码分析——呼叫建立过程之三(创建PeerConnection)</a>:</p>
-<p><img src="/images/media/webrtc/webrtc-connect.png" alt="image" title="连接建立过程"></p>
-<p>这张图可以清晰的看出整个连接建立的过程，其中除了两个客户端之外，还有两个重要的角色<strong>Signal-Server</strong>和<strong>Stun-Server</strong>：</p>
-<ul>
-<li><strong>Signal-Server</strong>，信令服务器。两个客户端要首先连上信令服务器，这样才能互相知道对方的存在，而且在P2P的连接真正建立成功之前，两端的数据交互全部依靠信令服务器来传输。</li>
-<li><strong>Stun-Server</strong>，stun服务器。客户端需要去询问它来得到自己的NAT地址，这样最后两端才能进行直接连接。</li>
-</ul>
-<p>这里主要关注这个地方：</p>
-<ol>
-<li>caller调用<code>SetLocalDescription</code>，然后发送<strong>offer</strong>到callee（经过信令服务器）。</li>
-<li>callee收到<strong>offer</strong>，先调用<code>SetRemoteDescription</code>，然后生成<strong>answer</strong>，同样的<code>SetLocalDescription</code>，最后发送<strong>answer</strong>到caller（经过信令服务器）。</li>
-</ol>
-<hr>
-<h1 id="手动建立DataChannel代码"><a href="#手动建立DataChannel代码" class="headerlink" title="手动建立DataChannel代码"></a>手动建立DataChannel代码</h1><p>代码就是webrtc项目下自带的例子，简单改了几行，让两边都可以互相发送消息。</p>
-<p>caller:</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/pion/webrtc/v3&quot;</span></span><br><span class="line">	<span class="string">&quot;myWebrtc1/signal&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Configure and create a new PeerConnection.</span></span><br><span class="line">	config := webrtc.Configuration&#123;</span><br><span class="line">		ICEServers: []webrtc.ICEServer&#123;</span><br><span class="line">			&#123;</span><br><span class="line">				URLs: []<span class="keyword">string</span>&#123;<span class="string">&quot;stun:stun.l.google.com:19302&quot;</span>&#125;,</span><br><span class="line">			&#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 可以设置日志级别</span></span><br><span class="line">	<span class="comment">//err := os.Setenv(&quot;PION_LOG_INFO&quot;, &quot;ALL&quot;)</span></span><br><span class="line">	<span class="comment">//if err != nil &#123;</span></span><br><span class="line">	<span class="comment">//	panic(err)</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line"></span><br><span class="line">	pc, err := webrtc.NewPeerConnection(config)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create DataChannel.</span></span><br><span class="line">	sendChannel, err := pc.CreateDataChannel(<span class="string">&quot;foo&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	sendChannel.OnClose(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;sendChannel has closed&quot;</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">	sendChannel.OnOpen(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;sendChannel has opened&quot;</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">	sendChannel.OnMessage(<span class="function"><span class="keyword">func</span><span class="params">(msg webrtc.DataChannelMessage)</span></span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;Message from DataChannel %s payload %s\n&quot;</span>, sendChannel.Label(), <span class="keyword">string</span>(msg.Data))</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Add handlers for setting up the connection.</span></span><br><span class="line">	pc.OnICEConnectionStateChange(<span class="function"><span class="keyword">func</span><span class="params">(state webrtc.ICEConnectionState)</span></span> &#123;</span><br><span class="line">		fmt.Println(state)</span><br><span class="line">	&#125;)</span><br><span class="line">	pc.OnICECandidate(<span class="function"><span class="keyword">func</span><span class="params">(candidate *webrtc.ICECandidate)</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> candidate != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(signal.Encode(*pc.LocalDescription()))</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create offer</span></span><br><span class="line">	offer, err := pc.CreateOffer(<span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := pc.SetLocalDescription(offer); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 设置对面的 Description</span></span><br><span class="line">	answer := webrtc.SessionDescription&#123;&#125;</span><br><span class="line">	signal.Decode(signal.MustReadStdin(), &amp;answer)</span><br><span class="line"></span><br><span class="line">	err = pc.SetRemoteDescription(answer)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 发送消息</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			message := signal.MustReadStdin()</span><br><span class="line">			<span class="keyword">if</span> err := sendChannel.SendText(message); err != <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="built_in">panic</span>(err)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Stay alive</span></span><br><span class="line">	<span class="keyword">select</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>callee:</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/pion/webrtc/v3&quot;</span></span><br><span class="line">	<span class="string">&quot;myWebrtc1/signal&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	config := webrtc.Configuration&#123;</span><br><span class="line">		ICEServers: []webrtc.ICEServer&#123;</span><br><span class="line">			&#123;</span><br><span class="line">				URLs: []<span class="keyword">string</span>&#123;<span class="string">&quot;stun:stun.l.google.com:19302&quot;</span>&#125;,</span><br><span class="line">			&#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 可以设置日志级别</span></span><br><span class="line">	<span class="comment">//err := os.Setenv(&quot;PION_LOG_INFO&quot;, &quot;ALL&quot;)</span></span><br><span class="line">	<span class="comment">//if err != nil &#123;</span></span><br><span class="line">	<span class="comment">//	panic(err)</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line"></span><br><span class="line">	peerConnection, err := webrtc.NewPeerConnection(config)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	peerConnection.OnICEConnectionStateChange(<span class="function"><span class="keyword">func</span><span class="params">(connectionState webrtc.ICEConnectionState)</span></span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;ICE Connection State has changed: %s\n&quot;</span>, connectionState.String())</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	peerConnection.OnDataChannel(<span class="function"><span class="keyword">func</span><span class="params">(d *webrtc.DataChannel)</span></span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;New DataChannel %s %d\n&quot;</span>, d.Label(), d.ID())</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Register channel opening handling</span></span><br><span class="line">		d.OnOpen(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;Data channel &#x27;%s&#x27;-&#x27;%d&#x27; open.\n&quot;</span>, d.Label(), d.ID())</span><br><span class="line">		&#125;)</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Register text message handling</span></span><br><span class="line">		d.OnMessage(<span class="function"><span class="keyword">func</span><span class="params">(msg webrtc.DataChannelMessage)</span></span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;Message from DataChannel &#x27;%s&#x27;: &#x27;%s&#x27;\n&quot;</span>, d.Label(), <span class="keyword">string</span>(msg.Data))</span><br><span class="line">		&#125;)</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 发送消息</span></span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			<span class="keyword">for</span> &#123;</span><br><span class="line">				message := signal.MustReadStdin()</span><br><span class="line">				<span class="keyword">if</span> err := d.SendText(message); err != <span class="literal">nil</span> &#123;</span><br><span class="line">					<span class="built_in">panic</span>(err)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	offer := webrtc.SessionDescription&#123;&#125;</span><br><span class="line">	signal.Decode(signal.MustReadStdin(), &amp;offer)</span><br><span class="line"></span><br><span class="line">	err = peerConnection.SetRemoteDescription(offer)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create an answer</span></span><br><span class="line">	answer, err := peerConnection.CreateAnswer(<span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create channel that is blocked until ICE Gathering is complete</span></span><br><span class="line">	gatherComplete := webrtc.GatheringCompletePromise(peerConnection)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Sets the LocalDescription, and starts our UDP listeners</span></span><br><span class="line">	err = peerConnection.SetLocalDescription(answer)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Block until ICE Gathering is complete, disabling trickle ICE</span></span><br><span class="line">	<span class="comment">// we do this because we only can exchange one signaling message</span></span><br><span class="line">	<span class="comment">// in a production application you should exchange ICE Candidates via OnICECandidate</span></span><br><span class="line">	&lt;-gatherComplete</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Output the answer in base64 so we can paste it in browser</span></span><br><span class="line">	fmt.Println(signal.Encode(*peerConnection.LocalDescription()))</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Block forever</span></span><br><span class="line">	<span class="keyword">select</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其中的辅助函数也是例子里面的：</p>
-<ul>
-<li><code>MustReadStdin()</code>从输入读入一行数据。</li>
-<li><code>Encode()</code>和<code>Decode()</code>，将一个对象先进行marshall或者unmarshall，然后编解码成base64格式。</li>
-</ul>
-<hr>
-<p>注意到上面对连接过程的描述中，除了caller和callee，还有两个重要角色<strong>stun</strong>和<strong>信令服务器</strong>。</p>
-<p>这里<strong>stun</strong>可以直接使用公开的服务器<code>stun:stun.l.google.com:19302</code>，也可以自己搭建一个。</p>
-<p><strong>信令服务器则就是人，也就是人工手动操作：</strong></p>
-<ol>
-<li>启动caller，将输出的<code>Description</code>复制下来。</li>
-<li>启动callee，将caller的<code>Description</code>输入进去。</li>
-<li>callee输出<code>Description</code>，同样的复制下来。</li>
-<li>将callee的<code>Description</code>输入到caller。</li>
-<li>连接建立成功，两边可以开始互相发送消息。</li>
-</ol>
-<hr>
-<h1 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h1><p>有时候在完成两边的<code>Description</code>交换之后，会卡住，然后连接建立超时，目前未研究出原因。</p>
 <hr>
 ]]></content>
       <categories>

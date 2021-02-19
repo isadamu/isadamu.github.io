@@ -18,13 +18,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"longrm.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="总结一下两种实现的方式，包括使用ffmpeg命令行，FFmpeg的C语言调用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用FFmpeg来进行固定时间间隔截图（rtmp直播流）">
-<meta property="og:url" content="http://example.com/2019/12/19/2019-11-27-ffmpeg-screenshot/index.html">
+<meta property="og:url" content="http://longrm.com/2019/12/19/2019-11-27-ffmpeg-screenshot/index.html">
 <meta property="og:site_name" content="龙">
 <meta property="og:description" content="总结一下两种实现的方式，包括使用ffmpeg命令行，FFmpeg的C语言调用">
 <meta property="og:locale" content="zh_CN">
@@ -35,7 +35,7 @@
 <meta property="article:tag" content="ffmpeg">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2019/12/19/2019-11-27-ffmpeg-screenshot/">
+<link rel="canonical" href="http://longrm.com/2019/12/19/2019-11-27-ffmpeg-screenshot/">
 
 
 <script id="page-configurations">
@@ -215,7 +215,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2019/12/19/2019-11-27-ffmpeg-screenshot/">
+    <link itemprop="mainEntityOfPage" href="http://longrm.com/2019/12/19/2019-11-27-ffmpeg-screenshot/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head/head_bigfan.png">
@@ -308,7 +308,7 @@
 <hr>
 <h1 id="使用C语言调用FFmpeg"><a href="#使用C语言调用FFmpeg" class="headerlink" title="使用C语言调用FFmpeg"></a>使用C语言调用FFmpeg</h1><p>很明显，上面的方法虽然进化得越来越好，但是始终是不完美的。</p>
 <p>要想达到完美，看来只能通过C语言来调用FFmpeg，这样就能将整个编解码过程控制在自己手里。</p>
-<p><a target="_blank" rel="noopener" href="http://longrm.com/2019/12/23/2019-12-23-ffmpeg-screenshot-2/">使用C语言调用FFmpeg来进行固定时间间隔截图(rtmp直播流)</a></p>
+<p><a href="http://longrm.com/2019/12/23/2019-12-23-ffmpeg-screenshot-2/">使用C语言调用FFmpeg来进行固定时间间隔截图(rtmp直播流)</a></p>
 <hr>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://ffmpeg.org/documentation.html">FFmpeg Documentation</a></p>
 
