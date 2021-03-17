@@ -853,97 +853,6 @@ b^{[i]} \in R^{n^{[i]} \times 1}</script><hr>
       </tags>
   </entry>
   <entry>
-    <title>Logistic Regression 简单总结</title>
-    <url>/2017/08/22/2017-08-22-logistic-regression/</url>
-    <content><![CDATA[<hr>
-<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p>把它看成只有一个神经元的神经网络，激活函数就是<code>sigmoid</code>函数。</p>
-<hr>
-<h2 id="模型："><a href="#模型：" class="headerlink" title="模型："></a>模型：</h2><script type="math/tex; mode=display">
-\hat y = \sigma (W^T x + b)</script><p>其中，</p>
-<script type="math/tex; mode=display">
-\sigma(Z) = \frac{1}{1+e^{-Z}}</script><hr>
-<h2 id="代价函数："><a href="#代价函数：" class="headerlink" title="代价函数："></a>代价函数：</h2><script type="math/tex; mode=display">
-J(W,b) = \frac{1}{m} \sum_{i=1}^m L(\hat y^{(i)},y^{(i)} )
-= - \frac{1}{m} \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
-+ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>视频中好像没有具体说这个损失函数的一个推导，这里自己简单推一推。</p>
-<p>首先对于$\sigma(Z)$这个函数，它其实就是经常说到的<strong>sigmoid</strong>函数，
-它的函数图像如下：</p>
-<div align="center"><img src="/images/coursera/nndl-note_1.png"
-style="zoom:50%" title="sigmoid函数" /></div>
-
-<p>可以看出sigmoid函数的值域范围是0~1，所以通常把它当成一个概率来看待，
-那么，可以写出<code>y</code>的概率表达式为：</p>
-<script type="math/tex; mode=display">
-P(y) = (\hat y)^y (1 - \hat y)^{1-y}</script><p>其中$\hat y$就是预测$y$为1的概率，区分两种情况，
-上面的式子分开写就是下面的式子，合并在一起有利于公式化：</p>
-<script type="math/tex; mode=display">
-P(y) =
-\begin{cases}
-\hat y \ \ \ \ \ \ \ \ \ \ ,y = 1 \\
-1 - \hat y \ \ \ ,y = 0
-\end{cases}</script><p>所以我们采用<strong>极大似然法</strong>来进行对$W$的求解，似然函数就可以写为：</p>
-<script type="math/tex; mode=display">
-\prod_{i=1}^m (\hat y^{(i)})^{y^{(i)}}(1 - \hat y^{(i)})^{1 - y^{(i)}}</script><p>对数似然写为：</p>
-<script type="math/tex; mode=display">
-L(\hat y) = \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
-+ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>加上$- \frac{1}{m}$就得到了上面的代价函数，同时也从最大化变成了最小化。</p>
-<hr>
-<h2 id="梯度："><a href="#梯度：" class="headerlink" title="梯度："></a>梯度：</h2><p>首先需要对代价函数进行求导，下面进行推导，令：</p>
-<script type="math/tex; mode=display">
-Z^{(i)} = W^Tx^{(i)} + b \\
-\alpha^{(i)}=\sigma (W^Tx^{(i)} + b)</script><p>单独看一个样本<script type="math/tex">(x^{(i)},y^{(i)})</script>，它的代价函数为，</p>
-<script type="math/tex; mode=display">
-J^{(i)} = y^{(i)}log(\alpha^{(i)})+ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>对其中一个<script type="math/tex">W_i</script>进行求导,这里先忽略上标<script type="math/tex">(i)</script>：</p>
-<script type="math/tex; mode=display">
-\frac{\partial J}{\partial W_i}=
-\frac{y}{a} \frac{\partial \alpha}{\partial W_i} -
-\frac{1-y}{1-\alpha}\frac{\partial \alpha}{\partial W_i}
-= ( \frac{y}{a} - \frac{1-y}{1-\alpha} )\frac{\partial \alpha}{\partial W_i}</script><p>然后其中的$\frac{\partial \alpha}{\partial W_i}$继续计算：</p>
-<script type="math/tex; mode=display">
-\frac{\partial \alpha}{\partial W_i}=
-\frac{e^{-Z}}{(1+e^{-Z})^2} \frac{\partial Z}{\partial W_i}
-= \frac {1}{1+e^{-Z}}\frac{e^{-Z} + 1 - 1}{1+e^{-Z}} \frac{\partial Z}{\partial W_i}
-= \alpha(1 - \alpha)\frac{\partial Z}{\partial W_i}</script><p>继续对$\frac{\partial Z}{\partial W_i}$进行计算：</p>
-<script type="math/tex; mode=display">
-\frac{\partial Z}{\partial W_i} = x_i</script><p>将上面的合起来，写为：</p>
-<script type="math/tex; mode=display">
-\frac{\partial J}{\partial W_i} =
-( \frac{y}{a} - \frac{1-y}{1-\alpha} )\alpha(1 - \alpha)x_i =
-(y - \alpha)x_i</script><p>注意到代价函数为：</p>
-<script type="math/tex; mode=display">
-J(W,b) =
-- \frac{1}{m} \sum_{i=1}^m y^{(i)}log(\alpha^{(i)})
-+ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>所以考虑到向量化处理，同时加上前面的因子$-\frac{1}{m}$，<strong>最终可以写为</strong>：</p>
-<script type="math/tex; mode=display">
-\begin{cases}
-\frac {\partial J}{\partial W} = \frac{1}{m}X(A - Y)^T \\
-\frac {\partial J}{\partial b} = \frac{1}{m} \sum_{i=1}^m(\alpha^{(i)} - y^{(i)})
-\end{cases}</script><p>其中，</p>
-<script type="math/tex; mode=display">
-A = [\alpha^{(1)},\alpha^{(2)},...,\alpha^{(m-1)},\alpha^{(m)}] \\
-
-X = [x^{(1)},x^{(2)},...,x^{(m-1)},x^{(m)}] \\
-
-Y = [y^{(1)},y^{(2)},...,y^{(m-1)},y^{(m)}]</script><hr>
-<h2 id="参数更新"><a href="#参数更新" class="headerlink" title="参数更新"></a>参数更新</h2><p>权值的更新就按照梯度下降的原则更新就行，</p>
-<script type="math/tex; mode=display">
-\begin{cases}
-W = W - \alpha \frac {\partial J}{\partial W} \\
-b = b - \alpha \frac {\partial J}{\partial b}
-\end{cases}</script><p>这里的$\alpha$代表学习因子。</p>
-<hr>
-<h2 id="存疑"><a href="#存疑" class="headerlink" title="存疑"></a>存疑</h2><p><strong>如果直接使用最小二乘损失函数呢？</strong></p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>jekyll博客顶端背景修改</title>
     <url>/2017/08/22/2017-08-22-head-color/</url>
     <content><![CDATA[<p>由于NexT是Hexo上的主题，搬运到jekyll上面之后，目录结构完全不一样，所以网上的参考基本没什么用。</p>
@@ -1156,49 +1065,94 @@ github会在它上面启动<a href="https://pages.github.com/">github pages</a>�
       </tags>
   </entry>
   <entry>
-    <title>Hexo中mathjax公式与回车换行问题</title>
-    <url>/2017/08/23/2017-08-23-hexo-mathjax/</url>
+    <title>Logistic Regression 简单总结</title>
+    <url>/2017/08/22/2017-08-22-logistic-regression/</url>
     <content><![CDATA[<hr>
-<h2 id="初始问题"><a href="#初始问题" class="headerlink" title="初始问题"></a>初始问题</h2><p>页面公式一部分能够渲染，另外一部分不能渲染，变成斜体。</p>
-<p>这个问题显然是致命的，不解决基本没得救。</p>
-<p>搜索了一下，发现这是因为Markdown与公式之间的不友好性，导致它会把公式中的<code>&#39;_&#39;</code>字符看出是斜体的语法，
-导致公式渲染成了斜体。</p>
-<p>另外这个问题与Next主题完全没有关系，就是Hexo它自己的问题。</p>
-<p>Hexo默认的Markdown渲染引擎是marked，就是这个引擎的锅。</p>
+<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p>把它看成只有一个神经元的神经网络，激活函数就是<code>sigmoid</code>函数。</p>
 <hr>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>我看到的解决方法第一个是使用<code>rawblock</code>保护代码块，我还不知道它是什么，
-反正意思是我所以得文档都得改，不可能。</p>
-<p>第二个方法是将引擎换成<code>pandoc</code>，它也是一个Markdown引擎，
-但是试了一下不知道卡哪了，反正不成功。</p>
-<p>看到的第三个解决办法是修改marked引擎的渲染规则，试了一下，照样产生混乱的公式。</p>
-<p><strong>最终的解决方式</strong>，换成<code>kramed</code>引擎！！！去看看官网怎么说的<a href="https://www.npmjs.com/package/kramed">kramed</a>，
-其中开头就是，</p>
-<blockquote>
-<p>marked hasn’t been evolving as much as it could be lately and due to our needs with GitBook,
-we need features such as robust mathjax support and 
-want to strive closer to the rising kramdown standard.</p>
-</blockquote>
-<p>它加强了对<code>mathjax</code>的支持，执行如下命令来安装它，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm uninstall hexo-renderer-marked --save</span><br><span class="line">$ npm install hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure>
-<p>第一条命令卸载掉<code>marked</code>渲染引擎，第二条命令装上<code>kramed</code>渲染引擎。</p>
-<p>果断的解决了问题。</p>
+<h2 id="模型："><a href="#模型：" class="headerlink" title="模型："></a>模型：</h2><script type="math/tex; mode=display">
+\hat y = \sigma (W^T x + b)</script><p>其中，</p>
+<script type="math/tex; mode=display">
+\sigma(Z) = \frac{1}{1+e^{-Z}}</script><hr>
+<h2 id="代价函数："><a href="#代价函数：" class="headerlink" title="代价函数："></a>代价函数：</h2><script type="math/tex; mode=display">
+J(W,b) = \frac{1}{m} \sum_{i=1}^m L(\hat y^{(i)},y^{(i)} )
+= - \frac{1}{m} \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
++ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>视频中好像没有具体说这个损失函数的一个推导，这里自己简单推一推。</p>
+<p>首先对于$\sigma(Z)$这个函数，它其实就是经常说到的<strong>sigmoid</strong>函数，
+它的函数图像如下：</p>
+<div align="center"><img src="/images/coursera/nndl-note_1.png"
+style="zoom:50%" title="sigmoid函数" /></div>
+
+<p>可以看出sigmoid函数的值域范围是0~1，所以通常把它当成一个概率来看待，
+那么，可以写出<code>y</code>的概率表达式为：</p>
+<script type="math/tex; mode=display">
+P(y) = (\hat y)^y (1 - \hat y)^{1-y}</script><p>其中$\hat y$就是预测$y$为1的概率，区分两种情况，
+上面的式子分开写就是下面的式子，合并在一起有利于公式化：</p>
+<script type="math/tex; mode=display">
+P(y) =
+\begin{cases}
+\hat y \ \ \ \ \ \ \ \ \ \ ,y = 1 \\
+1 - \hat y \ \ \ ,y = 0
+\end{cases}</script><p>所以我们采用<strong>极大似然法</strong>来进行对$W$的求解，似然函数就可以写为：</p>
+<script type="math/tex; mode=display">
+\prod_{i=1}^m (\hat y^{(i)})^{y^{(i)}}(1 - \hat y^{(i)})^{1 - y^{(i)}}</script><p>对数似然写为：</p>
+<script type="math/tex; mode=display">
+L(\hat y) = \sum_{i=1}^m y^{(i)}log \ \hat y^{(i)}
++ (1-y^{(i)})log(1 - \hat y^{(i)})</script><p>加上$- \frac{1}{m}$就得到了上面的代价函数，同时也从最大化变成了最小化。</p>
 <hr>
-<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>突然发现Markdown规则变成了<code>回车</code>换行，显然不能忍，这样根本没法排版，
-这个问题和公式问题一样难以接受。</p>
-<p>继续搜索，踩了无数坑终于明白了，对于<code>marked</code>引擎，要实现<code>空格+空格+回车</code>换行，
-只要在<code>_config.yml</code>文件里面添加下面字段，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">marked:</span><br><span class="line">  gfm: true</span><br><span class="line">  breaks: false</span><br></pre></td></tr></table></figure>
-<p>因为这里渲染引擎换成了<code>kramed</code>，所以上面的字段当然不管用了，但是，
-只要原样修改就好，改成下面，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kramed:</span><br><span class="line">  gfm: true</span><br><span class="line">  breaks: false</span><br></pre></td></tr></table></figure>
-<p>总于解决了这个让我差点弃坑的两个严重的问题，o(<em>￣▽￣</em>)o</p>
+<h2 id="梯度："><a href="#梯度：" class="headerlink" title="梯度："></a>梯度：</h2><p>首先需要对代价函数进行求导，下面进行推导，令：</p>
+<script type="math/tex; mode=display">
+Z^{(i)} = W^Tx^{(i)} + b \\
+\alpha^{(i)}=\sigma (W^Tx^{(i)} + b)</script><p>单独看一个样本<script type="math/tex">(x^{(i)},y^{(i)})</script>，它的代价函数为，</p>
+<script type="math/tex; mode=display">
+J^{(i)} = y^{(i)}log(\alpha^{(i)})+ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>对其中一个<script type="math/tex">W_i</script>进行求导,这里先忽略上标<script type="math/tex">(i)</script>：</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial W_i}=
+\frac{y}{a} \frac{\partial \alpha}{\partial W_i} -
+\frac{1-y}{1-\alpha}\frac{\partial \alpha}{\partial W_i}
+= ( \frac{y}{a} - \frac{1-y}{1-\alpha} )\frac{\partial \alpha}{\partial W_i}</script><p>然后其中的$\frac{\partial \alpha}{\partial W_i}$继续计算：</p>
+<script type="math/tex; mode=display">
+\frac{\partial \alpha}{\partial W_i}=
+\frac{e^{-Z}}{(1+e^{-Z})^2} \frac{\partial Z}{\partial W_i}
+= \frac {1}{1+e^{-Z}}\frac{e^{-Z} + 1 - 1}{1+e^{-Z}} \frac{\partial Z}{\partial W_i}
+= \alpha(1 - \alpha)\frac{\partial Z}{\partial W_i}</script><p>继续对$\frac{\partial Z}{\partial W_i}$进行计算：</p>
+<script type="math/tex; mode=display">
+\frac{\partial Z}{\partial W_i} = x_i</script><p>将上面的合起来，写为：</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial W_i} =
+( \frac{y}{a} - \frac{1-y}{1-\alpha} )\alpha(1 - \alpha)x_i =
+(y - \alpha)x_i</script><p>注意到代价函数为：</p>
+<script type="math/tex; mode=display">
+J(W,b) =
+- \frac{1}{m} \sum_{i=1}^m y^{(i)}log(\alpha^{(i)})
++ (1-y^{(i)})log(1 - \alpha^{(i)})</script><p>所以考虑到向量化处理，同时加上前面的因子$-\frac{1}{m}$，<strong>最终可以写为</strong>：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\frac {\partial J}{\partial W} = \frac{1}{m}X(A - Y)^T \\
+\frac {\partial J}{\partial b} = \frac{1}{m} \sum_{i=1}^m(\alpha^{(i)} - y^{(i)})
+\end{cases}</script><p>其中，</p>
+<script type="math/tex; mode=display">
+A = [\alpha^{(1)},\alpha^{(2)},...,\alpha^{(m-1)},\alpha^{(m)}] \\
+
+X = [x^{(1)},x^{(2)},...,x^{(m-1)},x^{(m)}] \\
+
+Y = [y^{(1)},y^{(2)},...,y^{(m-1)},y^{(m)}]</script><hr>
+<h2 id="参数更新"><a href="#参数更新" class="headerlink" title="参数更新"></a>参数更新</h2><p>权值的更新就按照梯度下降的原则更新就行，</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+W = W - \alpha \frac {\partial J}{\partial W} \\
+b = b - \alpha \frac {\partial J}{\partial b}
+\end{cases}</script><p>这里的$\alpha$代表学习因子。</p>
+<hr>
+<h2 id="存疑"><a href="#存疑" class="headerlink" title="存疑"></a>存疑</h2><p><strong>如果直接使用最小二乘损失函数呢？</strong></p>
 ]]></content>
       <categories>
-        <category>guide</category>
-        <category>hexo</category>
+        <category>coursera</category>
+        <category>deep learning</category>
       </categories>
       <tags>
-        <tag>guide</tag>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1271,6 +1225,52 @@ style="zoom:150%"/></div>
 <p><font color='#FF0000'>这是红色！！！</font><br/></p>
 <p><font color='#FFD306'>这是黄色！！！</font><br/></p>
 <p><font color='#0072E3'>这是蓝色！！！</font><br/> </p>
+]]></content>
+      <categories>
+        <category>guide</category>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo中mathjax公式与回车换行问题</title>
+    <url>/2017/08/23/2017-08-23-hexo-mathjax/</url>
+    <content><![CDATA[<hr>
+<h2 id="初始问题"><a href="#初始问题" class="headerlink" title="初始问题"></a>初始问题</h2><p>页面公式一部分能够渲染，另外一部分不能渲染，变成斜体。</p>
+<p>这个问题显然是致命的，不解决基本没得救。</p>
+<p>搜索了一下，发现这是因为Markdown与公式之间的不友好性，导致它会把公式中的<code>&#39;_&#39;</code>字符看出是斜体的语法，
+导致公式渲染成了斜体。</p>
+<p>另外这个问题与Next主题完全没有关系，就是Hexo它自己的问题。</p>
+<p>Hexo默认的Markdown渲染引擎是marked，就是这个引擎的锅。</p>
+<hr>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>我看到的解决方法第一个是使用<code>rawblock</code>保护代码块，我还不知道它是什么，
+反正意思是我所以得文档都得改，不可能。</p>
+<p>第二个方法是将引擎换成<code>pandoc</code>，它也是一个Markdown引擎，
+但是试了一下不知道卡哪了，反正不成功。</p>
+<p>看到的第三个解决办法是修改marked引擎的渲染规则，试了一下，照样产生混乱的公式。</p>
+<p><strong>最终的解决方式</strong>，换成<code>kramed</code>引擎！！！去看看官网怎么说的<a href="https://www.npmjs.com/package/kramed">kramed</a>，
+其中开头就是，</p>
+<blockquote>
+<p>marked hasn’t been evolving as much as it could be lately and due to our needs with GitBook,
+we need features such as robust mathjax support and 
+want to strive closer to the rising kramdown standard.</p>
+</blockquote>
+<p>它加强了对<code>mathjax</code>的支持，执行如下命令来安装它，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm uninstall hexo-renderer-marked --save</span><br><span class="line">$ npm install hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure>
+<p>第一条命令卸载掉<code>marked</code>渲染引擎，第二条命令装上<code>kramed</code>渲染引擎。</p>
+<p>果断的解决了问题。</p>
+<hr>
+<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>突然发现Markdown规则变成了<code>回车</code>换行，显然不能忍，这样根本没法排版，
+这个问题和公式问题一样难以接受。</p>
+<p>继续搜索，踩了无数坑终于明白了，对于<code>marked</code>引擎，要实现<code>空格+空格+回车</code>换行，
+只要在<code>_config.yml</code>文件里面添加下面字段，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">marked:</span><br><span class="line">  gfm: true</span><br><span class="line">  breaks: false</span><br></pre></td></tr></table></figure>
+<p>因为这里渲染引擎换成了<code>kramed</code>，所以上面的字段当然不管用了，但是，
+只要原样修改就好，改成下面，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kramed:</span><br><span class="line">  gfm: true</span><br><span class="line">  breaks: false</span><br></pre></td></tr></table></figure>
+<p>总于解决了这个让我差点弃坑的两个严重的问题，o(<em>￣▽￣</em>)o</p>
 ]]></content>
       <categories>
         <category>guide</category>
@@ -1812,85 +1812,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>TensorFlow 笔记一</title>
-    <url>/2017/09/02/2017-09-02-tensorflow/</url>
-    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
-<hr>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>或者</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>它也可以是矩阵，</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
-<p>当然直接写也是可以的，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
-<hr>
-<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
-<p>还不明白它的作用。</p>
-<hr>
-<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
-<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
-<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
-<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
-<hr>
-<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>109</p>
-</blockquote>
-<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 10 Regular Expression Matching</title>
-    <url>/2017/09/05/2017-09-05-leetcode_10/</url>
-    <content><![CDATA[<p>Description:</p>
-<blockquote>
-<p>‘.’ Matches any single character.<br>‘*‘ Matches zero or more of the preceding element.  </p>
-<p>The matching should cover the entire input string (not partial).  </p>
-<p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
-<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “a*“) → true<br>isMatch(“aa”, “.*“) → true<br>isMatch(“ab”, “.*“) → true<br>isMatch(“aab”, “c*a*b”) → true  </p>
-</blockquote>
-<hr>
-<p><strong>题目理解：</strong>给两个字符串，用第二个字符串去匹配第一个字符串，意思就是第一个字符串中的字符不转义，
-只有第二个字符串才需要转义。</p>
-<p>需要注意的是，一个字符后面如果跟上<code>*</code>，那么这个字符一定要转义，也就是例如<code>a*</code>与<code>a*</code>不能匹配，因为第一个<code>a*</code>不转义，
-第二个<code>a*</code>转义，所以第一个<code>a*</code>中的<code>*</code>将匹配不上。</p>
-<p><strong>思路：</strong>几个月之前，显然不知道动态规划，就直接递归，非常二。当然也能击败一半人…</p>
-<p>刚看了动态规划，这个问题典型的动态规划问题，使用自顶向下的策略，速度得到提升。</p>
-<hr>
-<p><strong>代码一：直接递归版本</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] s_array = s.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] p_array = p.toCharArray();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> si = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> pi = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (  pi &lt; p_array.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pi + <span class="number">1</span> != p_array.length &amp;&amp; p_array[ pi + <span class="number">1</span> ] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">int</span> si_back = s_array.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">int</span> pi_back = p_array.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( pi_back &gt; pi + <span class="number">1</span> &amp;&amp; si_back &gt;= si ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( p_array[pi_back] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">if</span> ( p_array[pi_back] != s_array[si_back] &amp;&amp; p_array[pi_back] != <span class="string">&#x27;.&#x27;</span> ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi_back--;</span><br><span class="line">                    si_back--;</span><br><span class="line">                &#125;</span><br><span class="line">                pi_back++;</span><br><span class="line">                si_back++;</span><br><span class="line">                String p_sub = p.substring( pi + <span class="number">2</span> , pi_back );</span><br><span class="line">                <span class="keyword">if</span> ( p_array[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( si &lt;= si_back ) &#123;</span><br><span class="line">                        <span class="keyword">if</span> ( isMatch( s.substring( si , si_back ) , p_sub ) )</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                        si++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( si &lt; si_back &amp;&amp; s_array[si] == p_array[pi] ) &#123;</span><br><span class="line">                        <span class="keyword">if</span> ( isMatch( s.substring( si , si_back ) , p_sub ) )</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                        si++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> isMatch( s.substring( si , si_back ) , p_sub );</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( p_array[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( si == s_array.length ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi++;</span><br><span class="line">                    si++;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( si == s_array.length || s_array[si] != p_array[pi] ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi++;</span><br><span class="line">                    si++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> si == s_array.length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：指数级别。<br>运行时间：33ms。<br>击败：44.25%。</p>
-<p><img src="/images/leetcode/10_1.png" alt="image"></p>
-<hr>
-<p><strong>代码二：动态规划（自顶向下）</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( matchs, ss, pp, <span class="number">0</span>, <span class="number">0</span>) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">( <span class="keyword">char</span>[][] matchs, <span class="keyword">char</span>[] s, <span class="keyword">char</span>[] p, <span class="keyword">int</span> si, <span class="keyword">int</span> pi )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> || matchs[si][pi] == <span class="string">&#x27;0&#x27;</span> )</span><br><span class="line">            <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">        <span class="keyword">if</span> ( pi + <span class="number">1</span> &lt; p.length &amp;&amp; p[pi + <span class="number">1</span>] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[si][pi] = myMatch( matchs, s, p, si, pi + <span class="number">2</span> );</span><br><span class="line">            <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">            <span class="keyword">if</span> ( p[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> i = si + <span class="number">1</span>; i &lt;= s.length; i++ ) &#123;</span><br><span class="line">                    matchs[si][pi] = myMatch( matchs, s, p, i, pi + <span class="number">2</span> );</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">int</span> i = si;</span><br><span class="line">                <span class="keyword">while</span> ( i &lt; s.length &amp;&amp; s[i] == p[pi] ) &#123;</span><br><span class="line">                    matchs[si][pi] = myMatch( matchs, s, p, i + <span class="number">1</span>, pi + <span class="number">2</span> );</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">                    i++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;   </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( p[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( si == s.length )</span><br><span class="line">                matchs[si][pi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[si][pi] = myMatch( matchs, s, p, si + <span class="number">1</span>, pi + <span class="number">1</span> );</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( si == s.length || s[si] != p[pi] )</span><br><span class="line">                matchs[si][pi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[si][pi] = myMatch( matchs, s, p, si + <span class="number">1</span>, pi + <span class="number">1</span> );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(n^2)???<br>运行时间：25ms。<br>击败：99.48%</p>
-<p><img src="/images/leetcode/10_2.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 5 Longest Palindromic Substring</title>
     <url>/2017/09/01/2017-09-01-longest-palindromic-substring/</url>
     <content><![CDATA[<hr>
@@ -1947,6 +1868,85 @@ z^{[L]} =
       </categories>
       <tags>
         <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 10 Regular Expression Matching</title>
+    <url>/2017/09/05/2017-09-05-leetcode_10/</url>
+    <content><![CDATA[<p>Description:</p>
+<blockquote>
+<p>‘.’ Matches any single character.<br>‘*‘ Matches zero or more of the preceding element.  </p>
+<p>The matching should cover the entire input string (not partial).  </p>
+<p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
+<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “a*“) → true<br>isMatch(“aa”, “.*“) → true<br>isMatch(“ab”, “.*“) → true<br>isMatch(“aab”, “c*a*b”) → true  </p>
+</blockquote>
+<hr>
+<p><strong>题目理解：</strong>给两个字符串，用第二个字符串去匹配第一个字符串，意思就是第一个字符串中的字符不转义，
+只有第二个字符串才需要转义。</p>
+<p>需要注意的是，一个字符后面如果跟上<code>*</code>，那么这个字符一定要转义，也就是例如<code>a*</code>与<code>a*</code>不能匹配，因为第一个<code>a*</code>不转义，
+第二个<code>a*</code>转义，所以第一个<code>a*</code>中的<code>*</code>将匹配不上。</p>
+<p><strong>思路：</strong>几个月之前，显然不知道动态规划，就直接递归，非常二。当然也能击败一半人…</p>
+<p>刚看了动态规划，这个问题典型的动态规划问题，使用自顶向下的策略，速度得到提升。</p>
+<hr>
+<p><strong>代码一：直接递归版本</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] s_array = s.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] p_array = p.toCharArray();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> si = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> pi = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (  pi &lt; p_array.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pi + <span class="number">1</span> != p_array.length &amp;&amp; p_array[ pi + <span class="number">1</span> ] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">int</span> si_back = s_array.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">int</span> pi_back = p_array.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( pi_back &gt; pi + <span class="number">1</span> &amp;&amp; si_back &gt;= si ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( p_array[pi_back] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">if</span> ( p_array[pi_back] != s_array[si_back] &amp;&amp; p_array[pi_back] != <span class="string">&#x27;.&#x27;</span> ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi_back--;</span><br><span class="line">                    si_back--;</span><br><span class="line">                &#125;</span><br><span class="line">                pi_back++;</span><br><span class="line">                si_back++;</span><br><span class="line">                String p_sub = p.substring( pi + <span class="number">2</span> , pi_back );</span><br><span class="line">                <span class="keyword">if</span> ( p_array[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( si &lt;= si_back ) &#123;</span><br><span class="line">                        <span class="keyword">if</span> ( isMatch( s.substring( si , si_back ) , p_sub ) )</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                        si++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( si &lt; si_back &amp;&amp; s_array[si] == p_array[pi] ) &#123;</span><br><span class="line">                        <span class="keyword">if</span> ( isMatch( s.substring( si , si_back ) , p_sub ) )</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                        si++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> isMatch( s.substring( si , si_back ) , p_sub );</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( p_array[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( si == s_array.length ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi++;</span><br><span class="line">                    si++;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( si == s_array.length || s_array[si] != p_array[pi] ) </span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">                    pi++;</span><br><span class="line">                    si++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> si == s_array.length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：指数级别。<br>运行时间：33ms。<br>击败：44.25%。</p>
+<p><img src="/images/leetcode/10_1.png" alt="image"></p>
+<hr>
+<p><strong>代码二：动态规划（自顶向下）</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[] pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( matchs, ss, pp, <span class="number">0</span>, <span class="number">0</span>) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">( <span class="keyword">char</span>[][] matchs, <span class="keyword">char</span>[] s, <span class="keyword">char</span>[] p, <span class="keyword">int</span> si, <span class="keyword">int</span> pi )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> || matchs[si][pi] == <span class="string">&#x27;0&#x27;</span> )</span><br><span class="line">            <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">        <span class="keyword">if</span> ( pi + <span class="number">1</span> &lt; p.length &amp;&amp; p[pi + <span class="number">1</span>] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[si][pi] = myMatch( matchs, s, p, si, pi + <span class="number">2</span> );</span><br><span class="line">            <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">            <span class="keyword">if</span> ( p[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> i = si + <span class="number">1</span>; i &lt;= s.length; i++ ) &#123;</span><br><span class="line">                    matchs[si][pi] = myMatch( matchs, s, p, i, pi + <span class="number">2</span> );</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">int</span> i = si;</span><br><span class="line">                <span class="keyword">while</span> ( i &lt; s.length &amp;&amp; s[i] == p[pi] ) &#123;</span><br><span class="line">                    matchs[si][pi] = myMatch( matchs, s, p, i + <span class="number">1</span>, pi + <span class="number">2</span> );</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[si][pi] == <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">                    i++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;   </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( p[pi] == <span class="string">&#x27;.&#x27;</span> ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( si == s.length )</span><br><span class="line">                matchs[si][pi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[si][pi] = myMatch( matchs, s, p, si + <span class="number">1</span>, pi + <span class="number">1</span> );</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( si == s.length || s[si] != p[pi] )</span><br><span class="line">                matchs[si][pi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[si][pi] = myMatch( matchs, s, p, si + <span class="number">1</span>, pi + <span class="number">1</span> );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[si][pi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(n^2)???<br>运行时间：25ms。<br>击败：99.48%</p>
+<p><img src="/images/leetcode/10_2.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TensorFlow 笔记一</title>
+    <url>/2017/09/02/2017-09-02-tensorflow/</url>
+    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
+<hr>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>它也可以是矩阵，</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
+<p>当然直接写也是可以的，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
+<hr>
+<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
+<p>还不明白它的作用。</p>
+<hr>
+<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
+<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
+<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
+<hr>
+<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>109</p>
+</blockquote>
+<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2016,6 +2016,57 @@ z^{[L]} =
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length, i = <span class="number">0</span>, j = <span class="number">0</span>, star_idx = -<span class="number">1</span>, match = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( i &lt; m ) &#123;</span><br><span class="line">            <span class="keyword">if</span>  ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                match = i;</span><br><span class="line">                star_idx = j;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( j &lt; n &amp;&amp; ( pp[j] == <span class="string">&#x27;?&#x27;</span> || pp[j] == ss[i] ) ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( star_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                i = match++;</span><br><span class="line">                j = star_idx + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">            j++;</span><br><span class="line">        <span class="keyword">return</span> j == n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>复杂度：应该介于O(mn)到O(m + n)之间。<br>运行时间： 大约60ms。<br>击败：大约80%</p>
 <p><img src="/images/leetcode/44_3.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 72 Edit Distance</title>
+    <url>/2017/09/06/2017-09-06-leetcode_72/</url>
+    <content><![CDATA[<p>Description:</p>
+<blockquote>
+<p>Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)  </p>
+<p>You have the following 3 operations permitted on a word:<br>a) Insert a character<br>b) Delete a character<br>c) Replace a character</p>
+</blockquote>
+<p>题目理解，就是求将第一个字符串转化到第二个字符串所需要的最少步数，可以使用插入、删除、替换，三种策略。</p>
+<p>这其实就是算法导论第15章，动态规划的思考题15-5，但是这道题会更加简单，
+因为书上还有旋转操作。反正就是说这道题如果不使用动态规划，那么一定是过不了的。</p>
+<p>思路一：先写一个递归算法，将它转化为自顶向上的动态规划。</p>
+<p>思路二：自底向上。</p>
+<hr>
+<p>代码一：</p>
+<p>先考虑递归的情况，也就是取两个字符串的头字符$a_0$和$b_0$比较，然后按照：</p>
+<ul>
+<li>$a_0$和$b_0$匹配，向下递归$a_1$和$b_1$。</li>
+<li>$a_0$和$b_0$不匹配，<ul>
+<li>使用<code>replace</code>，也就是将$a_0$替换为$b_0$，向下递归$a_1$和$b_1$。</li>
+<li>使用<code>Insert</code>，也就是在$a_0$前面插入$b_0$，向下递归$a_0$和$b_1$。</li>
+<li>使用<code>Delete</code>，也就是删除$a_0$，向下递归$a_1$和$b_0$。</li>
+</ul>
+</li>
+</ul>
+<p>上面的递归就可以求出少的操作次数，但是这样的递归将是<strong>指数复杂度</strong>的，所以更改其变为动态规划，减少子问题的重复计算。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] a = word1.toCharArray(), b = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = a.length, n = b.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dis = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++ )</span><br><span class="line">            Arrays.fill(dis[i], -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            dis[i][n] = m - i;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++ )</span><br><span class="line">            dis[m][j] = n - j;</span><br><span class="line">        <span class="keyword">return</span> myDis( a, b, <span class="number">0</span>, <span class="number">0</span>, dis );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">myDis</span><span class="params">( <span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span>[][] dis )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( dis[i][j] != -<span class="number">1</span> )</span><br><span class="line">            <span class="keyword">return</span> dis[i][j];</span><br><span class="line">        <span class="keyword">if</span> ( a[i] == b[j] ) &#123;</span><br><span class="line">            dis[i][j] = myDis( a, b, i + <span class="number">1</span>, j + <span class="number">1</span>, dis );</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> dis1 = myDis( a, b, i, j + <span class="number">1</span>, dis );</span><br><span class="line">            <span class="keyword">int</span> dis2 = myDis( a, b, i + <span class="number">1</span>, j, dis );</span><br><span class="line">            <span class="keyword">int</span> dis3 = myDis( a, b, i + <span class="number">1</span>, j + <span class="number">1</span>, dis );</span><br><span class="line">            <span class="keyword">int</span> min = dis1 &lt; dis2 ? dis1 : dis2;</span><br><span class="line">            min = min &lt; dis3 ? min : dis3;</span><br><span class="line">            dis[i][j] = min + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dis[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度O(mn)。<br>运行时间8ms。<br>击败97.43%</p>
+<p><img src="/images/leetcode/72_1.png" alt="image"></p>
+<hr>
+<p>代码二：</p>
+<p>自底向上。</p>
+<p>对照P223，定理15的定义法，先清晰一下思路。</p>
+<p>令$a=(a_1,a_2,…,a_m)$和$b=(b_1,b_2,…,b_n)$两个序列，将第一个序列转化到第二个，那么：</p>
+<ul>
+<li>如果$a_m == b_n$，则次数等于$(a(m-1),b(n-1))$。</li>
+<li>如果$a_m \neq b_n$，则次数等于$(a(m-1),b(n-1))$与$(a(m),b(n-1))$与$(a(m-1),b(n))$的最小值加一。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] a = word1.toCharArray(), b = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = a.length, n = b.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dis = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            dis[i][<span class="number">0</span>] = i;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++ )</span><br><span class="line">            dis[<span class="number">0</span>][j] = j;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( a[i - <span class="number">1</span>] == b[j - <span class="number">1</span>] ) &#123;</span><br><span class="line">                    dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>];</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( dis[i-<span class="number">1</span>][j] &gt; dis[i][j-<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( dis[i][j-<span class="number">1</span>] &gt; dis[i-<span class="number">1</span>][j-<span class="number">1</span>] )</span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        dis[i][j] = dis[i][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( dis[i-<span class="number">1</span>][j] &gt; dis[i-<span class="number">1</span>][j-<span class="number">1</span>] )</span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j] + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dis[m][n];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度O(mn)。<br>运行时间10ms。<br>击败92.12%</p>
+<p><img src="/images/leetcode/72_2.png" alt="image"></p>
+<p><strong>注：</strong></p>
+<p><strong>自顶向上比自底向上快？？？想了一下，应该是因为在自顶向下的过程中，并不需要去将所有的子问题都计算出来。</strong></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -2181,57 +2232,6 @@ z^{[L]} =
       </categories>
       <tags>
         <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 72 Edit Distance</title>
-    <url>/2017/09/06/2017-09-06-leetcode_72/</url>
-    <content><![CDATA[<p>Description:</p>
-<blockquote>
-<p>Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)  </p>
-<p>You have the following 3 operations permitted on a word:<br>a) Insert a character<br>b) Delete a character<br>c) Replace a character</p>
-</blockquote>
-<p>题目理解，就是求将第一个字符串转化到第二个字符串所需要的最少步数，可以使用插入、删除、替换，三种策略。</p>
-<p>这其实就是算法导论第15章，动态规划的思考题15-5，但是这道题会更加简单，
-因为书上还有旋转操作。反正就是说这道题如果不使用动态规划，那么一定是过不了的。</p>
-<p>思路一：先写一个递归算法，将它转化为自顶向上的动态规划。</p>
-<p>思路二：自底向上。</p>
-<hr>
-<p>代码一：</p>
-<p>先考虑递归的情况，也就是取两个字符串的头字符$a_0$和$b_0$比较，然后按照：</p>
-<ul>
-<li>$a_0$和$b_0$匹配，向下递归$a_1$和$b_1$。</li>
-<li>$a_0$和$b_0$不匹配，<ul>
-<li>使用<code>replace</code>，也就是将$a_0$替换为$b_0$，向下递归$a_1$和$b_1$。</li>
-<li>使用<code>Insert</code>，也就是在$a_0$前面插入$b_0$，向下递归$a_0$和$b_1$。</li>
-<li>使用<code>Delete</code>，也就是删除$a_0$，向下递归$a_1$和$b_0$。</li>
-</ul>
-</li>
-</ul>
-<p>上面的递归就可以求出少的操作次数，但是这样的递归将是<strong>指数复杂度</strong>的，所以更改其变为动态规划，减少子问题的重复计算。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] a = word1.toCharArray(), b = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = a.length, n = b.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dis = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++ )</span><br><span class="line">            Arrays.fill(dis[i], -<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            dis[i][n] = m - i;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++ )</span><br><span class="line">            dis[m][j] = n - j;</span><br><span class="line">        <span class="keyword">return</span> myDis( a, b, <span class="number">0</span>, <span class="number">0</span>, dis );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">myDis</span><span class="params">( <span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span>[][] dis )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( dis[i][j] != -<span class="number">1</span> )</span><br><span class="line">            <span class="keyword">return</span> dis[i][j];</span><br><span class="line">        <span class="keyword">if</span> ( a[i] == b[j] ) &#123;</span><br><span class="line">            dis[i][j] = myDis( a, b, i + <span class="number">1</span>, j + <span class="number">1</span>, dis );</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> dis1 = myDis( a, b, i, j + <span class="number">1</span>, dis );</span><br><span class="line">            <span class="keyword">int</span> dis2 = myDis( a, b, i + <span class="number">1</span>, j, dis );</span><br><span class="line">            <span class="keyword">int</span> dis3 = myDis( a, b, i + <span class="number">1</span>, j + <span class="number">1</span>, dis );</span><br><span class="line">            <span class="keyword">int</span> min = dis1 &lt; dis2 ? dis1 : dis2;</span><br><span class="line">            min = min &lt; dis3 ? min : dis3;</span><br><span class="line">            dis[i][j] = min + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dis[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度O(mn)。<br>运行时间8ms。<br>击败97.43%</p>
-<p><img src="/images/leetcode/72_1.png" alt="image"></p>
-<hr>
-<p>代码二：</p>
-<p>自底向上。</p>
-<p>对照P223，定理15的定义法，先清晰一下思路。</p>
-<p>令$a=(a_1,a_2,…,a_m)$和$b=(b_1,b_2,…,b_n)$两个序列，将第一个序列转化到第二个，那么：</p>
-<ul>
-<li>如果$a_m == b_n$，则次数等于$(a(m-1),b(n-1))$。</li>
-<li>如果$a_m \neq b_n$，则次数等于$(a(m-1),b(n-1))$与$(a(m),b(n-1))$与$(a(m-1),b(n))$的最小值加一。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] a = word1.toCharArray(), b = word2.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = a.length, n = b.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dis = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            dis[i][<span class="number">0</span>] = i;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++ )</span><br><span class="line">            dis[<span class="number">0</span>][j] = j;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( a[i - <span class="number">1</span>] == b[j - <span class="number">1</span>] ) &#123;</span><br><span class="line">                    dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>];</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( dis[i-<span class="number">1</span>][j] &gt; dis[i][j-<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( dis[i][j-<span class="number">1</span>] &gt; dis[i-<span class="number">1</span>][j-<span class="number">1</span>] )</span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        dis[i][j] = dis[i][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( dis[i-<span class="number">1</span>][j] &gt; dis[i-<span class="number">1</span>][j-<span class="number">1</span>] )</span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        dis[i][j] = dis[i-<span class="number">1</span>][j] + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dis[m][n];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度O(mn)。<br>运行时间10ms。<br>击败92.12%</p>
-<p><img src="/images/leetcode/72_2.png" alt="image"></p>
-<p><strong>注：</strong></p>
-<p><strong>自顶向上比自底向上快？？？想了一下，应该是因为在自顶向下的过程中，并不需要去将所有的子问题都计算出来。</strong></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -3169,6 +3169,57 @@ r-.*-s$</script><p><code>Detecting prefix hijacks with iSpy</code>：查询所�
       </tags>
   </entry>
   <entry>
+    <title>Keras 自定义 generator</title>
+    <url>/2017/12/29/2017-12-29-keras-generator/</url>
+    <content><![CDATA[<h2 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h2><p>在做kaggle上的<code>Facial Keypoints Detection</code>时候，它输入是一些人脸的图片，
+标签是类似眼角、鼻尖、嘴角等在图片上的坐标。</p>
+<p>整个数据集的图片数量并不多，<strong>7000+</strong>，而且中间数据集其实可以分为两个部分，
+一部分是质量较好的数据集，图片数<strong>2000+</strong>，剩下的就是另外一部分质量较差的。
+实际上在训练的时候，只用了质量较好的这一部分，那么也就<strong>2000+</strong>的图片，
+对于图片类的任务来说，样本太少了。</p>
+<p>那么这里显然使用<code>Data Augmentation</code>是比较明智的选择，也就是将图片进行一下平移、镜像、对比度变化、旋转等操作，反正这些操作并不会影响到图片本身的性质，但是在神经网络看来又不会是重复样本。</p>
+<p>所以，这里就需要使用<code>generator</code>，也就是流式的数据生成，因为不可能先把图片进行变换，保存下来再进行训练，因为一张图片可以变换成为无数张图片，所以需要一边使用原始图片来生成新图片，一边进行训练。</p>
+<p>在Keras中，<code>model.fit_generator()</code>就是用来进行这种类型的训练的，它需要传入一个生成器，也就是python中的生成器。</p>
+<p>注意到，在Keras中，提供了<code>ImageDataGenerator</code>这么一个类可以来进行图片的变换，其中有很多的功能。
+<strong>但是，但是，但是，</strong>这里的任务不是分类，是回归，其中标签是眼角、鼻尖、嘴角等在图片上的坐标，
+那么在图片进行变换的时候，当然这里坐标也需要跟着变，<strong>那么这里就得自己来写<code>generator</code></strong>。</p>
+<hr>
+<h2 id="generator是什么？"><a href="#generator是什么？" class="headerlink" title="generator是什么？"></a>generator是什么？</h2><p>我现在只有简单的理解，它就是一个python的生成器，每一次返回一个batch的样本以及标签。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_generator</span>(<span class="params">X, Y, batch_size=<span class="number">32</span>, gray_change_range=<span class="number">30</span>, cut_out_size=<span class="number">88</span></span>):</span></span><br><span class="line">    indexs = <span class="built_in">list</span>(<span class="built_in">range</span>(X.shape[<span class="number">0</span>]))</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        np.random.shuffle(indexs)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(indexs), batch_size):</span><br><span class="line">            ge_batch_x = np.empty((batch_size, cut_out_size, cut_out_size))</span><br><span class="line">            ge_batch_y = np.empty((batch_size, Y.shape[<span class="number">1</span>]))</span><br><span class="line">            </span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">            <span class="keyword">yield</span> ge_batch_x, ge_batch_y</span><br></pre></td></tr></table></figure>
+<p>生成器方法就类似于上面的代码，其中<code>yield</code>是关键的地方，程序每次运行到它的时候，
+就会将它后面的数据返回，下一次调用又接着向后运行。</p>
+<p>另外，这里写成了一个死循环<code>while True</code>，因为<code>model.fit_generator()</code>在使用在个函数的时候，
+并不会在每一个epoch之后重新调用，那么如果这时候generator自己结束了就会有问题。</p>
+<hr>
+<h2 id="Keras使用generator进行训练"><a href="#Keras使用generator进行训练" class="headerlink" title="Keras使用generator进行训练"></a>Keras使用generator进行训练</h2><p>这里使用<code>model.fit_generator()</code>来进行训练即可：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">fit_generator(self, generator, steps_per_epoch=<span class="literal">None</span>, epochs=<span class="number">1</span>, verbose=<span class="number">1</span>, callbacks=<span class="literal">None</span>,</span><br><span class="line">            validation_data=<span class="literal">None</span>, validation_steps=<span class="literal">None</span>, class_weight=<span class="literal">None</span>, max_queue_size=<span class="number">10</span>,</span><br><span class="line">            workers=<span class="number">1</span>, use_multiprocessing=<span class="literal">False</span>, shuffle=<span class="literal">True</span>, initial_epoch=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<p>函数声明中有很多可以选择的参数，具体的说明可以去查看官方的文档，里面介绍了每一个参数的说明，
+通常我们只需要定义几个参数就够了。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model.fit_generator(my_generator(train_x, train_y), steps_per_epoch=train_x.shape[<span class="number">0</span>] / <span class="number">32</span>, epochs=<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p>上面的调用，参数中传入了生成器，多少个batch为一个epoch，训练多少个epoch。</p>
+<hr>
+<h2 id="关于参数设置多个workers的问题"><a href="#关于参数设置多个workers的问题" class="headerlink" title="关于参数设置多个workers的问题"></a>关于参数设置多个workers的问题</h2><p>关于workers的文档说明：</p>
+<blockquote>
+<blockquote>
+<p>workers: Integer. Maximum number of processes to spin up when using process based threading. If unspecified, workers will default to 1. If 0, will execute the generator on the main thread.</p>
+</blockquote>
+</blockquote>
+<p>我的理解，它是与数据生成有关的，应该是使用多个线程来生成数据。</p>
+<p>由于有时候生成数据的过程可能较慢，它可能会拖慢整个训练的速度，所以需要使用多个线程来同时生成，
+使得生成数据不会是训练时间的瓶颈。</p>
+<p><strong>但是</strong>，当我设置<code>workers=2</code>时，程序报错，提示<code>generator already executing</code>，
+google之后，大概确定了这个是没有线程安全而导致的问题。</p>
+<p>我没有实际去解决，因为其实一个线程已经够用了。如果下次需要开启多个线程，解决方法可以参考，<a href="https://github.com/keras-team/keras/issues/1638">Proper way of making a data generator which can handle multiple workers #1638</a></p>
+]]></content>
+      <categories>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Residual Net and Inception Net</title>
     <url>/2017/11/29/2017-11-29-net-structures/</url>
     <content><![CDATA[<h1 id="Residual-Net"><a href="#Residual-Net" class="headerlink" title="Residual Net"></a>Residual Net</h1><p>参考：
@@ -3244,57 +3295,6 @@ Calculation &= 64 \times 64 \times 1 \times 1 \times 256 \times 64 +
 <p>其中大概多了下面的操作：</p>
 <div align="center"><img src="/images/paper/Inception_net_5.png" style="zoom:80%" title="New module"/></div>
 
-]]></content>
-      <categories>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Keras 自定义 generator</title>
-    <url>/2017/12/29/2017-12-29-keras-generator/</url>
-    <content><![CDATA[<h2 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h2><p>在做kaggle上的<code>Facial Keypoints Detection</code>时候，它输入是一些人脸的图片，
-标签是类似眼角、鼻尖、嘴角等在图片上的坐标。</p>
-<p>整个数据集的图片数量并不多，<strong>7000+</strong>，而且中间数据集其实可以分为两个部分，
-一部分是质量较好的数据集，图片数<strong>2000+</strong>，剩下的就是另外一部分质量较差的。
-实际上在训练的时候，只用了质量较好的这一部分，那么也就<strong>2000+</strong>的图片，
-对于图片类的任务来说，样本太少了。</p>
-<p>那么这里显然使用<code>Data Augmentation</code>是比较明智的选择，也就是将图片进行一下平移、镜像、对比度变化、旋转等操作，反正这些操作并不会影响到图片本身的性质，但是在神经网络看来又不会是重复样本。</p>
-<p>所以，这里就需要使用<code>generator</code>，也就是流式的数据生成，因为不可能先把图片进行变换，保存下来再进行训练，因为一张图片可以变换成为无数张图片，所以需要一边使用原始图片来生成新图片，一边进行训练。</p>
-<p>在Keras中，<code>model.fit_generator()</code>就是用来进行这种类型的训练的，它需要传入一个生成器，也就是python中的生成器。</p>
-<p>注意到，在Keras中，提供了<code>ImageDataGenerator</code>这么一个类可以来进行图片的变换，其中有很多的功能。
-<strong>但是，但是，但是，</strong>这里的任务不是分类，是回归，其中标签是眼角、鼻尖、嘴角等在图片上的坐标，
-那么在图片进行变换的时候，当然这里坐标也需要跟着变，<strong>那么这里就得自己来写<code>generator</code></strong>。</p>
-<hr>
-<h2 id="generator是什么？"><a href="#generator是什么？" class="headerlink" title="generator是什么？"></a>generator是什么？</h2><p>我现在只有简单的理解，它就是一个python的生成器，每一次返回一个batch的样本以及标签。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_generator</span>(<span class="params">X, Y, batch_size=<span class="number">32</span>, gray_change_range=<span class="number">30</span>, cut_out_size=<span class="number">88</span></span>):</span></span><br><span class="line">    indexs = <span class="built_in">list</span>(<span class="built_in">range</span>(X.shape[<span class="number">0</span>]))</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        np.random.shuffle(indexs)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(indexs), batch_size):</span><br><span class="line">            ge_batch_x = np.empty((batch_size, cut_out_size, cut_out_size))</span><br><span class="line">            ge_batch_y = np.empty((batch_size, Y.shape[<span class="number">1</span>]))</span><br><span class="line">            </span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">            <span class="keyword">yield</span> ge_batch_x, ge_batch_y</span><br></pre></td></tr></table></figure>
-<p>生成器方法就类似于上面的代码，其中<code>yield</code>是关键的地方，程序每次运行到它的时候，
-就会将它后面的数据返回，下一次调用又接着向后运行。</p>
-<p>另外，这里写成了一个死循环<code>while True</code>，因为<code>model.fit_generator()</code>在使用在个函数的时候，
-并不会在每一个epoch之后重新调用，那么如果这时候generator自己结束了就会有问题。</p>
-<hr>
-<h2 id="Keras使用generator进行训练"><a href="#Keras使用generator进行训练" class="headerlink" title="Keras使用generator进行训练"></a>Keras使用generator进行训练</h2><p>这里使用<code>model.fit_generator()</code>来进行训练即可：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">fit_generator(self, generator, steps_per_epoch=<span class="literal">None</span>, epochs=<span class="number">1</span>, verbose=<span class="number">1</span>, callbacks=<span class="literal">None</span>,</span><br><span class="line">            validation_data=<span class="literal">None</span>, validation_steps=<span class="literal">None</span>, class_weight=<span class="literal">None</span>, max_queue_size=<span class="number">10</span>,</span><br><span class="line">            workers=<span class="number">1</span>, use_multiprocessing=<span class="literal">False</span>, shuffle=<span class="literal">True</span>, initial_epoch=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-<p>函数声明中有很多可以选择的参数，具体的说明可以去查看官方的文档，里面介绍了每一个参数的说明，
-通常我们只需要定义几个参数就够了。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model.fit_generator(my_generator(train_x, train_y), steps_per_epoch=train_x.shape[<span class="number">0</span>] / <span class="number">32</span>, epochs=<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
-<p>上面的调用，参数中传入了生成器，多少个batch为一个epoch，训练多少个epoch。</p>
-<hr>
-<h2 id="关于参数设置多个workers的问题"><a href="#关于参数设置多个workers的问题" class="headerlink" title="关于参数设置多个workers的问题"></a>关于参数设置多个workers的问题</h2><p>关于workers的文档说明：</p>
-<blockquote>
-<blockquote>
-<p>workers: Integer. Maximum number of processes to spin up when using process based threading. If unspecified, workers will default to 1. If 0, will execute the generator on the main thread.</p>
-</blockquote>
-</blockquote>
-<p>我的理解，它是与数据生成有关的，应该是使用多个线程来生成数据。</p>
-<p>由于有时候生成数据的过程可能较慢，它可能会拖慢整个训练的速度，所以需要使用多个线程来同时生成，
-使得生成数据不会是训练时间的瓶颈。</p>
-<p><strong>但是</strong>，当我设置<code>workers=2</code>时，程序报错，提示<code>generator already executing</code>，
-google之后，大概确定了这个是没有线程安全而导致的问题。</p>
-<p>我没有实际去解决，因为其实一个线程已经够用了。如果下次需要开启多个线程，解决方法可以参考，<a href="https://github.com/keras-team/keras/issues/1638">Proper way of making a data generator which can handle multiple workers #1638</a></p>
 ]]></content>
       <categories>
         <category>deep learning</category>
@@ -4768,6 +4768,42 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
       </tags>
   </entry>
   <entry>
+    <title>中国城市之间的球面距离计算</title>
+    <url>/2020/07/27/2020-07-27-china-citys-distance/</url>
+    <content><![CDATA[<hr>
+<h2 id="经纬度数据"><a href="#经纬度数据" class="headerlink" title="经纬度数据"></a>经纬度数据</h2><p>很明显，要就算城市之间的球面距离，那就需要确定各个城市在地球上所处的位置，也就是经纬度。</p>
+<p>这里最简单的方式就是去<strong>百度地图开放平台</strong>里面去下载一份<code>百度地图城市名称-中心点经纬度（cityCenter）关系对照文本</code>，</p>
+<p><a href="http://lbsyun.baidu.com/index.php?title=open/dev-res">http://lbsyun.baidu.com/index.php?title=open/dev-res</a></p>
+<p>这里面应该包含了中国绝大部分城市的经纬度数据，格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;municipalities:[&#123;n:&quot;北京&quot;,g:&quot;116.395645,39.929986|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;上海&quot;,g:&quot;121.487899,31.249162|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;天津&quot;,g:&quot;117.210813,39.14393|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;重庆&quot;,g:&quot;106.530635,29.544606|12&quot;&#125;],</span><br><span class="line">provinces:[&#123;n:&quot;安徽&quot;,g:&quot;117.216005,31.859252|8&quot;,</span><br><span class="line">cities:[&#123;n:&quot;合肥&quot;,g:&quot;117.282699,31.866942|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;安庆&quot;,g:&quot;117.058739,30.537898|13&quot;&#125;,</span><br><span class="line">&#123;n:&quot;蚌埠&quot;,g:&quot;117.35708,32.929499|13&quot;&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>长得跟json差不多，但是又不是json，因为这里所有键值都没有加上引号<code>&quot;</code>，为了方便解析，
+可以直接使用文本编辑器来把这些键值替换为带有引号的形式。</p>
+<p>解析后，将每个所有城市的经纬度解析出来，重新格式化为json，得到如下文件：</p>
+<div>
+<a href="/images/files/CityDistance/ChinaCityCoordinate.json">ChinaCityCoordinate.json（39.2 KB）</a>
+</div>
+
+<hr>
+<h2 id="城市间距离计算"><a href="#城市间距离计算" class="headerlink" title="城市间距离计算"></a>城市间距离计算</h2><p>球面距离有很多种计算方法，这里就不考虑地球实际是个椭圆体的问题了，直接使用<strong>Haversine</strong>算法比较简单。</p>
+<p>这里也是参考网上别人写的代码：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Haversine 算法：通过两地经纬度计算两地的球面距离（正球体，非椭圆）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> EarthRadius <span class="keyword">float64</span> = <span class="number">6371.0</span> <span class="comment">//km 地球半径 平均值，千米</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DegToRadians</span><span class="params">(degrees <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (degrees * math.Pi) / <span class="number">180</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetDistanceFromLatLonInKm</span><span class="params">(lat1, lon1, lat2, lon2 <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> dLat = DegToRadians(lat2-lat1)</span><br><span class="line">    <span class="keyword">var</span> dLon = DegToRadians(lon2-lon1)</span><br><span class="line">    <span class="keyword">var</span> a = math.Sin(dLat/<span class="number">2</span>) * math.Sin(dLat/<span class="number">2</span>) + math.Cos(DegToRadians(lat1)) * math.Cos(DegToRadians(lat2)) *</span><br><span class="line">            math.Sin(dLon/<span class="number">2</span>) * math.Sin(dLon/<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> c = math.Atan2(math.Sqrt(a), math.Sqrt(<span class="number">1</span>-a))</span><br><span class="line">    <span class="keyword">var</span> d = <span class="number">2</span> * EarthRadius * c</span><br><span class="line">    <span class="keyword">return</span> d</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样简单的两两计算，就可以得到中国各个城市之间的距离：</p>
+<div>
+<a href="/images/files/CityDistance/CityDisMatrix.json">CityDisMatrix.json（4.73MB）</a>
+</div>
+
+
+<p>在实际使用的情况中，如果不想浪费内存，可以考虑使用坐标实时计算，浪费点CPU。</p>
+<hr>
+]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
+      <tags>
+        <tag>algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>cgo+ffmpeg+windows的简单使用</title>
     <url>/2020/06/02/2020-06-02-cgo+ffmpeg+windows/</url>
     <content><![CDATA[<hr>
@@ -4819,42 +4855,6 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
         <tag>live</tag>
         <tag>golang</tag>
         <tag>ffmpeg</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>中国城市之间的球面距离计算</title>
-    <url>/2020/07/27/2020-07-27-china-citys-distance/</url>
-    <content><![CDATA[<hr>
-<h2 id="经纬度数据"><a href="#经纬度数据" class="headerlink" title="经纬度数据"></a>经纬度数据</h2><p>很明显，要就算城市之间的球面距离，那就需要确定各个城市在地球上所处的位置，也就是经纬度。</p>
-<p>这里最简单的方式就是去<strong>百度地图开放平台</strong>里面去下载一份<code>百度地图城市名称-中心点经纬度（cityCenter）关系对照文本</code>，</p>
-<p><a href="http://lbsyun.baidu.com/index.php?title=open/dev-res">http://lbsyun.baidu.com/index.php?title=open/dev-res</a></p>
-<p>这里面应该包含了中国绝大部分城市的经纬度数据，格式如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;municipalities:[&#123;n:&quot;北京&quot;,g:&quot;116.395645,39.929986|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;上海&quot;,g:&quot;121.487899,31.249162|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;天津&quot;,g:&quot;117.210813,39.14393|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;重庆&quot;,g:&quot;106.530635,29.544606|12&quot;&#125;],</span><br><span class="line">provinces:[&#123;n:&quot;安徽&quot;,g:&quot;117.216005,31.859252|8&quot;,</span><br><span class="line">cities:[&#123;n:&quot;合肥&quot;,g:&quot;117.282699,31.866942|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;安庆&quot;,g:&quot;117.058739,30.537898|13&quot;&#125;,</span><br><span class="line">&#123;n:&quot;蚌埠&quot;,g:&quot;117.35708,32.929499|13&quot;&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>长得跟json差不多，但是又不是json，因为这里所有键值都没有加上引号<code>&quot;</code>，为了方便解析，
-可以直接使用文本编辑器来把这些键值替换为带有引号的形式。</p>
-<p>解析后，将每个所有城市的经纬度解析出来，重新格式化为json，得到如下文件：</p>
-<div>
-<a href="/images/files/CityDistance/ChinaCityCoordinate.json">ChinaCityCoordinate.json（39.2 KB）</a>
-</div>
-
-<hr>
-<h2 id="城市间距离计算"><a href="#城市间距离计算" class="headerlink" title="城市间距离计算"></a>城市间距离计算</h2><p>球面距离有很多种计算方法，这里就不考虑地球实际是个椭圆体的问题了，直接使用<strong>Haversine</strong>算法比较简单。</p>
-<p>这里也是参考网上别人写的代码：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Haversine 算法：通过两地经纬度计算两地的球面距离（正球体，非椭圆）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> EarthRadius <span class="keyword">float64</span> = <span class="number">6371.0</span> <span class="comment">//km 地球半径 平均值，千米</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DegToRadians</span><span class="params">(degrees <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (degrees * math.Pi) / <span class="number">180</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetDistanceFromLatLonInKm</span><span class="params">(lat1, lon1, lat2, lon2 <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> dLat = DegToRadians(lat2-lat1)</span><br><span class="line">    <span class="keyword">var</span> dLon = DegToRadians(lon2-lon1)</span><br><span class="line">    <span class="keyword">var</span> a = math.Sin(dLat/<span class="number">2</span>) * math.Sin(dLat/<span class="number">2</span>) + math.Cos(DegToRadians(lat1)) * math.Cos(DegToRadians(lat2)) *</span><br><span class="line">            math.Sin(dLon/<span class="number">2</span>) * math.Sin(dLon/<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> c = math.Atan2(math.Sqrt(a), math.Sqrt(<span class="number">1</span>-a))</span><br><span class="line">    <span class="keyword">var</span> d = <span class="number">2</span> * EarthRadius * c</span><br><span class="line">    <span class="keyword">return</span> d</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样简单的两两计算，就可以得到中国各个城市之间的距离：</p>
-<div>
-<a href="/images/files/CityDistance/CityDisMatrix.json">CityDisMatrix.json（4.73MB）</a>
-</div>
-
-
-<p>在实际使用的情况中，如果不想浪费内存，可以考虑使用坐标实时计算，浪费点CPU。</p>
-<hr>
-]]></content>
-      <categories>
-        <category>algorithm</category>
-      </categories>
-      <tags>
-        <tag>algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -5126,6 +5126,47 @@ webrtc会自动的将同一个<code>stream</code>下的<code>track</code>绑定�
       <tags>
         <tag>live</tag>
         <tag>ffmpeg</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在centos7上搭建teamspeak3服务端</title>
+    <url>/2021/03/17/2021-03-17-teamspeak-server/</url>
+    <content><![CDATA[<hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>刚买个云主机，系统为centos7，在上面试试搭一个teamspeak服务端看看效果。</p>
+<hr>
+<h1 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h1><p>这里单独创建一个用户来操作：</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">useradd -d /home/$&#123;username&#125; -m $&#123;username&#125;</span><br><span class="line">passwd $&#123;username&#125;</span><br><span class="line"></span><br><span class="line">echo &quot;$&#123;username&#125; ALL = (root) NOPASSWD:ALL&quot; | tee /etc/sudoers.d/$&#123;username&#125;</span><br><span class="line">chmod 0440 /etc/sudoers.d/$&#123;username&#125;</span><br></pre></td></tr></table></figure></h2><h1 id="下载teamspeak"><a href="#下载teamspeak" class="headerlink" title="下载teamspeak"></a>下载teamspeak</h1><p>这里直接去官网上下载一个服务端<a href="https://www.teamspeak.com/en/downloads/#">https://www.teamspeak.com/en/downloads/#</a></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://files.teamspeak-services.com/releases/server/3.13.3/teamspeak3-server_linux_amd64-3.13.3.tar.bz2</span><br></pre></td></tr></table></figure>
+<p>我这里使用wget下载老是失败，所以直接windows使用梯子下载了一个<code>teamspeak3-server_linux_amd64-3.13.3.tar.bz2</code>。</p>
+<p>解压：</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -xvf teamspeak3-server_linux_amd64-3.13.3.tar.bz2</span><br><span class="line">mv teamspeak3-server_linux_amd64 teamspeak3.13.3</span><br><span class="line">cd teamspeak3.13.3</span><br></pre></td></tr></table></figure></h2><h1 id="运行teamspeak"><a href="#运行teamspeak" class="headerlink" title="运行teamspeak"></a>运行teamspeak</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls</span></span><br><span class="line"></span><br><span class="line">CHANGELOG  libts3db_mariadb.so     libts3db_sqlite3.so  LICENSE  redist           sql        ts3server_minimal_runscript.sh  tsdns</span><br><span class="line">doc        libts3db_postgresql.so  libts3_ssh.so        logs     serverquerydocs  ts3server  ts3server_startscript.sh</span><br></pre></td></tr></table></figure>
+<p>可以看到目录结构如上所示，都没找到配置文件在哪（不会不能配置端口吧？），算了直接使用<code>ts3server_startscript.sh</code>来启动。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./ts3server_startscript.sh start</span></span><br><span class="line"></span><br><span class="line">Starting the TeamSpeak 3 server</span><br><span class="line">Please set the environment variable TS3SERVER_LICENSE to &quot;accept&quot; in order to accept the license agreement.</span><br><span class="line">Alternatively, create a file named &quot;.ts3server_license_accepted&quot; in the working directory or start the server with the command line parameter &quot;license_accepted=1&quot;.</span><br><span class="line">To view the license agreement set TS3SERVER_LICENSE to &quot;view&quot; in order to print the license to the console.</span><br><span class="line">Alternatively view the file &quot;LICENSE&quot; in your favorite text viewer yourself.</span><br><span class="line">TeamSpeak 3 server could not start</span><br></pre></td></tr></table></figure>
+<p>按照上述提示，创建一个<code>.ts3server_license_accepted</code>:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">touch .ts3server_license_accepted</span><br></pre></td></tr></table></figure>
+<p>再次启动：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./ts3server_startscript.sh start</span></span><br><span class="line"></span><br><span class="line">Starting the TeamSpeak 3 server</span><br><span class="line">TeamSpeak 3 server started, for details please view the log file</span><br><span class="line"></span><br><span class="line">------------------------------------------------------------------</span><br><span class="line">                      I M P O R T A N T                           </span><br><span class="line">------------------------------------------------------------------</span><br><span class="line">               Server Query Admin Account created                 </span><br><span class="line">         loginname= &quot;serveradmin&quot;, password= &quot;*******&quot;</span><br><span class="line">         apikey= &quot;B****QtDheObpa9KiwHwDQIiebL&quot;</span><br><span class="line">------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">------------------------------------------------------------------</span><br><span class="line">                      I M P O R T A N T                           </span><br><span class="line">------------------------------------------------------------------</span><br><span class="line">      ServerAdmin privilege key created, please use it to gain </span><br><span class="line">      serveradmin rights for your virtualserver. please</span><br><span class="line">      also check the doc/privilegekey_guide.txt for details.</span><br><span class="line"></span><br><span class="line">       token=Kl+****FuVP4xrR9McBb</span><br><span class="line">------------------------------------------------------------------</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>启动成功，查看运行状态：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./ts3server_startscript.sh status</span></span><br><span class="line"></span><br><span class="line">Server is running</span><br></pre></td></tr></table></figure>
+<p>这里的token是用来做远程管理用的，需要注意。</p>
+<hr>
+<h1 id="查看端口"><a href="#查看端口" class="headerlink" title="查看端口"></a>查看端口</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> netstat -nlp</span></span><br><span class="line"></span><br><span class="line">(Not all processes could be identified, non-owned process info</span><br><span class="line"> will not be shown, you would have to be root to see it all.)</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 0.0.0.0:30033           0.0.0.0:*               LISTEN      15739/./ts3server   </span><br><span class="line">tcp        0      0 0.0.0.0:10011           0.0.0.0:*               LISTEN      15739/./ts3server   </span><br><span class="line">tcp        0      0 0.0.0.0:10080           0.0.0.0:*               LISTEN      15739/./ts3server   </span><br><span class="line">tcp        0      0 0.0.0.0:2021            0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 0.0.0.0:10022           0.0.0.0:*               LISTEN      15739/./ts3server   </span><br><span class="line">tcp6       0      0 :::30033                :::*                    LISTEN      15739/./ts3server   </span><br><span class="line">tcp6       0      0 :::10011                :::*                    LISTEN      15739/./ts3server   </span><br><span class="line">tcp6       0      0 :::10080                :::*                    LISTEN      15739/./ts3server   </span><br><span class="line">tcp6       0      0 :::2021                 :::*                    LISTEN      -                   </span><br><span class="line">tcp6       0      0 :::10022                :::*                    LISTEN      15739/./ts3server   </span><br><span class="line">udp        0      0 0.0.0.0:68              0.0.0.0:*                           -                   </span><br><span class="line">udp        0      0 0.0.0.0:9987            0.0.0.0:*                           15739/./ts3server   </span><br><span class="line">udp6       0      0 :::9987                 :::*                                15739/./ts3server   </span><br><span class="line">raw6       0      0 :::58                   :::*                    7           -                   </span><br><span class="line">Active UNIX domain sockets (only servers)</span><br><span class="line">Proto RefCnt Flags       Type       State         I-Node   PID/Program name     Path</span><br><span class="line">unix  2      [ ACC ]     SEQPACKET  LISTENING     10527    -                    /run/udev/control</span><br><span class="line">unix  2      [ ACC ]     STREAM     LISTENING     12087    -                    /run/dbus/system_bus_socket</span><br><span class="line">unix  2      [ ACC ]     STREAM     LISTENING     13769    -                    /var/run/NetworkManager/private-dhcp</span><br><span class="line">unix  2      [ ACC ]     STREAM     LISTENING     7402     -                    /run/systemd/journal/stdout</span><br><span class="line">unix  2      [ ACC ]     STREAM     LISTENING     10228    -                    /run/systemd/private</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>其中9987是连接端口，10011是管理端口，30033是文件传输端口，如果有防火墙，那么需要把这三个端口放开。</p>
+<p>其实可以自定义端口，详细配置可以参考<code>doc</code>下面的文档，这里不再细究了。</p>
+<hr>
+<h1 id="客户端连接"><a href="#客户端连接" class="headerlink" title="客户端连接"></a>客户端连接</h1><p>下载一个teamspeak客户端，连接<code>ip:9987</code>即可，然后输入上面的token，就可以顺利进入频道并进行管理了，
+设置密码之后，后续就不再需要每次输入token。</p>
+<p><img src="/images/guide/teamspeak_0.png" alt="image" title="客户端连接成功"></p>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.rultr.com/tutorials/vps/2660.html">CentOS 7系统搭建TeamSpeak服务器详细教程</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+        <category>guide</category>
+      </categories>
+      <tags>
+        <tag>guide</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -6938,174 +6979,6 @@ y = a x^2 + bx + c</script><p>这个就类似真线性回归，只不过使用�
       </tags>
   </entry>
   <entry>
-    <title>练习使用FFmpeg将视频转码为hls，并添加水印</title>
-    <url>/2019/08/08/2019-08-08-ffmpeg-practice/</url>
-    <content><![CDATA[<hr>
-<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><ul>
-<li>一个高清的视频（这样转分辨率后起码不会糊）。</li>
-<li>一个高清的水印图片（理由同上）。</li>
-<li>FFmpeg，直接官网下一个就可以，这里我使用的就是FFmpeg.exe。</li>
-</ul>
-<p>下面将各个部分拆开练习，最后再合在一起。</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ffmpeg -i 11.mp4 </span><br><span class="line">-vf &quot;movie&#x3D;wm.png [logo];[logo][in]scale2ref&#x3D;w&#x3D;oh*mdar:h&#x3D;ih&#x2F;10[logo-rescale][video-out];[video-out][logo-rescale]overlay&#x3D;x&#x3D;main_w&#x2F;10-w&#x2F;2:y&#x3D;main_h&#x2F;10-h&#x2F;2 [out]&quot;</span><br><span class="line">-codec:v libx264 -s 1920x1080 -codec:a mp3 </span><br><span class="line">-map 0 -f ssegment -segment_format mpegts -segment_list playlist.m3u8 -segment_time 10 1080P%03d.ts</span><br></pre></td></tr></table></figure></h2><h2 id="一些基本命令"><a href="#一些基本命令" class="headerlink" title="一些基本命令"></a>一些基本命令</h2><hr>
-<h3 id="1-转格式（容器转换）"><a href="#1-转格式（容器转换）" class="headerlink" title="1.转格式（容器转换）"></a>1.转格式（容器转换）</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 out.avi</span></span><br></pre></td></tr></table></figure>
-<p>直接在输出文件的后缀指定需要转的格式（容器）就行。</p>
-<p><strong>这样转码是会使用默认编码器，需要设置转码为copy来达到视频质量无损失。参考设置视频编码。</strong></p>
-<hr>
-<h3 id="2-转分辨率"><a href="#2-转分辨率" class="headerlink" title="2.转分辨率"></a>2.转分辨率</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -s 1280x720 out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>通过<code>-s 1280x720</code>指定分辨率为720P。</p>
-<hr>
-<h3 id="3-设置视频编码"><a href="#3-设置视频编码" class="headerlink" title="3.设置视频编码"></a>3.设置视频编码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -s 1280x720 -codec:v libx264 -codec:a mp3 out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>这里通过<code>-codec:v libx264</code>指定视频编码格式为<code>x264</code>，通过<code>-codec:a mp3</code>指定音频编码格式为<code>mp3</code>。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 4K_BXJG.mp4 -codec:v copy -codec:a copy out.avi</span></span><br></pre></td></tr></table></figure>
-<p>这里的转码格式被指定为<code>copy</code>，实际上FFmpeg就会省去编解码过程，速度非常快。</p>
-<blockquote>
-<p>Stream copy is a mode selected by supplying the copy parameter to the -codec option. It makes ffmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing. It is useful for changing the container format or modifying container-level metadata.</p>
-<p>Since there is no decoding or encoding, it is very fast and there is no quality loss. </p>
-</blockquote>
-<p>上面是官网中的描述，可以看到使用copy可以无损的转化容器格式。</p>
-<hr>
-<h3 id="4-转图片分辨率"><a href="#4-转图片分辨率" class="headerlink" title="4.转图片分辨率"></a>4.转图片分辨率</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i wm.png -s 100x100 out.png</span></span><br></pre></td></tr></table></figure>
-<p>可以看到转图片其实和转视频是同理的。</p>
-<h3 id="5-流选择"><a href="#5-流选择" class="headerlink" title="5.流选择"></a>5.流选择</h3><p>一个正常的视频至少有两个流，一个视频流，一个音频流。</p>
-<p>通过输入而不输出可以查看媒体文件信息：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 4K_BXJG.mp4</span></span><br><span class="line"></span><br><span class="line">Input #0, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_BXJG.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : mp42</span><br><span class="line">    minor_version   : 0</span><br><span class="line">    compatible_brands: mp42mp41</span><br><span class="line">    creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">  Duration: 00:00:54.02, start: 0.000000, bitrate: 39655 kb/s</span><br><span class="line">    Stream #0:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 39366 kb/s, 23.98 fps, 23.98 tbr, 24k tbn, 47.95 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : ?Mainconcept Video Media Handler</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #0:1(eng): Audio: aac (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 317 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : #Mainconcept MP4 Sound Media Handler</span><br></pre></td></tr></table></figure>
-<p>可以看到这个mp4文件包含两个流，0号流为视频流，1号流为音频流。</p>
-<p>同时输入两个媒体文件试试：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">  ffmpeg -i 4K_Z4.mp4 -i 4K_BXJG.mp4</span></span><br><span class="line"></span><br><span class="line">Input #0, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_Z4.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : isom</span><br><span class="line">    minor_version   : 512</span><br><span class="line">    compatible_brands: mp41mp42</span><br><span class="line">    creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">  Duration: 00:02:22.56, start: 0.000000, bitrate: 44851 kb/s</span><br><span class="line">    Stream #0:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 44717 kb/s, 50 fps, 50 tbr, 30k tbn, 100 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 128 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">Input #1, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_BXJG.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : mp42</span><br><span class="line">    minor_version   : 0</span><br><span class="line">    compatible_brands: mp42mp41</span><br><span class="line">    creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">  Duration: 00:00:54.02, start: 0.000000, bitrate: 39655 kb/s</span><br><span class="line">    Stream #1:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 39366 kb/s, 23.98 fps, 23.98 tbr, 24k tbn, 47.95 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : ?Mainconcept Video Media Handler</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #1:1(eng): Audio: aac (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 317 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : #Mainconcept MP4 Sound Media Handler</span><br></pre></td></tr></table></figure>
-<p>可以发现流编号上面的规律，<code>0:0</code>、<code>0:1</code>表示第一个文件的两个流，<code>1:0</code>、<code>1:1</code>则表示第二个文件的两个流。</p>
-<p><strong>提取视频流：</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -map 0:0 -codec copy out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>上面的命令将原视频的视频流单独分离出来。</p>
-<p><strong>合并音视频流：</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i 4K_Z4.mp4 -map 0:0 -codec copy -map 1:1 -codec copy out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>提取第一个视频的视频流，第二个视频的音频流，合并为out.mp4。</p>
-<hr>
-<hr>
-<hr>
-<h2 id="filter设置"><a href="#filter设置" class="headerlink" title="filter设置"></a>filter设置</h2><hr>
-<h3 id="1-过滤器图"><a href="#1-过滤器图" class="headerlink" title="1.过滤器图"></a>1.过滤器图</h3><p>先看官方文档说的：</p>
-<blockquote>
-<p>Filtering in FFmpeg is enabled through the libavfilter library.</p>
-<p>In libavfilter, a filter can have multiple inputs and multiple outputs. To illustrate the sorts of things that are possible, we consider the following filtergraph.</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">                [main]</span><br><span class="line">input --&gt; split ---------------------&gt; overlay --&gt; output</span><br><span class="line">            |                             ^</span><br><span class="line">            |[tmp]                  [flip]|</span><br><span class="line">            +-----&gt; crop --&gt; vflip -------+</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>This filtergraph splits the input stream in two streams, then sends one stream through the crop filter and the vflip filter, before merging it back with the other stream by overlaying it on top. </p>
-</blockquote>
-<p>filter即常说的滤镜，Filtering过程可以是一个多输入多输出的过程，多个输入的视频经过处理合并成一个或多个输出。</p>
-<p>上面的过程的命令为：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i INPUT -vf <span class="string">&quot;split [main][tmp]; [tmp] crop=iw:ih/2:0:0, vflip [flip]; [main][flip] overlay=0:H/2&quot;</span> OUTPUT</span></span><br></pre></td></tr></table></figure>
-<p>它的效果如下：</p>
-<p><img src="/images/media/FFmpeg/1-1.png" alt="image" title="原视频"></p>
-<p><img src="/images/media/FFmpeg/1-2.png" alt="image" title="转码后"></p>
-<p>它将原视频复制（split），裁剪一半（crop），反转（cflip），覆盖（overlay）到原视频之上。</p>
-<p>可以看到主要的处理过程在<code>-vf</code>之后，它就代表<code>filtergraph</code>也就是<strong>过滤器图</strong>（相似的还有<code>-filter_complex</code>），相当于定义了一个视频处理的过程。</p>
-<p><strong>注意到：<code>-vf</code>不能有多个输入，而<code>-filter_complex</code>可以。</strong></p>
-<hr>
-<h3 id="2-label（标签）"><a href="#2-label（标签）" class="headerlink" title="2.label（标签）"></a>2.label（标签）</h3><p>标签用于对流进行标记，目前我只知道它一些简单的用法。</p>
-<p>例如上面的命令中的过滤器图：</p>
-<p><code>&quot;split [main][tmp]; [tmp] crop=iw:ih/2:0:0, vflip [flip]; [main][flip] overlay=0:H/2&quot;</code></p>
-<ol>
-<li>它将原视频进行split，将它复制为两个流，一个命名为<code>[main]</code>，一个命名为<code>[tmp]</code>。</li>
-<li>它将<code>[tmp]</code>流进行crop操作和vfilp操作，处理之后的流命名为<code>[flip]</code>。</li>
-<li>输入<code>[main]</code>和<code>[flip]</code>流，进行overlay（覆盖）操作，根据这里<code>[main][flip]</code>的先后关系，这里将<code>[flip]</code>覆盖到<code>[main]</code>之上。</li>
-</ol>
-<p>例如下面的命令，将第二个输入视频分辨率降低一半，然后覆盖到第一个视频之上：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i 1080_BXJG.mp4 -filter_complex <span class="string">&quot;[1:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</span> tmp1.mp4</span></span><br></pre></td></tr></table></figure>
-<p>其中<code>&quot;[1:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</code>：</p>
-<ol>
-<li><code>[1:0]</code>代表第二个视频的第一个流（视频流），将它的scale变为一半（<code>iw/2</code>和<code>ih/2</code>），然后标记为<code>[scaled]</code>。</li>
-<li><code>[0]</code>就代表第一个输入的媒体文件，将<code>[scaled]</code>置于它之上然后输出。</li>
-</ol>
-<hr>
-<h3 id="3-将视频分辨率降低一半"><a href="#3-将视频分辨率降低一半" class="headerlink" title="3.将视频分辨率降低一半"></a>3.将视频分辨率降低一半</h3><p>可以利用scale来完成，其中<code>iw</code>、<code>ih</code>分别代表输入的宽和高。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -vf <span class="string">&quot;[in]scale=w=iw/2:h=ih/2[out]&quot;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>为了展示效果，这里将降低了分辨率的视频覆盖到原视频之上：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -filter_complex <span class="string">&quot;[0:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</span> tmp1.mp4</span></span><br></pre></td></tr></table></figure>
-<p><img src="/images/media/FFmpeg/1-3.png" alt="image" title="分辨率降低一半"></p>
-<hr>
-<h3 id="4-为视频添加水印"><a href="#4-为视频添加水印" class="headerlink" title="4.为视频添加水印"></a>4.为视频添加水印</h3><p>为视频添加水印，也就是将水印覆盖到原视频之上，即<code>overlay</code>滤镜。</p>
-<p><strong>简单覆盖：</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i wm.png -filter_complex overlay out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>简单覆盖时，没有对水印大小进行调整，会造成下面的结果：</p>
-<p><img src="/images/media/FFmpeg/1-4.png" alt="image" title="简单覆盖"></p>
-<p><strong>大小调整-1：</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1]scale=w=200:h=-1[scaled]; [0][scaled]overlay&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>使用<code>scale</code>滤镜来进行分辨率的调整，再将它覆盖到原视频之上：</p>
-<p><img src="/images/media/FFmpeg/1-5.png" alt="image" title="水印分辨率调整"></p>
-<p>可以看到这里成功的对水印的大小进行了调整，<strong>但是</strong>又有一点太小了。</p>
-<p>那么问题来了，难道要不断的试来找到一个健康的分辨率吗？</p>
-<p><strong>大小调整-2：</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
-<p><code>scale2ref</code>滤镜有两个输入，它对第一个输入进行rescale，
-但它与<code>scale</code>滤镜的区别在于，它使用第二个输入作为参考，来进行第一个输入的rescale。</p>
-<p>这里的<code>[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]</code>中，ih指的就是参考输入<code>[0]</code>的宽度，
-为了保证水印的横纵比，这里使用<code>oh*mdar</code>来定义水印的宽度。</p>
-<p><img src="/images/media/FFmpeg/1-6.png" alt="image" title="水印分辨率调整"></p>
-<p><strong>水印位置调整-1：</strong></p>
-<p>可以看到上面水印都是贴着视频的左上角的，这里来对它的位置进行调整：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay=x=300:y=300&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>可以通过指定overlay的坐标来确定水印覆盖的位置（默认x=0，y=0，即左上角），这里将坐标指定在300，300，效果如下：</p>
-<p><img src="/images/media/FFmpeg/1-7.png" alt="image" title="水印位置调整"></p>
-<p><strong>水印位置调整-2：</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
-<p>这里<code>main_w</code>和<code>main_h</code>指的就是视频输入（<code>[0-out]</code>）的宽和高，<code>w</code>和<code>h</code>则是水印输入（<code>[scaled]</code>）的宽和高，
-这里将水印的中心点指定在视频输入的1/10宽和1/10高的位置。</p>
-<p><img src="/images/media/FFmpeg/1-8.png" alt="image" title="水印位置调整"></p>
-<hr>
-<h2 id="转hls"><a href="#转hls" class="headerlink" title="转hls"></a>转hls</h2><p>hls即包括一个m3u(8)的索引文件，TS媒体分片文件和key加密串文件。</p>
-<p>在ffmpeg中可以使用hls或者segment来实现。</p>
-<hr>
-<h3 id="使用segment-muxer"><a href="#使用segment-muxer" class="headerlink" title="使用segment muxer"></a>使用segment muxer</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -f segment -segment_format mpegts -segment_list playlist.m3u8 -segment_list_size 0 -segment_time 5 out%03d.ts</span></span><br></pre></td></tr></table></figure>
-<p>上面的命令将输入视频切割为5秒一片的ts文件。其中，<code>-segment_list playlist.m3u8</code>设置文件list输出到playlist.m3u8，
-<code>-segment_list_size 0</code>设置playlist.m3u8里面将包含所有切分出来的分片，
-<code>-segment_time 5</code>设置分片大小为5秒。</p>
-<p>得到如下结果：</p>
-<p><img src="/images/media/FFmpeg/1-9.png" alt="image" title="segment muxer切分"></p>
-<hr>
-<h3 id="使用hls-muxer"><a href="#使用hls-muxer" class="headerlink" title="使用hls muxer"></a>使用hls muxer</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -map 0 -f hls -hls_segment_type mpegts -hls_list_size 6 -hls_time 5 -hls_segment_filename <span class="string">&#x27;out%03d.ts&#x27;</span> playlist.m3u8</span></span><br></pre></td></tr></table></figure>
-<p>参数基本一样，就不多解释了，效果如下：</p>
-<p><img src="/images/media/FFmpeg/1-10.png" alt="image" title="hls muxer切分"></p>
-<hr>
-<h2 id="转码，水印，hls"><a href="#转码，水印，hls" class="headerlink" title="转码，水印，hls"></a>转码，水印，hls</h2><p>将上面的命令进行总结，可以融合得到下面这条命令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png \</span></span><br><span class="line"><span class="bash">    -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; \</span></span></span><br><span class="line"><span class="bash">    [0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2[over];[over]scale=w=1920:h=-1[out]<span class="string">&#x27; \</span></span></span><br><span class="line"><span class="bash">    -map [out] -c:v h264 -c:a mp3 \</span></span><br><span class="line"><span class="bash">    -f hls -hls_segment_type mpegts -hls_list_size 0 -hls_time 5 -hls_segment_filename <span class="string">&#x27;out%03d.ts&#x27;</span> playlist.m3u8</span></span><br></pre></td></tr></table></figure>
-<p>这条命令将一个视频文件添加水印，并切割为5秒的ts小文件，同时将分辨率调整为1080P。</p>
-<hr>
-<h2 id="基于nginx的m3u8的点播、直播的实现"><a href="#基于nginx的m3u8的点播、直播的实现" class="headerlink" title="基于nginx的m3u8的点播、直播的实现"></a>基于nginx的m3u8的点播、直播的实现</h2><p>首先看我这里nginx的配置：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat /etc/nginx/nginx.conf</span></span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       11111 default_server;</span><br><span class="line">        listen       [::]:11111 default_server;</span><br><span class="line">        server_name  long;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root html;</span><br><span class="line">            index index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location /hls &#123;</span><br><span class="line">            types &#123;</span><br><span class="line">                application/vnd.apple.mpegusr m3u8;</span><br><span class="line">                video/mp2t ts;</span><br><span class="line">            &#125;</span><br><span class="line">            root /mycephfs;</span><br><span class="line">            add_header Cache-Control no-cache;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
-<p>我这里将nginx的服务起在11111端口，文件目录为/mycephfs/hls，浏览器打开<code>192.168.90.233:11111</code>：</p>
-<p><img src="/images/media/FFmpeg/1-11.png" alt="image" title="nginx"></p>
-<p><strong>点播：</strong></p>
-<p>将对应的hls文件放入nginx的文件目录下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ll /mycephfs/hls/videos/BXJG-hls/</span></span><br><span class="line"></span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3938600 Aug 13 12:47 out000.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 1366196 Aug 13 12:47 out001.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster  926088 Aug 13 12:47 out002.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3286992 Aug 13 12:47 out003.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7581852 Aug 13 12:47 out004.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 1721516 Aug 13 12:47 out005.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3373848 Aug 13 12:48 out006.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3193556 Aug 13 12:48 out007.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 5041220 Aug 13 12:48 out008.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3229088 Aug 13 12:48 out009.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster     370 Aug 13 12:48 playlist.m3u8</span><br></pre></td></tr></table></figure>
-<p>直接使用potplayer打开链接<code>http://192.168.90.233:11111/hls/videos/BXJG-hls/playlist.m3u8</code>：</p>
-<p><img src="/images/media/FFmpeg/1-12.png" alt="image" title="点播"></p>
-<p>点播效果完成。</p>
-<p><strong>直播：</strong></p>
-<p>这里直播和点播的十分相似，它通过不断的修改<code>.m3u8</code>文件来达到直播的目的。</p>
-<p>同样的，使用一个本地的视频文件当作输入流来进行直播，需要加入<code>-re</code>来模拟直播流的输入速度，<code>-stream_loop</code>来不断重复输入。
-另外，这个过程会不断产生新的ts文件，需要将使用过的小文件删除，添加<code>-hls_list_size 5</code>将<code>.m3u8</code>文件中的数量控制为5个，
-添加<code>-hls_flags delete_segments</code>开启自动删除过时的ts小文件。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -re -stream_loop -1 -i 1080_MS.mp4 -i logo.png \</span></span><br><span class="line"><span class="bash">  -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out];[0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2[over]&#x27;</span> \</span></span><br><span class="line"><span class="bash">  -map [over] -c:v h264 -map 0 -c:a copy \</span></span><br><span class="line"><span class="bash">  -f hls -hls_segment_type mpegts -hls_flags delete_segments -hls_list_size 5 -hls_time 10 -hls_segment_filename <span class="string">&#x27;out%05d.ts&#x27;</span> live.m3u8</span></span><br></pre></td></tr></table></figure>
-<p>产生ts小文件的效果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls /mycephfs/hls/videos/MS/</span></span><br><span class="line"></span><br><span class="line">total 49306</span><br><span class="line">-rw-rw-r-- 1 cluster cluster     227 Aug 14 16:41 live.m3u8</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 6638092 Aug 14 16:40 out00017.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 6406100 Aug 14 16:40 out00018.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7560044 Aug 14 16:40 out00019.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7581664 Aug 14 16:41 out00020.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 9148832 Aug 14 16:41 out00021.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 8171984 Aug 14 16:41 out00022.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 4980736 Aug 14 16:41 out00023.ts</span><br></pre></td></tr></table></figure>
-<p>可以看到ffmpeg同一时刻只会保留6个ts文件。</p>
-<p>同样的，使用potplayer打开连接<code>http://192.168.90.233:11111/hls/videos/MS/live.m3u8</code>，就可以看到直播，
-和点播十分相似，不同之处在于，这里会不断的播放下去：</p>
-<p><img src="/images/media/FFmpeg/1-13.png" alt="image" title="直播"></p>
-<hr>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://ffmpeg.org/documentation.html">FFmpeg Documentation</a></p>
-<p><a href="https://www.cnblogs.com/my_life/articles/6520155.html">使用FFMPEG生成HLS</a></p>
-]]></content>
-      <categories>
-        <category>media</category>
-      </categories>
-      <tags>
-        <tag>ffmpeg</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>TCP/IP详解卷1：协议 第19、20、21章笔记</title>
     <url>/2019/08/14/2019-08-14-TCP-IP-19-20-21/</url>
     <content><![CDATA[<hr>
@@ -7511,6 +7384,174 @@ RTO_2 = 2 RTO_1 = 2 (A + 4D) = 2(0 + 4 \times 3) = 24s</script><p>再往后接�
       </categories>
       <tags>
         <tag>TCP/IP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>练习使用FFmpeg将视频转码为hls，并添加水印</title>
+    <url>/2019/08/08/2019-08-08-ffmpeg-practice/</url>
+    <content><![CDATA[<hr>
+<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><ul>
+<li>一个高清的视频（这样转分辨率后起码不会糊）。</li>
+<li>一个高清的水印图片（理由同上）。</li>
+<li>FFmpeg，直接官网下一个就可以，这里我使用的就是FFmpeg.exe。</li>
+</ul>
+<p>下面将各个部分拆开练习，最后再合在一起。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ffmpeg -i 11.mp4 </span><br><span class="line">-vf &quot;movie&#x3D;wm.png [logo];[logo][in]scale2ref&#x3D;w&#x3D;oh*mdar:h&#x3D;ih&#x2F;10[logo-rescale][video-out];[video-out][logo-rescale]overlay&#x3D;x&#x3D;main_w&#x2F;10-w&#x2F;2:y&#x3D;main_h&#x2F;10-h&#x2F;2 [out]&quot;</span><br><span class="line">-codec:v libx264 -s 1920x1080 -codec:a mp3 </span><br><span class="line">-map 0 -f ssegment -segment_format mpegts -segment_list playlist.m3u8 -segment_time 10 1080P%03d.ts</span><br></pre></td></tr></table></figure></h2><h2 id="一些基本命令"><a href="#一些基本命令" class="headerlink" title="一些基本命令"></a>一些基本命令</h2><hr>
+<h3 id="1-转格式（容器转换）"><a href="#1-转格式（容器转换）" class="headerlink" title="1.转格式（容器转换）"></a>1.转格式（容器转换）</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 out.avi</span></span><br></pre></td></tr></table></figure>
+<p>直接在输出文件的后缀指定需要转的格式（容器）就行。</p>
+<p><strong>这样转码是会使用默认编码器，需要设置转码为copy来达到视频质量无损失。参考设置视频编码。</strong></p>
+<hr>
+<h3 id="2-转分辨率"><a href="#2-转分辨率" class="headerlink" title="2.转分辨率"></a>2.转分辨率</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -s 1280x720 out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>通过<code>-s 1280x720</code>指定分辨率为720P。</p>
+<hr>
+<h3 id="3-设置视频编码"><a href="#3-设置视频编码" class="headerlink" title="3.设置视频编码"></a>3.设置视频编码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -s 1280x720 -codec:v libx264 -codec:a mp3 out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>这里通过<code>-codec:v libx264</code>指定视频编码格式为<code>x264</code>，通过<code>-codec:a mp3</code>指定音频编码格式为<code>mp3</code>。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 4K_BXJG.mp4 -codec:v copy -codec:a copy out.avi</span></span><br></pre></td></tr></table></figure>
+<p>这里的转码格式被指定为<code>copy</code>，实际上FFmpeg就会省去编解码过程，速度非常快。</p>
+<blockquote>
+<p>Stream copy is a mode selected by supplying the copy parameter to the -codec option. It makes ffmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing. It is useful for changing the container format or modifying container-level metadata.</p>
+<p>Since there is no decoding or encoding, it is very fast and there is no quality loss. </p>
+</blockquote>
+<p>上面是官网中的描述，可以看到使用copy可以无损的转化容器格式。</p>
+<hr>
+<h3 id="4-转图片分辨率"><a href="#4-转图片分辨率" class="headerlink" title="4.转图片分辨率"></a>4.转图片分辨率</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i wm.png -s 100x100 out.png</span></span><br></pre></td></tr></table></figure>
+<p>可以看到转图片其实和转视频是同理的。</p>
+<h3 id="5-流选择"><a href="#5-流选择" class="headerlink" title="5.流选择"></a>5.流选择</h3><p>一个正常的视频至少有两个流，一个视频流，一个音频流。</p>
+<p>通过输入而不输出可以查看媒体文件信息：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 4K_BXJG.mp4</span></span><br><span class="line"></span><br><span class="line">Input #0, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_BXJG.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : mp42</span><br><span class="line">    minor_version   : 0</span><br><span class="line">    compatible_brands: mp42mp41</span><br><span class="line">    creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">  Duration: 00:00:54.02, start: 0.000000, bitrate: 39655 kb/s</span><br><span class="line">    Stream #0:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 39366 kb/s, 23.98 fps, 23.98 tbr, 24k tbn, 47.95 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : ?Mainconcept Video Media Handler</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #0:1(eng): Audio: aac (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 317 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : #Mainconcept MP4 Sound Media Handler</span><br></pre></td></tr></table></figure>
+<p>可以看到这个mp4文件包含两个流，0号流为视频流，1号流为音频流。</p>
+<p>同时输入两个媒体文件试试：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">  ffmpeg -i 4K_Z4.mp4 -i 4K_BXJG.mp4</span></span><br><span class="line"></span><br><span class="line">Input #0, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_Z4.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : isom</span><br><span class="line">    minor_version   : 512</span><br><span class="line">    compatible_brands: mp41mp42</span><br><span class="line">    creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">  Duration: 00:02:22.56, start: 0.000000, bitrate: 44851 kb/s</span><br><span class="line">    Stream #0:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 44717 kb/s, 50 fps, 50 tbr, 30k tbn, 100 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 128 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2015-01-05T13:14:01.000000Z</span><br><span class="line">Input #1, mov,mp4,m4a,3gp,3g2,mj2, from &#x27;4K_BXJG.mp4&#x27;:</span><br><span class="line">  Metadata:</span><br><span class="line">    major_brand     : mp42</span><br><span class="line">    minor_version   : 0</span><br><span class="line">    compatible_brands: mp42mp41</span><br><span class="line">    creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">  Duration: 00:00:54.02, start: 0.000000, bitrate: 39655 kb/s</span><br><span class="line">    Stream #1:0(eng): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 3840x2160 [SAR 1:1 DAR 16:9], 39366 kb/s, 23.98 fps, 23.98 tbr, 24k tbn, 47.95 tbc (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : ?Mainconcept Video Media Handler</span><br><span class="line">      encoder         : AVC Coding</span><br><span class="line">    Stream #1:1(eng): Audio: aac (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 317 kb/s (default)</span><br><span class="line">    Metadata:</span><br><span class="line">      creation_time   : 2017-02-04T16:09:19.000000Z</span><br><span class="line">      handler_name    : #Mainconcept MP4 Sound Media Handler</span><br></pre></td></tr></table></figure>
+<p>可以发现流编号上面的规律，<code>0:0</code>、<code>0:1</code>表示第一个文件的两个流，<code>1:0</code>、<code>1:1</code>则表示第二个文件的两个流。</p>
+<p><strong>提取视频流：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -map 0:0 -codec copy out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>上面的命令将原视频的视频流单独分离出来。</p>
+<p><strong>合并音视频流：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i 4K_Z4.mp4 -map 0:0 -codec copy -map 1:1 -codec copy out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>提取第一个视频的视频流，第二个视频的音频流，合并为out.mp4。</p>
+<hr>
+<hr>
+<hr>
+<h2 id="filter设置"><a href="#filter设置" class="headerlink" title="filter设置"></a>filter设置</h2><hr>
+<h3 id="1-过滤器图"><a href="#1-过滤器图" class="headerlink" title="1.过滤器图"></a>1.过滤器图</h3><p>先看官方文档说的：</p>
+<blockquote>
+<p>Filtering in FFmpeg is enabled through the libavfilter library.</p>
+<p>In libavfilter, a filter can have multiple inputs and multiple outputs. To illustrate the sorts of things that are possible, we consider the following filtergraph.</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">                [main]</span><br><span class="line">input --&gt; split ---------------------&gt; overlay --&gt; output</span><br><span class="line">            |                             ^</span><br><span class="line">            |[tmp]                  [flip]|</span><br><span class="line">            +-----&gt; crop --&gt; vflip -------+</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>This filtergraph splits the input stream in two streams, then sends one stream through the crop filter and the vflip filter, before merging it back with the other stream by overlaying it on top. </p>
+</blockquote>
+<p>filter即常说的滤镜，Filtering过程可以是一个多输入多输出的过程，多个输入的视频经过处理合并成一个或多个输出。</p>
+<p>上面的过程的命令为：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i INPUT -vf <span class="string">&quot;split [main][tmp]; [tmp] crop=iw:ih/2:0:0, vflip [flip]; [main][flip] overlay=0:H/2&quot;</span> OUTPUT</span></span><br></pre></td></tr></table></figure>
+<p>它的效果如下：</p>
+<p><img src="/images/media/FFmpeg/1-1.png" alt="image" title="原视频"></p>
+<p><img src="/images/media/FFmpeg/1-2.png" alt="image" title="转码后"></p>
+<p>它将原视频复制（split），裁剪一半（crop），反转（cflip），覆盖（overlay）到原视频之上。</p>
+<p>可以看到主要的处理过程在<code>-vf</code>之后，它就代表<code>filtergraph</code>也就是<strong>过滤器图</strong>（相似的还有<code>-filter_complex</code>），相当于定义了一个视频处理的过程。</p>
+<p><strong>注意到：<code>-vf</code>不能有多个输入，而<code>-filter_complex</code>可以。</strong></p>
+<hr>
+<h3 id="2-label（标签）"><a href="#2-label（标签）" class="headerlink" title="2.label（标签）"></a>2.label（标签）</h3><p>标签用于对流进行标记，目前我只知道它一些简单的用法。</p>
+<p>例如上面的命令中的过滤器图：</p>
+<p><code>&quot;split [main][tmp]; [tmp] crop=iw:ih/2:0:0, vflip [flip]; [main][flip] overlay=0:H/2&quot;</code></p>
+<ol>
+<li>它将原视频进行split，将它复制为两个流，一个命名为<code>[main]</code>，一个命名为<code>[tmp]</code>。</li>
+<li>它将<code>[tmp]</code>流进行crop操作和vfilp操作，处理之后的流命名为<code>[flip]</code>。</li>
+<li>输入<code>[main]</code>和<code>[flip]</code>流，进行overlay（覆盖）操作，根据这里<code>[main][flip]</code>的先后关系，这里将<code>[flip]</code>覆盖到<code>[main]</code>之上。</li>
+</ol>
+<p>例如下面的命令，将第二个输入视频分辨率降低一半，然后覆盖到第一个视频之上：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i 1080_BXJG.mp4 -filter_complex <span class="string">&quot;[1:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</span> tmp1.mp4</span></span><br></pre></td></tr></table></figure>
+<p>其中<code>&quot;[1:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</code>：</p>
+<ol>
+<li><code>[1:0]</code>代表第二个视频的第一个流（视频流），将它的scale变为一半（<code>iw/2</code>和<code>ih/2</code>），然后标记为<code>[scaled]</code>。</li>
+<li><code>[0]</code>就代表第一个输入的媒体文件，将<code>[scaled]</code>置于它之上然后输出。</li>
+</ol>
+<hr>
+<h3 id="3-将视频分辨率降低一半"><a href="#3-将视频分辨率降低一半" class="headerlink" title="3.将视频分辨率降低一半"></a>3.将视频分辨率降低一半</h3><p>可以利用scale来完成，其中<code>iw</code>、<code>ih</code>分别代表输入的宽和高。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 11.mp4 -vf <span class="string">&quot;[in]scale=w=iw/2:h=ih/2[out]&quot;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>为了展示效果，这里将降低了分辨率的视频覆盖到原视频之上：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -filter_complex <span class="string">&quot;[0:0]scale=w=iw/2:h=ih/2[scaled]; [0][scaled] overlay&quot;</span> tmp1.mp4</span></span><br></pre></td></tr></table></figure>
+<p><img src="/images/media/FFmpeg/1-3.png" alt="image" title="分辨率降低一半"></p>
+<hr>
+<h3 id="4-为视频添加水印"><a href="#4-为视频添加水印" class="headerlink" title="4.为视频添加水印"></a>4.为视频添加水印</h3><p>为视频添加水印，也就是将水印覆盖到原视频之上，即<code>overlay</code>滤镜。</p>
+<p><strong>简单覆盖：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i wm.png -filter_complex overlay out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>简单覆盖时，没有对水印大小进行调整，会造成下面的结果：</p>
+<p><img src="/images/media/FFmpeg/1-4.png" alt="image" title="简单覆盖"></p>
+<p><strong>大小调整-1：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1]scale=w=200:h=-1[scaled]; [0][scaled]overlay&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>使用<code>scale</code>滤镜来进行分辨率的调整，再将它覆盖到原视频之上：</p>
+<p><img src="/images/media/FFmpeg/1-5.png" alt="image" title="水印分辨率调整"></p>
+<p>可以看到这里成功的对水印的大小进行了调整，<strong>但是</strong>又有一点太小了。</p>
+<p>那么问题来了，难道要不断的试来找到一个健康的分辨率吗？</p>
+<p><strong>大小调整-2：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p><code>scale2ref</code>滤镜有两个输入，它对第一个输入进行rescale，
+但它与<code>scale</code>滤镜的区别在于，它使用第二个输入作为参考，来进行第一个输入的rescale。</p>
+<p>这里的<code>[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]</code>中，ih指的就是参考输入<code>[0]</code>的宽度，
+为了保证水印的横纵比，这里使用<code>oh*mdar</code>来定义水印的宽度。</p>
+<p><img src="/images/media/FFmpeg/1-6.png" alt="image" title="水印分辨率调整"></p>
+<p><strong>水印位置调整-1：</strong></p>
+<p>可以看到上面水印都是贴着视频的左上角的，这里来对它的位置进行调整：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay=x=300:y=300&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>可以通过指定overlay的坐标来确定水印覆盖的位置（默认x=0，y=0，即左上角），这里将坐标指定在300，300，效果如下：</p>
+<p><img src="/images/media/FFmpeg/1-7.png" alt="image" title="水印位置调整"></p>
+<p><strong>水印位置调整-2：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; [0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2&#x27;</span> out.mp4</span></span><br></pre></td></tr></table></figure>
+<p>这里<code>main_w</code>和<code>main_h</code>指的就是视频输入（<code>[0-out]</code>）的宽和高，<code>w</code>和<code>h</code>则是水印输入（<code>[scaled]</code>）的宽和高，
+这里将水印的中心点指定在视频输入的1/10宽和1/10高的位置。</p>
+<p><img src="/images/media/FFmpeg/1-8.png" alt="image" title="水印位置调整"></p>
+<hr>
+<h2 id="转hls"><a href="#转hls" class="headerlink" title="转hls"></a>转hls</h2><p>hls即包括一个m3u(8)的索引文件，TS媒体分片文件和key加密串文件。</p>
+<p>在ffmpeg中可以使用hls或者segment来实现。</p>
+<hr>
+<h3 id="使用segment-muxer"><a href="#使用segment-muxer" class="headerlink" title="使用segment muxer"></a>使用segment muxer</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -f segment -segment_format mpegts -segment_list playlist.m3u8 -segment_list_size 0 -segment_time 5 out%03d.ts</span></span><br></pre></td></tr></table></figure>
+<p>上面的命令将输入视频切割为5秒一片的ts文件。其中，<code>-segment_list playlist.m3u8</code>设置文件list输出到playlist.m3u8，
+<code>-segment_list_size 0</code>设置playlist.m3u8里面将包含所有切分出来的分片，
+<code>-segment_time 5</code>设置分片大小为5秒。</p>
+<p>得到如下结果：</p>
+<p><img src="/images/media/FFmpeg/1-9.png" alt="image" title="segment muxer切分"></p>
+<hr>
+<h3 id="使用hls-muxer"><a href="#使用hls-muxer" class="headerlink" title="使用hls muxer"></a>使用hls muxer</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -map 0 -f hls -hls_segment_type mpegts -hls_list_size 6 -hls_time 5 -hls_segment_filename <span class="string">&#x27;out%03d.ts&#x27;</span> playlist.m3u8</span></span><br></pre></td></tr></table></figure>
+<p>参数基本一样，就不多解释了，效果如下：</p>
+<p><img src="/images/media/FFmpeg/1-10.png" alt="image" title="hls muxer切分"></p>
+<hr>
+<h2 id="转码，水印，hls"><a href="#转码，水印，hls" class="headerlink" title="转码，水印，hls"></a>转码，水印，hls</h2><p>将上面的命令进行总结，可以融合得到下面这条命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -i 1080_BXJG.mp4 -i logo.png \</span></span><br><span class="line"><span class="bash">    -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out]; \</span></span></span><br><span class="line"><span class="bash">    [0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2[over];[over]scale=w=1920:h=-1[out]<span class="string">&#x27; \</span></span></span><br><span class="line"><span class="bash">    -map [out] -c:v h264 -c:a mp3 \</span></span><br><span class="line"><span class="bash">    -f hls -hls_segment_type mpegts -hls_list_size 0 -hls_time 5 -hls_segment_filename <span class="string">&#x27;out%03d.ts&#x27;</span> playlist.m3u8</span></span><br></pre></td></tr></table></figure>
+<p>这条命令将一个视频文件添加水印，并切割为5秒的ts小文件，同时将分辨率调整为1080P。</p>
+<hr>
+<h2 id="基于nginx的m3u8的点播、直播的实现"><a href="#基于nginx的m3u8的点播、直播的实现" class="headerlink" title="基于nginx的m3u8的点播、直播的实现"></a>基于nginx的m3u8的点播、直播的实现</h2><p>首先看我这里nginx的配置：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat /etc/nginx/nginx.conf</span></span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       11111 default_server;</span><br><span class="line">        listen       [::]:11111 default_server;</span><br><span class="line">        server_name  long;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root html;</span><br><span class="line">            index index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location /hls &#123;</span><br><span class="line">            types &#123;</span><br><span class="line">                application/vnd.apple.mpegusr m3u8;</span><br><span class="line">                video/mp2t ts;</span><br><span class="line">            &#125;</span><br><span class="line">            root /mycephfs;</span><br><span class="line">            add_header Cache-Control no-cache;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>我这里将nginx的服务起在11111端口，文件目录为/mycephfs/hls，浏览器打开<code>192.168.90.233:11111</code>：</p>
+<p><img src="/images/media/FFmpeg/1-11.png" alt="image" title="nginx"></p>
+<p><strong>点播：</strong></p>
+<p>将对应的hls文件放入nginx的文件目录下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ll /mycephfs/hls/videos/BXJG-hls/</span></span><br><span class="line"></span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3938600 Aug 13 12:47 out000.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 1366196 Aug 13 12:47 out001.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster  926088 Aug 13 12:47 out002.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3286992 Aug 13 12:47 out003.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7581852 Aug 13 12:47 out004.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 1721516 Aug 13 12:47 out005.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3373848 Aug 13 12:48 out006.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3193556 Aug 13 12:48 out007.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 5041220 Aug 13 12:48 out008.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 3229088 Aug 13 12:48 out009.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster     370 Aug 13 12:48 playlist.m3u8</span><br></pre></td></tr></table></figure>
+<p>直接使用potplayer打开链接<code>http://192.168.90.233:11111/hls/videos/BXJG-hls/playlist.m3u8</code>：</p>
+<p><img src="/images/media/FFmpeg/1-12.png" alt="image" title="点播"></p>
+<p>点播效果完成。</p>
+<p><strong>直播：</strong></p>
+<p>这里直播和点播的十分相似，它通过不断的修改<code>.m3u8</code>文件来达到直播的目的。</p>
+<p>同样的，使用一个本地的视频文件当作输入流来进行直播，需要加入<code>-re</code>来模拟直播流的输入速度，<code>-stream_loop</code>来不断重复输入。
+另外，这个过程会不断产生新的ts文件，需要将使用过的小文件删除，添加<code>-hls_list_size 5</code>将<code>.m3u8</code>文件中的数量控制为5个，
+添加<code>-hls_flags delete_segments</code>开启自动删除过时的ts小文件。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ffmpeg -re -stream_loop -1 -i 1080_MS.mp4 -i logo.png \</span></span><br><span class="line"><span class="bash">  -filter_complex <span class="string">&#x27;[1][0]scale2ref=w=oh*mdar:h=ih/8[scaled][0-out];[0-out][scaled]overlay=x=main_w/10-w/2:y=main_h/10-h/2[over]&#x27;</span> \</span></span><br><span class="line"><span class="bash">  -map [over] -c:v h264 -map 0 -c:a copy \</span></span><br><span class="line"><span class="bash">  -f hls -hls_segment_type mpegts -hls_flags delete_segments -hls_list_size 5 -hls_time 10 -hls_segment_filename <span class="string">&#x27;out%05d.ts&#x27;</span> live.m3u8</span></span><br></pre></td></tr></table></figure>
+<p>产生ts小文件的效果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls /mycephfs/hls/videos/MS/</span></span><br><span class="line"></span><br><span class="line">total 49306</span><br><span class="line">-rw-rw-r-- 1 cluster cluster     227 Aug 14 16:41 live.m3u8</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 6638092 Aug 14 16:40 out00017.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 6406100 Aug 14 16:40 out00018.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7560044 Aug 14 16:40 out00019.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 7581664 Aug 14 16:41 out00020.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 9148832 Aug 14 16:41 out00021.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 8171984 Aug 14 16:41 out00022.ts</span><br><span class="line">-rw-rw-r-- 1 cluster cluster 4980736 Aug 14 16:41 out00023.ts</span><br></pre></td></tr></table></figure>
+<p>可以看到ffmpeg同一时刻只会保留6个ts文件。</p>
+<p>同样的，使用potplayer打开连接<code>http://192.168.90.233:11111/hls/videos/MS/live.m3u8</code>，就可以看到直播，
+和点播十分相似，不同之处在于，这里会不断的播放下去：</p>
+<p><img src="/images/media/FFmpeg/1-13.png" alt="image" title="直播"></p>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://ffmpeg.org/documentation.html">FFmpeg Documentation</a></p>
+<p><a href="https://www.cnblogs.com/my_life/articles/6520155.html">使用FFMPEG生成HLS</a></p>
+]]></content>
+      <categories>
+        <category>media</category>
+      </categories>
+      <tags>
+        <tag>ffmpeg</tag>
       </tags>
   </entry>
   <entry>
