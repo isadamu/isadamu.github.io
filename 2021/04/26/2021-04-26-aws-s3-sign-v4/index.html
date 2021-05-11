@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Microsoft YaHei, consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"longrm.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="研究如何生成AWS-SignV4签名，以及如何进行鉴权。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS-SignV4签名的学习笔记">
+<meta property="og:url" content="http://longrm.com/2021/04/26/2021-04-26-aws-s3-sign-v4/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="研究如何生成AWS-SignV4签名，以及如何进行鉴权。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-26T08:34:00.000Z">
+<meta property="article:modified_time" content="2021-05-11T11:03:50.358Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="cloud">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://longrm.com/2021/04/26/2021-04-26-aws-s3-sign-v4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AWS-SignV4签名的学习笔记 | 龙</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-104895670-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-104895670-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?df64de185c0ed2effe68855ef7caa51e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://longrm.com/2021/04/26/2021-04-26-aws-s3-sign-v4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AWS-SignV4签名的学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-26 16:34:00" itemprop="dateCreated datePublished" datetime="2021-04-26T16:34:00+08:00">2021-04-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-11 19:03:50" itemprop="dateModified" datetime="2021-05-11T19:03:50+08:00">2021-05-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud/" itemprop="url" rel="index"><span itemprop="name">cloud</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">研究如何生成AWS-SignV4签名，以及如何进行鉴权。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>这里对AWS-SignV4签名进行一下简单研究，如何对HTTP请求生成AWS-SignV4签名（包括Header签名和Url预签名），以及如何对一个请求进行AWS-SignV4鉴权。</p>
+<p>这里主要参考了官方文档：</p>
+<p><a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html">Signature Version 4 signing process</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html">Authenticating Requests (AWS Signature Version 4)</a></p>
+<p>我这里使用go写了一份代码：<a target="_blank" rel="noopener" href="https://github.com/isadamu/aws-signature-v4">aws-signature-v4</a></p>
+<hr>
+<h1 id="AWS-SignV4签名步骤"><a href="#AWS-SignV4签名步骤" class="headerlink" title="AWS-SignV4签名步骤"></a>AWS-SignV4签名步骤</h1><hr>
+<h2 id="header签名"><a href="#header签名" class="headerlink" title="header签名"></a>header签名</h2><p>假如现在PUT请求url为<code>http://example.com/bucket1/test.txt?aa=123&amp;Ab</code>，body为<code>hello world</code>。</p>
+<p>那么上述的请求进行签名的结果如下：</p>
+<hr>
+<h3 id="步骤一：构建Canonical-request"><a href="#步骤一：构建Canonical-request" class="headerlink" title="步骤一：构建Canonical request"></a>步骤一：构建<code>Canonical request</code></h3><p>首先需要构建<code>Canonical request</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CanonicalRequest &#x3D;</span><br><span class="line">  HTTPRequestMethod + &#39;\n&#39; +</span><br><span class="line">  CanonicalURI + &#39;\n&#39; +</span><br><span class="line">  CanonicalQueryString + &#39;\n&#39; +</span><br><span class="line">  CanonicalHeaders + &#39;\n&#39; +</span><br><span class="line">  SignedHeaders + &#39;\n&#39; +</span><br><span class="line">  HexEncode(Hash(RequestPayload))</span><br></pre></td></tr></table></figure>
+<p>其中各个字段意思如下：</p>
+<ul>
+<li>HTTPRequestMethod：请求的Method，例如GET、POST等。</li>
+<li>CanonicalURI：http请求path，例如/abc/c.txt。</li>
+<li>CanonicalQueryString：经过处理的所有的query参数。</li>
+<li>CanonicalHeaders：经过处理的加入签名的header参数。</li>
+<li>SignedHeaders：加入签名的header参数的所有key。</li>
+<li>HexEncode(Hash(RequestPayload))：http负载（也就是body）的hash值。</li>
+</ul>
+<hr>
+<p><strong>HTTPRequestMethod</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PUT</span><br></pre></td></tr></table></figure>
+<p>请求为<code>PUT</code>，所以这里取值也为<code>PUT</code>。</p>
+<hr>
+<p><strong>CanonicalURI</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;bucket1&#x2F;test.txt</span><br></pre></td></tr></table></figure>
+<p>请求path为<code>/bucket1/test.txt</code>，所以值也为<code>/bucket1/test.txt</code>。</p>
+<hr>
+<p><strong>CanonicalQueryString</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Ab&#x3D;&amp;aa&#x3D;123</span><br></pre></td></tr></table></figure>
+<p>首先这里的Query必需包含请求URL上的所有Query参数，</p>
+<p>query为<code>aa=123&amp;Ab</code>，这里<code>Ab</code>没有值，那就默认其值为空。对键值进行<strong>区分大小写的字符串排序</strong>后，重新拼接得到<code>Ab=&amp;aa=123</code>。</p>
+<p>所以这里取值为<code>Ab=&amp;aa=123</code>。</p>
+<hr>
+<p><strong>CanonicalHeaders</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">content-length:11\n</span><br><span class="line">host:example.com\n</span><br><span class="line">x-amz-content-sha256:b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9\n</span><br><span class="line">x-amz-date:20210511T080101Z\n</span><br></pre></td></tr></table></figure>
+<p>首先这里是PUT方法，向s3中写入一个<code>test.txt</code>，其内容为<code>hello world</code>，所以必需在签名中加入<code>content-length</code>字段，内容长度为11字节。注意到，如果没有携带body，那么header签名时不要加上<code>content-length</code>。</p>
+<p><code>host</code>这里就是<code>example.com</code>。</p>
+<p><code>x-amz-content-sha256</code>是对<code>body</code>进行sha256运算之后得到的hash值。注意，即使没有携带body，也就是body为空，也要在签名中加入此字段。</p>
+<p><code>x-amz-date</code>是签名日期，注意这里是<strong>UTC</strong>时间，也就是0时区。</p>
+<p>它们的顺序是对键值进行<strong>不区分大小写的排序</strong>得来的。</p>
+<p>这里都是默认必备的字段，也可以加入自定义字段。</p>
+<hr>
+<p><strong>SignedHeaders</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">content-length;host;x-amz-content-sha256;x-amz-date</span><br></pre></td></tr></table></figure>
+<p>这里对应的就是<code>CanonicalHeaders</code>，顺序与其保持一致。</p>
+<hr>
+<p><strong>HexEncode(Hash(RequestPayload))</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9</span><br></pre></td></tr></table></figure>
+<p>body的sha256哈希值，进行HexEncode编码后得到。</p>
+<p>注意，即使没有携带body，也就是body为空，也要在签名中加入此字段。</p>
+<hr>
+<p><strong>构建得到<code>Canonical request</code></strong></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">PUT</span><br><span class="line">&#x2F;bucket1&#x2F;test.txt</span><br><span class="line">Ab&#x3D;&amp;aa&#x3D;123</span><br><span class="line">content-length:11</span><br><span class="line">host:example.com</span><br><span class="line">x-amz-content-sha256:b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9</span><br><span class="line">x-amz-date:20210511T080101Z</span><br><span class="line"></span><br><span class="line">content-length;host;x-amz-content-sha256;x-amz-date</span><br><span class="line">b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9</span><br></pre></td></tr></table></figure></h2><h3 id="步骤二：构建StringToSign"><a href="#步骤二：构建StringToSign" class="headerlink" title="步骤二：构建StringToSign"></a>步骤二：构建<code>StringToSign</code></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">StringToSign &#x3D;</span><br><span class="line">    Algorithm + \n +</span><br><span class="line">    RequestDateTime + \n +</span><br><span class="line">    CredentialScope + \n +</span><br><span class="line">    HashedCanonicalRequest</span><br></pre></td></tr></table></figure>
+<p>其中各个字段意思如下：</p>
+<ul>
+<li>Algorithm：使用的hash算法。</li>
+<li>RequestDateTime：请求时间，与x-amz-date一致。</li>
+<li>CredentialScope：包含日期，区域，所请求服务。</li>
+<li>HashedCanonicalRequest：经过hash过后的<code>Canonical request</code>。</li>
+</ul>
+<hr>
+<p><strong>Algorithm</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AWS4-HMAC-SHA256</span><br></pre></td></tr></table></figure>
+<p>AWS4代表signV4，然后通常情况hash算法都选择的是<code>HMAC-SHA256</code>，拼接到一起得到<code>AWS4-HMAC-SHA256</code>。</p>
+<hr>
+<p><strong>RequestDateTime</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">20210511T080101Z</span><br></pre></td></tr></table></figure>
+<p>请求时间，精确到秒数，格式固定，与x-amz-date日期一致。</p>
+<hr>
+<p><strong>CredentialScope</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">20210511&#x2F;ep-east-1&#x2F;s3&#x2F;aws4_request</span><br></pre></td></tr></table></figure>
+<p><code>20210511</code>即日期。</p>
+<p><code>ep-east-1</code>代表区域，这个其实只有在真正使用aws服务的时候，才需要注意。</p>
+<p><code>s3</code>表示s3服务。</p>
+<p><code>aws4_request</code>为固定结束符。</p>
+<p>拼到一起即为<code>20210511/ep-east-1/s3/aws4_request</code>。</p>
+<hr>
+<p><strong>HashedCanonicalRequest</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f36e0e6979bec2c3d0f35e327eb74cc81da7de6f4ee23e8af99c64fff102a583</span><br></pre></td></tr></table></figure>
+<p>对第一步得到的<code>CanonicalRequest</code>进行SHA256和Hex后得到，即<code>Hex(SHA256(CanonicalRequest))</code>。</p>
+<hr>
+<p><strong>构建得到<code>StringToSign</code></strong></p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AWS4-HMAC-SHA256</span><br><span class="line">20210511T080101Z</span><br><span class="line">20210511&#x2F;ep-east-1&#x2F;s3&#x2F;aws4_request</span><br><span class="line">f36e0e6979bec2c3d0f35e327eb74cc81da7de6f4ee23e8af99c64fff102a583</span><br></pre></td></tr></table></figure></h2><h3 id="步骤三：计算签名"><a href="#步骤三：计算签名" class="headerlink" title="步骤三：计算签名"></a>步骤三：计算签名</h3><p>这里贴出代码：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kSecret := []<span class="keyword">byte</span>(Scheme + sk)</span><br><span class="line">kDate := HmacSHA256([]<span class="keyword">byte</span>(dateStamp), kSecret)</span><br><span class="line">kRegion := HmacSHA256([]<span class="keyword">byte</span>(regionName), kDate)</span><br><span class="line">kService := HmacSHA256([]<span class="keyword">byte</span>(serviceName), kRegion)</span><br><span class="line">kSigning := HmacSHA256([]<span class="keyword">byte</span>(Terminator), kService)</span><br><span class="line">signature := HmacSHA256([]<span class="keyword">byte</span>(stringToSign), kSigning)</span><br></pre></td></tr></table></figure>
+<p>这里sk就是密钥。</p>
+<p>这里使用的ak，sk值为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ak: A7GqwejrKHkJ7K8Tz88u</span><br><span class="line">sk: teFxGLlckz8d1AzzhSTxBhXPIQ7Qq06yAm77SM3M</span><br></pre></td></tr></table></figure>
+<p>可以看到经过多次hash后，即得到<strong>signature</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">83e0f7e5cf34e103349b081d6ec5e5a91aa4e9cc68a2fd6c2f4fcdd077190986</span><br></pre></td></tr></table></figure>
+<p>之后再进行拼接才能得到header中的<strong>Authorization</strong>，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">AWS4-HMAC-SHA256 Credential&#x3D;A7GqwejrKHkJ7K8Tz88u&#x2F;20210511&#x2F;ep-east-1&#x2F;s3&#x2F;aws4_request, SignedHeaders&#x3D;content-length;host;x-amz-content-sha256;x-amz-date, Signature&#x3D;83e0f7e5cf34e103349b081d6ec5e5a91aa4e9cc68a2fd6c2f4fcdd077190986</span><br><span class="line">&#96;&#96;</span><br><span class="line"></span><br><span class="line">在请求header中加入Authorization以及其它加入签名的头部字段即可，如下：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Request headers:
+    Content-Length: [11]
+    x-amz-content-sha256 : [b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9]
+    x-amz-date : [20210511T080101Z]
+    Authorization : [AWS4-HMAC-SHA256 Credential=A7GqwejrKHkJ7K8Tz88u/20210511/ep-east-1/s3/aws4_request, SignedHeaders=content-length;host;x-amz-content-sha256;x-amz-date, Signature=83e0f7e5cf34e103349b081d6ec5e5a91aa4e9cc68a2fd6c2f4fcdd077190986]
+    Host : [example.com]
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-------------------------</span><br><span class="line"></span><br><span class="line">## url签名</span><br><span class="line"></span><br><span class="line">url签名，也就是预签名，这个通常用于GET请求，比如让别人可以通过一个链接在一天之内读取你的某个文件，一天之后链接失效，访问返回403。</span><br><span class="line"></span><br><span class="line">假设现在GET请求url为&#96;http:&#x2F;&#x2F;example.com&#x2F;bucket1&#x2F;test.txt?aa&#x3D;123&amp;Ab&#96;，body为&#96;hello world&#96;。</span><br><span class="line"></span><br><span class="line">得到预签名url如下：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<a target="_blank" rel="noopener" href="http://example.com/bucket1/test.txt?aa=123&amp;Ab&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=A7GqwejrKHkJ7K8Tz88u/20210511/ep-east-1/s3/aws4_request&amp;X-Amz-Date=20210511T095043Z&amp;X-Amz-Expires=86400&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=2e0e7bf17958b7347bac7cf39fddadddeadb0c792d8a1b2453b54f9f7678e9bb">http://example.com/bucket1/test.txt?aa=123&amp;Ab&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=A7GqwejrKHkJ7K8Tz88u/20210511/ep-east-1/s3/aws4_request&amp;X-Amz-Date=20210511T095043Z&amp;X-Amz-Expires=86400&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=2e0e7bf17958b7347bac7cf39fddadddeadb0c792d8a1b2453b54f9f7678e9bb</a>
+```</p>
+<p>url的计算方法与header签名是一致的，不同的是，签名的大部分信息都放到了url上，通常header中只有一个host信息。</p>
+<p>url签名不对body进行签名（同理content-length），bodyHash值直接强制取值为<code>UNSIGNED-PAYLOAD</code>。</p>
+<p>url签名需要加入一个<code>X-Amz-Expires</code>信息，代表签名的有效时长，单位秒。</p>
+<p>具体的东西这里不再赘述，可以在代码中查看。</p>
+<hr>
+<h1 id="AWS-SignV4签名代码"><a href="#AWS-SignV4签名代码" class="headerlink" title="AWS-SignV4签名代码"></a>AWS-SignV4签名代码</h1><p>下面这个代码是我用golang随便写的，参考了一下aws的java版本demo代码。</p>
+<p>可以进行header签名和预签名，也可以作为server，对header签名和预签名进行鉴权。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/isadamu/aws-signature-v4">https://github.com/isadamu/aws-signature-v4</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/cloud/" rel="tag"># cloud</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/17/2021-03-17-teamspeak-server/" rel="prev" title="在centos7上搭建teamspeak3服务端">
+      <i class="fa fa-chevron-left"></i> 在centos7上搭建teamspeak3服务端
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AWS-SignV4%E7%AD%BE%E5%90%8D%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">AWS-SignV4签名步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#header%E7%AD%BE%E5%90%8D"><span class="nav-number">2.1.</span> <span class="nav-text">header签名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%80%EF%BC%9A%E6%9E%84%E5%BB%BACanonical-request"><span class="nav-number">2.1.1.</span> <span class="nav-text">步骤一：构建Canonical request</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.2.</span> <span class="nav-text">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+PUT
+&#x2F;bucket1&#x2F;test.txt
+Ab&#x3D;&amp;aa&#x3D;123
+content-length:11
+host:example.com
+x-amz-content-sha256:b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9
+x-amz-date:20210511T080101Z
+
+content-length;host;x-amz-content-sha256;x-amz-date
+b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9
+</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4%E4%BA%8C%EF%BC%9A%E6%9E%84%E5%BB%BAStringToSign"><span class="nav-number">2.2.1.</span> <span class="nav-text">步骤二：构建StringToSign</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">2.3.</span> <span class="nav-text">1
+2
+3
+4
+AWS4-HMAC-SHA256
+20210511T080101Z
+20210511&#x2F;ep-east-1&#x2F;s3&#x2F;aws4_request
+f36e0e6979bec2c3d0f35e327eb74cc81da7de6f4ee23e8af99c64fff102a583
+</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%89%EF%BC%9A%E8%AE%A1%E7%AE%97%E7%AD%BE%E5%90%8D"><span class="nav-number">2.3.1.</span> <span class="nav-text">步骤三：计算签名</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AWS-SignV4%E7%AD%BE%E5%90%8D%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">AWS-SignV4签名代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
