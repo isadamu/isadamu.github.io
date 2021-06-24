@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://longrm.com/images/linux/rancher/rancher-创建.png">
 <meta property="og:image" content="http://longrm.com/images/linux/rancher/rancher-导入集群命令.png">
 <meta property="article:published_time" content="2021-06-23T07:38:00.000Z">
-<meta property="article:modified_time" content="2021-06-24T01:15:02.023Z">
+<meta property="article:modified_time" content="2021-06-24T01:24:16.917Z">
 <meta property="article:author" content="龙">
 <meta property="article:tag" content="study">
 <meta property="article:tag" content="linux">
@@ -250,7 +250,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-24 09:15:02" itemprop="dateModified" datetime="2021-06-24T09:15:02+08:00">2021-06-24</time>
+                <time title="修改时间：2021-06-24 09:24:16" itemprop="dateModified" datetime="2021-06-24T09:24:16+08:00">2021-06-24</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -333,7 +333,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> kubectl -n cattle-system rollout status deploy/rancher</span></span><br><span class="line"></span><br><span class="line">Waiting for deployment &quot;rancher&quot; rollout to finish: 0 of 3 updated replicas are available...</span><br><span class="line">deployment &quot;rancher&quot; successfully rolled out</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> kubectl -n cattle-system get deploy rancher</span></span><br><span class="line"></span><br><span class="line">NAME      READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">rancher   3/3     3            3           166m</span><br></pre></td></tr></table></figure>
 <p>到这里就成功安装了rancher，但是我们还没有加入ssl证书，此时访问web会出现不安全的提示，所以先加入证书：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n cattle-system create secret tls tls-rancher-ingress \</span><br><span class="line">  --cert=xxx.plus.pem \</span><br><span class="line">  --key=xxx.plus.key</span><br></pre></td></tr></table></figure>
-<p>证书添加成功之后，web页面就不再提示不安全。（使用<a target="_blank" rel="noopener" href="https://rancher.zls.plus来访问rancher）">https://rancher.zls.plus来访问rancher）</a></p>
+<p>证书添加成功之后，web页面就不再提示不安全。（使用<a target="_blank" rel="noopener" href="https://xxx.plus来访问rancher）">https://xxx.plus来访问rancher）</a></p>
 <hr>
 <h1 id="添加k3s集群到rancher"><a href="#添加k3s集群到rancher" class="headerlink" title="添加k3s集群到rancher"></a>添加k3s集群到rancher</h1><p>首先部署一个k3s集群，方法和上面一样。</p>
 <p>进入rancher的web页面，选择添加集群：</p>
