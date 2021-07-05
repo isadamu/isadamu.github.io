@@ -54,6 +54,45 @@
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 18.4Sum</title>
+    <url>/2017/08/18/2017-08-18-4Sum/</url>
+    <content><![CDATA[<h2 id="18-4Sum"><a href="#18-4Sum" class="headerlink" title="18.4Sum"></a>18.4Sum</h2><blockquote>
+<p>Description:</p>
+<blockquote>
+<p>Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.</p>
+</blockquote>
+<p>Note: The solution set must not contain duplicate quadruplets.</p>
+<p>example:</p>
+<blockquote>
+<p>For example, given array S = [1, 0, -1, 0, -2, 2], and target = 0.</p>
+<p>A solution set is:</p>
+<p>[ [-1,  0, 0, 1], [-2, -1, 1, 2], [-2,  0, 0, 2] ]</p>
+</blockquote>
+</blockquote>
+<hr>
+<p>题目理解：与3Sum一个意思。</p>
+<hr>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; fourSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="keyword">int</span> m = nums.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx1 = <span class="number">0</span>, bound1 = m - <span class="number">3</span> ; idx1 &lt; bound1 &amp;&amp; nums[idx1] * <span class="number">4</span> &lt;= target ;  ) &#123;</span><br><span class="line">            <span class="keyword">int</span> target3 = target - nums[idx1];</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = idx1 + <span class="number">1</span>, bound = m - <span class="number">2</span> ; i &lt; bound &amp;&amp; nums[i] * <span class="number">3</span> &lt;= target3; ) &#123;</span><br><span class="line">                <span class="keyword">int</span> l = i + <span class="number">1</span>, r = m - <span class="number">1</span>, sum = target3 - nums[i];</span><br><span class="line">                <span class="keyword">if</span> ( sum &lt;= nums[r] * <span class="number">2</span> &amp;&amp; sum &gt;= nums[l] * <span class="number">2</span> ) &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">                        <span class="keyword">int</span> temp_sum = nums[l] + nums[r];</span><br><span class="line">                        <span class="keyword">if</span> ( temp_sum &lt; sum ) l++; </span><br><span class="line">                        <span class="keyword">else</span> <span class="keyword">if</span> ( temp_sum &gt; sum ) r--; </span><br><span class="line">                        <span class="keyword">else</span> &#123;</span><br><span class="line">                            List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                            item.add(nums[idx1]);item.add(nums[i]);item.add(nums[l]);item.add(nums[r]);</span><br><span class="line">                            result.add(item);</span><br><span class="line">                            l++;</span><br><span class="line">                            <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[l] == nums[l-<span class="number">1</span>] ) l++;</span><br><span class="line">                            r--;</span><br><span class="line">                            <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[r] == nums[r+<span class="number">1</span>] ) r--;</span><br><span class="line">                        &#125; </span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                i++;</span><br><span class="line">                <span class="keyword">while</span> ( i &lt; bound &amp;&amp; nums[i] == nums[i-<span class="number">1</span>] ) i++;</span><br><span class="line">            &#125;</span><br><span class="line">            idx1++;</span><br><span class="line">            <span class="keyword">while</span> ( idx1 &lt; bound1 &amp;&amp; nums[idx1] == nums[idx1-<span class="number">1</span>] ) idx1++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内部包装了一个3Sum，但是其中一些中断的条件很重要，能够提升不少性能。</p>
+<p>复杂度：n^3, 运行时间：28ms。</p>
+<p><img src="/images/leetcode/4Sum.png" alt="image"></p>
+<hr>
+<p>代码2：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; fourSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( nums.length &lt; <span class="number">4</span> ) <span class="keyword">return</span> result;</span><br><span class="line">        Arrays.sort(nums); </span><br><span class="line">        <span class="keyword">int</span>[] ynums = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">        <span class="keyword">int</span> repeat = <span class="number">1</span>, idx = <span class="number">1</span>;</span><br><span class="line">        ynums[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( nums[i] == nums[i-<span class="number">1</span>] ) &#123;</span><br><span class="line">                repeat++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                repeat = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( repeat &lt; <span class="number">4</span> ) &#123;</span><br><span class="line">                ynums[idx++] = nums[i]; </span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( repeat == <span class="number">4</span> &amp;&amp; nums[i]*<span class="number">4</span> == target ) &#123;</span><br><span class="line">                myAdd( result, nums[i], nums[i], nums[i], nums[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> m = idx, ts_i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span>[][] two_sum = <span class="keyword">new</span> <span class="keyword">int</span>[m*(m-<span class="number">1</span>)/<span class="number">2</span>][<span class="number">3</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m - <span class="number">1</span>; i++ ) &#123;</span><br><span class="line">            repeat = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> ( i &lt; m - <span class="number">1</span> &amp;&amp; ynums[i + <span class="number">1</span>] == ynums[i] ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                repeat++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( repeat == <span class="number">2</span> ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] * <span class="number">2</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i - <span class="number">1</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = i;</span><br><span class="line">                ts_i++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( repeat == <span class="number">3</span> ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] * <span class="number">2</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i - <span class="number">1</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = i - <span class="number">1</span>;</span><br><span class="line">                ts_i++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; m;  ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] + ynums[j];</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = j;</span><br><span class="line">                ts_i++;</span><br><span class="line">                j++;</span><br><span class="line">                <span class="keyword">while</span> ( j &lt; m &amp;&amp; ynums[j] == ynums[j-<span class="number">1</span>] ) &#123;</span><br><span class="line">                   j++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(two_sum, <span class="number">0</span>, ts_i, <span class="keyword">new</span> MyCompare());</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = ts_i - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = two_sum[l][<span class="number">0</span>] + two_sum[r][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> ( sum &lt; target ) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( sum &gt; target ) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> ( two_sum[l][<span class="number">2</span>] &lt; two_sum[r][<span class="number">1</span>] ) &#123;</span><br><span class="line">                    myAdd( result, ynums[two_sum[l][<span class="number">1</span>]], ynums[two_sum[l][<span class="number">2</span>]], ynums[two_sum[r][<span class="number">1</span>]], ynums[two_sum[r][<span class="number">2</span>]]);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> ll = l + <span class="number">1</span>, rr = r - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( ll &lt; r &amp;&amp; two_sum[ll][<span class="number">0</span>] == two_sum[ll-<span class="number">1</span>][<span class="number">0</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( two_sum[ll][<span class="number">2</span>] &lt; two_sum[r][<span class="number">1</span>] ) &#123;</span><br><span class="line">                        myAdd( result, ynums[two_sum[ll][<span class="number">1</span>]], ynums[two_sum[ll][<span class="number">2</span>]], ynums[two_sum[r][<span class="number">1</span>]], ynums[two_sum[r][<span class="number">2</span>]]);</span><br><span class="line">                    &#125;</span><br><span class="line">                    ll++;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">while</span> ( ll &lt; rr &amp;&amp; two_sum[rr][<span class="number">0</span>] == two_sum[rr+<span class="number">1</span>][<span class="number">0</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( two_sum[rr][<span class="number">1</span>] &gt; two_sum[l][<span class="number">2</span>] ) &#123;</span><br><span class="line">                        myAdd( result, ynums[two_sum[l][<span class="number">1</span>]], ynums[two_sum[l][<span class="number">2</span>]], ynums[two_sum[rr][<span class="number">1</span>]], ynums[two_sum[rr][<span class="number">2</span>]]);</span><br><span class="line">                    &#125;</span><br><span class="line">                    rr--;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                l++; r--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">myAdd</span><span class="params">( List&lt;List&lt;Integer&gt;&gt; result, <span class="keyword">int</span> a1, <span class="keyword">int</span> a2, <span class="keyword">int</span> b1, <span class="keyword">int</span> b2)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        item.add(a1); item.add(a2);</span><br><span class="line">        item.add(b1); item.add(b2);</span><br><span class="line">        result.add(item); </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private class MyCompare implements Comparator&lt;int[]&gt; &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(<span class="keyword">int</span>[] o1, <span class="keyword">int</span>[] o2)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> ( o1[<span class="number">0</span>] &gt; o2[<span class="number">0</span>] ) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( o1[<span class="number">0</span>] &lt; o2[<span class="number">0</span>] ) &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( o1[<span class="number">1</span>] &lt; o2[<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( o1[<span class="number">1</span>] &gt; o2[<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( o1[<span class="number">2</span>] &lt; o2[<span class="number">2</span>] ) &#123;</span><br><span class="line">                        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>贼复杂，想法到是很简单，就是先计算两两数的和，然后就变成了类似2Sum的东西，但是其中的多种重复情况，使得编写程序十分复杂。</p>
+<p>并且代码还可以优化，但是懒得想了，就不该开始这个代码(；′⌒`)。</p>
+<p>复杂度：n^2log(n)(个人简单估计是这样的，但是常数因子很大，而且占用空间很多)。</p>
+<p>运行时间：85ms。</p>
+<p><img src="/images/leetcode/4Sum_2.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>博客bug记录</title>
     <url>/2017/08/18/2017-08-18-blog-bugs/</url>
     <content><![CDATA[<hr>
@@ -153,6 +192,32 @@ Everflow利用这一点来减少追踪的负载，
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 1.Two Sum</title>
+    <url>/2017/08/18/2017-08-18-two-sum/</url>
+    <content><![CDATA[<h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1 Two Sum"></a>1 Two Sum</h2><p>题目描述：Given an array of integers, return indices of the two numbers such that they add up to a specific target.</p>
+<p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
+<p>题目理解：输入一个数组和一个目标值，若数组中两个值之和等于目标值，返回它们的下标，每个数只能使用一次。</p>
+<hr>
+<p>代码1：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; diffs = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        Integer i = <span class="keyword">null</span>, index = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nums.length ; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (  ( index = diffs.get( nums[i] ) ) != <span class="keyword">null</span> ) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                diffs.put( target - nums[i] , i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] indexs = &#123;index,i&#125;;</span><br><span class="line">        <span class="keyword">return</span> indexs;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重头开始遍历，查看当前数字是否在差值中，在其中就返回，否则计算差值，加入map。</p>
+<p>复杂度：nlog(n)，运行时间10ms。</p>
+<p><img src="/images/leetcode/Two_Sum_1.png" alt="images"></p>
+<hr>
+<p>代码2：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        <span class="keyword">int</span>[][] inums = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length][<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++ ) &#123;</span><br><span class="line">            inums[i][<span class="number">0</span>] = nums[i];</span><br><span class="line">            inums[i][<span class="number">1</span>] = i;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(inums, <span class="keyword">new</span> Comparator&lt;<span class="keyword">int</span>[]&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">( <span class="keyword">int</span>[] o1, <span class="keyword">int</span>[] o2 )</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> o1[<span class="number">0</span>] - o2[<span class="number">0</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">int</span>[] res = &#123;-<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = inums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = inums[l][<span class="number">0</span>] + inums[r][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> ( sum &lt; target ) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( sum &gt; target ) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                res[<span class="number">0</span>] = inums[l][<span class="number">1</span>]; res[<span class="number">1</span>] = inums[r][<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">return</span> res;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将原始数据排序，然后进行左右逼近，得到结果。</p>
+<p>复杂度nlog(n),运行时间12ms。</p>
+<p><img src="/images/leetcode/Two_Sum.png" alt="images"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>我的第一篇博客 for jekyll</title>
     <url>/2017/08/18/2017-08-18-my-first-blog/</url>
     <content><![CDATA[<h2 id="写博客"><a href="#写博客" class="headerlink" title="写博客"></a>写博客</h2><p><a href="http://theme-next.iissnan.com/">主题说明书</a></p>
@@ -233,71 +298,6 @@ width="200" height="200" title="大范" /></div>
       </categories>
       <tags>
         <tag>guide</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 1.Two Sum</title>
-    <url>/2017/08/18/2017-08-18-two-sum/</url>
-    <content><![CDATA[<h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1 Two Sum"></a>1 Two Sum</h2><p>题目描述：Given an array of integers, return indices of the two numbers such that they add up to a specific target.</p>
-<p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
-<p>题目理解：输入一个数组和一个目标值，若数组中两个值之和等于目标值，返回它们的下标，每个数只能使用一次。</p>
-<hr>
-<p>代码1：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; diffs = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        Integer i = <span class="keyword">null</span>, index = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nums.length ; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (  ( index = diffs.get( nums[i] ) ) != <span class="keyword">null</span> ) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                diffs.put( target - nums[i] , i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] indexs = &#123;index,i&#125;;</span><br><span class="line">        <span class="keyword">return</span> indexs;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>重头开始遍历，查看当前数字是否在差值中，在其中就返回，否则计算差值，加入map。</p>
-<p>复杂度：nlog(n)，运行时间10ms。</p>
-<p><img src="/images/leetcode/Two_Sum_1.png" alt="images"></p>
-<hr>
-<p>代码2：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        <span class="keyword">int</span>[][] inums = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length][<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++ ) &#123;</span><br><span class="line">            inums[i][<span class="number">0</span>] = nums[i];</span><br><span class="line">            inums[i][<span class="number">1</span>] = i;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(inums, <span class="keyword">new</span> Comparator&lt;<span class="keyword">int</span>[]&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">( <span class="keyword">int</span>[] o1, <span class="keyword">int</span>[] o2 )</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> o1[<span class="number">0</span>] - o2[<span class="number">0</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">int</span>[] res = &#123;-<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = inums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = inums[l][<span class="number">0</span>] + inums[r][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> ( sum &lt; target ) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( sum &gt; target ) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                res[<span class="number">0</span>] = inums[l][<span class="number">1</span>]; res[<span class="number">1</span>] = inums[r][<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">return</span> res;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>将原始数据排序，然后进行左右逼近，得到结果。</p>
-<p>复杂度nlog(n),运行时间12ms。</p>
-<p><img src="/images/leetcode/Two_Sum.png" alt="images"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 18.4Sum</title>
-    <url>/2017/08/18/2017-08-18-4Sum/</url>
-    <content><![CDATA[<h2 id="18-4Sum"><a href="#18-4Sum" class="headerlink" title="18.4Sum"></a>18.4Sum</h2><blockquote>
-<p>Description:</p>
-<blockquote>
-<p>Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.</p>
-</blockquote>
-<p>Note: The solution set must not contain duplicate quadruplets.</p>
-<p>example:</p>
-<blockquote>
-<p>For example, given array S = [1, 0, -1, 0, -2, 2], and target = 0.</p>
-<p>A solution set is:</p>
-<p>[ [-1,  0, 0, 1], [-2, -1, 1, 2], [-2,  0, 0, 2] ]</p>
-</blockquote>
-</blockquote>
-<hr>
-<p>题目理解：与3Sum一个意思。</p>
-<hr>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; fourSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="keyword">int</span> m = nums.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx1 = <span class="number">0</span>, bound1 = m - <span class="number">3</span> ; idx1 &lt; bound1 &amp;&amp; nums[idx1] * <span class="number">4</span> &lt;= target ;  ) &#123;</span><br><span class="line">            <span class="keyword">int</span> target3 = target - nums[idx1];</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = idx1 + <span class="number">1</span>, bound = m - <span class="number">2</span> ; i &lt; bound &amp;&amp; nums[i] * <span class="number">3</span> &lt;= target3; ) &#123;</span><br><span class="line">                <span class="keyword">int</span> l = i + <span class="number">1</span>, r = m - <span class="number">1</span>, sum = target3 - nums[i];</span><br><span class="line">                <span class="keyword">if</span> ( sum &lt;= nums[r] * <span class="number">2</span> &amp;&amp; sum &gt;= nums[l] * <span class="number">2</span> ) &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">                        <span class="keyword">int</span> temp_sum = nums[l] + nums[r];</span><br><span class="line">                        <span class="keyword">if</span> ( temp_sum &lt; sum ) l++; </span><br><span class="line">                        <span class="keyword">else</span> <span class="keyword">if</span> ( temp_sum &gt; sum ) r--; </span><br><span class="line">                        <span class="keyword">else</span> &#123;</span><br><span class="line">                            List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                            item.add(nums[idx1]);item.add(nums[i]);item.add(nums[l]);item.add(nums[r]);</span><br><span class="line">                            result.add(item);</span><br><span class="line">                            l++;</span><br><span class="line">                            <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[l] == nums[l-<span class="number">1</span>] ) l++;</span><br><span class="line">                            r--;</span><br><span class="line">                            <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[r] == nums[r+<span class="number">1</span>] ) r--;</span><br><span class="line">                        &#125; </span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                i++;</span><br><span class="line">                <span class="keyword">while</span> ( i &lt; bound &amp;&amp; nums[i] == nums[i-<span class="number">1</span>] ) i++;</span><br><span class="line">            &#125;</span><br><span class="line">            idx1++;</span><br><span class="line">            <span class="keyword">while</span> ( idx1 &lt; bound1 &amp;&amp; nums[idx1] == nums[idx1-<span class="number">1</span>] ) idx1++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>内部包装了一个3Sum，但是其中一些中断的条件很重要，能够提升不少性能。</p>
-<p>复杂度：n^3, 运行时间：28ms。</p>
-<p><img src="/images/leetcode/4Sum.png" alt="image"></p>
-<hr>
-<p>代码2：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; fourSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( nums.length &lt; <span class="number">4</span> ) <span class="keyword">return</span> result;</span><br><span class="line">        Arrays.sort(nums); </span><br><span class="line">        <span class="keyword">int</span>[] ynums = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">        <span class="keyword">int</span> repeat = <span class="number">1</span>, idx = <span class="number">1</span>;</span><br><span class="line">        ynums[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( nums[i] == nums[i-<span class="number">1</span>] ) &#123;</span><br><span class="line">                repeat++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                repeat = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( repeat &lt; <span class="number">4</span> ) &#123;</span><br><span class="line">                ynums[idx++] = nums[i]; </span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( repeat == <span class="number">4</span> &amp;&amp; nums[i]*<span class="number">4</span> == target ) &#123;</span><br><span class="line">                myAdd( result, nums[i], nums[i], nums[i], nums[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> m = idx, ts_i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span>[][] two_sum = <span class="keyword">new</span> <span class="keyword">int</span>[m*(m-<span class="number">1</span>)/<span class="number">2</span>][<span class="number">3</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m - <span class="number">1</span>; i++ ) &#123;</span><br><span class="line">            repeat = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> ( i &lt; m - <span class="number">1</span> &amp;&amp; ynums[i + <span class="number">1</span>] == ynums[i] ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                repeat++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( repeat == <span class="number">2</span> ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] * <span class="number">2</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i - <span class="number">1</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = i;</span><br><span class="line">                ts_i++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( repeat == <span class="number">3</span> ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] * <span class="number">2</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i - <span class="number">1</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = i - <span class="number">1</span>;</span><br><span class="line">                ts_i++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; m;  ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] + ynums[j];</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = j;</span><br><span class="line">                ts_i++;</span><br><span class="line">                j++;</span><br><span class="line">                <span class="keyword">while</span> ( j &lt; m &amp;&amp; ynums[j] == ynums[j-<span class="number">1</span>] ) &#123;</span><br><span class="line">                   j++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(two_sum, <span class="number">0</span>, ts_i, <span class="keyword">new</span> MyCompare());</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = ts_i - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = two_sum[l][<span class="number">0</span>] + two_sum[r][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> ( sum &lt; target ) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( sum &gt; target ) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> ( two_sum[l][<span class="number">2</span>] &lt; two_sum[r][<span class="number">1</span>] ) &#123;</span><br><span class="line">                    myAdd( result, ynums[two_sum[l][<span class="number">1</span>]], ynums[two_sum[l][<span class="number">2</span>]], ynums[two_sum[r][<span class="number">1</span>]], ynums[two_sum[r][<span class="number">2</span>]]);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> ll = l + <span class="number">1</span>, rr = r - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( ll &lt; r &amp;&amp; two_sum[ll][<span class="number">0</span>] == two_sum[ll-<span class="number">1</span>][<span class="number">0</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( two_sum[ll][<span class="number">2</span>] &lt; two_sum[r][<span class="number">1</span>] ) &#123;</span><br><span class="line">                        myAdd( result, ynums[two_sum[ll][<span class="number">1</span>]], ynums[two_sum[ll][<span class="number">2</span>]], ynums[two_sum[r][<span class="number">1</span>]], ynums[two_sum[r][<span class="number">2</span>]]);</span><br><span class="line">                    &#125;</span><br><span class="line">                    ll++;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">while</span> ( ll &lt; rr &amp;&amp; two_sum[rr][<span class="number">0</span>] == two_sum[rr+<span class="number">1</span>][<span class="number">0</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( two_sum[rr][<span class="number">1</span>] &gt; two_sum[l][<span class="number">2</span>] ) &#123;</span><br><span class="line">                        myAdd( result, ynums[two_sum[l][<span class="number">1</span>]], ynums[two_sum[l][<span class="number">2</span>]], ynums[two_sum[rr][<span class="number">1</span>]], ynums[two_sum[rr][<span class="number">2</span>]]);</span><br><span class="line">                    &#125;</span><br><span class="line">                    rr--;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                l++; r--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">myAdd</span><span class="params">( List&lt;List&lt;Integer&gt;&gt; result, <span class="keyword">int</span> a1, <span class="keyword">int</span> a2, <span class="keyword">int</span> b1, <span class="keyword">int</span> b2)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        item.add(a1); item.add(a2);</span><br><span class="line">        item.add(b1); item.add(b2);</span><br><span class="line">        result.add(item); </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private class MyCompare implements Comparator&lt;int[]&gt; &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(<span class="keyword">int</span>[] o1, <span class="keyword">int</span>[] o2)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> ( o1[<span class="number">0</span>] &gt; o2[<span class="number">0</span>] ) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( o1[<span class="number">0</span>] &lt; o2[<span class="number">0</span>] ) &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( o1[<span class="number">1</span>] &lt; o2[<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( o1[<span class="number">1</span>] &gt; o2[<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( o1[<span class="number">2</span>] &lt; o2[<span class="number">2</span>] ) &#123;</span><br><span class="line">                        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>贼复杂，想法到是很简单，就是先计算两两数的和，然后就变成了类似2Sum的东西，但是其中的多种重复情况，使得编写程序十分复杂。</p>
-<p>并且代码还可以优化，但是懒得想了，就不该开始这个代码(；′⌒`)。</p>
-<p>复杂度：n^2log(n)(个人简单估计是这样的，但是常数因子很大，而且占用空间很多)。</p>
-<p>运行时间：85ms。</p>
-<p><img src="/images/leetcode/4Sum_2.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -1480,6 +1480,123 @@ check \ \ \
       </tags>
   </entry>
   <entry>
+    <title>Mini-batch 和 权重更新策略</title>
+    <url>/2017/08/29/2017-08-29-dnn_3/</url>
+    <content><![CDATA[<hr>
+<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
+<ol>
+<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
+<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
+<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
+</ol>
+<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
+这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
+另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
+<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
+虽然这样计算块，更新快，但是随机性也太大了。</p>
+<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
+每次计算不会太复杂，也能降低一点随机性。</p>
+<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
+选取<strong>64、128、256、512</strong>。</p>
+<hr>
+<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
+<p><strong>Exponentially weighted averages:</strong></p>
+<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
+<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
+<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
+<script type="math/tex; mode=display">
+v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
+当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
+<p>大概平均的天数为：</p>
+<script type="math/tex; mode=display">
+days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
+<p>计算时，就一步一步运算就行了，</p>
+<script type="math/tex; mode=display">
+v_\theta = 0</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
+...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
+<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
+<p>所以，这里需要加入<code>Bias correction</code>，</p>
+<script type="math/tex; mode=display">
+v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
+这样，就能矫正这个初始值太低的问题。</p>
+<p><strong>Momentum:</strong></p>
+<p>属于权重更新的初级魔法：</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
+w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
+b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
+<p><strong>RMSprop:</strong></p>
+<p>属于权重更新的中级魔法：</p>
+<script type="math/tex; mode=display">
+S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
+<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
+<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
+<script type="math/tex; mode=display">
+Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
+V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
+V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
+S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
+<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
+<p>另外这里还要用到矫正：</p>
+<script type="math/tex; mode=display">
+V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
+S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
+<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
+<hr>
+<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
+<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
+<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
+另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
+<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
+<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
+<p>首选的策略是：</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
+<script type="math/tex; mode=display">
+\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
+<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
+<hr>
+<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
+<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
+<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
+它更像是下面的马鞍面，</p>
+<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
+<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
+模型因为各种措施，它也并不会卡在这个点上。</p>
+<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hyperparameter tuning, Batch Norm and TensorFlow</title>
     <url>/2017/08/29/2017-08-29-dnn_4/</url>
     <content><![CDATA[<hr>
@@ -1695,167 +1812,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>Mini-batch 和 权重更新策略</title>
-    <url>/2017/08/29/2017-08-29-dnn_3/</url>
-    <content><![CDATA[<hr>
-<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
-<ol>
-<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
-<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
-<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
-</ol>
-<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
-这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
-另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
-<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
-虽然这样计算块，更新快，但是随机性也太大了。</p>
-<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
-每次计算不会太复杂，也能降低一点随机性。</p>
-<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
-选取<strong>64、128、256、512</strong>。</p>
-<hr>
-<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
-<p><strong>Exponentially weighted averages:</strong></p>
-<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
-<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
-<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
-<script type="math/tex; mode=display">
-v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
-当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
-<p>大概平均的天数为：</p>
-<script type="math/tex; mode=display">
-days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
-<p>计算时，就一步一步运算就行了，</p>
-<script type="math/tex; mode=display">
-v_\theta = 0</script><script type="math/tex; mode=display">
-v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
-v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
-...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
-<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
-<p>所以，这里需要加入<code>Bias correction</code>，</p>
-<script type="math/tex; mode=display">
-v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
-这样，就能矫正这个初始值太低的问题。</p>
-<p><strong>Momentum:</strong></p>
-<p>属于权重更新的初级魔法：</p>
-<script type="math/tex; mode=display">
-V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
-V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
-w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
-b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
-<script type="math/tex; mode=display">
-V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
-V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
-<p><strong>RMSprop:</strong></p>
-<p>属于权重更新的中级魔法：</p>
-<script type="math/tex; mode=display">
-S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
-S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
-w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
-<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
-<script type="math/tex; mode=display">
-w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
-<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
-<script type="math/tex; mode=display">
-Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
-V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
-V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
-S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
-S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
-<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
-<p>另外这里还要用到矫正：</p>
-<script type="math/tex; mode=display">
-V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
-V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
-S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
-S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
-<script type="math/tex; mode=display">
-w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
-<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
-<hr>
-<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
-<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
-<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
-另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
-<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
-<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
-<p>首选的策略是：</p>
-<script type="math/tex; mode=display">
-\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
-<script type="math/tex; mode=display">
-\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
-\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
-<script type="math/tex; mode=display">
-\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
-<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
-<hr>
-<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
-<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
-<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
-它更像是下面的马鞍面，</p>
-<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
-<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
-模型因为各种措施，它也并不会卡在这个点上。</p>
-<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TensorFlow 笔记一</title>
-    <url>/2017/09/02/2017-09-02-tensorflow/</url>
-    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
-<hr>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>或者</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>它也可以是矩阵，</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
-<p>当然直接写也是可以的，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
-<hr>
-<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
-<p>还不明白它的作用。</p>
-<hr>
-<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
-<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
-<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
-<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
-<hr>
-<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>109</p>
-</blockquote>
-<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 5 Longest Palindromic Substring</title>
     <url>/2017/09/01/2017-09-01-longest-palindromic-substring/</url>
     <content><![CDATA[<hr>
@@ -1912,6 +1868,50 @@ b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}<
       </categories>
       <tags>
         <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TensorFlow 笔记一</title>
+    <url>/2017/09/02/2017-09-02-tensorflow/</url>
+    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
+<hr>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>它也可以是矩阵，</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
+<p>当然直接写也是可以的，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
+<hr>
+<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
+<p>还不明白它的作用。</p>
+<hr>
+<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
+<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
+<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
+<hr>
+<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>109</p>
+</blockquote>
+<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2449,59 +2449,6 @@ b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}<
       </tags>
   </entry>
   <entry>
-    <title>LeetCode 30 Substring with Concatenation of All Words</title>
-    <url>/2017/09/15/2017-09-15-leetcode_30/</url>
-    <content><![CDATA[<p>Description:</p>
-<blockquote>
-<p>You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.  </p>
-<p>For example, given:<br>s: “barfoothefoobarman”<br>words: [“foo”, “bar”]  </p>
-<p>You should return the indices: [0,9].<br>(order does not matter).  </p>
-</blockquote>
-<hr>
-<p>题目理解：</p>
-<p>乍一看这是一个字符串匹配问题，但是其实这样想的话就完全错误了，这比字符串匹配问题要复杂多了。</p>
-<p>还好的是它所给的单词都是一样长的，这就已经简化了很多的问题，但是它可以给重复的单词，
-那么这个问题又不那么简单了，因为这些单词之间可以随意的排列组合，重复的单词会带来很多问题。</p>
-<p>那么首先一定要去除重复，不然会对重复的单词进行重复的匹配，并且对排列组合很不利。通常想到的肯定是使用
-<code>HashMap</code>来做，这样很快能统计出重复的单词，以及这个单词重复的次数。</p>
-<p>因为总长度固定，那么只需要在一个固定长度的窗内去检测是否匹配就好，那么就可以将这个窗从左向右进行滑动，
-来一个单词一个单词的匹配。</p>
-<p>那么如何进行单词的匹配呢？首先想到的是字符串匹配问题，可以使用<strong>KMP</strong>算法来匹配字符串与每一个单词，记录下所有匹配的位置，
-注意到每个单词都不同（去除重复之后），单词长度一样，那么它们之间匹配的位置就不会重复。
-所有可以直接使用一个与字符串同样长的数组来存储这些下标。</p>
-<p>如何查看是否匹配？这时就需要发挥想象力，首先滑动窗是肯定的，在滑动窗中统计很有技巧，这里：</p>
-<ul>
-<li>设置一个总距离<strong>dis</strong>，表示窗口中单词与字典之间的距离。一个单词的距离就是<strong>1</strong>，所以初始的时候距离为字典的总单词数。</li>
-<li>滑动窗口，从字符串上<strong>切割</strong>出一个新的单词，如果这个单词与字典中的单词<strong>不匹配</strong>，则不操作。否则<strong>匹配</strong>上单词<strong>A</strong>：<ul>
-<li>单词<strong>A</strong>现在的计数<strong>超过</strong>所需个数，距离加一。</li>
-<li>单词<strong>A</strong>现在的计数<strong>不超过</strong>所需个数，距离减一。</li>
-</ul>
-</li>
-<li>滑动窗口，需要将最左端的一个单词<strong>弹出</strong>，进行与上面<strong>相反</strong>的操作。</li>
-</ul>
-<hr>
-<p>代码一：</p>
-<p><strong>注：</strong>这里没有使用<code>HashMap</code>来除去重复。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] matchs;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || words == <span class="keyword">null</span> || ( words[<span class="number">0</span>].length()*words.length &gt; s.length() ) ) <span class="keyword">return</span> res;</span><br><span class="line">        <span class="keyword">if</span> ( words[<span class="number">0</span>].equals(<span class="string">&quot;&quot;</span>) ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= s.length() ; i++ ) </span><br><span class="line">                res.add(i);</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        matchs = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        Arrays.fill( matchs, -<span class="number">1</span> );</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[words.length];</span><br><span class="line">        String[] words_wipe = <span class="keyword">new</span> String[words.length];</span><br><span class="line">        <span class="keyword">boolean</span>[] used = <span class="keyword">new</span> <span class="keyword">boolean</span>[words.length];</span><br><span class="line">        <span class="keyword">int</span> counts_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( !used[i] ) &#123;</span><br><span class="line">                words_wipe[counts_len] = words[i];</span><br><span class="line">                counts[counts_len] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; words.length; j++ ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( words[i].equals(words[j]) ) &#123;</span><br><span class="line">                        counts[counts_len]++;</span><br><span class="line">                        used[j] = <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                counts_len++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; counts_len; i++ ) &#123;</span><br><span class="line">            KMP(ss, words_wipe[i].toCharArray(), i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> step = words_wipe[<span class="number">0</span>].length(), dis = words.length, total_len = dis * step;</span><br><span class="line">        <span class="keyword">int</span>[] sub_count = <span class="keyword">new</span> <span class="keyword">int</span>[counts_len];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(sub_count, <span class="number">0</span>);</span><br><span class="line">            dis = words.length;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt; ss.length; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = sub_count[matchs[head]] &lt;= counts[matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    sub_count[matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = sub_count[matchs[j]] &gt;= counts[matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                sub_count[matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">KMP</span><span class="params">(<span class="keyword">char</span>[] t, <span class="keyword">char</span>[] p, <span class="keyword">int</span> widx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = computePai(p);</span><br><span class="line">        <span class="keyword">int</span> match_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; t.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( match_idx &gt; -<span class="number">1</span> &amp;&amp; p[match_idx + <span class="number">1</span>] != t[i] )</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            <span class="keyword">if</span> ( p[match_idx + <span class="number">1</span>] == t[i] )</span><br><span class="line">                match_idx++;</span><br><span class="line">            <span class="keyword">if</span> ( match_idx == p.length - <span class="number">1</span> ) &#123;</span><br><span class="line">                matchs[i - p.length + <span class="number">1</span>] = widx;</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] computePai(<span class="keyword">char</span>[] p) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = <span class="keyword">new</span> <span class="keyword">int</span>[p.length];</span><br><span class="line">        pai[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx = <span class="number">1</span>; idx &lt; p.length; idx++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( k &gt; -<span class="number">1</span> &amp;&amp; p[k+<span class="number">1</span>] != p[idx] )</span><br><span class="line">                k = pai[k];</span><br><span class="line">            <span class="keyword">if</span> ( p[k+<span class="number">1</span>] == p[idx] )</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line">            pai[idx] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pai;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)?<br>运行时间：50ms<br>击败：57.51%</p>
-<p><img src="/images/leetcode/30_1.png" alt="image"></p>
-<hr>
-<p>代码还是很垃圾，所以和别人的差距在哪里，实在是想不出来，查看别人代码后发现，别人使用的是<code>HashMap</code>的<strong>Hash</strong>功能来匹配单词的，
-这样通过<strong>Hash</strong>来进行两个个单词的匹配，复杂度是<strong>O(1)</strong>，额，原来<strong>Hash</strong>是这样使用的…</p>
-<p>另外这里还要翻转一下思维，上面是用单词去匹配字符串，这里由于先建好了一个单词的<code>HashMap</code>，所以直接将字符串切割，
-然后使用切出的单词使用<code>HashMap</code>查询就能知道它的次数。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> m = s.length(), n = words.length, step = words[<span class="number">0</span>].length(), bound = m - step, total_len = step * n;</span><br><span class="line">        <span class="comment">// Count the repeated words</span></span><br><span class="line">        Map&lt; String, Integer&gt; words_list = <span class="keyword">new</span> HashMap&lt;&gt;(n);</span><br><span class="line">        <span class="keyword">int</span>[][] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>][n];</span><br><span class="line">        Integer index = <span class="number">0</span>, temp;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( ( temp = words_list.get(words[i])) != <span class="keyword">null</span> ) counts[<span class="number">0</span>][temp]++;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                words_list.put( words[i], index);</span><br><span class="line">                counts[<span class="number">0</span>][index++] = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// from s.start to s.end, match all the substring</span></span><br><span class="line">        <span class="keyword">int</span>[] matchs = <span class="keyword">new</span> <span class="keyword">int</span>[bound + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= bound; i++ ) &#123;</span><br><span class="line">            String s_sub = s.substring(i, i + step);</span><br><span class="line">            matchs[i] = ((temp = words_list.get(s_sub)) != <span class="keyword">null</span>) ? temp : -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// move window from head to end, dis = 0 means the current window contains all the words</span></span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(counts[<span class="number">1</span>], <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">int</span> dis = n;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt;= bound; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = counts[<span class="number">1</span>][matchs[head]] &lt;= counts[<span class="number">0</span>][matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    counts[<span class="number">1</span>][matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = counts[<span class="number">1</span>][matchs[j]] &gt;= counts[<span class="number">0</span>][matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                counts[<span class="number">1</span>][matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(n)。<br>运行时间：27ms。<br>击败：92.37%</p>
-<p><img src="/images/leetcode/30_2.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 76 Minimum Window Substring</title>
     <url>/2017/09/15/2017-09-15-leetcode_76/</url>
     <content><![CDATA[<p>Description:</p>
@@ -2634,6 +2581,59 @@ b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}<
 ]]></content>
       <categories>
         <category>python modules</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 30 Substring with Concatenation of All Words</title>
+    <url>/2017/09/15/2017-09-15-leetcode_30/</url>
+    <content><![CDATA[<p>Description:</p>
+<blockquote>
+<p>You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.  </p>
+<p>For example, given:<br>s: “barfoothefoobarman”<br>words: [“foo”, “bar”]  </p>
+<p>You should return the indices: [0,9].<br>(order does not matter).  </p>
+</blockquote>
+<hr>
+<p>题目理解：</p>
+<p>乍一看这是一个字符串匹配问题，但是其实这样想的话就完全错误了，这比字符串匹配问题要复杂多了。</p>
+<p>还好的是它所给的单词都是一样长的，这就已经简化了很多的问题，但是它可以给重复的单词，
+那么这个问题又不那么简单了，因为这些单词之间可以随意的排列组合，重复的单词会带来很多问题。</p>
+<p>那么首先一定要去除重复，不然会对重复的单词进行重复的匹配，并且对排列组合很不利。通常想到的肯定是使用
+<code>HashMap</code>来做，这样很快能统计出重复的单词，以及这个单词重复的次数。</p>
+<p>因为总长度固定，那么只需要在一个固定长度的窗内去检测是否匹配就好，那么就可以将这个窗从左向右进行滑动，
+来一个单词一个单词的匹配。</p>
+<p>那么如何进行单词的匹配呢？首先想到的是字符串匹配问题，可以使用<strong>KMP</strong>算法来匹配字符串与每一个单词，记录下所有匹配的位置，
+注意到每个单词都不同（去除重复之后），单词长度一样，那么它们之间匹配的位置就不会重复。
+所有可以直接使用一个与字符串同样长的数组来存储这些下标。</p>
+<p>如何查看是否匹配？这时就需要发挥想象力，首先滑动窗是肯定的，在滑动窗中统计很有技巧，这里：</p>
+<ul>
+<li>设置一个总距离<strong>dis</strong>，表示窗口中单词与字典之间的距离。一个单词的距离就是<strong>1</strong>，所以初始的时候距离为字典的总单词数。</li>
+<li>滑动窗口，从字符串上<strong>切割</strong>出一个新的单词，如果这个单词与字典中的单词<strong>不匹配</strong>，则不操作。否则<strong>匹配</strong>上单词<strong>A</strong>：<ul>
+<li>单词<strong>A</strong>现在的计数<strong>超过</strong>所需个数，距离加一。</li>
+<li>单词<strong>A</strong>现在的计数<strong>不超过</strong>所需个数，距离减一。</li>
+</ul>
+</li>
+<li>滑动窗口，需要将最左端的一个单词<strong>弹出</strong>，进行与上面<strong>相反</strong>的操作。</li>
+</ul>
+<hr>
+<p>代码一：</p>
+<p><strong>注：</strong>这里没有使用<code>HashMap</code>来除去重复。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] matchs;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || words == <span class="keyword">null</span> || ( words[<span class="number">0</span>].length()*words.length &gt; s.length() ) ) <span class="keyword">return</span> res;</span><br><span class="line">        <span class="keyword">if</span> ( words[<span class="number">0</span>].equals(<span class="string">&quot;&quot;</span>) ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= s.length() ; i++ ) </span><br><span class="line">                res.add(i);</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        matchs = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        Arrays.fill( matchs, -<span class="number">1</span> );</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[words.length];</span><br><span class="line">        String[] words_wipe = <span class="keyword">new</span> String[words.length];</span><br><span class="line">        <span class="keyword">boolean</span>[] used = <span class="keyword">new</span> <span class="keyword">boolean</span>[words.length];</span><br><span class="line">        <span class="keyword">int</span> counts_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( !used[i] ) &#123;</span><br><span class="line">                words_wipe[counts_len] = words[i];</span><br><span class="line">                counts[counts_len] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; words.length; j++ ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( words[i].equals(words[j]) ) &#123;</span><br><span class="line">                        counts[counts_len]++;</span><br><span class="line">                        used[j] = <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                counts_len++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; counts_len; i++ ) &#123;</span><br><span class="line">            KMP(ss, words_wipe[i].toCharArray(), i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> step = words_wipe[<span class="number">0</span>].length(), dis = words.length, total_len = dis * step;</span><br><span class="line">        <span class="keyword">int</span>[] sub_count = <span class="keyword">new</span> <span class="keyword">int</span>[counts_len];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(sub_count, <span class="number">0</span>);</span><br><span class="line">            dis = words.length;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt; ss.length; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = sub_count[matchs[head]] &lt;= counts[matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    sub_count[matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = sub_count[matchs[j]] &gt;= counts[matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                sub_count[matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">KMP</span><span class="params">(<span class="keyword">char</span>[] t, <span class="keyword">char</span>[] p, <span class="keyword">int</span> widx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = computePai(p);</span><br><span class="line">        <span class="keyword">int</span> match_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; t.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( match_idx &gt; -<span class="number">1</span> &amp;&amp; p[match_idx + <span class="number">1</span>] != t[i] )</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            <span class="keyword">if</span> ( p[match_idx + <span class="number">1</span>] == t[i] )</span><br><span class="line">                match_idx++;</span><br><span class="line">            <span class="keyword">if</span> ( match_idx == p.length - <span class="number">1</span> ) &#123;</span><br><span class="line">                matchs[i - p.length + <span class="number">1</span>] = widx;</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] computePai(<span class="keyword">char</span>[] p) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = <span class="keyword">new</span> <span class="keyword">int</span>[p.length];</span><br><span class="line">        pai[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx = <span class="number">1</span>; idx &lt; p.length; idx++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( k &gt; -<span class="number">1</span> &amp;&amp; p[k+<span class="number">1</span>] != p[idx] )</span><br><span class="line">                k = pai[k];</span><br><span class="line">            <span class="keyword">if</span> ( p[k+<span class="number">1</span>] == p[idx] )</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line">            pai[idx] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pai;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)?<br>运行时间：50ms<br>击败：57.51%</p>
+<p><img src="/images/leetcode/30_1.png" alt="image"></p>
+<hr>
+<p>代码还是很垃圾，所以和别人的差距在哪里，实在是想不出来，查看别人代码后发现，别人使用的是<code>HashMap</code>的<strong>Hash</strong>功能来匹配单词的，
+这样通过<strong>Hash</strong>来进行两个个单词的匹配，复杂度是<strong>O(1)</strong>，额，原来<strong>Hash</strong>是这样使用的…</p>
+<p>另外这里还要翻转一下思维，上面是用单词去匹配字符串，这里由于先建好了一个单词的<code>HashMap</code>，所以直接将字符串切割，
+然后使用切出的单词使用<code>HashMap</code>查询就能知道它的次数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> m = s.length(), n = words.length, step = words[<span class="number">0</span>].length(), bound = m - step, total_len = step * n;</span><br><span class="line">        <span class="comment">// Count the repeated words</span></span><br><span class="line">        Map&lt; String, Integer&gt; words_list = <span class="keyword">new</span> HashMap&lt;&gt;(n);</span><br><span class="line">        <span class="keyword">int</span>[][] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>][n];</span><br><span class="line">        Integer index = <span class="number">0</span>, temp;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( ( temp = words_list.get(words[i])) != <span class="keyword">null</span> ) counts[<span class="number">0</span>][temp]++;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                words_list.put( words[i], index);</span><br><span class="line">                counts[<span class="number">0</span>][index++] = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// from s.start to s.end, match all the substring</span></span><br><span class="line">        <span class="keyword">int</span>[] matchs = <span class="keyword">new</span> <span class="keyword">int</span>[bound + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= bound; i++ ) &#123;</span><br><span class="line">            String s_sub = s.substring(i, i + step);</span><br><span class="line">            matchs[i] = ((temp = words_list.get(s_sub)) != <span class="keyword">null</span>) ? temp : -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// move window from head to end, dis = 0 means the current window contains all the words</span></span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(counts[<span class="number">1</span>], <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">int</span> dis = n;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt;= bound; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = counts[<span class="number">1</span>][matchs[head]] &lt;= counts[<span class="number">0</span>][matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    counts[<span class="number">1</span>][matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = counts[<span class="number">1</span>][matchs[j]] &gt;= counts[<span class="number">0</span>][matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                counts[<span class="number">1</span>][matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(n)。<br>运行时间：27ms。<br>击败：92.37%</p>
+<p><img src="/images/leetcode/30_2.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
       </categories>
       <tags>
         <tag>study</tag>
@@ -3932,6 +3932,23 @@ java中可以使用下面语句来取到：</p>
       </tags>
   </entry>
   <entry>
+    <title>centos7中lvm分区的创建与扩展</title>
+    <url>/2019/07/23/2019-07-23-centos-lvm-create-extend/</url>
+    <content><![CDATA[<hr>
+<h2 id="创建LVM分区"><a href="#创建LVM分区" class="headerlink" title="创建LVM分区"></a>创建LVM分区</h2><p>首先，挂载虚拟硬盘到虚拟机上，这里挂了2个1T的硬盘。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdb&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 创建卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgcreate VG1 /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully created</span><br><span class="line"></span><br><span class="line">// 查看卷组剩多少PE</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgdisplay</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               VG1</span><br><span class="line">  System ID             </span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        2</span><br><span class="line">  Metadata Sequence No  7</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                1</span><br><span class="line">  Open LV               0</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                2</span><br><span class="line">  Act PV                2</span><br><span class="line">  VG Size               &lt;2.00 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              524286</span><br><span class="line">  Alloc PE / Size       262143 / &lt;1024.00 GiB</span><br><span class="line">  Free  PE / Size       262143 / &lt;1024.00 GiB     //剩余空间大小</span><br><span class="line">  VG UUID               DYPyVN-9ssj-pLxN-bksi-9U0V-m2wQ-aQ3IPe</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">// 将所有剩余空间创建为逻辑卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvcreate -l 262143 -n MyLvm0 VG1</span></span><br><span class="line"></span><br><span class="line">  Logical volume &quot;MyLvm0&quot; created.</span><br><span class="line"></span><br><span class="line">// 创建完成</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 所创建的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br></pre></td></tr></table></figure></h2><h2 id="扩展LVM分区"><a href="#扩展LVM分区" class="headerlink" title="扩展LVM分区"></a>扩展LVM分区</h2><p>上面使用了一块1T虚拟硬盘，下面将另外一块虚拟硬盘添加到刚才的逻辑卷中，实现扩展。</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 需要扩展的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk       // 额外的空间</span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdc&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 将它加入到卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgextend VG1 /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully extended</span><br><span class="line"></span><br><span class="line">// 扩展逻辑卷MyLvm0</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvextend -l +262142 /dev/VG1/MyLvm0</span></span><br><span class="line"></span><br><span class="line">  Size of logical volume VG1/MyLvm0 changed from 1.00 TiB (262144 extents) to &lt;2.00 TiB (524286 extents).</span><br><span class="line">  Logical volume VG1/MyLvm0 successfully resized.</span><br><span class="line"></span><br><span class="line">// 成功扩展</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br></pre></td></tr></table></figure></h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.cnblogs.com/youn/p/6079376.html">Linux下添加磁盘创建lvm分区</a></p>
+<p><a href="https://www.cnblogs.com/weiyiming007/p/9517484.html">centos7用lvm扩展xfs文件系统的根分区</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>centos</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ceph-13.2.5添加mon，删除mon（ceph-deploy）</title>
     <url>/2019/07/22/2019-07-22-ceph-mon-add-destroy/</url>
     <content><![CDATA[<hr>
@@ -3957,23 +3974,6 @@ java中可以使用下面语句来取到：</p>
         <tag>linux</tag>
         <tag>centos</tag>
         <tag>ceph</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>centos7中lvm分区的创建与扩展</title>
-    <url>/2019/07/23/2019-07-23-centos-lvm-create-extend/</url>
-    <content><![CDATA[<hr>
-<h2 id="创建LVM分区"><a href="#创建LVM分区" class="headerlink" title="创建LVM分区"></a>创建LVM分区</h2><p>首先，挂载虚拟硬盘到虚拟机上，这里挂了2个1T的硬盘。</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdb&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 创建卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgcreate VG1 /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully created</span><br><span class="line"></span><br><span class="line">// 查看卷组剩多少PE</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgdisplay</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               VG1</span><br><span class="line">  System ID             </span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        2</span><br><span class="line">  Metadata Sequence No  7</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                1</span><br><span class="line">  Open LV               0</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                2</span><br><span class="line">  Act PV                2</span><br><span class="line">  VG Size               &lt;2.00 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              524286</span><br><span class="line">  Alloc PE / Size       262143 / &lt;1024.00 GiB</span><br><span class="line">  Free  PE / Size       262143 / &lt;1024.00 GiB     //剩余空间大小</span><br><span class="line">  VG UUID               DYPyVN-9ssj-pLxN-bksi-9U0V-m2wQ-aQ3IPe</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">// 将所有剩余空间创建为逻辑卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvcreate -l 262143 -n MyLvm0 VG1</span></span><br><span class="line"></span><br><span class="line">  Logical volume &quot;MyLvm0&quot; created.</span><br><span class="line"></span><br><span class="line">// 创建完成</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 所创建的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br></pre></td></tr></table></figure></h2><h2 id="扩展LVM分区"><a href="#扩展LVM分区" class="headerlink" title="扩展LVM分区"></a>扩展LVM分区</h2><p>上面使用了一块1T虚拟硬盘，下面将另外一块虚拟硬盘添加到刚才的逻辑卷中，实现扩展。</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 需要扩展的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk       // 额外的空间</span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdc&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 将它加入到卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgextend VG1 /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully extended</span><br><span class="line"></span><br><span class="line">// 扩展逻辑卷MyLvm0</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvextend -l +262142 /dev/VG1/MyLvm0</span></span><br><span class="line"></span><br><span class="line">  Size of logical volume VG1/MyLvm0 changed from 1.00 TiB (262144 extents) to &lt;2.00 TiB (524286 extents).</span><br><span class="line">  Logical volume VG1/MyLvm0 successfully resized.</span><br><span class="line"></span><br><span class="line">// 成功扩展</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br></pre></td></tr></table></figure></h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.cnblogs.com/youn/p/6079376.html">Linux下添加磁盘创建lvm分区</a></p>
-<p><a href="https://www.cnblogs.com/weiyiming007/p/9517484.html">centos7用lvm扩展xfs文件系统的根分区</a></p>
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-        <tag>centos</tag>
       </tags>
   </entry>
   <entry>
@@ -5551,7 +5551,17 @@ webrtc会自动的将同一个<code>stream</code>下的<code>track</code>绑定�
 <p><a href="https://github.com/rancher/rancher/issues/25111">25111</a></p>
 <p>反正我也没解决成功，也是后面换成了k3s1.20的原因之一。</p>
 <hr>
-<h1 id="2021-07-05"><a href="#2021-07-05" class="headerlink" title="2021-07-05"></a>2021-07-05</h1><p>在内网部署rancher，并添加同一个内网的另一个k3s集群，添加失败，出现<code>time out</code>的错误。</p>
+<h1 id="2021-07-02问题"><a href="#2021-07-02问题" class="headerlink" title="2021-07-02问题"></a>2021-07-02问题</h1><p>在部署rancher时，提示空间不足：<code>no space left on device: unknown</code>。</p>
+<p>用<code>df -h</code>看了一下，确实是/var下面的空间不足了。</p>
+<p>研究了一下，发现主要有三个目录需要使用空间:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/var/lib/rancher</span><br><span class="line"></span><br><span class="line">/var/lib/containerd</span><br><span class="line"></span><br><span class="line">/run/containerd</span><br></pre></td></tr></table></figure>
+<p>这里使用了一个简单的解决方法：在空间足够的/home下面新建了几个文件夹，然后先将<code>/var/lib/rancher</code>、<code>/var/lib/containerd</code>和<code>/run/containerd</code>三个目录删除，使用新建的几个文件夹软连接生成这三个目录：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ln -s /home/k3s/var-lib-rancher /var/lib/rancher</span><br><span class="line"></span><br><span class="line">ln -s /home/k3s/var-lib-containerd /var/lib/containerd</span><br><span class="line"></span><br><span class="line">ln -s /home/k3s/run-containerd /run/containerd</span><br></pre></td></tr></table></figure>
+<p>然后重启containerd服务：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl restart containerd</span><br></pre></td></tr></table></figure>
+<p>重新部署时，就不会再提示空间不足了。</p>
+<hr>
+<h1 id="2021-07-05问题"><a href="#2021-07-05问题" class="headerlink" title="2021-07-05问题"></a>2021-07-05问题</h1><p>在内网部署rancher，并添加同一个内网的另一个k3s集群，添加失败，出现<code>time out</code>的错误。</p>
 <p>大致情况如下：</p>
 <ol>
 <li>rancher部署在10.xxx.xxx.100上，另一个k3s集群在10.xxx.xxx.101和10.xxx.xxx.102上，现在要把k3s集群导入到rancher。</li>
