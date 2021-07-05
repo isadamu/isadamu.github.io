@@ -54,45 +54,6 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode 18.4Sum</title>
-    <url>/2017/08/18/2017-08-18-4Sum/</url>
-    <content><![CDATA[<h2 id="18-4Sum"><a href="#18-4Sum" class="headerlink" title="18.4Sum"></a>18.4Sum</h2><blockquote>
-<p>Description:</p>
-<blockquote>
-<p>Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.</p>
-</blockquote>
-<p>Note: The solution set must not contain duplicate quadruplets.</p>
-<p>example:</p>
-<blockquote>
-<p>For example, given array S = [1, 0, -1, 0, -2, 2], and target = 0.</p>
-<p>A solution set is:</p>
-<p>[ [-1,  0, 0, 1], [-2, -1, 1, 2], [-2,  0, 0, 2] ]</p>
-</blockquote>
-</blockquote>
-<hr>
-<p>题目理解：与3Sum一个意思。</p>
-<hr>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; fourSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="keyword">int</span> m = nums.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx1 = <span class="number">0</span>, bound1 = m - <span class="number">3</span> ; idx1 &lt; bound1 &amp;&amp; nums[idx1] * <span class="number">4</span> &lt;= target ;  ) &#123;</span><br><span class="line">            <span class="keyword">int</span> target3 = target - nums[idx1];</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = idx1 + <span class="number">1</span>, bound = m - <span class="number">2</span> ; i &lt; bound &amp;&amp; nums[i] * <span class="number">3</span> &lt;= target3; ) &#123;</span><br><span class="line">                <span class="keyword">int</span> l = i + <span class="number">1</span>, r = m - <span class="number">1</span>, sum = target3 - nums[i];</span><br><span class="line">                <span class="keyword">if</span> ( sum &lt;= nums[r] * <span class="number">2</span> &amp;&amp; sum &gt;= nums[l] * <span class="number">2</span> ) &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">                        <span class="keyword">int</span> temp_sum = nums[l] + nums[r];</span><br><span class="line">                        <span class="keyword">if</span> ( temp_sum &lt; sum ) l++; </span><br><span class="line">                        <span class="keyword">else</span> <span class="keyword">if</span> ( temp_sum &gt; sum ) r--; </span><br><span class="line">                        <span class="keyword">else</span> &#123;</span><br><span class="line">                            List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                            item.add(nums[idx1]);item.add(nums[i]);item.add(nums[l]);item.add(nums[r]);</span><br><span class="line">                            result.add(item);</span><br><span class="line">                            l++;</span><br><span class="line">                            <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[l] == nums[l-<span class="number">1</span>] ) l++;</span><br><span class="line">                            r--;</span><br><span class="line">                            <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[r] == nums[r+<span class="number">1</span>] ) r--;</span><br><span class="line">                        &#125; </span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                i++;</span><br><span class="line">                <span class="keyword">while</span> ( i &lt; bound &amp;&amp; nums[i] == nums[i-<span class="number">1</span>] ) i++;</span><br><span class="line">            &#125;</span><br><span class="line">            idx1++;</span><br><span class="line">            <span class="keyword">while</span> ( idx1 &lt; bound1 &amp;&amp; nums[idx1] == nums[idx1-<span class="number">1</span>] ) idx1++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>内部包装了一个3Sum，但是其中一些中断的条件很重要，能够提升不少性能。</p>
-<p>复杂度：n^3, 运行时间：28ms。</p>
-<p><img src="/images/leetcode/4Sum.png" alt="image"></p>
-<hr>
-<p>代码2：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; fourSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( nums.length &lt; <span class="number">4</span> ) <span class="keyword">return</span> result;</span><br><span class="line">        Arrays.sort(nums); </span><br><span class="line">        <span class="keyword">int</span>[] ynums = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">        <span class="keyword">int</span> repeat = <span class="number">1</span>, idx = <span class="number">1</span>;</span><br><span class="line">        ynums[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( nums[i] == nums[i-<span class="number">1</span>] ) &#123;</span><br><span class="line">                repeat++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                repeat = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( repeat &lt; <span class="number">4</span> ) &#123;</span><br><span class="line">                ynums[idx++] = nums[i]; </span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( repeat == <span class="number">4</span> &amp;&amp; nums[i]*<span class="number">4</span> == target ) &#123;</span><br><span class="line">                myAdd( result, nums[i], nums[i], nums[i], nums[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> m = idx, ts_i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span>[][] two_sum = <span class="keyword">new</span> <span class="keyword">int</span>[m*(m-<span class="number">1</span>)/<span class="number">2</span>][<span class="number">3</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m - <span class="number">1</span>; i++ ) &#123;</span><br><span class="line">            repeat = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> ( i &lt; m - <span class="number">1</span> &amp;&amp; ynums[i + <span class="number">1</span>] == ynums[i] ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                repeat++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( repeat == <span class="number">2</span> ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] * <span class="number">2</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i - <span class="number">1</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = i;</span><br><span class="line">                ts_i++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( repeat == <span class="number">3</span> ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] * <span class="number">2</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i - <span class="number">1</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = i - <span class="number">1</span>;</span><br><span class="line">                ts_i++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; m;  ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] + ynums[j];</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = j;</span><br><span class="line">                ts_i++;</span><br><span class="line">                j++;</span><br><span class="line">                <span class="keyword">while</span> ( j &lt; m &amp;&amp; ynums[j] == ynums[j-<span class="number">1</span>] ) &#123;</span><br><span class="line">                   j++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(two_sum, <span class="number">0</span>, ts_i, <span class="keyword">new</span> MyCompare());</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = ts_i - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = two_sum[l][<span class="number">0</span>] + two_sum[r][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> ( sum &lt; target ) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( sum &gt; target ) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> ( two_sum[l][<span class="number">2</span>] &lt; two_sum[r][<span class="number">1</span>] ) &#123;</span><br><span class="line">                    myAdd( result, ynums[two_sum[l][<span class="number">1</span>]], ynums[two_sum[l][<span class="number">2</span>]], ynums[two_sum[r][<span class="number">1</span>]], ynums[two_sum[r][<span class="number">2</span>]]);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> ll = l + <span class="number">1</span>, rr = r - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( ll &lt; r &amp;&amp; two_sum[ll][<span class="number">0</span>] == two_sum[ll-<span class="number">1</span>][<span class="number">0</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( two_sum[ll][<span class="number">2</span>] &lt; two_sum[r][<span class="number">1</span>] ) &#123;</span><br><span class="line">                        myAdd( result, ynums[two_sum[ll][<span class="number">1</span>]], ynums[two_sum[ll][<span class="number">2</span>]], ynums[two_sum[r][<span class="number">1</span>]], ynums[two_sum[r][<span class="number">2</span>]]);</span><br><span class="line">                    &#125;</span><br><span class="line">                    ll++;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">while</span> ( ll &lt; rr &amp;&amp; two_sum[rr][<span class="number">0</span>] == two_sum[rr+<span class="number">1</span>][<span class="number">0</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( two_sum[rr][<span class="number">1</span>] &gt; two_sum[l][<span class="number">2</span>] ) &#123;</span><br><span class="line">                        myAdd( result, ynums[two_sum[l][<span class="number">1</span>]], ynums[two_sum[l][<span class="number">2</span>]], ynums[two_sum[rr][<span class="number">1</span>]], ynums[two_sum[rr][<span class="number">2</span>]]);</span><br><span class="line">                    &#125;</span><br><span class="line">                    rr--;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                l++; r--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">myAdd</span><span class="params">( List&lt;List&lt;Integer&gt;&gt; result, <span class="keyword">int</span> a1, <span class="keyword">int</span> a2, <span class="keyword">int</span> b1, <span class="keyword">int</span> b2)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        item.add(a1); item.add(a2);</span><br><span class="line">        item.add(b1); item.add(b2);</span><br><span class="line">        result.add(item); </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private class MyCompare implements Comparator&lt;int[]&gt; &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(<span class="keyword">int</span>[] o1, <span class="keyword">int</span>[] o2)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> ( o1[<span class="number">0</span>] &gt; o2[<span class="number">0</span>] ) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( o1[<span class="number">0</span>] &lt; o2[<span class="number">0</span>] ) &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( o1[<span class="number">1</span>] &lt; o2[<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( o1[<span class="number">1</span>] &gt; o2[<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( o1[<span class="number">2</span>] &lt; o2[<span class="number">2</span>] ) &#123;</span><br><span class="line">                        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>贼复杂，想法到是很简单，就是先计算两两数的和，然后就变成了类似2Sum的东西，但是其中的多种重复情况，使得编写程序十分复杂。</p>
-<p>并且代码还可以优化，但是懒得想了，就不该开始这个代码(；′⌒`)。</p>
-<p>复杂度：n^2log(n)(个人简单估计是这样的，但是常数因子很大，而且占用空间很多)。</p>
-<p>运行时间：85ms。</p>
-<p><img src="/images/leetcode/4Sum_2.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>博客bug记录</title>
     <url>/2017/08/18/2017-08-18-blog-bugs/</url>
     <content><![CDATA[<hr>
@@ -121,6 +82,74 @@
       <tags>
         <tag>guide</tag>
         <tag>bug</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Everflow 阅读报告</title>
+    <url>/2017/08/18/2017-08-18-everflow/</url>
+    <content><![CDATA[<h2 id="Everflow-阅读报告"><a href="#Everflow-阅读报告" class="headerlink" title="Everflow 阅读报告"></a>Everflow 阅读报告</h2><p>文献名：Packet-Level Telemetry in Large Datacenter Networks</p>
+<p>（Zhu Y, Kang N, Cao J, et al. Packet-level telemetry in large datacenter networks[C]//ACM SIGCOMM Computer Communication Review. ACM, 2015, 45(4): 479-491.）</p>
+<p>作者：Yibo Zhu、Nanxi Kang、Jiaxin Cao、Albert Greenberg、Guohan Lu、Ratul Mahajan、Dave Maltz、Lihua Yuan、Ming Zhang、Ben Y. Zhao、Haitao Zheng</p>
+<p>关键字：Datacenter network; failure detection; probe</p>
+<h2 id="引言："><a href="#引言：" class="headerlink" title="引言："></a>引言：</h2><p>在复杂网络中去排查故障是一件很困难的事，要做到及时的解决故障，需要做到：</p>
+<ul>
+<li>在大规模的网络流量中识别出受影响的报文。</li>
+<li>穿过多个网络组件去追踪它们。</li>
+<li>分析流量轨迹中的故障模式。</li>
+<li>测试并确定潜在的故障原因。</li>
+</ul>
+<p>Everflow 就是一个大型网络中基于报文级别的遥测系统，使用商用交换机所具有的“match and mirror”功能来追踪特定的报文。它将抓取到的报文送到分析服务器，并且发出“guided probes”来测试并确定潜在的故障。
+它的特点在于它是报文级别的，粒度细，并且随着数据中心实时运行，对当前的一小部分报文进行追踪，可以实时检测到故障。另外当操作员发现某些故障时，也可以对Everflow进行配置，注入探针报文去定位这些故障。</p>
+<p>对于Silent packet drop、Silent blackhole、Inflated end-to-end latency、Loops from buggy middlebox routing、Load imbalance和Protocol bugs等一些问题，传统的工具是很难检测到故障或者很难定位到故障的，但是这些问题Everflow都可以发现，并且能够将这些问题定位到某个路由器或者某条链路。</p>
+<p>另外，它所需占用的资源在数据中心尺度来看是很小的，基本可以不予考虑。</p>
+<h2 id="Everflow架构："><a href="#Everflow架构：" class="headerlink" title="Everflow架构："></a>Everflow架构：</h2><p><img src="/images/paper/everflow_1.png" alt="image"></p>
+<p>Everflow主要由四个部分组成：controller、analyzer、storage和reshuffler。在这之上，多个Everflow application与Controller进行交互，利用Everflow提供的信息来诊断网络故障。</p>
+<h3 id="Reshuffler："><a href="#Reshuffler：" class="headerlink" title="Reshuffler："></a>Reshuffler：</h3><p>Reshuffler负责将追踪的报文进行镜像，然后送到Analyzer。其中主要的问题是数据中心的流量巨大，不可能追踪所有的报文，只能有选择的进行追踪。需要使用下面一些措施。</p>
+<p><strong>在交换机上进行匹配和镜像。</strong>商用的数据中心交换机可以预定义匹配规则，
+并对匹配报文执行确定的操作，且不改变原报文的转发行为。
+Everflow利用这一点来减少追踪的负载，
+用三种匹配规则来处理DCN（DataCenter Network）的通常故障。
+<strong>第一</strong>，由于数据中心流的大小分布十分不均匀，
+所以以TCP报文的SYN、FIN和RST部分来进行匹配，
+随机在n个踪迹中选择一个踪迹进行追踪。
+<strong>第二</strong>，某一些问题可能需要追踪特定应用的特定端口的报文，
+或者两个服务器之间的报文，
+所以这里在这样的报文中加入一个特殊的<strong>“debug bit”</strong>，
+交换机将对这样的报文进行追踪。<strong>第三</strong>，对一些协议报文（例如BGP、PFC和RDMA），
+它们在网络中是属于很小的一部分，但是又十分重要，
+所以Everflow会追踪所有这些的协议报文。</p>
+<p><strong>Switch-based reshuffler。</strong>我们需要一个低花费的策略来reshuffle这些追踪流量。为了实现这个策略，首先在HMux（hardware Mux）中定义一个VIP（virtual IP），配置所有交换机将踪迹报文转发到VIP，当一个踪迹报文到达HMux，HMux依据报文的五元组将报文重定向到一个DIP（direct IP，它就对应一个分析服务器）。这样就保证了同一五元组的报文只会被重定向到相同的DIP。</p>
+<h3 id="Analyzers："><a href="#Analyzers：" class="headerlink" title="Analyzers："></a>Analyzers：</h3><p>分析器。由分布式服务器组组成，每台服务器处理一部分“tracing traffic”。
+每一个分析器保持着两个状态：<strong>追踪报文</strong>和<strong>计数器</strong>。</p>
+<p><strong>追踪报文。</strong>分析器保持着一个报文踪迹表，表中保存了同一个报文（由五元组和IPID定义）的镜像链。它保存原报文的一份全拷贝，一系列的逐跳信息，逐跳信息包括报文被镜像的交换机IP地址、时间戳、TTL、源MAC地址和DSCP/ECN。当在一秒以内不再有新的报文，就认为一条踪迹结束。</p>
+<p>在一条结束的报文踪迹中，分析器会检查它是否有<strong>循环</strong>或<strong>丢包</strong>问题。当相同的设备在一条踪迹中出现多次时，就认为出现了循环。当一条踪迹的最后一跳与所期望的最后一跳不同时，就认为发生了丢包。</p>
+<p>由于需要追踪的报文的数量十分巨大，为了减小存储压力，每一个分析器只会将 异常行为、设置了调试位（例guided probes）或者协议相关报文（例PFC和BGP）的踪迹信息写入存储单元。对剩下的踪迹，分析器会将它们以类型的区别聚合到计数列表，并每隔10秒写入存储单元。最后controller还会将每个分析器的计数合并到一起。</p>
+<p><strong>链路负载计数器。</strong>对每条链路，分析器会计算出链路的总负载（报文数、比特数和flow数）。另外它还可以对指定前缀的流量或指定的内部流量来进行更细粒度的统计，这个操作可以通过controller来动态增减。</p>
+<p><strong>延迟计数器。</strong>分析器通过“guided probes”来计算每一条链路的延迟。</p>
+<p><strong>镜像报文丢包计数。</strong>镜像报文也有可能会发生丢包，如下图5所示，当踪迹包含S2却不包含S1时，明显表示从S1镜像出来的报文发生了丢失。在实际部署中镜像报文丢失率很低，通过将镜像报文避开拥塞链路就能很好的解决这个问题。</p>
+<p><img src="/images/paper/everflow_2.png" alt="image"></p>
+<h3 id="Storage："><a href="#Storage：" class="headerlink" title="Storage："></a>Storage：</h3><p>这里使用了SCOPE数据库，它是一个可扩展的分布式数据处理系统。数据用表的形式进行存储。这里将报文踪迹按行进行存储，每一行存储一条报文踪迹。</p>
+<h3 id="Controller-APIs："><a href="#Controller-APIs：" class="headerlink" title="Controller APIs："></a>Controller APIs：</h3><p>Everflow applications通过一些API来与控制器进行交互，通过这些API，应用可以查询报文踪迹、添加细粒度的负载计数器、触发guided probes以及选定踪迹添加调试bit。</p>
+<p>它有GetTrace()、GetCounter()、AddCounter()、RemoveCounter()、Probe()以及EnableDbg()、DisableDbg() 这样一些操作函数。</p>
+<p><strong>guided probing。</strong>由于故障的发生可能有多种原因，被动的追踪报文可能不足以确定这些的原因，这时就需要重新注入报文来判断故障。这种能够在任意交换机上注入任意报文的能力，就叫做guided probing。</p>
+<p><img src="/images/paper/everflow_3.png" alt="image"></p>
+<p>如上图（a），虽然追踪到了这个丢包，但是我们不能确定这个丢包是随机的还是持续的，通过guided probing，我们将报文p的复制注入到S2（如图b），确定丢包是随机的还是持续的。更进一步，可以设置探针报文为不同的五元组，测试丢包是随机的，还是针对某个特定的五元组。</p>
+<p><img src="/images/paper/everflow_4.png" alt="image"></p>
+<p>如上图（a），当使用被动追踪中去测量链路延迟时（也就是正常的追踪），可能由于追踪报文的两次返回所经过的路径不同，造成测量不正确。guided probing不仅可以注入报文，还可以指定报文经过的路径，通过这一特点，设置探针报文经过S1 -&gt; S2 -&gt; S1，这样报文就会经过S1两次，这两次的时间间隔就是链路延迟的两倍。</p>
+<h2 id="故障排查："><a href="#故障排查：" class="headerlink" title="故障排查："></a>故障排查：</h2><p><strong>Latency profiler。</strong>当两个服务器之间的延迟变得很高时，为了去查询问题的原因，首先，对两个服务器之间的TCP SYN报文的debug bit进行标志，追踪这些报文，就可以路径上所经过的网络设备。然后，注入guided probes去测量逐跳延迟。有了这些信息，就能快速定位到发生问题的网络设备。</p>
+<p><strong>Packet drop debugger。</strong>发生丢包的原因可能有很多，例如拥塞、软件bug或者配置错误，这就需要调试器对发生丢包的踪迹进行检查。对于一个遭到丢弃的报文p，通过最后抓取到p的交换机Sn，可以推断出p所期望的下一跳。这样，调试器就会注入guided probes到Sn，确定丢包是否是持续的，确定丢包是否有固定模式（例如特定的五元组）。</p>
+<p><strong>Loop debugger。</strong>循环在数据中心网络中并不常见，但是它一旦出现，就将消耗大量的资源。当一个循环被检测到时（踪迹上相同设备出现两次），首先调试器注入guided probes去测试循环是不是持续的，如果循环是持续的，它会将循环路径上的设备进行上报，于是操作员就可以禁用设备上的端口来打破循环。在这期间调试器会持续注入guided probes，直到循环消失。</p>
+<p><strong>ECMP profiler。</strong>在数据中心网络中，交换机会用ECMP（等价路由）来切分流量到下一跳。但可能由于不好的哈希函数或者路由问题，会造成链路拥塞。对每一个交换机，ECMP profiler将会它的链路总负载。当检测到不均衡的负载划分时，它会启动更加细粒度的负载计数器来排查，检测这样的不均衡的负载划分是对所有的流还是特定前缀的流。这些信息可以帮助操作员快速的检测并定位故障。</p>
+<p><strong>RoCEv2-based RDMA debugger。</strong>RoCEv2-based RDMA（Remote DirectMemoryAccess）是一个新兴协议，它对网络的延迟要求非常的高。在数据中心网络中，有时由于NIC的一些软件bug，使得RDMA达不到理想的性能，但是NIC是由第三方厂商所提供的，不能得到其中的代码，于是就需要用调试器来处理这个问题。调试器追踪关于RDMA的所有控制报文，这些信息不仅能够观察到RDMA流的实际行为，也能调试第三方的代码问题。</p>
+<p>（文章中第七部分提到了一些这些问题在实际中的一些处理的例子）</p>
+]]></content>
+      <categories>
+        <category>paper</category>
+        <category>network</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>read</tag>
       </tags>
   </entry>
   <entry>
@@ -207,117 +236,6 @@ width="200" height="200" title="大范" /></div>
       </tags>
   </entry>
   <entry>
-    <title>Everflow 阅读报告</title>
-    <url>/2017/08/18/2017-08-18-everflow/</url>
-    <content><![CDATA[<h2 id="Everflow-阅读报告"><a href="#Everflow-阅读报告" class="headerlink" title="Everflow 阅读报告"></a>Everflow 阅读报告</h2><p>文献名：Packet-Level Telemetry in Large Datacenter Networks</p>
-<p>（Zhu Y, Kang N, Cao J, et al. Packet-level telemetry in large datacenter networks[C]//ACM SIGCOMM Computer Communication Review. ACM, 2015, 45(4): 479-491.）</p>
-<p>作者：Yibo Zhu、Nanxi Kang、Jiaxin Cao、Albert Greenberg、Guohan Lu、Ratul Mahajan、Dave Maltz、Lihua Yuan、Ming Zhang、Ben Y. Zhao、Haitao Zheng</p>
-<p>关键字：Datacenter network; failure detection; probe</p>
-<h2 id="引言："><a href="#引言：" class="headerlink" title="引言："></a>引言：</h2><p>在复杂网络中去排查故障是一件很困难的事，要做到及时的解决故障，需要做到：</p>
-<ul>
-<li>在大规模的网络流量中识别出受影响的报文。</li>
-<li>穿过多个网络组件去追踪它们。</li>
-<li>分析流量轨迹中的故障模式。</li>
-<li>测试并确定潜在的故障原因。</li>
-</ul>
-<p>Everflow 就是一个大型网络中基于报文级别的遥测系统，使用商用交换机所具有的“match and mirror”功能来追踪特定的报文。它将抓取到的报文送到分析服务器，并且发出“guided probes”来测试并确定潜在的故障。
-它的特点在于它是报文级别的，粒度细，并且随着数据中心实时运行，对当前的一小部分报文进行追踪，可以实时检测到故障。另外当操作员发现某些故障时，也可以对Everflow进行配置，注入探针报文去定位这些故障。</p>
-<p>对于Silent packet drop、Silent blackhole、Inflated end-to-end latency、Loops from buggy middlebox routing、Load imbalance和Protocol bugs等一些问题，传统的工具是很难检测到故障或者很难定位到故障的，但是这些问题Everflow都可以发现，并且能够将这些问题定位到某个路由器或者某条链路。</p>
-<p>另外，它所需占用的资源在数据中心尺度来看是很小的，基本可以不予考虑。</p>
-<h2 id="Everflow架构："><a href="#Everflow架构：" class="headerlink" title="Everflow架构："></a>Everflow架构：</h2><p><img src="/images/paper/everflow_1.png" alt="image"></p>
-<p>Everflow主要由四个部分组成：controller、analyzer、storage和reshuffler。在这之上，多个Everflow application与Controller进行交互，利用Everflow提供的信息来诊断网络故障。</p>
-<h3 id="Reshuffler："><a href="#Reshuffler：" class="headerlink" title="Reshuffler："></a>Reshuffler：</h3><p>Reshuffler负责将追踪的报文进行镜像，然后送到Analyzer。其中主要的问题是数据中心的流量巨大，不可能追踪所有的报文，只能有选择的进行追踪。需要使用下面一些措施。</p>
-<p><strong>在交换机上进行匹配和镜像。</strong>商用的数据中心交换机可以预定义匹配规则，
-并对匹配报文执行确定的操作，且不改变原报文的转发行为。
-Everflow利用这一点来减少追踪的负载，
-用三种匹配规则来处理DCN（DataCenter Network）的通常故障。
-<strong>第一</strong>，由于数据中心流的大小分布十分不均匀，
-所以以TCP报文的SYN、FIN和RST部分来进行匹配，
-随机在n个踪迹中选择一个踪迹进行追踪。
-<strong>第二</strong>，某一些问题可能需要追踪特定应用的特定端口的报文，
-或者两个服务器之间的报文，
-所以这里在这样的报文中加入一个特殊的<strong>“debug bit”</strong>，
-交换机将对这样的报文进行追踪。<strong>第三</strong>，对一些协议报文（例如BGP、PFC和RDMA），
-它们在网络中是属于很小的一部分，但是又十分重要，
-所以Everflow会追踪所有这些的协议报文。</p>
-<p><strong>Switch-based reshuffler。</strong>我们需要一个低花费的策略来reshuffle这些追踪流量。为了实现这个策略，首先在HMux（hardware Mux）中定义一个VIP（virtual IP），配置所有交换机将踪迹报文转发到VIP，当一个踪迹报文到达HMux，HMux依据报文的五元组将报文重定向到一个DIP（direct IP，它就对应一个分析服务器）。这样就保证了同一五元组的报文只会被重定向到相同的DIP。</p>
-<h3 id="Analyzers："><a href="#Analyzers：" class="headerlink" title="Analyzers："></a>Analyzers：</h3><p>分析器。由分布式服务器组组成，每台服务器处理一部分“tracing traffic”。
-每一个分析器保持着两个状态：<strong>追踪报文</strong>和<strong>计数器</strong>。</p>
-<p><strong>追踪报文。</strong>分析器保持着一个报文踪迹表，表中保存了同一个报文（由五元组和IPID定义）的镜像链。它保存原报文的一份全拷贝，一系列的逐跳信息，逐跳信息包括报文被镜像的交换机IP地址、时间戳、TTL、源MAC地址和DSCP/ECN。当在一秒以内不再有新的报文，就认为一条踪迹结束。</p>
-<p>在一条结束的报文踪迹中，分析器会检查它是否有<strong>循环</strong>或<strong>丢包</strong>问题。当相同的设备在一条踪迹中出现多次时，就认为出现了循环。当一条踪迹的最后一跳与所期望的最后一跳不同时，就认为发生了丢包。</p>
-<p>由于需要追踪的报文的数量十分巨大，为了减小存储压力，每一个分析器只会将 异常行为、设置了调试位（例guided probes）或者协议相关报文（例PFC和BGP）的踪迹信息写入存储单元。对剩下的踪迹，分析器会将它们以类型的区别聚合到计数列表，并每隔10秒写入存储单元。最后controller还会将每个分析器的计数合并到一起。</p>
-<p><strong>链路负载计数器。</strong>对每条链路，分析器会计算出链路的总负载（报文数、比特数和flow数）。另外它还可以对指定前缀的流量或指定的内部流量来进行更细粒度的统计，这个操作可以通过controller来动态增减。</p>
-<p><strong>延迟计数器。</strong>分析器通过“guided probes”来计算每一条链路的延迟。</p>
-<p><strong>镜像报文丢包计数。</strong>镜像报文也有可能会发生丢包，如下图5所示，当踪迹包含S2却不包含S1时，明显表示从S1镜像出来的报文发生了丢失。在实际部署中镜像报文丢失率很低，通过将镜像报文避开拥塞链路就能很好的解决这个问题。</p>
-<p><img src="/images/paper/everflow_2.png" alt="image"></p>
-<h3 id="Storage："><a href="#Storage：" class="headerlink" title="Storage："></a>Storage：</h3><p>这里使用了SCOPE数据库，它是一个可扩展的分布式数据处理系统。数据用表的形式进行存储。这里将报文踪迹按行进行存储，每一行存储一条报文踪迹。</p>
-<h3 id="Controller-APIs："><a href="#Controller-APIs：" class="headerlink" title="Controller APIs："></a>Controller APIs：</h3><p>Everflow applications通过一些API来与控制器进行交互，通过这些API，应用可以查询报文踪迹、添加细粒度的负载计数器、触发guided probes以及选定踪迹添加调试bit。</p>
-<p>它有GetTrace()、GetCounter()、AddCounter()、RemoveCounter()、Probe()以及EnableDbg()、DisableDbg() 这样一些操作函数。</p>
-<p><strong>guided probing。</strong>由于故障的发生可能有多种原因，被动的追踪报文可能不足以确定这些的原因，这时就需要重新注入报文来判断故障。这种能够在任意交换机上注入任意报文的能力，就叫做guided probing。</p>
-<p><img src="/images/paper/everflow_3.png" alt="image"></p>
-<p>如上图（a），虽然追踪到了这个丢包，但是我们不能确定这个丢包是随机的还是持续的，通过guided probing，我们将报文p的复制注入到S2（如图b），确定丢包是随机的还是持续的。更进一步，可以设置探针报文为不同的五元组，测试丢包是随机的，还是针对某个特定的五元组。</p>
-<p><img src="/images/paper/everflow_4.png" alt="image"></p>
-<p>如上图（a），当使用被动追踪中去测量链路延迟时（也就是正常的追踪），可能由于追踪报文的两次返回所经过的路径不同，造成测量不正确。guided probing不仅可以注入报文，还可以指定报文经过的路径，通过这一特点，设置探针报文经过S1 -&gt; S2 -&gt; S1，这样报文就会经过S1两次，这两次的时间间隔就是链路延迟的两倍。</p>
-<h2 id="故障排查："><a href="#故障排查：" class="headerlink" title="故障排查："></a>故障排查：</h2><p><strong>Latency profiler。</strong>当两个服务器之间的延迟变得很高时，为了去查询问题的原因，首先，对两个服务器之间的TCP SYN报文的debug bit进行标志，追踪这些报文，就可以路径上所经过的网络设备。然后，注入guided probes去测量逐跳延迟。有了这些信息，就能快速定位到发生问题的网络设备。</p>
-<p><strong>Packet drop debugger。</strong>发生丢包的原因可能有很多，例如拥塞、软件bug或者配置错误，这就需要调试器对发生丢包的踪迹进行检查。对于一个遭到丢弃的报文p，通过最后抓取到p的交换机Sn，可以推断出p所期望的下一跳。这样，调试器就会注入guided probes到Sn，确定丢包是否是持续的，确定丢包是否有固定模式（例如特定的五元组）。</p>
-<p><strong>Loop debugger。</strong>循环在数据中心网络中并不常见，但是它一旦出现，就将消耗大量的资源。当一个循环被检测到时（踪迹上相同设备出现两次），首先调试器注入guided probes去测试循环是不是持续的，如果循环是持续的，它会将循环路径上的设备进行上报，于是操作员就可以禁用设备上的端口来打破循环。在这期间调试器会持续注入guided probes，直到循环消失。</p>
-<p><strong>ECMP profiler。</strong>在数据中心网络中，交换机会用ECMP（等价路由）来切分流量到下一跳。但可能由于不好的哈希函数或者路由问题，会造成链路拥塞。对每一个交换机，ECMP profiler将会它的链路总负载。当检测到不均衡的负载划分时，它会启动更加细粒度的负载计数器来排查，检测这样的不均衡的负载划分是对所有的流还是特定前缀的流。这些信息可以帮助操作员快速的检测并定位故障。</p>
-<p><strong>RoCEv2-based RDMA debugger。</strong>RoCEv2-based RDMA（Remote DirectMemoryAccess）是一个新兴协议，它对网络的延迟要求非常的高。在数据中心网络中，有时由于NIC的一些软件bug，使得RDMA达不到理想的性能，但是NIC是由第三方厂商所提供的，不能得到其中的代码，于是就需要用调试器来处理这个问题。调试器追踪关于RDMA的所有控制报文，这些信息不仅能够观察到RDMA流的实际行为，也能调试第三方的代码问题。</p>
-<p>（文章中第七部分提到了一些这些问题在实际中的一些处理的例子）</p>
-]]></content>
-      <categories>
-        <category>paper</category>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>read</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>购买域名并绑定博客原地址</title>
-    <url>/2017/08/20/2017-08-20-add-domain-name/</url>
-    <content><![CDATA[<p>其实我也不知道为什么要买一个域名，对我自己来说没什么卵用，
-但是这样很爽，虽然挺贵的…</p>
-<hr>
-<h2 id="购买域名"><a href="#购买域名" class="headerlink" title="购买域名"></a>购买域名</h2><p>这里我的域名是在<a href="https://dcc.godaddy.com/">godaddy</a> 上购买的，
-就买一个<code>.com</code>的域名就行，另外还买了隐私保护，不管有没有什么大用，
-反正已经买了。</p>
-<p>这里我买了5年的，主要买的时候使用优惠码，直接搜索引擎搜索“godaddy 优惠码”就行，
-隐私服务可买可不买，买了之后，购买信息就变了，</p>
-<p><img src="/images/guide/add-domain-name_1.png" alt="image"></p>
-<p>域名花费300￥，隐私保护200￥，一共5年，就当我自己买了个移动硬盘…</p>
-<hr>
-<h2 id="域名绑定"><a href="#域名绑定" class="headerlink" title="域名绑定"></a>域名绑定</h2><p>先操作github，在github的工程下面建一个CNAME文件，加入一行域名，我的<code>longrm.com</code>。
-github会自动按这个域名来转。  </p>
-<p><img src="/images/guide/add-domain-name_2.png" alt="image" title="CNAME"></p>
-<p><img src="/images/guide/add-domain-name_3.png" alt="image" title="CNAME Content"></p>
-<p>或者这里也可以不建这个文件，进入repository的setting里面，custom一下也行，</p>
-<p><img src="/images/guide/add-domain-name_4.png" alt="image" title="setting"></p>
-<p><img src="/images/guide/add-domain-name_5.png" alt="image" title="custom domain"></p>
-<p>第二步就是去godaddy下面改域名的设置，参考：</p>
-<ul>
-<li><a href="http://andrewsturges.com/blog/jekyll/tutorial/2014/11/06/github-and-godaddy.html">Configuring a Godaddy domain name with github pages</a></li>
-<li><a href="https://help.github.com/articles/setting-up-an-apex-domain/">Setting up an apex domain</a></li>
-</ul>
-<p>简单总结参考里面的内容，更改下图两条变成所示就行了:</p>
-<ul>
-<li>将<code>A</code>的值改成<code>192.30.252.153</code>。</li>
-<li>将<code>CNAME</code>的<code>www</code>那一条改成<code>用户名.github.io</code>，这里我的就是<code>isadamu.github.io</code>。</li>
-</ul>
-<p><img src="/images/guide/add-domain-name_6.png" alt="image"></p>
-<hr>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>浏览器输入买的域名，<code>longrm.com</code>，大功告成：</p>
-<p><img src="/images/guide/add-domain-name_7.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>guide</category>
-      </categories>
-      <tags>
-        <tag>guide</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 1.Two Sum</title>
     <url>/2017/08/18/2017-08-18-two-sum/</url>
     <content><![CDATA[<h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1 Two Sum"></a>1 Two Sum</h2><p>题目描述：Given an array of integers, return indices of the two numbers such that they add up to a specific target.</p>
@@ -335,6 +253,45 @@ github会自动按这个域名来转。  </p>
 <p>将原始数据排序，然后进行左右逼近，得到结果。</p>
 <p>复杂度nlog(n),运行时间12ms。</p>
 <p><img src="/images/leetcode/Two_Sum.png" alt="images"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 18.4Sum</title>
+    <url>/2017/08/18/2017-08-18-4Sum/</url>
+    <content><![CDATA[<h2 id="18-4Sum"><a href="#18-4Sum" class="headerlink" title="18.4Sum"></a>18.4Sum</h2><blockquote>
+<p>Description:</p>
+<blockquote>
+<p>Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.</p>
+</blockquote>
+<p>Note: The solution set must not contain duplicate quadruplets.</p>
+<p>example:</p>
+<blockquote>
+<p>For example, given array S = [1, 0, -1, 0, -2, 2], and target = 0.</p>
+<p>A solution set is:</p>
+<p>[ [-1,  0, 0, 1], [-2, -1, 1, 2], [-2,  0, 0, 2] ]</p>
+</blockquote>
+</blockquote>
+<hr>
+<p>题目理解：与3Sum一个意思。</p>
+<hr>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; fourSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="keyword">int</span> m = nums.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx1 = <span class="number">0</span>, bound1 = m - <span class="number">3</span> ; idx1 &lt; bound1 &amp;&amp; nums[idx1] * <span class="number">4</span> &lt;= target ;  ) &#123;</span><br><span class="line">            <span class="keyword">int</span> target3 = target - nums[idx1];</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = idx1 + <span class="number">1</span>, bound = m - <span class="number">2</span> ; i &lt; bound &amp;&amp; nums[i] * <span class="number">3</span> &lt;= target3; ) &#123;</span><br><span class="line">                <span class="keyword">int</span> l = i + <span class="number">1</span>, r = m - <span class="number">1</span>, sum = target3 - nums[i];</span><br><span class="line">                <span class="keyword">if</span> ( sum &lt;= nums[r] * <span class="number">2</span> &amp;&amp; sum &gt;= nums[l] * <span class="number">2</span> ) &#123;</span><br><span class="line">                    <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">                        <span class="keyword">int</span> temp_sum = nums[l] + nums[r];</span><br><span class="line">                        <span class="keyword">if</span> ( temp_sum &lt; sum ) l++; </span><br><span class="line">                        <span class="keyword">else</span> <span class="keyword">if</span> ( temp_sum &gt; sum ) r--; </span><br><span class="line">                        <span class="keyword">else</span> &#123;</span><br><span class="line">                            List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                            item.add(nums[idx1]);item.add(nums[i]);item.add(nums[l]);item.add(nums[r]);</span><br><span class="line">                            result.add(item);</span><br><span class="line">                            l++;</span><br><span class="line">                            <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[l] == nums[l-<span class="number">1</span>] ) l++;</span><br><span class="line">                            r--;</span><br><span class="line">                            <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[r] == nums[r+<span class="number">1</span>] ) r--;</span><br><span class="line">                        &#125; </span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                i++;</span><br><span class="line">                <span class="keyword">while</span> ( i &lt; bound &amp;&amp; nums[i] == nums[i-<span class="number">1</span>] ) i++;</span><br><span class="line">            &#125;</span><br><span class="line">            idx1++;</span><br><span class="line">            <span class="keyword">while</span> ( idx1 &lt; bound1 &amp;&amp; nums[idx1] == nums[idx1-<span class="number">1</span>] ) idx1++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内部包装了一个3Sum，但是其中一些中断的条件很重要，能够提升不少性能。</p>
+<p>复杂度：n^3, 运行时间：28ms。</p>
+<p><img src="/images/leetcode/4Sum.png" alt="image"></p>
+<hr>
+<p>代码2：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; fourSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( nums.length &lt; <span class="number">4</span> ) <span class="keyword">return</span> result;</span><br><span class="line">        Arrays.sort(nums); </span><br><span class="line">        <span class="keyword">int</span>[] ynums = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">        <span class="keyword">int</span> repeat = <span class="number">1</span>, idx = <span class="number">1</span>;</span><br><span class="line">        ynums[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( nums[i] == nums[i-<span class="number">1</span>] ) &#123;</span><br><span class="line">                repeat++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                repeat = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( repeat &lt; <span class="number">4</span> ) &#123;</span><br><span class="line">                ynums[idx++] = nums[i]; </span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( repeat == <span class="number">4</span> &amp;&amp; nums[i]*<span class="number">4</span> == target ) &#123;</span><br><span class="line">                myAdd( result, nums[i], nums[i], nums[i], nums[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> m = idx, ts_i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span>[][] two_sum = <span class="keyword">new</span> <span class="keyword">int</span>[m*(m-<span class="number">1</span>)/<span class="number">2</span>][<span class="number">3</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m - <span class="number">1</span>; i++ ) &#123;</span><br><span class="line">            repeat = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> ( i &lt; m - <span class="number">1</span> &amp;&amp; ynums[i + <span class="number">1</span>] == ynums[i] ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                repeat++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ( repeat == <span class="number">2</span> ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] * <span class="number">2</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i - <span class="number">1</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = i;</span><br><span class="line">                ts_i++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( repeat == <span class="number">3</span> ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] * <span class="number">2</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i - <span class="number">1</span>;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = i - <span class="number">1</span>;</span><br><span class="line">                ts_i++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; m;  ) &#123;</span><br><span class="line">                two_sum[ts_i][<span class="number">0</span>] = ynums[i] + ynums[j];</span><br><span class="line">                two_sum[ts_i][<span class="number">1</span>] = i;</span><br><span class="line">                two_sum[ts_i][<span class="number">2</span>] = j;</span><br><span class="line">                ts_i++;</span><br><span class="line">                j++;</span><br><span class="line">                <span class="keyword">while</span> ( j &lt; m &amp;&amp; ynums[j] == ynums[j-<span class="number">1</span>] ) &#123;</span><br><span class="line">                   j++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(two_sum, <span class="number">0</span>, ts_i, <span class="keyword">new</span> MyCompare());</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = ts_i - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = two_sum[l][<span class="number">0</span>] + two_sum[r][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> ( sum &lt; target ) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( sum &gt; target ) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> ( two_sum[l][<span class="number">2</span>] &lt; two_sum[r][<span class="number">1</span>] ) &#123;</span><br><span class="line">                    myAdd( result, ynums[two_sum[l][<span class="number">1</span>]], ynums[two_sum[l][<span class="number">2</span>]], ynums[two_sum[r][<span class="number">1</span>]], ynums[two_sum[r][<span class="number">2</span>]]);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> ll = l + <span class="number">1</span>, rr = r - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> ( ll &lt; r &amp;&amp; two_sum[ll][<span class="number">0</span>] == two_sum[ll-<span class="number">1</span>][<span class="number">0</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( two_sum[ll][<span class="number">2</span>] &lt; two_sum[r][<span class="number">1</span>] ) &#123;</span><br><span class="line">                        myAdd( result, ynums[two_sum[ll][<span class="number">1</span>]], ynums[two_sum[ll][<span class="number">2</span>]], ynums[two_sum[r][<span class="number">1</span>]], ynums[two_sum[r][<span class="number">2</span>]]);</span><br><span class="line">                    &#125;</span><br><span class="line">                    ll++;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">while</span> ( ll &lt; rr &amp;&amp; two_sum[rr][<span class="number">0</span>] == two_sum[rr+<span class="number">1</span>][<span class="number">0</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( two_sum[rr][<span class="number">1</span>] &gt; two_sum[l][<span class="number">2</span>] ) &#123;</span><br><span class="line">                        myAdd( result, ynums[two_sum[l][<span class="number">1</span>]], ynums[two_sum[l][<span class="number">2</span>]], ynums[two_sum[rr][<span class="number">1</span>]], ynums[two_sum[rr][<span class="number">2</span>]]);</span><br><span class="line">                    &#125;</span><br><span class="line">                    rr--;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                l++; r--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">myAdd</span><span class="params">( List&lt;List&lt;Integer&gt;&gt; result, <span class="keyword">int</span> a1, <span class="keyword">int</span> a2, <span class="keyword">int</span> b1, <span class="keyword">int</span> b2)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        item.add(a1); item.add(a2);</span><br><span class="line">        item.add(b1); item.add(b2);</span><br><span class="line">        result.add(item); </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private class MyCompare implements Comparator&lt;int[]&gt; &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(<span class="keyword">int</span>[] o1, <span class="keyword">int</span>[] o2)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> ( o1[<span class="number">0</span>] &gt; o2[<span class="number">0</span>] ) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( o1[<span class="number">0</span>] &lt; o2[<span class="number">0</span>] ) &#123;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> ( o1[<span class="number">1</span>] &lt; o2[<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( o1[<span class="number">1</span>] &gt; o2[<span class="number">1</span>] ) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( o1[<span class="number">2</span>] &lt; o2[<span class="number">2</span>] ) &#123;</span><br><span class="line">                        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>贼复杂，想法到是很简单，就是先计算两两数的和，然后就变成了类似2Sum的东西，但是其中的多种重复情况，使得编写程序十分复杂。</p>
+<p>并且代码还可以优化，但是懒得想了，就不该开始这个代码(；′⌒`)。</p>
+<p>复杂度：n^2log(n)(个人简单估计是这样的，但是常数因子很大，而且占用空间很多)。</p>
+<p>运行时间：85ms。</p>
+<p><img src="/images/leetcode/4Sum_2.png" alt="image"></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -457,6 +414,49 @@ github会自动按这个域名来转。  </p>
       </tags>
   </entry>
   <entry>
+    <title>购买域名并绑定博客原地址</title>
+    <url>/2017/08/20/2017-08-20-add-domain-name/</url>
+    <content><![CDATA[<p>其实我也不知道为什么要买一个域名，对我自己来说没什么卵用，
+但是这样很爽，虽然挺贵的…</p>
+<hr>
+<h2 id="购买域名"><a href="#购买域名" class="headerlink" title="购买域名"></a>购买域名</h2><p>这里我的域名是在<a href="https://dcc.godaddy.com/">godaddy</a> 上购买的，
+就买一个<code>.com</code>的域名就行，另外还买了隐私保护，不管有没有什么大用，
+反正已经买了。</p>
+<p>这里我买了5年的，主要买的时候使用优惠码，直接搜索引擎搜索“godaddy 优惠码”就行，
+隐私服务可买可不买，买了之后，购买信息就变了，</p>
+<p><img src="/images/guide/add-domain-name_1.png" alt="image"></p>
+<p>域名花费300￥，隐私保护200￥，一共5年，就当我自己买了个移动硬盘…</p>
+<hr>
+<h2 id="域名绑定"><a href="#域名绑定" class="headerlink" title="域名绑定"></a>域名绑定</h2><p>先操作github，在github的工程下面建一个CNAME文件，加入一行域名，我的<code>longrm.com</code>。
+github会自动按这个域名来转。  </p>
+<p><img src="/images/guide/add-domain-name_2.png" alt="image" title="CNAME"></p>
+<p><img src="/images/guide/add-domain-name_3.png" alt="image" title="CNAME Content"></p>
+<p>或者这里也可以不建这个文件，进入repository的setting里面，custom一下也行，</p>
+<p><img src="/images/guide/add-domain-name_4.png" alt="image" title="setting"></p>
+<p><img src="/images/guide/add-domain-name_5.png" alt="image" title="custom domain"></p>
+<p>第二步就是去godaddy下面改域名的设置，参考：</p>
+<ul>
+<li><a href="http://andrewsturges.com/blog/jekyll/tutorial/2014/11/06/github-and-godaddy.html">Configuring a Godaddy domain name with github pages</a></li>
+<li><a href="https://help.github.com/articles/setting-up-an-apex-domain/">Setting up an apex domain</a></li>
+</ul>
+<p>简单总结参考里面的内容，更改下图两条变成所示就行了:</p>
+<ul>
+<li>将<code>A</code>的值改成<code>192.30.252.153</code>。</li>
+<li>将<code>CNAME</code>的<code>www</code>那一条改成<code>用户名.github.io</code>，这里我的就是<code>isadamu.github.io</code>。</li>
+</ul>
+<p><img src="/images/guide/add-domain-name_6.png" alt="image"></p>
+<hr>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>浏览器输入买的域名，<code>longrm.com</code>，大功告成：</p>
+<p><img src="/images/guide/add-domain-name_7.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>guide</category>
+      </categories>
+      <tags>
+        <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 71.Simplify Path</title>
     <url>/2017/08/21/2017-08-21-simplfiy-path/</url>
     <content><![CDATA[<h2 id="71-Simplify-Path"><a href="#71-Simplify-Path" class="headerlink" title="71.Simplify Path"></a>71.Simplify Path</h2><p>题目：</p>
@@ -528,6 +528,44 @@ P(y = 1)= \Phi_y</script><p>同样的，利用极大似然法估计概率值。<
       </categories>
       <tags>
         <tag>mechine learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Coursera neural-networks-deep-learning 笔记</title>
+    <url>/2017/08/22/2017-08-22-Andrew-Ng-DeepLearning_1/</url>
+    <content><![CDATA[<p><a href="https://www.coursera.org/learn/neural-networks-deep-learning">课程主页</a></p>
+<p>学完了吴恩达在Coursera上新开的课程的第一部分<code>neural networks deep learning</code>，
+是时候对课程进行一下总结了。</p>
+<hr>
+<h2 id="每周内容小回顾"><a href="#每周内容小回顾" class="headerlink" title="每周内容小回顾"></a>每周内容小回顾</h2><p>先对第一个专项课程所讲的内容进行简单的梳理，后面捡重点单独拿出来进行记录。</p>
+<h3 id="week-1"><a href="#week-1" class="headerlink" title="week 1"></a>week 1</h3><p>第一周视频时间很短，主要就是介绍了神经网络的发展以及它的一些作用，
+然后讲了课程的相关内容，如何讨论啊，作业形式啊什么的。</p>
+<h3 id="week-2"><a href="#week-2" class="headerlink" title="week 2"></a>week 2</h3><p>第二周的课程首先引入了<strong>Logistic Regression</strong>，然后讲了如何对<strong>Logistic</strong>模型进行训练，
+这样就引入了代价函数，梯度下降等等一些机器学习中的一些概念。</p>
+<p>另外，后半部分又顺带引入了计算过程的向量化，所以就讲了与作业有关的<strong>Jupyter、numpy</strong>的相关操作。</p>
+<h3 id="week-3"><a href="#week-3" class="headerlink" title="week 3"></a>week 3</h3><p>第三周主要讲了一个二层的神经网络，当然是先讲了它的前向传播，然后讲了如何向量化计算，
+这里主要是为了讲清楚神经网络的层次结构。</p>
+<p>然后讲了神经网络中的激活函数，最后给出了反向传播，加上权值的随机初始化。</p>
+<h3 id="week-4"><a href="#week-4" class="headerlink" title="week 4"></a>week 4</h3><p>第四周开始更深层次的神经网络，然后讲了前向和反向传播，并且强调了神经网络每一层的
+矩阵维度问题，在程序中要注意维度的正确性。</p>
+<p>最后讲了参数设置问题。<code>Parameters</code>：通过网络学习得来的参数。
+<code>Hyperparameters</code>：在训练前就要设置，需要多次重复训练来手动调整。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>讲了构建一个多层的前向神经网络所需要的基本的知识。</p>
+<hr>
+<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p><a href="http://longrm.com/2017/08/22/2017-08-22-logistic-regression/">Logistic Regression总结</a></p>
+<hr>
+<h2 id="初级-Deep-Neural-Networks"><a href="#初级-Deep-Neural-Networks" class="headerlink" title="初级 Deep Neural Networks"></a>初级 Deep Neural Networks</h2><p><a href="http://longrm.com/2017/08/22/2017-08-22-dnn/">Deep Neural Networks 总结一</a></p>
+<hr>
+<h2 id="课程的一些问题"><a href="#课程的一些问题" class="headerlink" title="课程的一些问题"></a>课程的一些问题</h2><p>好像没有ppt，笔记写起来很痛苦啊。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -803,44 +841,6 @@ b^{[i]} \in R^{n^{[i]} \times 1}</script><hr>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>第一个专项的课程，主要还是在于引入深度神经网络，讲了最为重要的前向传播和反向传播，
 理解好前向与反向传播，对于神经网络的学习至关重要。</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Coursera neural-networks-deep-learning 笔记</title>
-    <url>/2017/08/22/2017-08-22-Andrew-Ng-DeepLearning_1/</url>
-    <content><![CDATA[<p><a href="https://www.coursera.org/learn/neural-networks-deep-learning">课程主页</a></p>
-<p>学完了吴恩达在Coursera上新开的课程的第一部分<code>neural networks deep learning</code>，
-是时候对课程进行一下总结了。</p>
-<hr>
-<h2 id="每周内容小回顾"><a href="#每周内容小回顾" class="headerlink" title="每周内容小回顾"></a>每周内容小回顾</h2><p>先对第一个专项课程所讲的内容进行简单的梳理，后面捡重点单独拿出来进行记录。</p>
-<h3 id="week-1"><a href="#week-1" class="headerlink" title="week 1"></a>week 1</h3><p>第一周视频时间很短，主要就是介绍了神经网络的发展以及它的一些作用，
-然后讲了课程的相关内容，如何讨论啊，作业形式啊什么的。</p>
-<h3 id="week-2"><a href="#week-2" class="headerlink" title="week 2"></a>week 2</h3><p>第二周的课程首先引入了<strong>Logistic Regression</strong>，然后讲了如何对<strong>Logistic</strong>模型进行训练，
-这样就引入了代价函数，梯度下降等等一些机器学习中的一些概念。</p>
-<p>另外，后半部分又顺带引入了计算过程的向量化，所以就讲了与作业有关的<strong>Jupyter、numpy</strong>的相关操作。</p>
-<h3 id="week-3"><a href="#week-3" class="headerlink" title="week 3"></a>week 3</h3><p>第三周主要讲了一个二层的神经网络，当然是先讲了它的前向传播，然后讲了如何向量化计算，
-这里主要是为了讲清楚神经网络的层次结构。</p>
-<p>然后讲了神经网络中的激活函数，最后给出了反向传播，加上权值的随机初始化。</p>
-<h3 id="week-4"><a href="#week-4" class="headerlink" title="week 4"></a>week 4</h3><p>第四周开始更深层次的神经网络，然后讲了前向和反向传播，并且强调了神经网络每一层的
-矩阵维度问题，在程序中要注意维度的正确性。</p>
-<p>最后讲了参数设置问题。<code>Parameters</code>：通过网络学习得来的参数。
-<code>Hyperparameters</code>：在训练前就要设置，需要多次重复训练来手动调整。</p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>讲了构建一个多层的前向神经网络所需要的基本的知识。</p>
-<hr>
-<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p><a href="http://longrm.com/2017/08/22/2017-08-22-logistic-regression/">Logistic Regression总结</a></p>
-<hr>
-<h2 id="初级-Deep-Neural-Networks"><a href="#初级-Deep-Neural-Networks" class="headerlink" title="初级 Deep Neural Networks"></a>初级 Deep Neural Networks</h2><p><a href="http://longrm.com/2017/08/22/2017-08-22-dnn/">Deep Neural Networks 总结一</a></p>
-<hr>
-<h2 id="课程的一些问题"><a href="#课程的一些问题" class="headerlink" title="课程的一些问题"></a>课程的一些问题</h2><p>好像没有ppt，笔记写起来很痛苦啊。</p>
 ]]></content>
       <categories>
         <category>coursera</category>
@@ -1281,6 +1281,42 @@ style="zoom:150%"/></div>
       </tags>
   </entry>
   <entry>
+    <title>Coursera Improving Deep Neural Networks 笔记</title>
+    <url>/2017/08/25/2017-08-25-dnn/</url>
+    <content><![CDATA[<p>第二个专项课程的完整题目是</p>
+<blockquote>
+<p>Improving Deep Neural Networks:
+Hyperparameter tuning, Regularization and Optimization.</p>
+</blockquote>
+<p>通过标题就可以看出课程的主要内容就是在第一个课程的基础上，
+对深度神经网络进行加固。</p>
+<p>一共三周的课程，每周课程题目分别为：</p>
+<ul>
+<li>Practical aspects of Deep Learning</li>
+<li>Optimization algorithms</li>
+<li>Hyperparameter tuning, Batch Normalization and Programming Frameworks</li>
+</ul>
+<p>第一周讲了划分数据集、正则化、权值初始化以及梯度检查。</p>
+<p>第二周讲了<strong>mini-batch</strong>以及<strong>RMSprop</strong>等参数更新方法。</p>
+<p>第三周讲了超参数的选择、标准化以及TensorFlow。</p>
+<hr>
+<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><p><a href="http://longrm.com/2017/08/25/2017-08-25-dnn_2/">神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查</a></p>
+<hr>
+<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_3/">Mini-batch 和 权重更新策略</a></p>
+<hr>
+<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">Hyperparameter tuning, Batch Norm and TensorFlow</a></p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查等等</title>
     <url>/2017/08/25/2017-08-25-dnn_2/</url>
     <content><![CDATA[<hr>
@@ -1432,159 +1468,6 @@ check \ \ \
 <li>Doesn’t work with dropout.（会变得不好计算，先关闭dropout，检查完毕再开启）</li>
 <li>Run at random initialization; perhaps again after some training.</li>
 </ul>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Coursera Improving Deep Neural Networks 笔记</title>
-    <url>/2017/08/25/2017-08-25-dnn/</url>
-    <content><![CDATA[<p>第二个专项课程的完整题目是</p>
-<blockquote>
-<p>Improving Deep Neural Networks:
-Hyperparameter tuning, Regularization and Optimization.</p>
-</blockquote>
-<p>通过标题就可以看出课程的主要内容就是在第一个课程的基础上，
-对深度神经网络进行加固。</p>
-<p>一共三周的课程，每周课程题目分别为：</p>
-<ul>
-<li>Practical aspects of Deep Learning</li>
-<li>Optimization algorithms</li>
-<li>Hyperparameter tuning, Batch Normalization and Programming Frameworks</li>
-</ul>
-<p>第一周讲了划分数据集、正则化、权值初始化以及梯度检查。</p>
-<p>第二周讲了<strong>mini-batch</strong>以及<strong>RMSprop</strong>等参数更新方法。</p>
-<p>第三周讲了超参数的选择、标准化以及TensorFlow。</p>
-<hr>
-<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><p><a href="http://longrm.com/2017/08/25/2017-08-25-dnn_2/">神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查</a></p>
-<hr>
-<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_3/">Mini-batch 和 权重更新策略</a></p>
-<hr>
-<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">Hyperparameter tuning, Batch Norm and TensorFlow</a></p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mini-batch 和 权重更新策略</title>
-    <url>/2017/08/29/2017-08-29-dnn_3/</url>
-    <content><![CDATA[<hr>
-<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
-<ol>
-<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
-<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
-<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
-</ol>
-<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
-这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
-另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
-<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
-虽然这样计算块，更新快，但是随机性也太大了。</p>
-<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
-每次计算不会太复杂，也能降低一点随机性。</p>
-<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
-选取<strong>64、128、256、512</strong>。</p>
-<hr>
-<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
-<p><strong>Exponentially weighted averages:</strong></p>
-<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
-<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
-<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
-<script type="math/tex; mode=display">
-v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
-当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
-<p>大概平均的天数为：</p>
-<script type="math/tex; mode=display">
-days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
-<p>计算时，就一步一步运算就行了，</p>
-<script type="math/tex; mode=display">
-v_\theta = 0</script><script type="math/tex; mode=display">
-v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
-v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
-...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
-<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
-<p>所以，这里需要加入<code>Bias correction</code>，</p>
-<script type="math/tex; mode=display">
-v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
-这样，就能矫正这个初始值太低的问题。</p>
-<p><strong>Momentum:</strong></p>
-<p>属于权重更新的初级魔法：</p>
-<script type="math/tex; mode=display">
-V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
-V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
-w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
-b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
-<script type="math/tex; mode=display">
-V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
-V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
-<p><strong>RMSprop:</strong></p>
-<p>属于权重更新的中级魔法：</p>
-<script type="math/tex; mode=display">
-S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
-S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
-w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
-<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
-<script type="math/tex; mode=display">
-w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
-<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
-<script type="math/tex; mode=display">
-Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
-V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
-V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
-S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
-S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
-<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
-<p>另外这里还要用到矫正：</p>
-<script type="math/tex; mode=display">
-V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
-V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
-S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
-S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
-<script type="math/tex; mode=display">
-w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
-<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
-<hr>
-<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
-<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
-<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
-另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
-<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
-<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
-<p>首选的策略是：</p>
-<script type="math/tex; mode=display">
-\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
-<script type="math/tex; mode=display">
-\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
-\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
-<script type="math/tex; mode=display">
-\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
-<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
-<hr>
-<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
-<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
-<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
-它更像是下面的马鞍面，</p>
-<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
-<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
-模型因为各种措施，它也并不会卡在这个点上。</p>
-<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
 ]]></content>
       <categories>
         <category>coursera</category>
@@ -1812,6 +1695,167 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>Mini-batch 和 权重更新策略</title>
+    <url>/2017/08/29/2017-08-29-dnn_3/</url>
+    <content><![CDATA[<hr>
+<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
+<ol>
+<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
+<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
+<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
+</ol>
+<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
+这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
+另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
+<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
+虽然这样计算块，更新快，但是随机性也太大了。</p>
+<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
+每次计算不会太复杂，也能降低一点随机性。</p>
+<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
+选取<strong>64、128、256、512</strong>。</p>
+<hr>
+<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
+<p><strong>Exponentially weighted averages:</strong></p>
+<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
+<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
+<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
+<script type="math/tex; mode=display">
+v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
+当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
+<p>大概平均的天数为：</p>
+<script type="math/tex; mode=display">
+days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
+<p>计算时，就一步一步运算就行了，</p>
+<script type="math/tex; mode=display">
+v_\theta = 0</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
+...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
+<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
+<p>所以，这里需要加入<code>Bias correction</code>，</p>
+<script type="math/tex; mode=display">
+v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
+这样，就能矫正这个初始值太低的问题。</p>
+<p><strong>Momentum:</strong></p>
+<p>属于权重更新的初级魔法：</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
+w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
+b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
+<p><strong>RMSprop:</strong></p>
+<p>属于权重更新的中级魔法：</p>
+<script type="math/tex; mode=display">
+S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
+<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
+<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
+<script type="math/tex; mode=display">
+Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
+V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
+V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
+S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
+<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
+<p>另外这里还要用到矫正：</p>
+<script type="math/tex; mode=display">
+V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
+S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
+<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
+<hr>
+<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
+<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
+<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
+另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
+<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
+<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
+<p>首选的策略是：</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
+<script type="math/tex; mode=display">
+\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
+<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
+<hr>
+<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
+<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
+<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
+它更像是下面的马鞍面，</p>
+<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
+<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
+模型因为各种措施，它也并不会卡在这个点上。</p>
+<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TensorFlow 笔记一</title>
+    <url>/2017/09/02/2017-09-02-tensorflow/</url>
+    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
+<hr>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>它也可以是矩阵，</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
+<p>当然直接写也是可以的，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
+<hr>
+<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
+<p>还不明白它的作用。</p>
+<hr>
+<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
+<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
+<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
+<hr>
+<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>109</p>
+</blockquote>
+<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 5 Longest Palindromic Substring</title>
     <url>/2017/09/01/2017-09-01-longest-palindromic-substring/</url>
     <content><![CDATA[<hr>
@@ -1871,38 +1915,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>Introduction to ML Strategy</title>
-    <url>/2017/09/06/2017-09-06-coursera-ml-strategy/</url>
-    <content><![CDATA[<h2 id="Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。"><a href="#Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。" class="headerlink" title="Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。"></a>Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。</h2><p>这一子课程一共分了2周的课程，没有讲实质的算法，讲的是在实际中如果去解决一个机器学习问题，
-或者说是在实现算法过程中，该如何一步一步去提升算法，它又应该基于一个怎么样的策略。</p>
-<p>实话说，这一部分听着比较无聊，一是因为自己没有这样的一个经历，不能感同身受，二是这一部分主要是一个<code>intuition</code>上的东西，
-比较的玄，三是这一部分确实有一点无聊。</p>
-<p>由于以上原因，这一部分笔记先简单记一下，待到之后或许会重新来看一遍视频。</p>
-<h2 id="正交化"><a href="#正交化" class="headerlink" title="正交化"></a>正交化</h2><p>意思是参数的正交化，也就是尽量使得要调整的参数正交化，这样参数调整起来才不会互相影响。（暂时并不能太理解具体的操作）</p>
-<h2 id="模型的目标"><a href="#模型的目标" class="headerlink" title="模型的目标"></a>模型的目标</h2><p>对于整个机器学习系统来说，提高算法精度是肯定的，但是还可能需要考虑到很多其它的问题，例如计算速度、内存占用、假真率啊等等。</p>
-<p>有的目标是越小/大越好，有的是只要满足就行，这就叫做<code>Optimizing metric and Satisficing</code>。</p>
-<p>另外要注意到<code>train set</code>与<code>dev set</code>以及<code>test set</code>它们之间的分布关系，如果分布区别很大，或者说训练的目标就不是我们本来的目标的话（不同的分布导致不同的目标），
-显然算法的表现将不会很好。</p>
-<h2 id="Avoidable-bias-and-variance"><a href="#Avoidable-bias-and-variance" class="headerlink" title="Avoidable bias and variance"></a>Avoidable bias and variance</h2><p>首先对于一个机器学习问题，它存在着一个精度的上限，叫做<code>Bayes Error</code>，它从数学上证明了这个问题它的一个精度上限，没有任何算法或者人能超过它。</p>
-<p>第二在这么一个问题上，可能有一个人类的精度上限<code>human-level performance</code>，代表着直接让人来做的误差。</p>
-<p>然后在<code>train set</code>上的误差就是<code>training error</code>，<code>dev set</code>上的误差就把它叫做<code>dev error</code>。</p>
-<p><strong>那么</strong>，对于<code>Bayes Error</code>，没法直接知道，所以通常使用<code>human-level performance</code>来表示我们算法想要达到的一个精度目标，
-所以<code>training error</code>与<code>human-level performance</code>之间的差值就叫做<code>avoidable bias</code>，也就是算法还差多少拟合能力。
-<code>training error</code>与<code>dev set</code>之间的差值就叫做<code>variance</code>，表示模型的泛化能力。</p>
-<p>这两个精度差就可以指示我们，当前的模型问题出在哪个地方。</p>
-<h2 id="后一周"><a href="#后一周" class="headerlink" title="后一周"></a>后一周</h2><p>不好总结，需要时可以再去看一遍…</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 10 Regular Expression Matching</title>
     <url>/2017/09/05/2017-09-05-leetcode_10/</url>
     <content><![CDATA[<p>Description:</p>
@@ -1938,38 +1950,26 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>TensorFlow 笔记一</title>
-    <url>/2017/09/02/2017-09-02-tensorflow/</url>
-    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
-<hr>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>或者</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>它也可以是矩阵，</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
-<p>当然直接写也是可以的，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
-<hr>
-<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
-<p>还不明白它的作用。</p>
-<hr>
-<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
-<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
-<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
-<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
-<hr>
-<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>109</p>
-</blockquote>
-<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
+    <title>Introduction to ML Strategy</title>
+    <url>/2017/09/06/2017-09-06-coursera-ml-strategy/</url>
+    <content><![CDATA[<h2 id="Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。"><a href="#Deep-Learning第三个子课程《Introduction-to-ML-Strategy》笔记。" class="headerlink" title="Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。"></a>Deep_Learning第三个子课程《Introduction to ML Strategy》笔记。</h2><p>这一子课程一共分了2周的课程，没有讲实质的算法，讲的是在实际中如果去解决一个机器学习问题，
+或者说是在实现算法过程中，该如何一步一步去提升算法，它又应该基于一个怎么样的策略。</p>
+<p>实话说，这一部分听着比较无聊，一是因为自己没有这样的一个经历，不能感同身受，二是这一部分主要是一个<code>intuition</code>上的东西，
+比较的玄，三是这一部分确实有一点无聊。</p>
+<p>由于以上原因，这一部分笔记先简单记一下，待到之后或许会重新来看一遍视频。</p>
+<h2 id="正交化"><a href="#正交化" class="headerlink" title="正交化"></a>正交化</h2><p>意思是参数的正交化，也就是尽量使得要调整的参数正交化，这样参数调整起来才不会互相影响。（暂时并不能太理解具体的操作）</p>
+<h2 id="模型的目标"><a href="#模型的目标" class="headerlink" title="模型的目标"></a>模型的目标</h2><p>对于整个机器学习系统来说，提高算法精度是肯定的，但是还可能需要考虑到很多其它的问题，例如计算速度、内存占用、假真率啊等等。</p>
+<p>有的目标是越小/大越好，有的是只要满足就行，这就叫做<code>Optimizing metric and Satisficing</code>。</p>
+<p>另外要注意到<code>train set</code>与<code>dev set</code>以及<code>test set</code>它们之间的分布关系，如果分布区别很大，或者说训练的目标就不是我们本来的目标的话（不同的分布导致不同的目标），
+显然算法的表现将不会很好。</p>
+<h2 id="Avoidable-bias-and-variance"><a href="#Avoidable-bias-and-variance" class="headerlink" title="Avoidable bias and variance"></a>Avoidable bias and variance</h2><p>首先对于一个机器学习问题，它存在着一个精度的上限，叫做<code>Bayes Error</code>，它从数学上证明了这个问题它的一个精度上限，没有任何算法或者人能超过它。</p>
+<p>第二在这么一个问题上，可能有一个人类的精度上限<code>human-level performance</code>，代表着直接让人来做的误差。</p>
+<p>然后在<code>train set</code>上的误差就是<code>training error</code>，<code>dev set</code>上的误差就把它叫做<code>dev error</code>。</p>
+<p><strong>那么</strong>，对于<code>Bayes Error</code>，没法直接知道，所以通常使用<code>human-level performance</code>来表示我们算法想要达到的一个精度目标，
+所以<code>training error</code>与<code>human-level performance</code>之间的差值就叫做<code>avoidable bias</code>，也就是算法还差多少拟合能力。
+<code>training error</code>与<code>dev set</code>之间的差值就叫做<code>variance</code>，表示模型的泛化能力。</p>
+<p>这两个精度差就可以指示我们，当前的模型问题出在哪个地方。</p>
+<h2 id="后一周"><a href="#后一周" class="headerlink" title="后一周"></a>后一周</h2><p>不好总结，需要时可以再去看一遍…</p>
 ]]></content>
       <categories>
         <category>coursera</category>
@@ -2449,6 +2449,59 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 30 Substring with Concatenation of All Words</title>
+    <url>/2017/09/15/2017-09-15-leetcode_30/</url>
+    <content><![CDATA[<p>Description:</p>
+<blockquote>
+<p>You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.  </p>
+<p>For example, given:<br>s: “barfoothefoobarman”<br>words: [“foo”, “bar”]  </p>
+<p>You should return the indices: [0,9].<br>(order does not matter).  </p>
+</blockquote>
+<hr>
+<p>题目理解：</p>
+<p>乍一看这是一个字符串匹配问题，但是其实这样想的话就完全错误了，这比字符串匹配问题要复杂多了。</p>
+<p>还好的是它所给的单词都是一样长的，这就已经简化了很多的问题，但是它可以给重复的单词，
+那么这个问题又不那么简单了，因为这些单词之间可以随意的排列组合，重复的单词会带来很多问题。</p>
+<p>那么首先一定要去除重复，不然会对重复的单词进行重复的匹配，并且对排列组合很不利。通常想到的肯定是使用
+<code>HashMap</code>来做，这样很快能统计出重复的单词，以及这个单词重复的次数。</p>
+<p>因为总长度固定，那么只需要在一个固定长度的窗内去检测是否匹配就好，那么就可以将这个窗从左向右进行滑动，
+来一个单词一个单词的匹配。</p>
+<p>那么如何进行单词的匹配呢？首先想到的是字符串匹配问题，可以使用<strong>KMP</strong>算法来匹配字符串与每一个单词，记录下所有匹配的位置，
+注意到每个单词都不同（去除重复之后），单词长度一样，那么它们之间匹配的位置就不会重复。
+所有可以直接使用一个与字符串同样长的数组来存储这些下标。</p>
+<p>如何查看是否匹配？这时就需要发挥想象力，首先滑动窗是肯定的，在滑动窗中统计很有技巧，这里：</p>
+<ul>
+<li>设置一个总距离<strong>dis</strong>，表示窗口中单词与字典之间的距离。一个单词的距离就是<strong>1</strong>，所以初始的时候距离为字典的总单词数。</li>
+<li>滑动窗口，从字符串上<strong>切割</strong>出一个新的单词，如果这个单词与字典中的单词<strong>不匹配</strong>，则不操作。否则<strong>匹配</strong>上单词<strong>A</strong>：<ul>
+<li>单词<strong>A</strong>现在的计数<strong>超过</strong>所需个数，距离加一。</li>
+<li>单词<strong>A</strong>现在的计数<strong>不超过</strong>所需个数，距离减一。</li>
+</ul>
+</li>
+<li>滑动窗口，需要将最左端的一个单词<strong>弹出</strong>，进行与上面<strong>相反</strong>的操作。</li>
+</ul>
+<hr>
+<p>代码一：</p>
+<p><strong>注：</strong>这里没有使用<code>HashMap</code>来除去重复。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] matchs;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || words == <span class="keyword">null</span> || ( words[<span class="number">0</span>].length()*words.length &gt; s.length() ) ) <span class="keyword">return</span> res;</span><br><span class="line">        <span class="keyword">if</span> ( words[<span class="number">0</span>].equals(<span class="string">&quot;&quot;</span>) ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= s.length() ; i++ ) </span><br><span class="line">                res.add(i);</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        matchs = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        Arrays.fill( matchs, -<span class="number">1</span> );</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[words.length];</span><br><span class="line">        String[] words_wipe = <span class="keyword">new</span> String[words.length];</span><br><span class="line">        <span class="keyword">boolean</span>[] used = <span class="keyword">new</span> <span class="keyword">boolean</span>[words.length];</span><br><span class="line">        <span class="keyword">int</span> counts_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( !used[i] ) &#123;</span><br><span class="line">                words_wipe[counts_len] = words[i];</span><br><span class="line">                counts[counts_len] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; words.length; j++ ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( words[i].equals(words[j]) ) &#123;</span><br><span class="line">                        counts[counts_len]++;</span><br><span class="line">                        used[j] = <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                counts_len++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; counts_len; i++ ) &#123;</span><br><span class="line">            KMP(ss, words_wipe[i].toCharArray(), i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> step = words_wipe[<span class="number">0</span>].length(), dis = words.length, total_len = dis * step;</span><br><span class="line">        <span class="keyword">int</span>[] sub_count = <span class="keyword">new</span> <span class="keyword">int</span>[counts_len];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(sub_count, <span class="number">0</span>);</span><br><span class="line">            dis = words.length;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt; ss.length; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = sub_count[matchs[head]] &lt;= counts[matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    sub_count[matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = sub_count[matchs[j]] &gt;= counts[matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                sub_count[matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">KMP</span><span class="params">(<span class="keyword">char</span>[] t, <span class="keyword">char</span>[] p, <span class="keyword">int</span> widx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = computePai(p);</span><br><span class="line">        <span class="keyword">int</span> match_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; t.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( match_idx &gt; -<span class="number">1</span> &amp;&amp; p[match_idx + <span class="number">1</span>] != t[i] )</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            <span class="keyword">if</span> ( p[match_idx + <span class="number">1</span>] == t[i] )</span><br><span class="line">                match_idx++;</span><br><span class="line">            <span class="keyword">if</span> ( match_idx == p.length - <span class="number">1</span> ) &#123;</span><br><span class="line">                matchs[i - p.length + <span class="number">1</span>] = widx;</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] computePai(<span class="keyword">char</span>[] p) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = <span class="keyword">new</span> <span class="keyword">int</span>[p.length];</span><br><span class="line">        pai[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx = <span class="number">1</span>; idx &lt; p.length; idx++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( k &gt; -<span class="number">1</span> &amp;&amp; p[k+<span class="number">1</span>] != p[idx] )</span><br><span class="line">                k = pai[k];</span><br><span class="line">            <span class="keyword">if</span> ( p[k+<span class="number">1</span>] == p[idx] )</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line">            pai[idx] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pai;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)?<br>运行时间：50ms<br>击败：57.51%</p>
+<p><img src="/images/leetcode/30_1.png" alt="image"></p>
+<hr>
+<p>代码还是很垃圾，所以和别人的差距在哪里，实在是想不出来，查看别人代码后发现，别人使用的是<code>HashMap</code>的<strong>Hash</strong>功能来匹配单词的，
+这样通过<strong>Hash</strong>来进行两个个单词的匹配，复杂度是<strong>O(1)</strong>，额，原来<strong>Hash</strong>是这样使用的…</p>
+<p>另外这里还要翻转一下思维，上面是用单词去匹配字符串，这里由于先建好了一个单词的<code>HashMap</code>，所以直接将字符串切割，
+然后使用切出的单词使用<code>HashMap</code>查询就能知道它的次数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> m = s.length(), n = words.length, step = words[<span class="number">0</span>].length(), bound = m - step, total_len = step * n;</span><br><span class="line">        <span class="comment">// Count the repeated words</span></span><br><span class="line">        Map&lt; String, Integer&gt; words_list = <span class="keyword">new</span> HashMap&lt;&gt;(n);</span><br><span class="line">        <span class="keyword">int</span>[][] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>][n];</span><br><span class="line">        Integer index = <span class="number">0</span>, temp;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( ( temp = words_list.get(words[i])) != <span class="keyword">null</span> ) counts[<span class="number">0</span>][temp]++;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                words_list.put( words[i], index);</span><br><span class="line">                counts[<span class="number">0</span>][index++] = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// from s.start to s.end, match all the substring</span></span><br><span class="line">        <span class="keyword">int</span>[] matchs = <span class="keyword">new</span> <span class="keyword">int</span>[bound + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= bound; i++ ) &#123;</span><br><span class="line">            String s_sub = s.substring(i, i + step);</span><br><span class="line">            matchs[i] = ((temp = words_list.get(s_sub)) != <span class="keyword">null</span>) ? temp : -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// move window from head to end, dis = 0 means the current window contains all the words</span></span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(counts[<span class="number">1</span>], <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">int</span> dis = n;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt;= bound; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = counts[<span class="number">1</span>][matchs[head]] &lt;= counts[<span class="number">0</span>][matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    counts[<span class="number">1</span>][matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = counts[<span class="number">1</span>][matchs[j]] &gt;= counts[<span class="number">0</span>][matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                counts[<span class="number">1</span>][matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(n)。<br>运行时间：27ms。<br>击败：92.37%</p>
+<p><img src="/images/leetcode/30_2.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 76 Minimum Window Substring</title>
     <url>/2017/09/15/2017-09-15-leetcode_76/</url>
     <content><![CDATA[<p>Description:</p>
@@ -2502,59 +2555,6 @@ z^{[L]} =
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">minWindow</span><span class="params">(String s, String t)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">128</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>, bound = t.length(); i &lt; bound; i++ )</span><br><span class="line">            counts[t.charAt(i)]++;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> dis = t.length(), min = Integer.MAX_VALUE, l = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>, ll = <span class="number">0</span>, bound = s.length(); i &lt; bound; i++ ) &#123;</span><br><span class="line">            counts[s.charAt(i)]--;</span><br><span class="line">            <span class="keyword">if</span> ( counts[s.charAt(i)] &gt;= <span class="number">0</span> )</span><br><span class="line">                dis--;</span><br><span class="line">            <span class="keyword">while</span> ( dis == <span class="number">0</span> &amp;&amp; counts[s.charAt(ll)] != <span class="number">0</span>)</span><br><span class="line">                counts[s.charAt(ll++)]++;</span><br><span class="line">            <span class="keyword">if</span> ( dis == <span class="number">0</span> &amp;&amp; (i - ll + <span class="number">1</span>) &lt; min ) &#123;</span><br><span class="line">                min = i - ll + <span class="number">1</span>;</span><br><span class="line">                l = ll;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l == -<span class="number">1</span> ? <span class="string">&quot;&quot;</span> : s.substring(l, l + min);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>复杂度：O(n)。<br>运行时间：4ms。<br>击败：90.25%</p>
 <p><img src="/images/leetcode/76_2.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 30 Substring with Concatenation of All Words</title>
-    <url>/2017/09/15/2017-09-15-leetcode_30/</url>
-    <content><![CDATA[<p>Description:</p>
-<blockquote>
-<p>You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.  </p>
-<p>For example, given:<br>s: “barfoothefoobarman”<br>words: [“foo”, “bar”]  </p>
-<p>You should return the indices: [0,9].<br>(order does not matter).  </p>
-</blockquote>
-<hr>
-<p>题目理解：</p>
-<p>乍一看这是一个字符串匹配问题，但是其实这样想的话就完全错误了，这比字符串匹配问题要复杂多了。</p>
-<p>还好的是它所给的单词都是一样长的，这就已经简化了很多的问题，但是它可以给重复的单词，
-那么这个问题又不那么简单了，因为这些单词之间可以随意的排列组合，重复的单词会带来很多问题。</p>
-<p>那么首先一定要去除重复，不然会对重复的单词进行重复的匹配，并且对排列组合很不利。通常想到的肯定是使用
-<code>HashMap</code>来做，这样很快能统计出重复的单词，以及这个单词重复的次数。</p>
-<p>因为总长度固定，那么只需要在一个固定长度的窗内去检测是否匹配就好，那么就可以将这个窗从左向右进行滑动，
-来一个单词一个单词的匹配。</p>
-<p>那么如何进行单词的匹配呢？首先想到的是字符串匹配问题，可以使用<strong>KMP</strong>算法来匹配字符串与每一个单词，记录下所有匹配的位置，
-注意到每个单词都不同（去除重复之后），单词长度一样，那么它们之间匹配的位置就不会重复。
-所有可以直接使用一个与字符串同样长的数组来存储这些下标。</p>
-<p>如何查看是否匹配？这时就需要发挥想象力，首先滑动窗是肯定的，在滑动窗中统计很有技巧，这里：</p>
-<ul>
-<li>设置一个总距离<strong>dis</strong>，表示窗口中单词与字典之间的距离。一个单词的距离就是<strong>1</strong>，所以初始的时候距离为字典的总单词数。</li>
-<li>滑动窗口，从字符串上<strong>切割</strong>出一个新的单词，如果这个单词与字典中的单词<strong>不匹配</strong>，则不操作。否则<strong>匹配</strong>上单词<strong>A</strong>：<ul>
-<li>单词<strong>A</strong>现在的计数<strong>超过</strong>所需个数，距离加一。</li>
-<li>单词<strong>A</strong>现在的计数<strong>不超过</strong>所需个数，距离减一。</li>
-</ul>
-</li>
-<li>滑动窗口，需要将最左端的一个单词<strong>弹出</strong>，进行与上面<strong>相反</strong>的操作。</li>
-</ul>
-<hr>
-<p>代码一：</p>
-<p><strong>注：</strong>这里没有使用<code>HashMap</code>来除去重复。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] matchs;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || words == <span class="keyword">null</span> || ( words[<span class="number">0</span>].length()*words.length &gt; s.length() ) ) <span class="keyword">return</span> res;</span><br><span class="line">        <span class="keyword">if</span> ( words[<span class="number">0</span>].equals(<span class="string">&quot;&quot;</span>) ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= s.length() ; i++ ) </span><br><span class="line">                res.add(i);</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        matchs = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        Arrays.fill( matchs, -<span class="number">1</span> );</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[words.length];</span><br><span class="line">        String[] words_wipe = <span class="keyword">new</span> String[words.length];</span><br><span class="line">        <span class="keyword">boolean</span>[] used = <span class="keyword">new</span> <span class="keyword">boolean</span>[words.length];</span><br><span class="line">        <span class="keyword">int</span> counts_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( !used[i] ) &#123;</span><br><span class="line">                words_wipe[counts_len] = words[i];</span><br><span class="line">                counts[counts_len] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; words.length; j++ ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( words[i].equals(words[j]) ) &#123;</span><br><span class="line">                        counts[counts_len]++;</span><br><span class="line">                        used[j] = <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                counts_len++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; counts_len; i++ ) &#123;</span><br><span class="line">            KMP(ss, words_wipe[i].toCharArray(), i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> step = words_wipe[<span class="number">0</span>].length(), dis = words.length, total_len = dis * step;</span><br><span class="line">        <span class="keyword">int</span>[] sub_count = <span class="keyword">new</span> <span class="keyword">int</span>[counts_len];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(sub_count, <span class="number">0</span>);</span><br><span class="line">            dis = words.length;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt; ss.length; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = sub_count[matchs[head]] &lt;= counts[matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    sub_count[matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = sub_count[matchs[j]] &gt;= counts[matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                sub_count[matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">KMP</span><span class="params">(<span class="keyword">char</span>[] t, <span class="keyword">char</span>[] p, <span class="keyword">int</span> widx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = computePai(p);</span><br><span class="line">        <span class="keyword">int</span> match_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; t.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( match_idx &gt; -<span class="number">1</span> &amp;&amp; p[match_idx + <span class="number">1</span>] != t[i] )</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            <span class="keyword">if</span> ( p[match_idx + <span class="number">1</span>] == t[i] )</span><br><span class="line">                match_idx++;</span><br><span class="line">            <span class="keyword">if</span> ( match_idx == p.length - <span class="number">1</span> ) &#123;</span><br><span class="line">                matchs[i - p.length + <span class="number">1</span>] = widx;</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] computePai(<span class="keyword">char</span>[] p) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = <span class="keyword">new</span> <span class="keyword">int</span>[p.length];</span><br><span class="line">        pai[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx = <span class="number">1</span>; idx &lt; p.length; idx++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( k &gt; -<span class="number">1</span> &amp;&amp; p[k+<span class="number">1</span>] != p[idx] )</span><br><span class="line">                k = pai[k];</span><br><span class="line">            <span class="keyword">if</span> ( p[k+<span class="number">1</span>] == p[idx] )</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line">            pai[idx] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pai;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)?<br>运行时间：50ms<br>击败：57.51%</p>
-<p><img src="/images/leetcode/30_1.png" alt="image"></p>
-<hr>
-<p>代码还是很垃圾，所以和别人的差距在哪里，实在是想不出来，查看别人代码后发现，别人使用的是<code>HashMap</code>的<strong>Hash</strong>功能来匹配单词的，
-这样通过<strong>Hash</strong>来进行两个个单词的匹配，复杂度是<strong>O(1)</strong>，额，原来<strong>Hash</strong>是这样使用的…</p>
-<p>另外这里还要翻转一下思维，上面是用单词去匹配字符串，这里由于先建好了一个单词的<code>HashMap</code>，所以直接将字符串切割，
-然后使用切出的单词使用<code>HashMap</code>查询就能知道它的次数。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> m = s.length(), n = words.length, step = words[<span class="number">0</span>].length(), bound = m - step, total_len = step * n;</span><br><span class="line">        <span class="comment">// Count the repeated words</span></span><br><span class="line">        Map&lt; String, Integer&gt; words_list = <span class="keyword">new</span> HashMap&lt;&gt;(n);</span><br><span class="line">        <span class="keyword">int</span>[][] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>][n];</span><br><span class="line">        Integer index = <span class="number">0</span>, temp;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( ( temp = words_list.get(words[i])) != <span class="keyword">null</span> ) counts[<span class="number">0</span>][temp]++;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                words_list.put( words[i], index);</span><br><span class="line">                counts[<span class="number">0</span>][index++] = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// from s.start to s.end, match all the substring</span></span><br><span class="line">        <span class="keyword">int</span>[] matchs = <span class="keyword">new</span> <span class="keyword">int</span>[bound + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= bound; i++ ) &#123;</span><br><span class="line">            String s_sub = s.substring(i, i + step);</span><br><span class="line">            matchs[i] = ((temp = words_list.get(s_sub)) != <span class="keyword">null</span>) ? temp : -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// move window from head to end, dis = 0 means the current window contains all the words</span></span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(counts[<span class="number">1</span>], <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">int</span> dis = n;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt;= bound; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = counts[<span class="number">1</span>][matchs[head]] &lt;= counts[<span class="number">0</span>][matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    counts[<span class="number">1</span>][matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = counts[<span class="number">1</span>][matchs[j]] &gt;= counts[<span class="number">0</span>][matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                counts[<span class="number">1</span>][matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(n)。<br>运行时间：27ms。<br>击败：92.37%</p>
-<p><img src="/images/leetcode/30_2.png" alt="image"></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -2823,6 +2823,79 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>卷积神经网络（CNN）笔记</title>
+    <url>/2017/11/10/2017-11-10-CNN/</url>
+    <content><![CDATA[<hr>
+<h2 id="简单描述"><a href="#简单描述" class="headerlink" title="简单描述"></a>简单描述</h2><p><code>Convolutional Neural Networks</code>(CNN)，卷积神经网络主要是为了去解决计算机视觉上的问题，实际上，就是因为
+CNN在计算机视觉上的成功应用，才让它变得这么火。</p>
+<p>学习CNN，不光是为了在计算机视觉上的处理，更为重要的是去理解神经网络中蕴含的道理，事实上，
+会觉得神经网络越来越像是一个搭积木的过程，有着各式各样的积木，你以随意的顺序或结构去搭建它们，
+然后就得到了各式各样的神经网络类型。</p>
+<h2 id="CNN的结构"><a href="#CNN的结构" class="headerlink" title="CNN的结构"></a>CNN的结构</h2><p>CNN其实与全连接神经网络并没有什么太大的区别，它只是在全连接的神经网络中加入了一种新的连接层，<strong>卷积层</strong>。</p>
+<p><img src="/images/coursera/CNN_1.png" alt="image" title="from Andrew Ng"></p>
+<p>如上图，网络先进过一层卷积层（CONV），然后通过一个RELU激活函数，再通过一个POOL层，最后输入到后面的两层全连接层。</p>
+<p>通常CNN的结构就与上图一样，网络首先是一系列的卷积层（包括激活函数与POOL），在网络的最后跟着连接几层的全连接层。</p>
+<h2 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h2><p>这里引用到吴恩达课程作业中的一段演示视频，这一段视频十分的形象，这里引用到它：</p>
+<center>
+<video width="100%" height="100%" src="/images/coursera/conv_kiank.mp4" type="video/mp4" controls></video>
+</center>
+
+
+<p>如上面的视频所示，可以把输入层看作一个矩阵，它的维度为<code>n_H_prev * n_W_prev * n_C_prev</code>（这里先考虑单独一个样本的情况），
+如果这是从输入层开始的话，其中<code>n_H_prev * n_W_prev</code>就可以看成输入图片的<strong>长宽</strong>，
+那么<code>n_C_prev</code>在图片是彩色的情况下就等于<strong>3</strong>，也就是<strong>RGB</strong>三个通道，如果是灰度图，那它就为<strong>1</strong>。
+从英文上来说就是<strong>Height、Weight、Channel</strong>。</p>
+<p>从视频中可以看到这个卷积层中有两个<strong>Filter</strong>，它们之间的运算完全没有关系，对于一个<strong>Filter</strong>来说，它在输入矩阵上从左上角开始，
+左右滑动求取到值，每一次滑动就计算得到一个对应的值。在视频中它计算完毕后就得到一个<strong>3x3</strong>的输出。</p>
+<p>通常情况下，所有<strong>Filter</strong>的维度都是一样的，视频中<strong>Filter</strong>的维度为<code>f * f * n_C_prev</code>，它的深度要与输入的<strong>Channel</strong>数一致
+才能正常的进行计算，所有这里它的第三个维度为<strong>n_C_prev</strong>。设<strong>Filter</strong>对应的输入矩阵上的小格子为 $X$，<strong>Filter</strong>表示为$F$，
+那么它们之间的计算公式为：</p>
+<script type="math/tex; mode=display">
+output = bias + \sum_i^f \sum_j^f \sum_k^{C} X_{(i,j,k)} * F_{(i,j,k)}</script><p>简单来说，就是两个矩阵做点积，然后求和，最后加上一个bias。那么对于一个<strong>Filter</strong>来说，
+它就有 $f \times f \times C + 1$ 个参数。</p>
+<p>最后将每一个<strong>Filter</strong>计算得到的结果作为一个<strong>Channel</strong>，叠在一起，就组成了最后的输出结果。</p>
+<h3 id="Padding"><a href="#Padding" class="headerlink" title="Padding"></a>Padding</h3><p>通过上面的计算步骤，只要<strong>Filter</strong>的长宽不是<strong>1</strong>，输出矩阵的长与宽就一定比输入矩阵的长与宽要小，并且对于矩阵角上的值来说，
+它们参与运算的次数是没有矩阵内部的值参与的次数多的。</p>
+<p>为了不让矩阵长与宽一直变小，让所有值相对公平的参与计算，就可以使用到<strong>Padding</strong>操作。</p>
+<p><img src="/images/coursera/CNN_2.png" alt="image" title="from Andrew Ng"></p>
+<p>它的操作十分简单，就是在矩阵四周补零就可以了。</p>
+<p>通常的深度学习框架中，例如TensorFlow，它在卷积层的参数中可以直接设置<strong>padding</strong>，它有两个取值<code>valid</code>和<code>same</code>，
+其中<code>valid</code>就表示不进行padding，<code>same</code>则是表示进行padding，并且padding的大小刚好保证输入输出的维度大小相同。</p>
+<h3 id="stride"><a href="#stride" class="headerlink" title="stride"></a>stride</h3><p>如上面所说，<strong>Filter</strong>在图片上进行滑动，那么滑动的距离就由<strong>stride</strong>来定义，通常它取值为<strong>1</strong>或<strong>2</strong>。</p>
+<h3 id="输出维度"><a href="#输出维度" class="headerlink" title="输出维度"></a>输出维度</h3><p>进过上面的一顿操作，输出的维度为多少呢？随便就可以推出来，计算输出的维度公式如下：</p>
+<script type="math/tex; mode=display">
+n_H = \left \lfloor \frac{n_{H_{prev}} - f + 2 \times pad }{ stride } \right \rfloor + 1</script><h2 id="POOL层"><a href="#POOL层" class="headerlink" title="POOL层"></a>POOL层</h2><p><strong>POOL层</strong>总是接在卷积层的后面，那么它到的是在干嘛的，它为什么要取名字叫做POOL？在学习卷积神经网络之前一直以为这一层很复杂，
+但是实际上，这一层的操作十分简单。</p>
+<p><img src="/images/coursera/CNN_3.png" alt="image" title="from Andrew Ng"></p>
+<p>如上图所示，左边是<code>Max Pool</code>，右边是<code>Average Pool</code>，它和卷积层的操作几乎一样，也是滑动，每滑动一次计算出一个值。</p>
+<p>它与卷积层操作的区别是它每次取得是区域内的最大值或者是平均值，也就是它计算出的结果只与输入矩阵有关系，
+因为只有输入矩阵的值会参与运算。<strong>另外</strong>，它没有通道的概念，也就是它只有一个通道，所以它不是同时对输入矩阵的多个通道进行操作，
+而是对输入的每个通道分别进行操作。</p>
+<p>所以，输入与输出的维度进行比较的话，长宽通常会发生变化，而深度不会发生变化。</p>
+<p>实际上，通常把POOL层理解为降低数据维度的方法。</p>
+<h2 id="卷积层在做神马？"><a href="#卷积层在做神马？" class="headerlink" title="卷积层在做神马？"></a>卷积层在做神马？</h2><p>在图像中，可以把每一个<strong>Filter</strong>看做一个特征的识别器（毕竟人家名字就叫做<strong>Filter</strong>），或许某个<strong>Filter</strong>的作用就是识别
+一条直线，或者又是识别一个直角等。总之可以把一个<strong>Filter</strong>看成一个特征的识别。</p>
+<p>事实上，全连接网络也能完成卷积层的作用，但是全连接层会带来太多的参数，另外，对于一个卷积层，不知要多少个全连接的网络层才能
+完成与它相同的功能。所以卷积层的出现，带来了图像识别方面的巨大进步。</p>
+<h2 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h2><p>其实<strong>卷积层</strong>与<strong>池化层</strong>的反向传播并不复杂。</p>
+<p>首先注意到<strong>卷积层</strong>，对于它的一个输出值来说，它来源于输入的某一块与其中一个<strong>Filter</strong>运算后得到的结果，那么它对<strong>Filter</strong>
+的求导，就能得到这个<strong>Filter</strong>的一个求导值。</p>
+<p>这样一个一个求取，就能得到每个<strong>Filter</strong>的导数值，进而就能去更新<strong>Filter</strong>的权值。</p>
+<p>对于<strong>POOL层</strong>，它的求导也十分简单，首先对于<strong>Max Pool</strong>，它的一个输出值来自与输入的一个值，那么直接把这个值传回就好。
+对于<strong>Average Pool</strong>，它的一个输出值来源于很多个输入值，并且这些输入值对它的贡献是一样的，所以，将这个输出值平均传回就好。</p>
+<p>未完待续？</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SFC分配简单实验</title>
     <url>/2017/11/17/2017-11-17-SFC/</url>
     <content><![CDATA[<p><a href="https://github.com/isadamu/ml_sfc_allocate_test/tree/master">github链接</a></p>
@@ -2900,79 +2973,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>卷积神经网络（CNN）笔记</title>
-    <url>/2017/11/10/2017-11-10-CNN/</url>
-    <content><![CDATA[<hr>
-<h2 id="简单描述"><a href="#简单描述" class="headerlink" title="简单描述"></a>简单描述</h2><p><code>Convolutional Neural Networks</code>(CNN)，卷积神经网络主要是为了去解决计算机视觉上的问题，实际上，就是因为
-CNN在计算机视觉上的成功应用，才让它变得这么火。</p>
-<p>学习CNN，不光是为了在计算机视觉上的处理，更为重要的是去理解神经网络中蕴含的道理，事实上，
-会觉得神经网络越来越像是一个搭积木的过程，有着各式各样的积木，你以随意的顺序或结构去搭建它们，
-然后就得到了各式各样的神经网络类型。</p>
-<h2 id="CNN的结构"><a href="#CNN的结构" class="headerlink" title="CNN的结构"></a>CNN的结构</h2><p>CNN其实与全连接神经网络并没有什么太大的区别，它只是在全连接的神经网络中加入了一种新的连接层，<strong>卷积层</strong>。</p>
-<p><img src="/images/coursera/CNN_1.png" alt="image" title="from Andrew Ng"></p>
-<p>如上图，网络先进过一层卷积层（CONV），然后通过一个RELU激活函数，再通过一个POOL层，最后输入到后面的两层全连接层。</p>
-<p>通常CNN的结构就与上图一样，网络首先是一系列的卷积层（包括激活函数与POOL），在网络的最后跟着连接几层的全连接层。</p>
-<h2 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h2><p>这里引用到吴恩达课程作业中的一段演示视频，这一段视频十分的形象，这里引用到它：</p>
-<center>
-<video width="100%" height="100%" src="/images/coursera/conv_kiank.mp4" type="video/mp4" controls></video>
-</center>
-
-
-<p>如上面的视频所示，可以把输入层看作一个矩阵，它的维度为<code>n_H_prev * n_W_prev * n_C_prev</code>（这里先考虑单独一个样本的情况），
-如果这是从输入层开始的话，其中<code>n_H_prev * n_W_prev</code>就可以看成输入图片的<strong>长宽</strong>，
-那么<code>n_C_prev</code>在图片是彩色的情况下就等于<strong>3</strong>，也就是<strong>RGB</strong>三个通道，如果是灰度图，那它就为<strong>1</strong>。
-从英文上来说就是<strong>Height、Weight、Channel</strong>。</p>
-<p>从视频中可以看到这个卷积层中有两个<strong>Filter</strong>，它们之间的运算完全没有关系，对于一个<strong>Filter</strong>来说，它在输入矩阵上从左上角开始，
-左右滑动求取到值，每一次滑动就计算得到一个对应的值。在视频中它计算完毕后就得到一个<strong>3x3</strong>的输出。</p>
-<p>通常情况下，所有<strong>Filter</strong>的维度都是一样的，视频中<strong>Filter</strong>的维度为<code>f * f * n_C_prev</code>，它的深度要与输入的<strong>Channel</strong>数一致
-才能正常的进行计算，所有这里它的第三个维度为<strong>n_C_prev</strong>。设<strong>Filter</strong>对应的输入矩阵上的小格子为 $X$，<strong>Filter</strong>表示为$F$，
-那么它们之间的计算公式为：</p>
-<script type="math/tex; mode=display">
-output = bias + \sum_i^f \sum_j^f \sum_k^{C} X_{(i,j,k)} * F_{(i,j,k)}</script><p>简单来说，就是两个矩阵做点积，然后求和，最后加上一个bias。那么对于一个<strong>Filter</strong>来说，
-它就有 $f \times f \times C + 1$ 个参数。</p>
-<p>最后将每一个<strong>Filter</strong>计算得到的结果作为一个<strong>Channel</strong>，叠在一起，就组成了最后的输出结果。</p>
-<h3 id="Padding"><a href="#Padding" class="headerlink" title="Padding"></a>Padding</h3><p>通过上面的计算步骤，只要<strong>Filter</strong>的长宽不是<strong>1</strong>，输出矩阵的长与宽就一定比输入矩阵的长与宽要小，并且对于矩阵角上的值来说，
-它们参与运算的次数是没有矩阵内部的值参与的次数多的。</p>
-<p>为了不让矩阵长与宽一直变小，让所有值相对公平的参与计算，就可以使用到<strong>Padding</strong>操作。</p>
-<p><img src="/images/coursera/CNN_2.png" alt="image" title="from Andrew Ng"></p>
-<p>它的操作十分简单，就是在矩阵四周补零就可以了。</p>
-<p>通常的深度学习框架中，例如TensorFlow，它在卷积层的参数中可以直接设置<strong>padding</strong>，它有两个取值<code>valid</code>和<code>same</code>，
-其中<code>valid</code>就表示不进行padding，<code>same</code>则是表示进行padding，并且padding的大小刚好保证输入输出的维度大小相同。</p>
-<h3 id="stride"><a href="#stride" class="headerlink" title="stride"></a>stride</h3><p>如上面所说，<strong>Filter</strong>在图片上进行滑动，那么滑动的距离就由<strong>stride</strong>来定义，通常它取值为<strong>1</strong>或<strong>2</strong>。</p>
-<h3 id="输出维度"><a href="#输出维度" class="headerlink" title="输出维度"></a>输出维度</h3><p>进过上面的一顿操作，输出的维度为多少呢？随便就可以推出来，计算输出的维度公式如下：</p>
-<script type="math/tex; mode=display">
-n_H = \left \lfloor \frac{n_{H_{prev}} - f + 2 \times pad }{ stride } \right \rfloor + 1</script><h2 id="POOL层"><a href="#POOL层" class="headerlink" title="POOL层"></a>POOL层</h2><p><strong>POOL层</strong>总是接在卷积层的后面，那么它到的是在干嘛的，它为什么要取名字叫做POOL？在学习卷积神经网络之前一直以为这一层很复杂，
-但是实际上，这一层的操作十分简单。</p>
-<p><img src="/images/coursera/CNN_3.png" alt="image" title="from Andrew Ng"></p>
-<p>如上图所示，左边是<code>Max Pool</code>，右边是<code>Average Pool</code>，它和卷积层的操作几乎一样，也是滑动，每滑动一次计算出一个值。</p>
-<p>它与卷积层操作的区别是它每次取得是区域内的最大值或者是平均值，也就是它计算出的结果只与输入矩阵有关系，
-因为只有输入矩阵的值会参与运算。<strong>另外</strong>，它没有通道的概念，也就是它只有一个通道，所以它不是同时对输入矩阵的多个通道进行操作，
-而是对输入的每个通道分别进行操作。</p>
-<p>所以，输入与输出的维度进行比较的话，长宽通常会发生变化，而深度不会发生变化。</p>
-<p>实际上，通常把POOL层理解为降低数据维度的方法。</p>
-<h2 id="卷积层在做神马？"><a href="#卷积层在做神马？" class="headerlink" title="卷积层在做神马？"></a>卷积层在做神马？</h2><p>在图像中，可以把每一个<strong>Filter</strong>看做一个特征的识别器（毕竟人家名字就叫做<strong>Filter</strong>），或许某个<strong>Filter</strong>的作用就是识别
-一条直线，或者又是识别一个直角等。总之可以把一个<strong>Filter</strong>看成一个特征的识别。</p>
-<p>事实上，全连接网络也能完成卷积层的作用，但是全连接层会带来太多的参数，另外，对于一个卷积层，不知要多少个全连接的网络层才能
-完成与它相同的功能。所以卷积层的出现，带来了图像识别方面的巨大进步。</p>
-<h2 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h2><p>其实<strong>卷积层</strong>与<strong>池化层</strong>的反向传播并不复杂。</p>
-<p>首先注意到<strong>卷积层</strong>，对于它的一个输出值来说，它来源于输入的某一块与其中一个<strong>Filter</strong>运算后得到的结果，那么它对<strong>Filter</strong>
-的求导，就能得到这个<strong>Filter</strong>的一个求导值。</p>
-<p>这样一个一个求取，就能得到每个<strong>Filter</strong>的导数值，进而就能去更新<strong>Filter</strong>的权值。</p>
-<p>对于<strong>POOL层</strong>，它的求导也十分简单，首先对于<strong>Max Pool</strong>，它的一个输出值来自与输入的一个值，那么直接把这个值传回就好。
-对于<strong>Average Pool</strong>，它的一个输出值来源于很多个输入值，并且这些输入值对它的贡献是一样的，所以，将这个输出值平均传回就好。</p>
-<p>未完待续？</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 149 Max Points on a Line</title>
     <url>/2017/11/20/2017-11-20-leetcode_149/</url>
     <content><![CDATA[<h2 id="Begin"><a href="#Begin" class="headerlink" title="Begin"></a>Begin</h2><p>Description:</p>
@@ -3030,6 +3030,19 @@ D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
       </categories>
       <tags>
         <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深度学习第二章《线性代数》</title>
+    <url>/2017/11/23/2017-11-23-linear-algebra/</url>
+    <content><![CDATA[<h2 id="标量、向量、矩阵和张量"><a href="#标量、向量、矩阵和张量" class="headerlink" title="标量、向量、矩阵和张量"></a>标量、向量、矩阵和张量</h2>]]></content>
+      <categories>
+        <category>deep learning</category>
+        <category>math</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -3153,19 +3166,6 @@ r-.*-s$</script><p><code>Detecting prefix hijacks with iSpy</code>：查询所�
       </categories>
       <tags>
         <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>深度学习第二章《线性代数》</title>
-    <url>/2017/11/23/2017-11-23-linear-algebra/</url>
-    <content><![CDATA[<h2 id="标量、向量、矩阵和张量"><a href="#标量、向量、矩阵和张量" class="headerlink" title="标量、向量、矩阵和张量"></a>标量、向量、矩阵和张量</h2>]]></content>
-      <categories>
-        <category>deep learning</category>
-        <category>math</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -3381,70 +3381,6 @@ google之后，大概确定了这个是没有线程安全而导致的问题。</
       </tags>
   </entry>
   <entry>
-    <title>2017年华为软件精英挑战赛记录</title>
-    <url>/2018/05/02/2018-05-02-2017_codecraft/</url>
-    <content><![CDATA[<hr>
-<h1 id="初赛"><a href="#初赛" class="headerlink" title="初赛"></a>初赛</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>很好，网上找了一会也没有找到题目，我只想说，华为你把往年的题的链接给一下可好？</p>
-<p>凭借记忆，初赛的题目大概是，有一个网络，要在上面部署cdn服务器，怎么部署既能满足用户需求，
-又能使得部署费用最少。</p>
-<p>具体一点，相当于一个无向图，有一些点是小区，每个小区都有视频业务的需求，而且需求量不一样，每条边是一条链路，
-链路有它的带宽限制。现在需要部署cdn服务器，让每一个小区的视频业务都能满足，同时部署cdn服务器的费用越低越好。</p>
-<p>每一个点都可以部署cdn服务器（包括是小区的点），每一个小区有一个需求值，每一条边是一条链路，每条链路都是双向的，
-每条链路有一个链路容量和一个单位费用（使用链路上一个单位的流量需要多少钱）。cdn服务器数量无限，cdn服务器输出能力无限，
-同样cdn服务器也有一个单价。</p>
-<p>限制：不能使用第三方库，程序运行时间不超过60s。</p>
-<h2 id="简单分析"><a href="#简单分析" class="headerlink" title="简单分析"></a>简单分析</h2><p>这个需要一步一步来分析：</p>
-<ol>
-<li>该选择哪些点来部署服务器？</li>
-<li>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</li>
-</ol>
-<p>这就是这个题目的两个核心问题。</p>
-<h3 id="该选择哪些点来部署服务器？"><a href="#该选择哪些点来部署服务器？" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>这是这个题目最难的一部分，因为这个选择是一个NP难的问题，所以是没有现成的解法来教你如何求解这个问题的，
-通常都是将它变成一个整数规划模型，然后使用求解器来求解。但是由于不能使用第三方库，所以代码全靠手写，
-那么这个问题基本上只能使用启发式算法来解。</p>
-<p>那么有哪些常用的启发式算法呢？遗传算法、模拟退火、蚁群算法、粒子群算法等。</p>
-<p>很好，那么从哪个算法开始呢？显然都不用，第一步当然是写一个最简单的版本，先熟悉问题，在深入问题。</p>
-<p><strong>最简单的版本（原始想法）：</strong></p>
-<p>版本1：初始每一个小区都给一个cdn，然后再尝试一个个cdn删除，直到不能降低费用，或者不能满足用户需求为止。</p>
-<p>版本2：初始没有cdn，然后尝试一个小区一个小区添加cdn，直到需求满足且不能降低费用为止。</p>
-<p><strong>初始版本的想法非常简单，但是很遗憾，这个想法在初赛的简单用例上能直接跑出最优解…</strong></p>
-<p>(有时候问题就是这么简单，只不过很多人还没开始就觉得难，然后就没有然后了)</p>
-<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>解决这个问题很简单，使用<a href="待补充">最小费用最大流</a>就解决了。</p>
-<p>使用最简单的增广路写法就好。</p>
-<h2 id="进阶分析"><a href="#进阶分析" class="headerlink" title="进阶分析"></a>进阶分析</h2><p>同样的，两个步骤的想法。</p>
-<h3 id="该选择哪些点来部署服务器？-1"><a href="#该选择哪些点来部署服务器？-1" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>由于最初始的版本效果很好，那么在这个基础上还能加强吗？</p>
-<p>当然能，很简单就能想到几个操作方法：</p>
-<ol>
-<li>cdn移动。现在cdn都是直接放在小区上面的，所以自然可以尝试移动cdn，只移动一步，
-如果移动能降低费用就移动，否则维持原状。</li>
-<li>cdn删除。这个删除不同于上面的原始想法中的删除，这个删除是根据cdn移动来的，如果有cdn移动成功了，
-那么意味着图的结构变了，有的点就也许就可以删除了。</li>
-</ol>
-<p><strong>很遗憾，初赛使用的就是这个思路做的，最后大概成渝前3的水平…</strong></p>
-<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>上面选择了增广路写法。</p>
-<p>但是，注意到时间限制60s，在这种分两步走的策略里面，需要跑很多次费用流，
-这时候的问题就是如何解决好这个问题，也就是用时尽量少。</p>
-<p><strong>最小费用最大流：</strong></p>
-<p>这里我首先使用的是增广路解法，使用SPFA计算增广路的最短路径。</p>
-<p>由于在一次求解最小费用最大流的过程中，需要反复的调用SPFA，那么<strong>在重复进行SPFA的过程中，不用每一次都重头开始</strong>，
-也就是一部分最短路径的结果可以保留，这样在下一次计算时就可以少很多的计算量。</p>
-<p>使用这样的方法，跑高级用例也没有问题，否则高级用例会有压力。</p>
-<p>由于上面部署的思路太简单了，这个最小费用最大流的魔改是我觉得自己最有意思的地方了。</p>
-<p>（具体用时忘记了…太过久远）</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>参见github<a href="https://github.com/isadamu/2017-codecraft">2017-codecraft</a></p>
-<p>在一年之后，看自己一年之前写的代码，真的写得稀烂…估计再过一年又会嫌弃现在。</p>
-<h1 id="复赛"><a href="#复赛" class="headerlink" title="复赛"></a>复赛</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>和上面的题目其实一样，</p>
-<p>// TODO</p>
-]]></content>
-      <categories>
-        <category>competition</category>
-      </categories>
-      <tags>
-        <tag>competition</tag>
-        <tag>algorithm</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>jar包的运行以及jre精简</title>
     <url>/2018/03/19/2018-03-19-java_jar_jre_reduce/</url>
     <content><![CDATA[<h2 id="工程打包"><a href="#工程打包" class="headerlink" title="工程打包"></a>工程打包</h2><p>无论是什么IDE，打包都是一件十分简单的事。（这里不讨论自己手动打包的情形）</p>
@@ -3539,6 +3475,70 @@ java中可以使用下面语句来取到：</p>
       <tags>
         <tag>guide</tag>
         <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2017年华为软件精英挑战赛记录</title>
+    <url>/2018/05/02/2018-05-02-2017_codecraft/</url>
+    <content><![CDATA[<hr>
+<h1 id="初赛"><a href="#初赛" class="headerlink" title="初赛"></a>初赛</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>很好，网上找了一会也没有找到题目，我只想说，华为你把往年的题的链接给一下可好？</p>
+<p>凭借记忆，初赛的题目大概是，有一个网络，要在上面部署cdn服务器，怎么部署既能满足用户需求，
+又能使得部署费用最少。</p>
+<p>具体一点，相当于一个无向图，有一些点是小区，每个小区都有视频业务的需求，而且需求量不一样，每条边是一条链路，
+链路有它的带宽限制。现在需要部署cdn服务器，让每一个小区的视频业务都能满足，同时部署cdn服务器的费用越低越好。</p>
+<p>每一个点都可以部署cdn服务器（包括是小区的点），每一个小区有一个需求值，每一条边是一条链路，每条链路都是双向的，
+每条链路有一个链路容量和一个单位费用（使用链路上一个单位的流量需要多少钱）。cdn服务器数量无限，cdn服务器输出能力无限，
+同样cdn服务器也有一个单价。</p>
+<p>限制：不能使用第三方库，程序运行时间不超过60s。</p>
+<h2 id="简单分析"><a href="#简单分析" class="headerlink" title="简单分析"></a>简单分析</h2><p>这个需要一步一步来分析：</p>
+<ol>
+<li>该选择哪些点来部署服务器？</li>
+<li>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</li>
+</ol>
+<p>这就是这个题目的两个核心问题。</p>
+<h3 id="该选择哪些点来部署服务器？"><a href="#该选择哪些点来部署服务器？" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>这是这个题目最难的一部分，因为这个选择是一个NP难的问题，所以是没有现成的解法来教你如何求解这个问题的，
+通常都是将它变成一个整数规划模型，然后使用求解器来求解。但是由于不能使用第三方库，所以代码全靠手写，
+那么这个问题基本上只能使用启发式算法来解。</p>
+<p>那么有哪些常用的启发式算法呢？遗传算法、模拟退火、蚁群算法、粒子群算法等。</p>
+<p>很好，那么从哪个算法开始呢？显然都不用，第一步当然是写一个最简单的版本，先熟悉问题，在深入问题。</p>
+<p><strong>最简单的版本（原始想法）：</strong></p>
+<p>版本1：初始每一个小区都给一个cdn，然后再尝试一个个cdn删除，直到不能降低费用，或者不能满足用户需求为止。</p>
+<p>版本2：初始没有cdn，然后尝试一个小区一个小区添加cdn，直到需求满足且不能降低费用为止。</p>
+<p><strong>初始版本的想法非常简单，但是很遗憾，这个想法在初赛的简单用例上能直接跑出最优解…</strong></p>
+<p>(有时候问题就是这么简单，只不过很多人还没开始就觉得难，然后就没有然后了)</p>
+<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>解决这个问题很简单，使用<a href="待补充">最小费用最大流</a>就解决了。</p>
+<p>使用最简单的增广路写法就好。</p>
+<h2 id="进阶分析"><a href="#进阶分析" class="headerlink" title="进阶分析"></a>进阶分析</h2><p>同样的，两个步骤的想法。</p>
+<h3 id="该选择哪些点来部署服务器？-1"><a href="#该选择哪些点来部署服务器？-1" class="headerlink" title="该选择哪些点来部署服务器？"></a>该选择哪些点来部署服务器？</h3><p>由于最初始的版本效果很好，那么在这个基础上还能加强吗？</p>
+<p>当然能，很简单就能想到几个操作方法：</p>
+<ol>
+<li>cdn移动。现在cdn都是直接放在小区上面的，所以自然可以尝试移动cdn，只移动一步，
+如果移动能降低费用就移动，否则维持原状。</li>
+<li>cdn删除。这个删除不同于上面的原始想法中的删除，这个删除是根据cdn移动来的，如果有cdn移动成功了，
+那么意味着图的结构变了，有的点就也许就可以删除了。</li>
+</ol>
+<p><strong>很遗憾，初赛使用的就是这个思路做的，最后大概成渝前3的水平…</strong></p>
+<h3 id="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1"><a href="#在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？-1" class="headerlink" title="在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？"></a>在部署好了服务器的情况下，流量该如何流，才能满足所有用户，并且使得费用最小？</h3><p>上面选择了增广路写法。</p>
+<p>但是，注意到时间限制60s，在这种分两步走的策略里面，需要跑很多次费用流，
+这时候的问题就是如何解决好这个问题，也就是用时尽量少。</p>
+<p><strong>最小费用最大流：</strong></p>
+<p>这里我首先使用的是增广路解法，使用SPFA计算增广路的最短路径。</p>
+<p>由于在一次求解最小费用最大流的过程中，需要反复的调用SPFA，那么<strong>在重复进行SPFA的过程中，不用每一次都重头开始</strong>，
+也就是一部分最短路径的结果可以保留，这样在下一次计算时就可以少很多的计算量。</p>
+<p>使用这样的方法，跑高级用例也没有问题，否则高级用例会有压力。</p>
+<p>由于上面部署的思路太简单了，这个最小费用最大流的魔改是我觉得自己最有意思的地方了。</p>
+<p>（具体用时忘记了…太过久远）</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>参见github<a href="https://github.com/isadamu/2017-codecraft">2017-codecraft</a></p>
+<p>在一年之后，看自己一年之前写的代码，真的写得稀烂…估计再过一年又会嫌弃现在。</p>
+<h1 id="复赛"><a href="#复赛" class="headerlink" title="复赛"></a>复赛</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>和上面的题目其实一样，</p>
+<p>// TODO</p>
+]]></content>
+      <categories>
+        <category>competition</category>
+      </categories>
+      <tags>
+        <tag>competition</tag>
+        <tag>algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -4620,53 +4620,6 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
       </tags>
   </entry>
   <entry>
-    <title>golang通过CMD来调用FFmpeg</title>
-    <url>/2019/11/12/2019-11-12-golang_cmd_ffmpeg/</url>
-    <content><![CDATA[<hr>
-<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在golang中调用FFmpeg，一种方法是使用cgo来使用FFmpeg，这样就可以在go程序里面编写转码语句，进行错误处理等，
-但是这样的方法貌似有点复杂，或许得不偿失。</p>
-<p>这里使用CMD来直接调用FFmpeg进行转码，在使用较多的复杂参数的情况下，可能反而简单许多。</p>
-<hr>
-<h1 id="使用记录"><a href="#使用记录" class="headerlink" title="使用记录"></a>使用记录</h1><p><strong>调用：</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cmd :&#x3D; exec.Command(&quot;&#x2F;bin&#x2F;bash&quot;, &quot;-c&quot;, param)</span><br><span class="line">cmd.SysProcAttr &#x3D; &amp;syscall.SysProcAttr&#123;Setpgid: true&#125;</span><br><span class="line">cmd.start()</span><br></pre></td></tr></table></figure>
-<p>这里的<code>param</code>就是整个FFmpeg转码语句，例如<code>/usr/bin/ffmpeg -i 1.mp4 1.flv</code>。</p>
-<p>这里使用<code>Setpgid</code>来设置进程组pid，这样在后面kill时直接杀掉整个进程组，无残留。</p>
-<p>另外<code>cmd.start()</code>表示非阻塞，转码开始后就放在后台（因为直播相关，所以会一直转码），等待结束命令。</p>
-<p><strong>转码日志记录：</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stdout, err :&#x3D; os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, 0644)</span><br><span class="line">cmd.Stderr &#x3D; stdout</span><br></pre></td></tr></table></figure>
-<p>注意ffmpeg使用的日志输出是<strong>Stderr</strong>，<strong>err</strong>…</p>
-<p><strong>停止：</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">err :&#x3D; syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)</span><br></pre></td></tr></table></figure>
-<p>加上一个负号，直接杀掉整个进程组。</p>
-<p><strong>PS：一定要在kill之后调用<code>cmd.Wait()</code>，否则会变成僵尸进程。</strong></p>
-<hr>
-<p><strong>完整代码：</strong></p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Exec</span><span class="params">(param, logFile <span class="keyword">string</span>)</span> <span class="params">(*exec.Cmd, error)</span></span> &#123;</span><br><span class="line">	cmd := exec.Command(<span class="string">&quot;/bin/bash&quot;</span>, <span class="string">&quot;-c&quot;</span>, param)</span><br><span class="line">	cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;Setpgid: <span class="literal">true</span>&#125;</span><br><span class="line"></span><br><span class="line">	logOut, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, <span class="number">0644</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 将标准输出和标准错误都写到log中</span></span><br><span class="line">	cmd.Stdout = logOut</span><br><span class="line">	cmd.Stderr = logOut</span><br><span class="line"></span><br><span class="line">	log.Info(<span class="string">&quot;Exce cmd: %s&quot;</span>, param)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> err := cmd.Start(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		_ = logOut.Close()</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> cmd, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">KillCmd</span><span class="params">(cmd *exec.Cmd)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> cmd == <span class="literal">nil</span> || cmd.Process == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">&quot;process not found or already stopped&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	log.Info(<span class="string">&quot;Kill CMD. pid: %d&quot;</span>, cmd.Process.Pid)</span><br><span class="line"></span><br><span class="line">	err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 如果不wait，则会产生僵尸进程</span></span><br><span class="line">	<span class="keyword">go</span> cmd.Wait() <span class="comment">// 为了不阻塞，另外起一个线程去Wait</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h1 id="2019-12-30修改记录"><a href="#2019-12-30修改记录" class="headerlink" title="2019-12-30修改记录"></a>2019-12-30修改记录</h1><p>实际使用的时候发现出现了defunct进程，也就是僵尸进程，重新看了一下<code>cmd.Start()</code>的使用方法，
-发现自己没有调用<code>cmd.Wait()</code>。</p>
-<hr>
-<h1 id="2020-01-20修改记录"><a href="#2020-01-20修改记录" class="headerlink" title="2020-01-20修改记录"></a>2020-01-20修改记录</h1><p>最近在使用FFmpeg来将rtmp流录制成ts文件，发现了一系列问题：</p>
-<ul>
-<li>首先，在FFmpeg进程运行过程中，如果使用<strong>SIGKILL</strong>（也就是-9信号）来将其杀死，那么这就相当于FFmpeg异常结束，它在结束时不会进行任何后处理。
-那么FFmpeg所录制的最后一片ts（由于只录制了一部分，没有达到设置的ts时长），就不能得到正确的处理，m3u8文件中也不会对他进行记录。
-这里正确的做法是使用<strong>SIGTERM</strong>信号（或者SIGINT）来使FFmpeg进程停止，FFmpeg收到这个信号，会将最后一片时长不足的ts片也保存下来，并写进m3u8文件中。</li>
-<li>第二，在拉取rtmp流的时候，我是先停止rtmp流，然后再发送<strong>SIGTERM</strong>信号给FFmpeg，但是我发现<strong>FFmpeg进程并没有结束！</strong>这个问题困扰了很久，
-终于在一瞬间想到了，原来是FFmpeg因为拉不到新数据而阻塞了！所以连信号都接收不到了！为了让FFmpeg不会无限阻塞，可以设置一个<code>rw_timeout</code>参数，
-来让FFmpeg阻塞一段时间后超时，从而接收到信号。</li>
-</ul>
-<p>所以这里总结一下就是：1.使用SIGTERM信号来使得FFmpeg正常结束。2.使用<code>rw_timeout</code>参数来防止FFmpeg无限阻塞。</p>
-<hr>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.jianshu.com/p/1f3ec2f00b03">Go语言中Kill子进程的正确姿势</a></p>
-]]></content>
-      <categories>
-        <category>golang</category>
-      </categories>
-      <tags>
-        <tag>live</tag>
-        <tag>golang</tag>
-        <tag>ffmpeg</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>srs中ffmpeg的按需转码实现方法</title>
     <url>/2019/10/29/2019-10-29-srs_ffmpeg_transcode_as_needed/</url>
     <content><![CDATA[<hr>
@@ -4711,6 +4664,53 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
       <tags>
         <tag>live</tag>
         <tag>srs</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>golang通过CMD来调用FFmpeg</title>
+    <url>/2019/11/12/2019-11-12-golang_cmd_ffmpeg/</url>
+    <content><![CDATA[<hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在golang中调用FFmpeg，一种方法是使用cgo来使用FFmpeg，这样就可以在go程序里面编写转码语句，进行错误处理等，
+但是这样的方法貌似有点复杂，或许得不偿失。</p>
+<p>这里使用CMD来直接调用FFmpeg进行转码，在使用较多的复杂参数的情况下，可能反而简单许多。</p>
+<hr>
+<h1 id="使用记录"><a href="#使用记录" class="headerlink" title="使用记录"></a>使用记录</h1><p><strong>调用：</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cmd :&#x3D; exec.Command(&quot;&#x2F;bin&#x2F;bash&quot;, &quot;-c&quot;, param)</span><br><span class="line">cmd.SysProcAttr &#x3D; &amp;syscall.SysProcAttr&#123;Setpgid: true&#125;</span><br><span class="line">cmd.start()</span><br></pre></td></tr></table></figure>
+<p>这里的<code>param</code>就是整个FFmpeg转码语句，例如<code>/usr/bin/ffmpeg -i 1.mp4 1.flv</code>。</p>
+<p>这里使用<code>Setpgid</code>来设置进程组pid，这样在后面kill时直接杀掉整个进程组，无残留。</p>
+<p>另外<code>cmd.start()</code>表示非阻塞，转码开始后就放在后台（因为直播相关，所以会一直转码），等待结束命令。</p>
+<p><strong>转码日志记录：</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stdout, err :&#x3D; os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, 0644)</span><br><span class="line">cmd.Stderr &#x3D; stdout</span><br></pre></td></tr></table></figure>
+<p>注意ffmpeg使用的日志输出是<strong>Stderr</strong>，<strong>err</strong>…</p>
+<p><strong>停止：</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">err :&#x3D; syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)</span><br></pre></td></tr></table></figure>
+<p>加上一个负号，直接杀掉整个进程组。</p>
+<p><strong>PS：一定要在kill之后调用<code>cmd.Wait()</code>，否则会变成僵尸进程。</strong></p>
+<hr>
+<p><strong>完整代码：</strong></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Exec</span><span class="params">(param, logFile <span class="keyword">string</span>)</span> <span class="params">(*exec.Cmd, error)</span></span> &#123;</span><br><span class="line">	cmd := exec.Command(<span class="string">&quot;/bin/bash&quot;</span>, <span class="string">&quot;-c&quot;</span>, param)</span><br><span class="line">	cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;Setpgid: <span class="literal">true</span>&#125;</span><br><span class="line"></span><br><span class="line">	logOut, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, <span class="number">0644</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 将标准输出和标准错误都写到log中</span></span><br><span class="line">	cmd.Stdout = logOut</span><br><span class="line">	cmd.Stderr = logOut</span><br><span class="line"></span><br><span class="line">	log.Info(<span class="string">&quot;Exce cmd: %s&quot;</span>, param)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> err := cmd.Start(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		_ = logOut.Close()</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> cmd, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">KillCmd</span><span class="params">(cmd *exec.Cmd)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> cmd == <span class="literal">nil</span> || cmd.Process == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">&quot;process not found or already stopped&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	log.Info(<span class="string">&quot;Kill CMD. pid: %d&quot;</span>, cmd.Process.Pid)</span><br><span class="line"></span><br><span class="line">	err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 如果不wait，则会产生僵尸进程</span></span><br><span class="line">	<span class="keyword">go</span> cmd.Wait() <span class="comment">// 为了不阻塞，另外起一个线程去Wait</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><h1 id="2019-12-30修改记录"><a href="#2019-12-30修改记录" class="headerlink" title="2019-12-30修改记录"></a>2019-12-30修改记录</h1><p>实际使用的时候发现出现了defunct进程，也就是僵尸进程，重新看了一下<code>cmd.Start()</code>的使用方法，
+发现自己没有调用<code>cmd.Wait()</code>。</p>
+<hr>
+<h1 id="2020-01-20修改记录"><a href="#2020-01-20修改记录" class="headerlink" title="2020-01-20修改记录"></a>2020-01-20修改记录</h1><p>最近在使用FFmpeg来将rtmp流录制成ts文件，发现了一系列问题：</p>
+<ul>
+<li>首先，在FFmpeg进程运行过程中，如果使用<strong>SIGKILL</strong>（也就是-9信号）来将其杀死，那么这就相当于FFmpeg异常结束，它在结束时不会进行任何后处理。
+那么FFmpeg所录制的最后一片ts（由于只录制了一部分，没有达到设置的ts时长），就不能得到正确的处理，m3u8文件中也不会对他进行记录。
+这里正确的做法是使用<strong>SIGTERM</strong>信号（或者SIGINT）来使FFmpeg进程停止，FFmpeg收到这个信号，会将最后一片时长不足的ts片也保存下来，并写进m3u8文件中。</li>
+<li>第二，在拉取rtmp流的时候，我是先停止rtmp流，然后再发送<strong>SIGTERM</strong>信号给FFmpeg，但是我发现<strong>FFmpeg进程并没有结束！</strong>这个问题困扰了很久，
+终于在一瞬间想到了，原来是FFmpeg因为拉不到新数据而阻塞了！所以连信号都接收不到了！为了让FFmpeg不会无限阻塞，可以设置一个<code>rw_timeout</code>参数，
+来让FFmpeg阻塞一段时间后超时，从而接收到信号。</li>
+</ul>
+<p>所以这里总结一下就是：1.使用SIGTERM信号来使得FFmpeg正常结束。2.使用<code>rw_timeout</code>参数来防止FFmpeg无限阻塞。</p>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.jianshu.com/p/1f3ec2f00b03">Go语言中Kill子进程的正确姿势</a></p>
+]]></content>
+      <categories>
+        <category>golang</category>
+      </categories>
+      <tags>
+        <tag>live</tag>
+        <tag>golang</tag>
+        <tag>ffmpeg</tag>
       </tags>
   </entry>
   <entry>
@@ -4822,6 +4822,42 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
       </tags>
   </entry>
   <entry>
+    <title>中国城市之间的球面距离计算</title>
+    <url>/2020/07/27/2020-07-27-china-citys-distance/</url>
+    <content><![CDATA[<hr>
+<h2 id="经纬度数据"><a href="#经纬度数据" class="headerlink" title="经纬度数据"></a>经纬度数据</h2><p>很明显，要就算城市之间的球面距离，那就需要确定各个城市在地球上所处的位置，也就是经纬度。</p>
+<p>这里最简单的方式就是去<strong>百度地图开放平台</strong>里面去下载一份<code>百度地图城市名称-中心点经纬度（cityCenter）关系对照文本</code>，</p>
+<p><a href="http://lbsyun.baidu.com/index.php?title=open/dev-res">http://lbsyun.baidu.com/index.php?title=open/dev-res</a></p>
+<p>这里面应该包含了中国绝大部分城市的经纬度数据，格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;municipalities:[&#123;n:&quot;北京&quot;,g:&quot;116.395645,39.929986|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;上海&quot;,g:&quot;121.487899,31.249162|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;天津&quot;,g:&quot;117.210813,39.14393|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;重庆&quot;,g:&quot;106.530635,29.544606|12&quot;&#125;],</span><br><span class="line">provinces:[&#123;n:&quot;安徽&quot;,g:&quot;117.216005,31.859252|8&quot;,</span><br><span class="line">cities:[&#123;n:&quot;合肥&quot;,g:&quot;117.282699,31.866942|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;安庆&quot;,g:&quot;117.058739,30.537898|13&quot;&#125;,</span><br><span class="line">&#123;n:&quot;蚌埠&quot;,g:&quot;117.35708,32.929499|13&quot;&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>长得跟json差不多，但是又不是json，因为这里所有键值都没有加上引号<code>&quot;</code>，为了方便解析，
+可以直接使用文本编辑器来把这些键值替换为带有引号的形式。</p>
+<p>解析后，将每个所有城市的经纬度解析出来，重新格式化为json，得到如下文件：</p>
+<div>
+<a href="/images/files/CityDistance/ChinaCityCoordinate.json">ChinaCityCoordinate.json（39.2 KB）</a>
+</div>
+
+<hr>
+<h2 id="城市间距离计算"><a href="#城市间距离计算" class="headerlink" title="城市间距离计算"></a>城市间距离计算</h2><p>球面距离有很多种计算方法，这里就不考虑地球实际是个椭圆体的问题了，直接使用<strong>Haversine</strong>算法比较简单。</p>
+<p>这里也是参考网上别人写的代码：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Haversine 算法：通过两地经纬度计算两地的球面距离（正球体，非椭圆）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> EarthRadius <span class="keyword">float64</span> = <span class="number">6371.0</span> <span class="comment">//km 地球半径 平均值，千米</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DegToRadians</span><span class="params">(degrees <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (degrees * math.Pi) / <span class="number">180</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetDistanceFromLatLonInKm</span><span class="params">(lat1, lon1, lat2, lon2 <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> dLat = DegToRadians(lat2-lat1)</span><br><span class="line">    <span class="keyword">var</span> dLon = DegToRadians(lon2-lon1)</span><br><span class="line">    <span class="keyword">var</span> a = math.Sin(dLat/<span class="number">2</span>) * math.Sin(dLat/<span class="number">2</span>) + math.Cos(DegToRadians(lat1)) * math.Cos(DegToRadians(lat2)) *</span><br><span class="line">            math.Sin(dLon/<span class="number">2</span>) * math.Sin(dLon/<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> c = math.Atan2(math.Sqrt(a), math.Sqrt(<span class="number">1</span>-a))</span><br><span class="line">    <span class="keyword">var</span> d = <span class="number">2</span> * EarthRadius * c</span><br><span class="line">    <span class="keyword">return</span> d</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样简单的两两计算，就可以得到中国各个城市之间的距离：</p>
+<div>
+<a href="/images/files/CityDistance/CityDisMatrix.json">CityDisMatrix.json（4.73MB）</a>
+</div>
+
+
+<p>在实际使用的情况中，如果不想浪费内存，可以考虑使用坐标实时计算，浪费点CPU。</p>
+<hr>
+]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
+      <tags>
+        <tag>algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>cgo+ffmpeg+linux的简单使用</title>
     <url>/2020/08/20/2020-08-20-cgo+ffmpeg+linux/</url>
     <content><![CDATA[<hr>
@@ -4857,42 +4893,6 @@ Logrotate将对原日志文件使用gzip进行压缩。</p>
         <tag>live</tag>
         <tag>golang</tag>
         <tag>ffmpeg</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>中国城市之间的球面距离计算</title>
-    <url>/2020/07/27/2020-07-27-china-citys-distance/</url>
-    <content><![CDATA[<hr>
-<h2 id="经纬度数据"><a href="#经纬度数据" class="headerlink" title="经纬度数据"></a>经纬度数据</h2><p>很明显，要就算城市之间的球面距离，那就需要确定各个城市在地球上所处的位置，也就是经纬度。</p>
-<p>这里最简单的方式就是去<strong>百度地图开放平台</strong>里面去下载一份<code>百度地图城市名称-中心点经纬度（cityCenter）关系对照文本</code>，</p>
-<p><a href="http://lbsyun.baidu.com/index.php?title=open/dev-res">http://lbsyun.baidu.com/index.php?title=open/dev-res</a></p>
-<p>这里面应该包含了中国绝大部分城市的经纬度数据，格式如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;municipalities:[&#123;n:&quot;北京&quot;,g:&quot;116.395645,39.929986|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;上海&quot;,g:&quot;121.487899,31.249162|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;天津&quot;,g:&quot;117.210813,39.14393|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;重庆&quot;,g:&quot;106.530635,29.544606|12&quot;&#125;],</span><br><span class="line">provinces:[&#123;n:&quot;安徽&quot;,g:&quot;117.216005,31.859252|8&quot;,</span><br><span class="line">cities:[&#123;n:&quot;合肥&quot;,g:&quot;117.282699,31.866942|12&quot;&#125;,</span><br><span class="line">&#123;n:&quot;安庆&quot;,g:&quot;117.058739,30.537898|13&quot;&#125;,</span><br><span class="line">&#123;n:&quot;蚌埠&quot;,g:&quot;117.35708,32.929499|13&quot;&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>长得跟json差不多，但是又不是json，因为这里所有键值都没有加上引号<code>&quot;</code>，为了方便解析，
-可以直接使用文本编辑器来把这些键值替换为带有引号的形式。</p>
-<p>解析后，将每个所有城市的经纬度解析出来，重新格式化为json，得到如下文件：</p>
-<div>
-<a href="/images/files/CityDistance/ChinaCityCoordinate.json">ChinaCityCoordinate.json（39.2 KB）</a>
-</div>
-
-<hr>
-<h2 id="城市间距离计算"><a href="#城市间距离计算" class="headerlink" title="城市间距离计算"></a>城市间距离计算</h2><p>球面距离有很多种计算方法，这里就不考虑地球实际是个椭圆体的问题了，直接使用<strong>Haversine</strong>算法比较简单。</p>
-<p>这里也是参考网上别人写的代码：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Haversine 算法：通过两地经纬度计算两地的球面距离（正球体，非椭圆）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> EarthRadius <span class="keyword">float64</span> = <span class="number">6371.0</span> <span class="comment">//km 地球半径 平均值，千米</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DegToRadians</span><span class="params">(degrees <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (degrees * math.Pi) / <span class="number">180</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetDistanceFromLatLonInKm</span><span class="params">(lat1, lon1, lat2, lon2 <span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> dLat = DegToRadians(lat2-lat1)</span><br><span class="line">    <span class="keyword">var</span> dLon = DegToRadians(lon2-lon1)</span><br><span class="line">    <span class="keyword">var</span> a = math.Sin(dLat/<span class="number">2</span>) * math.Sin(dLat/<span class="number">2</span>) + math.Cos(DegToRadians(lat1)) * math.Cos(DegToRadians(lat2)) *</span><br><span class="line">            math.Sin(dLon/<span class="number">2</span>) * math.Sin(dLon/<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> c = math.Atan2(math.Sqrt(a), math.Sqrt(<span class="number">1</span>-a))</span><br><span class="line">    <span class="keyword">var</span> d = <span class="number">2</span> * EarthRadius * c</span><br><span class="line">    <span class="keyword">return</span> d</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样简单的两两计算，就可以得到中国各个城市之间的距离：</p>
-<div>
-<a href="/images/files/CityDistance/CityDisMatrix.json">CityDisMatrix.json（4.73MB）</a>
-</div>
-
-
-<p>在实际使用的情况中，如果不想浪费内存，可以考虑使用坐标实时计算，浪费点CPU。</p>
-<hr>
-]]></content>
-      <categories>
-        <category>algorithm</category>
-      </categories>
-      <tags>
-        <tag>algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -5550,6 +5550,22 @@ webrtc会自动的将同一个<code>stream</code>下的<code>track</code>绑定�
 <p>相关问题：</p>
 <p><a href="https://github.com/rancher/rancher/issues/25111">25111</a></p>
 <p>反正我也没解决成功，也是后面换成了k3s1.20的原因之一。</p>
+<hr>
+<h1 id="2021-07-05"><a href="#2021-07-05" class="headerlink" title="2021-07-05"></a>2021-07-05</h1><p>在内网部署rancher，并添加同一个内网的另一个k3s集群，添加失败，出现<code>time out</code>的错误。</p>
+<p>大致情况如下：</p>
+<ol>
+<li>rancher部署在10.xxx.xxx.100上，另一个k3s集群在10.xxx.xxx.101和10.xxx.xxx.102上，现在要把k3s集群导入到rancher。</li>
+<li>rancher是要给外网访问的，所以域名rancher.xxx.plus对应的是外网地址47.xxx.xxx.xxx，同时外网访问要经过nginx转发。</li>
+<li>内网机器不能通过外网地址访问到内网机器的，所以为了添加集群，我在10.xxx.xxx.101的<code>/etc/hosts</code>文件中配置了<code>10.xxx.xxx.100 rancher.xxx.plus</code>。</li>
+</ol>
+<p>但是在执行添加集群命令一会之后，会出现<code>time out</code>的错误。</p>
+<p>研究之后发现，可能是容器内部并不会使用<code>/etc/hosts</code>文件来进行域名解析，导致解析到外网地址47.xxx.xxx.xxx，以至于连接超时。</p>
+<p>原来k3s集群内部是通过<strong>coreDNS</strong>来进行域名解析的，所以不仅需要在<code>/etc/hosts</code>文件中进行修改，也要在coreDNS中修改域名解析。</p>
+<p>执行如下命令打开coreDNS文件并添加一条记录：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> kubectl edit configmap coredns -n kube-system</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Please edit the object below. Lines beginning with a <span class="string">&#x27;#&#x27;</span> will be ignored,</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> and an empty file will abort the edit. If an error occurs <span class="keyword">while</span> saving this file will be</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> reopened with the relevant failures.</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="bash">apiVersion: v1</span></span><br><span class="line">data:</span><br><span class="line">  Corefile: |</span><br><span class="line">    .:53 &#123;</span><br><span class="line">        errors</span><br><span class="line">        health</span><br><span class="line">        ready</span><br><span class="line">        kubernetes cluster.local in-addr.arpa ip6.arpa &#123;</span><br><span class="line">          pods insecure</span><br><span class="line">          fallthrough in-addr.arpa ip6.arpa</span><br><span class="line">        &#125;</span><br><span class="line">        hosts /etc/coredns/NodeHosts &#123;</span><br><span class="line">          ttl 60</span><br><span class="line">          reload 15s</span><br><span class="line">          fallthrough</span><br><span class="line">        &#125;</span><br><span class="line">        prometheus :9153</span><br><span class="line">        forward . /etc/resolv.conf</span><br><span class="line">        cache 30</span><br><span class="line">        loop</span><br><span class="line">        reload</span><br><span class="line">        loadbalance</span><br><span class="line">    &#125;</span><br><span class="line">  NodeHosts: |</span><br><span class="line">    10.xxx.xxx.101 xxx.cn</span><br><span class="line">    10.xxx.xxx.102 xxxx.cn</span><br><span class="line">    10.xxx.xxx.100 rancher.xxx.plus    # 添加这一条解析记录</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  annotations:</span><br><span class="line">    objectset.rio.cattle.io/applied: &#x27;&#123;&quot;apiVersion&quot;:&quot;v1&quot;,&quot;data&quot;:&#123;&quot;Corefile&quot;:&quot;.:53 &#123;\n    errors\n    health\n    ready\n    objectset.rio.cattle.io/id: &quot;&quot;</span><br><span class="line">    objectset.rio.cattle.io/owner-gvk: k3s.cattle.io/v1, Kind=Addon</span><br><span class="line">    objectset.rio.cattle.io/owner-name: coredns</span><br><span class="line">    objectset.rio.cattle.io/owner-namespace: kube-system</span><br><span class="line">  creationTimestamp: &quot;2021-07-05T06:37:34Z&quot;</span><br><span class="line">  labels:</span><br><span class="line">    objectset.rio.cattle.io/hash: bce283298811743a0386ab510f2f67ef74240c57</span><br><span class="line">  name: coredns</span><br><span class="line">  namespace: kube-system</span><br><span class="line">  resourceVersion: &quot;2179&quot;</span><br><span class="line">  uid: b2c3d71a-dcd5-4f80-ba3e-b8cdbcd2c400</span><br></pre></td></tr></table></figure>
+<p>使用下面命令可以查看配置：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">kubectl -n kube-system get configmap coredns -o yaml</span><br></pre></td></tr></table></figure>
+<p>然后在执行集群导入命令，就成功添加到了rancher。</p>
 <hr>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://docs.rancher.cn/docs/rancher2.5/installation/install-rancher-on-k8s/_index">rancher高可用安装指南</a></p>
 <p><a href="https://docs.rancher.cn/docs/k3s/installation/ha/_index">k3s使用外部数据库实现高可用安装</a></p>
