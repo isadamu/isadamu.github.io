@@ -192,32 +192,6 @@ Everflow利用这一点来减少追踪的负载，
       </tags>
   </entry>
   <entry>
-    <title>LeetCode 1.Two Sum</title>
-    <url>/2017/08/18/2017-08-18-two-sum/</url>
-    <content><![CDATA[<h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1 Two Sum"></a>1 Two Sum</h2><p>题目描述：Given an array of integers, return indices of the two numbers such that they add up to a specific target.</p>
-<p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
-<p>题目理解：输入一个数组和一个目标值，若数组中两个值之和等于目标值，返回它们的下标，每个数只能使用一次。</p>
-<hr>
-<p>代码1：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; diffs = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        Integer i = <span class="keyword">null</span>, index = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nums.length ; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (  ( index = diffs.get( nums[i] ) ) != <span class="keyword">null</span> ) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                diffs.put( target - nums[i] , i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] indexs = &#123;index,i&#125;;</span><br><span class="line">        <span class="keyword">return</span> indexs;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>重头开始遍历，查看当前数字是否在差值中，在其中就返回，否则计算差值，加入map。</p>
-<p>复杂度：nlog(n)，运行时间10ms。</p>
-<p><img src="/images/leetcode/Two_Sum_1.png" alt="images"></p>
-<hr>
-<p>代码2：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        <span class="keyword">int</span>[][] inums = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length][<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++ ) &#123;</span><br><span class="line">            inums[i][<span class="number">0</span>] = nums[i];</span><br><span class="line">            inums[i][<span class="number">1</span>] = i;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(inums, <span class="keyword">new</span> Comparator&lt;<span class="keyword">int</span>[]&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">( <span class="keyword">int</span>[] o1, <span class="keyword">int</span>[] o2 )</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> o1[<span class="number">0</span>] - o2[<span class="number">0</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">int</span>[] res = &#123;-<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = inums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = inums[l][<span class="number">0</span>] + inums[r][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> ( sum &lt; target ) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( sum &gt; target ) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                res[<span class="number">0</span>] = inums[l][<span class="number">1</span>]; res[<span class="number">1</span>] = inums[r][<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">return</span> res;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>将原始数据排序，然后进行左右逼近，得到结果。</p>
-<p>复杂度nlog(n),运行时间12ms。</p>
-<p><img src="/images/leetcode/Two_Sum.png" alt="images"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>我的第一篇博客 for jekyll</title>
     <url>/2017/08/18/2017-08-18-my-first-blog/</url>
     <content><![CDATA[<h2 id="写博客"><a href="#写博客" class="headerlink" title="写博客"></a>写博客</h2><p><a href="http://theme-next.iissnan.com/">主题说明书</a></p>
@@ -298,6 +272,32 @@ width="200" height="200" title="大范" /></div>
       </categories>
       <tags>
         <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 1.Two Sum</title>
+    <url>/2017/08/18/2017-08-18-two-sum/</url>
+    <content><![CDATA[<h2 id="1-Two-Sum"><a href="#1-Two-Sum" class="headerlink" title="1 Two Sum"></a>1 Two Sum</h2><p>题目描述：Given an array of integers, return indices of the two numbers such that they add up to a specific target.</p>
+<p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
+<p>题目理解：输入一个数组和一个目标值，若数组中两个值之和等于目标值，返回它们的下标，每个数只能使用一次。</p>
+<hr>
+<p>代码1：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; diffs = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        Integer i = <span class="keyword">null</span>, index = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nums.length ; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (  ( index = diffs.get( nums[i] ) ) != <span class="keyword">null</span> ) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                diffs.put( target - nums[i] , i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] indexs = &#123;index,i&#125;;</span><br><span class="line">        <span class="keyword">return</span> indexs;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重头开始遍历，查看当前数字是否在差值中，在其中就返回，否则计算差值，加入map。</p>
+<p>复杂度：nlog(n)，运行时间10ms。</p>
+<p><img src="/images/leetcode/Two_Sum_1.png" alt="images"></p>
+<hr>
+<p>代码2：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">        <span class="keyword">int</span>[][] inums = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length][<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++ ) &#123;</span><br><span class="line">            inums[i][<span class="number">0</span>] = nums[i];</span><br><span class="line">            inums[i][<span class="number">1</span>] = i;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(inums, <span class="keyword">new</span> Comparator&lt;<span class="keyword">int</span>[]&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">( <span class="keyword">int</span>[] o1, <span class="keyword">int</span>[] o2 )</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> o1[<span class="number">0</span>] - o2[<span class="number">0</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">int</span>[] res = &#123;-<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = inums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = inums[l][<span class="number">0</span>] + inums[r][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> ( sum &lt; target ) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( sum &gt; target ) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                res[<span class="number">0</span>] = inums[l][<span class="number">1</span>]; res[<span class="number">1</span>] = inums[r][<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">return</span> res;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将原始数据排序，然后进行左右逼近，得到结果。</p>
+<p>复杂度nlog(n),运行时间12ms。</p>
+<p><img src="/images/leetcode/Two_Sum.png" alt="images"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -414,6 +414,35 @@ width="200" height="200" title="大范" /></div>
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 71.Simplify Path</title>
+    <url>/2017/08/21/2017-08-21-simplfiy-path/</url>
+    <content><![CDATA[<h2 id="71-Simplify-Path"><a href="#71-Simplify-Path" class="headerlink" title="71.Simplify Path"></a>71.Simplify Path</h2><p>题目：</p>
+<blockquote>
+<p>Given an absolute path for a file (Unix-style), simplify it.  </p>
+<p>For example,<br>path = <code>&quot;/home/&quot;</code>, =&gt; <code>&quot;/home&quot;</code><br>path = <code>&quot;/a/./../../c/&quot;</code>, =&gt; <code>&quot;/c&quot;</code></p>
+</blockquote>
+<p>另外题目需要注意的是当出现<code>&quot;/../&quot;</code>时，返回<code>&quot;/&quot;</code>,<br>多个<code>&quot;/&quot;</code>看成一个就行。</p>
+<p>理解：</p>
+<p>输入一个路径，将路径简单化，也就是去掉其中的<code>&quot;..&quot;</code>,<code>&quot;.&quot;</code>
+以及多余的<code>&quot;/&quot;</code>,另外路径的最后不要加上<code>&quot;/&quot;</code>。</p>
+<p>代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">simplifyPath</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        String[] strs = path.split(<span class="string">&quot;/&quot;</span>);</span><br><span class="line">        String[] res = <span class="keyword">new</span> String[strs.length];</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( String str : strs ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( str.length() == <span class="number">0</span> || str.equals(<span class="string">&quot;.&quot;</span>) ) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( str.equals(<span class="string">&quot;..&quot;</span>) ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( idx != <span class="number">0</span> ) &#123;</span><br><span class="line">                    idx--;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                res[idx++] = str;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( idx == <span class="number">0</span> ) </span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;/&quot;</span>;</span><br><span class="line">        StringBuilder res_str = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; idx; i++ ) &#123;</span><br><span class="line">            res_str.append(<span class="string">&quot;/&quot;</span>).append(res[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res_str.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(n)，运行时间7ms。</p>
+<p><img src="/images/leetcode/simplify-path_1.png" alt="image"></p>
+<p>这里有一个值得注意的地方，最开始，我是这样写的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] strs = path.split(<span class="string">&quot;/+&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>之后改成了，</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] strs = path.split(<span class="string">&quot;/&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>瞬间从15ms击败25%，变成了击败95%。所以<code>split</code>的多字符匹配还是要慢得多。</p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>购买域名并绑定博客原地址</title>
     <url>/2017/08/20/2017-08-20-add-domain-name/</url>
     <content><![CDATA[<p>其实我也不知道为什么要买一个域名，对我自己来说没什么卵用，
@@ -454,35 +483,6 @@ github会自动按这个域名来转。  </p>
       </categories>
       <tags>
         <tag>guide</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 71.Simplify Path</title>
-    <url>/2017/08/21/2017-08-21-simplfiy-path/</url>
-    <content><![CDATA[<h2 id="71-Simplify-Path"><a href="#71-Simplify-Path" class="headerlink" title="71.Simplify Path"></a>71.Simplify Path</h2><p>题目：</p>
-<blockquote>
-<p>Given an absolute path for a file (Unix-style), simplify it.  </p>
-<p>For example,<br>path = <code>&quot;/home/&quot;</code>, =&gt; <code>&quot;/home&quot;</code><br>path = <code>&quot;/a/./../../c/&quot;</code>, =&gt; <code>&quot;/c&quot;</code></p>
-</blockquote>
-<p>另外题目需要注意的是当出现<code>&quot;/../&quot;</code>时，返回<code>&quot;/&quot;</code>,<br>多个<code>&quot;/&quot;</code>看成一个就行。</p>
-<p>理解：</p>
-<p>输入一个路径，将路径简单化，也就是去掉其中的<code>&quot;..&quot;</code>,<code>&quot;.&quot;</code>
-以及多余的<code>&quot;/&quot;</code>,另外路径的最后不要加上<code>&quot;/&quot;</code>。</p>
-<p>代码：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">simplifyPath</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        String[] strs = path.split(<span class="string">&quot;/&quot;</span>);</span><br><span class="line">        String[] res = <span class="keyword">new</span> String[strs.length];</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( String str : strs ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( str.length() == <span class="number">0</span> || str.equals(<span class="string">&quot;.&quot;</span>) ) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( str.equals(<span class="string">&quot;..&quot;</span>) ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( idx != <span class="number">0</span> ) &#123;</span><br><span class="line">                    idx--;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                res[idx++] = str;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( idx == <span class="number">0</span> ) </span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;/&quot;</span>;</span><br><span class="line">        StringBuilder res_str = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; idx; i++ ) &#123;</span><br><span class="line">            res_str.append(<span class="string">&quot;/&quot;</span>).append(res[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res_str.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(n)，运行时间7ms。</p>
-<p><img src="/images/leetcode/simplify-path_1.png" alt="image"></p>
-<p>这里有一个值得注意的地方，最开始，我是这样写的：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] strs = path.split(<span class="string">&quot;/+&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p>之后改成了，</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] strs = path.split(<span class="string">&quot;/&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p>瞬间从15ms击败25%，变成了击败95%。所以<code>split</code>的多字符匹配还是要慢得多。</p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -1202,6 +1202,42 @@ want to strive closer to the rising kramdown standard.</p>
       </tags>
   </entry>
   <entry>
+    <title>Coursera Improving Deep Neural Networks 笔记</title>
+    <url>/2017/08/25/2017-08-25-dnn/</url>
+    <content><![CDATA[<p>第二个专项课程的完整题目是</p>
+<blockquote>
+<p>Improving Deep Neural Networks:
+Hyperparameter tuning, Regularization and Optimization.</p>
+</blockquote>
+<p>通过标题就可以看出课程的主要内容就是在第一个课程的基础上，
+对深度神经网络进行加固。</p>
+<p>一共三周的课程，每周课程题目分别为：</p>
+<ul>
+<li>Practical aspects of Deep Learning</li>
+<li>Optimization algorithms</li>
+<li>Hyperparameter tuning, Batch Normalization and Programming Frameworks</li>
+</ul>
+<p>第一周讲了划分数据集、正则化、权值初始化以及梯度检查。</p>
+<p>第二周讲了<strong>mini-batch</strong>以及<strong>RMSprop</strong>等参数更新方法。</p>
+<p>第三周讲了超参数的选择、标准化以及TensorFlow。</p>
+<hr>
+<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><p><a href="http://longrm.com/2017/08/25/2017-08-25-dnn_2/">神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查</a></p>
+<hr>
+<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_3/">Mini-batch 和 权重更新策略</a></p>
+<hr>
+<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">Hyperparameter tuning, Batch Norm and TensorFlow</a></p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>写博客的注意事项</title>
     <url>/2017/08/23/2017-08-23-my-write-blog-guide/</url>
     <content><![CDATA[<hr>
@@ -1278,42 +1314,6 @@ style="zoom:150%"/></div>
       </categories>
       <tags>
         <tag>guide</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Coursera Improving Deep Neural Networks 笔记</title>
-    <url>/2017/08/25/2017-08-25-dnn/</url>
-    <content><![CDATA[<p>第二个专项课程的完整题目是</p>
-<blockquote>
-<p>Improving Deep Neural Networks:
-Hyperparameter tuning, Regularization and Optimization.</p>
-</blockquote>
-<p>通过标题就可以看出课程的主要内容就是在第一个课程的基础上，
-对深度神经网络进行加固。</p>
-<p>一共三周的课程，每周课程题目分别为：</p>
-<ul>
-<li>Practical aspects of Deep Learning</li>
-<li>Optimization algorithms</li>
-<li>Hyperparameter tuning, Batch Normalization and Programming Frameworks</li>
-</ul>
-<p>第一周讲了划分数据集、正则化、权值初始化以及梯度检查。</p>
-<p>第二周讲了<strong>mini-batch</strong>以及<strong>RMSprop</strong>等参数更新方法。</p>
-<p>第三周讲了超参数的选择、标准化以及TensorFlow。</p>
-<hr>
-<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><p><a href="http://longrm.com/2017/08/25/2017-08-25-dnn_2/">神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查</a></p>
-<hr>
-<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_3/">Mini-batch 和 权重更新策略</a></p>
-<hr>
-<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">Hyperparameter tuning, Batch Norm and TensorFlow</a></p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1812,6 +1812,50 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>TensorFlow 笔记一</title>
+    <url>/2017/09/02/2017-09-02-tensorflow/</url>
+    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
+<hr>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>它也可以是矩阵，</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
+<p>当然直接写也是可以的，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
+<hr>
+<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
+<p>还不明白它的作用。</p>
+<hr>
+<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
+<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
+<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
+<hr>
+<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>109</p>
+</blockquote>
+<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 5 Longest Palindromic Substring</title>
     <url>/2017/09/01/2017-09-01-longest-palindromic-substring/</url>
     <content><![CDATA[<hr>
@@ -1868,50 +1912,6 @@ z^{[L]} =
       </categories>
       <tags>
         <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TensorFlow 笔记一</title>
-    <url>/2017/09/02/2017-09-02-tensorflow/</url>
-    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
-<hr>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>或者</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>它也可以是矩阵，</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
-<p>当然直接写也是可以的，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
-<hr>
-<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
-<p>还不明白它的作用。</p>
-<hr>
-<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
-<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
-<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
-<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
-<hr>
-<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>109</p>
-</blockquote>
-<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1982,49 +1982,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>LeetCode 44 Wildcard Matching</title>
-    <url>/2017/09/06/2017-09-06-leetcode_44/</url>
-    <content><![CDATA[<blockquote>
-<p>Implement wildcard pattern matching with support for ‘?’ and ‘*‘.  </p>
-<p>‘?’ Matches any single character.<br>‘*‘ Matches any sequence of characters (including the empty sequence).  </p>
-<p>The matching should cover the entire input string (not partial).  </p>
-<p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
-<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “*“) → true<br>isMatch(“aa”, “a*“) → true<br>isMatch(“ab”, “?*“) → true<br>isMatch(“aab”, “c*a*b”) → false  </p>
-</blockquote>
-<p>题目理解：</p>
-<p>经典的字符串匹配问题。</p>
-<p>首先想到的方法，顺着走，但是第一次写得非常复杂，这里忽略不计（但是速度还可以）。</p>
-<p>今天所想的方法，动态规划，自顶向下，或者自底向上。</p>
-<p>看了别人的顺着走的算法，原来思路也是很简单的。</p>
-<p><strong>所以不是看到这种问题就想着动态规划，也许顺着想就能简单解决。</strong></p>
-<p><strong>另外，这道题的java运行时间十分不稳定，重复提交可以差30ms。</strong></p>
-<hr>
-<p>代码一：</p>
-<p>自顶向下。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="comment">// 为了先合并连续的&#x27;*&#x27;</span></span><br><span class="line">        <span class="keyword">char</span>[] ppp = <span class="keyword">new</span> <span class="keyword">char</span>[pp.length];</span><br><span class="line">        <span class="keyword">int</span> ppp_idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">boolean</span> last_not_star = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pp.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pp[i] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( last_not_star )</span><br><span class="line">                    ppp[ppp_idx++] = pp[i];</span><br><span class="line">                last_not_star = <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                last_not_star = <span class="keyword">true</span>;</span><br><span class="line">                ppp[ppp_idx++] = pp[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] pppp = <span class="keyword">new</span> <span class="keyword">char</span>[ppp_idx];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ppp_idx; i++ )</span><br><span class="line">            pppp[i] = ppp[i];</span><br><span class="line">        pp = pppp;</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( ss, pp, <span class="number">0</span>, <span class="number">0</span>, matchs) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">(<span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> ai, <span class="keyword">int</span> bi, <span class="keyword">char</span>[][] matchs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;\0&#x27;</span> ) </span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        <span class="keyword">if</span> ( ai == a.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;?&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( a[ai] == b[bi] )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)？？？<br>运行时间：大约100ms。<br>击败：大约16.73%</p>
-<p><img src="/images/leetcode/44_1.png" alt="image"></p>
-<hr>
-<p>代码二：</p>
-<p>自底向上。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length;</span><br><span class="line">        <span class="keyword">boolean</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">boolean</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            matchs[i][<span class="number">0</span>] = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n &amp;&amp; pp[i] == <span class="string">&#x27;*&#x27;</span>; i++ )</span><br><span class="line">            matchs[<span class="number">0</span>][i+<span class="number">1</span>] = <span class="keyword">true</span>;</span><br><span class="line">        matchs[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">int</span> ii = i - <span class="number">1</span>, jj = j - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;?&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][jj];</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][j] || matchs[i][jj];</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[ii][jj] ) </span><br><span class="line">                        matchs[i][j] = (ss[ii] == pp[jj]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[m][n];</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)。<br>运行时间：大约75ms。<br>击败：大约50%</p>
-<p><img src="/images/leetcode/44_2.png" alt="image"></p>
-<hr>
-<p>代码三：</p>
-<p>顺序扫描。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length, i = <span class="number">0</span>, j = <span class="number">0</span>, star_idx = -<span class="number">1</span>, match = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( i &lt; m ) &#123;</span><br><span class="line">            <span class="keyword">if</span>  ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                match = i;</span><br><span class="line">                star_idx = j;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( j &lt; n &amp;&amp; ( pp[j] == <span class="string">&#x27;?&#x27;</span> || pp[j] == ss[i] ) ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( star_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                i = match++;</span><br><span class="line">                j = star_idx + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">            j++;</span><br><span class="line">        <span class="keyword">return</span> j == n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：应该介于O(mn)到O(m + n)之间。<br>运行时间： 大约60ms。<br>击败：大约80%</p>
-<p><img src="/images/leetcode/44_3.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 72 Edit Distance</title>
     <url>/2017/09/06/2017-09-06-leetcode_72/</url>
     <content><![CDATA[<p>Description:</p>
@@ -2067,6 +2024,49 @@ z^{[L]} =
 <p><img src="/images/leetcode/72_2.png" alt="image"></p>
 <p><strong>注：</strong></p>
 <p><strong>自顶向上比自底向上快？？？想了一下，应该是因为在自顶向下的过程中，并不需要去将所有的子问题都计算出来。</strong></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 44 Wildcard Matching</title>
+    <url>/2017/09/06/2017-09-06-leetcode_44/</url>
+    <content><![CDATA[<blockquote>
+<p>Implement wildcard pattern matching with support for ‘?’ and ‘*‘.  </p>
+<p>‘?’ Matches any single character.<br>‘*‘ Matches any sequence of characters (including the empty sequence).  </p>
+<p>The matching should cover the entire input string (not partial).  </p>
+<p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
+<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “*“) → true<br>isMatch(“aa”, “a*“) → true<br>isMatch(“ab”, “?*“) → true<br>isMatch(“aab”, “c*a*b”) → false  </p>
+</blockquote>
+<p>题目理解：</p>
+<p>经典的字符串匹配问题。</p>
+<p>首先想到的方法，顺着走，但是第一次写得非常复杂，这里忽略不计（但是速度还可以）。</p>
+<p>今天所想的方法，动态规划，自顶向下，或者自底向上。</p>
+<p>看了别人的顺着走的算法，原来思路也是很简单的。</p>
+<p><strong>所以不是看到这种问题就想着动态规划，也许顺着想就能简单解决。</strong></p>
+<p><strong>另外，这道题的java运行时间十分不稳定，重复提交可以差30ms。</strong></p>
+<hr>
+<p>代码一：</p>
+<p>自顶向下。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="comment">// 为了先合并连续的&#x27;*&#x27;</span></span><br><span class="line">        <span class="keyword">char</span>[] ppp = <span class="keyword">new</span> <span class="keyword">char</span>[pp.length];</span><br><span class="line">        <span class="keyword">int</span> ppp_idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">boolean</span> last_not_star = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pp.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pp[i] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( last_not_star )</span><br><span class="line">                    ppp[ppp_idx++] = pp[i];</span><br><span class="line">                last_not_star = <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                last_not_star = <span class="keyword">true</span>;</span><br><span class="line">                ppp[ppp_idx++] = pp[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] pppp = <span class="keyword">new</span> <span class="keyword">char</span>[ppp_idx];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ppp_idx; i++ )</span><br><span class="line">            pppp[i] = ppp[i];</span><br><span class="line">        pp = pppp;</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( ss, pp, <span class="number">0</span>, <span class="number">0</span>, matchs) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">(<span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> ai, <span class="keyword">int</span> bi, <span class="keyword">char</span>[][] matchs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;\0&#x27;</span> ) </span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        <span class="keyword">if</span> ( ai == a.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;?&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( a[ai] == b[bi] )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)？？？<br>运行时间：大约100ms。<br>击败：大约16.73%</p>
+<p><img src="/images/leetcode/44_1.png" alt="image"></p>
+<hr>
+<p>代码二：</p>
+<p>自底向上。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length;</span><br><span class="line">        <span class="keyword">boolean</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">boolean</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            matchs[i][<span class="number">0</span>] = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n &amp;&amp; pp[i] == <span class="string">&#x27;*&#x27;</span>; i++ )</span><br><span class="line">            matchs[<span class="number">0</span>][i+<span class="number">1</span>] = <span class="keyword">true</span>;</span><br><span class="line">        matchs[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">int</span> ii = i - <span class="number">1</span>, jj = j - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;?&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][jj];</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][j] || matchs[i][jj];</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[ii][jj] ) </span><br><span class="line">                        matchs[i][j] = (ss[ii] == pp[jj]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[m][n];</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)。<br>运行时间：大约75ms。<br>击败：大约50%</p>
+<p><img src="/images/leetcode/44_2.png" alt="image"></p>
+<hr>
+<p>代码三：</p>
+<p>顺序扫描。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length, i = <span class="number">0</span>, j = <span class="number">0</span>, star_idx = -<span class="number">1</span>, match = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( i &lt; m ) &#123;</span><br><span class="line">            <span class="keyword">if</span>  ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                match = i;</span><br><span class="line">                star_idx = j;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( j &lt; n &amp;&amp; ( pp[j] == <span class="string">&#x27;?&#x27;</span> || pp[j] == ss[i] ) ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( star_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                i = match++;</span><br><span class="line">                j = star_idx + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">            j++;</span><br><span class="line">        <span class="keyword">return</span> j == n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：应该介于O(mn)到O(m + n)之间。<br>运行时间： 大约60ms。<br>击败：大约80%</p>
+<p><img src="/images/leetcode/44_3.png" alt="image"></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -2449,6 +2449,59 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 30 Substring with Concatenation of All Words</title>
+    <url>/2017/09/15/2017-09-15-leetcode_30/</url>
+    <content><![CDATA[<p>Description:</p>
+<blockquote>
+<p>You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.  </p>
+<p>For example, given:<br>s: “barfoothefoobarman”<br>words: [“foo”, “bar”]  </p>
+<p>You should return the indices: [0,9].<br>(order does not matter).  </p>
+</blockquote>
+<hr>
+<p>题目理解：</p>
+<p>乍一看这是一个字符串匹配问题，但是其实这样想的话就完全错误了，这比字符串匹配问题要复杂多了。</p>
+<p>还好的是它所给的单词都是一样长的，这就已经简化了很多的问题，但是它可以给重复的单词，
+那么这个问题又不那么简单了，因为这些单词之间可以随意的排列组合，重复的单词会带来很多问题。</p>
+<p>那么首先一定要去除重复，不然会对重复的单词进行重复的匹配，并且对排列组合很不利。通常想到的肯定是使用
+<code>HashMap</code>来做，这样很快能统计出重复的单词，以及这个单词重复的次数。</p>
+<p>因为总长度固定，那么只需要在一个固定长度的窗内去检测是否匹配就好，那么就可以将这个窗从左向右进行滑动，
+来一个单词一个单词的匹配。</p>
+<p>那么如何进行单词的匹配呢？首先想到的是字符串匹配问题，可以使用<strong>KMP</strong>算法来匹配字符串与每一个单词，记录下所有匹配的位置，
+注意到每个单词都不同（去除重复之后），单词长度一样，那么它们之间匹配的位置就不会重复。
+所有可以直接使用一个与字符串同样长的数组来存储这些下标。</p>
+<p>如何查看是否匹配？这时就需要发挥想象力，首先滑动窗是肯定的，在滑动窗中统计很有技巧，这里：</p>
+<ul>
+<li>设置一个总距离<strong>dis</strong>，表示窗口中单词与字典之间的距离。一个单词的距离就是<strong>1</strong>，所以初始的时候距离为字典的总单词数。</li>
+<li>滑动窗口，从字符串上<strong>切割</strong>出一个新的单词，如果这个单词与字典中的单词<strong>不匹配</strong>，则不操作。否则<strong>匹配</strong>上单词<strong>A</strong>：<ul>
+<li>单词<strong>A</strong>现在的计数<strong>超过</strong>所需个数，距离加一。</li>
+<li>单词<strong>A</strong>现在的计数<strong>不超过</strong>所需个数，距离减一。</li>
+</ul>
+</li>
+<li>滑动窗口，需要将最左端的一个单词<strong>弹出</strong>，进行与上面<strong>相反</strong>的操作。</li>
+</ul>
+<hr>
+<p>代码一：</p>
+<p><strong>注：</strong>这里没有使用<code>HashMap</code>来除去重复。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] matchs;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || words == <span class="keyword">null</span> || ( words[<span class="number">0</span>].length()*words.length &gt; s.length() ) ) <span class="keyword">return</span> res;</span><br><span class="line">        <span class="keyword">if</span> ( words[<span class="number">0</span>].equals(<span class="string">&quot;&quot;</span>) ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= s.length() ; i++ ) </span><br><span class="line">                res.add(i);</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        matchs = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        Arrays.fill( matchs, -<span class="number">1</span> );</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[words.length];</span><br><span class="line">        String[] words_wipe = <span class="keyword">new</span> String[words.length];</span><br><span class="line">        <span class="keyword">boolean</span>[] used = <span class="keyword">new</span> <span class="keyword">boolean</span>[words.length];</span><br><span class="line">        <span class="keyword">int</span> counts_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( !used[i] ) &#123;</span><br><span class="line">                words_wipe[counts_len] = words[i];</span><br><span class="line">                counts[counts_len] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; words.length; j++ ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( words[i].equals(words[j]) ) &#123;</span><br><span class="line">                        counts[counts_len]++;</span><br><span class="line">                        used[j] = <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                counts_len++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; counts_len; i++ ) &#123;</span><br><span class="line">            KMP(ss, words_wipe[i].toCharArray(), i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> step = words_wipe[<span class="number">0</span>].length(), dis = words.length, total_len = dis * step;</span><br><span class="line">        <span class="keyword">int</span>[] sub_count = <span class="keyword">new</span> <span class="keyword">int</span>[counts_len];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(sub_count, <span class="number">0</span>);</span><br><span class="line">            dis = words.length;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt; ss.length; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = sub_count[matchs[head]] &lt;= counts[matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    sub_count[matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = sub_count[matchs[j]] &gt;= counts[matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                sub_count[matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">KMP</span><span class="params">(<span class="keyword">char</span>[] t, <span class="keyword">char</span>[] p, <span class="keyword">int</span> widx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = computePai(p);</span><br><span class="line">        <span class="keyword">int</span> match_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; t.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( match_idx &gt; -<span class="number">1</span> &amp;&amp; p[match_idx + <span class="number">1</span>] != t[i] )</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            <span class="keyword">if</span> ( p[match_idx + <span class="number">1</span>] == t[i] )</span><br><span class="line">                match_idx++;</span><br><span class="line">            <span class="keyword">if</span> ( match_idx == p.length - <span class="number">1</span> ) &#123;</span><br><span class="line">                matchs[i - p.length + <span class="number">1</span>] = widx;</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] computePai(<span class="keyword">char</span>[] p) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = <span class="keyword">new</span> <span class="keyword">int</span>[p.length];</span><br><span class="line">        pai[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx = <span class="number">1</span>; idx &lt; p.length; idx++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( k &gt; -<span class="number">1</span> &amp;&amp; p[k+<span class="number">1</span>] != p[idx] )</span><br><span class="line">                k = pai[k];</span><br><span class="line">            <span class="keyword">if</span> ( p[k+<span class="number">1</span>] == p[idx] )</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line">            pai[idx] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pai;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)?<br>运行时间：50ms<br>击败：57.51%</p>
+<p><img src="/images/leetcode/30_1.png" alt="image"></p>
+<hr>
+<p>代码还是很垃圾，所以和别人的差距在哪里，实在是想不出来，查看别人代码后发现，别人使用的是<code>HashMap</code>的<strong>Hash</strong>功能来匹配单词的，
+这样通过<strong>Hash</strong>来进行两个个单词的匹配，复杂度是<strong>O(1)</strong>，额，原来<strong>Hash</strong>是这样使用的…</p>
+<p>另外这里还要翻转一下思维，上面是用单词去匹配字符串，这里由于先建好了一个单词的<code>HashMap</code>，所以直接将字符串切割，
+然后使用切出的单词使用<code>HashMap</code>查询就能知道它的次数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> m = s.length(), n = words.length, step = words[<span class="number">0</span>].length(), bound = m - step, total_len = step * n;</span><br><span class="line">        <span class="comment">// Count the repeated words</span></span><br><span class="line">        Map&lt; String, Integer&gt; words_list = <span class="keyword">new</span> HashMap&lt;&gt;(n);</span><br><span class="line">        <span class="keyword">int</span>[][] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>][n];</span><br><span class="line">        Integer index = <span class="number">0</span>, temp;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( ( temp = words_list.get(words[i])) != <span class="keyword">null</span> ) counts[<span class="number">0</span>][temp]++;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                words_list.put( words[i], index);</span><br><span class="line">                counts[<span class="number">0</span>][index++] = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// from s.start to s.end, match all the substring</span></span><br><span class="line">        <span class="keyword">int</span>[] matchs = <span class="keyword">new</span> <span class="keyword">int</span>[bound + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= bound; i++ ) &#123;</span><br><span class="line">            String s_sub = s.substring(i, i + step);</span><br><span class="line">            matchs[i] = ((temp = words_list.get(s_sub)) != <span class="keyword">null</span>) ? temp : -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// move window from head to end, dis = 0 means the current window contains all the words</span></span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(counts[<span class="number">1</span>], <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">int</span> dis = n;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt;= bound; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = counts[<span class="number">1</span>][matchs[head]] &lt;= counts[<span class="number">0</span>][matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    counts[<span class="number">1</span>][matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = counts[<span class="number">1</span>][matchs[j]] &gt;= counts[<span class="number">0</span>][matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                counts[<span class="number">1</span>][matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(n)。<br>运行时间：27ms。<br>击败：92.37%</p>
+<p><img src="/images/leetcode/30_2.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 76 Minimum Window Substring</title>
     <url>/2017/09/15/2017-09-15-leetcode_76/</url>
     <content><![CDATA[<p>Description:</p>
@@ -2511,6 +2564,35 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>python argparse 模块笔记</title>
+    <url>/2017/09/26/2017-09-26-python-argparse/</url>
+    <content><![CDATA[<p><strong>argparse</strong>是python中的一个模块，参考官方文档来理解它
+<a href="https://docs.python.org/3/library/argparse.html?highlight=argparse#module-argparse">argparse — Parser for command-line options, arguments and sub-commands</a></p>
+<p>第一句介绍就是<code>The argparse module makes it easy to write user-friendly command-line interfaces</code>，
+所以这个模块是用于写命令行接口的，使得脚本友好的从命令行传入参数。</p>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br></pre></td></tr></table></figure>
+<h2 id="创建一个parser对象"><a href="#创建一个parser对象" class="headerlink" title="创建一个parser对象"></a>创建一个parser对象</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser = argparse.ArgumentParser()</span><br></pre></td></tr></table></figure>
+<h2 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&#x27;integers&#x27;</span>, metavar=<span class="string">&#x27;N&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, nargs=<span class="string">&#x27;+&#x27;</span>,</span><br><span class="line">                    <span class="built_in">help</span>=<span class="string">&#x27;an integer for the accumulator&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>这里添加了一个叫做<code>integers</code>的参数，它的类型是<code>int</code>，<br><code>metavar</code>是用于在help里面来表示这个数的，本来是help里面会使用<code>integers</code>这个名字，这里就会被替换为<code>N</code>，<br><code>nargs</code>表示这个参数后面可以跟的输入的个数，这里的’+’表示一个或者多个，<br><code>help</code>是在打印help信息时给出的提示。</p>
+<p> 例如下面脚本：</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&#x27;--foo&#x27;</span>, nargs=<span class="number">2</span>, metavar=<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&#x27;bar&#x27;</span>, nargs=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args)</span><br></pre></td></tr></table></figure>
+<p>先在命令行中调用帮助信息，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py -h</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo f f] bar</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  bar</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line">  --foo f f</span><br></pre></td></tr></table></figure>
+<p>输入正确的参数个数和错误的参数个数，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py --foo a b 1</span><br><span class="line"></span><br><span class="line">Namespace(bar&#x3D;[&#39;1&#39;], foo&#x3D;[&#39;a&#39;, &#39;b&#39;])</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: the following arguments are required: bar</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b c 2</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: unrecognized arguments: 2</span><br></pre></td></tr></table></figure>
+<p>另外有时候，可能需要使用下面的函数来返回输入参数，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FLAGS, unparsed = parser.parse_known_args()</span><br></pre></td></tr></table></figure>
+<p>这里的意思就是说对于认识的参数，存到<code>FLAGS</code>里面，对于不认识的参数，存到<code>unparsed</code>里面。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/a50aead61319">argparser模块学习</a></p>
+]]></content>
+      <categories>
+        <category>python modules</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Anaconda 使用记录</title>
     <url>/2017/09/18/2017-09-18-anaconda/</url>
     <content><![CDATA[<hr>
@@ -2555,88 +2637,6 @@ z^{[L]} =
       </categories>
       <tags>
         <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python argparse 模块笔记</title>
-    <url>/2017/09/26/2017-09-26-python-argparse/</url>
-    <content><![CDATA[<p><strong>argparse</strong>是python中的一个模块，参考官方文档来理解它
-<a href="https://docs.python.org/3/library/argparse.html?highlight=argparse#module-argparse">argparse — Parser for command-line options, arguments and sub-commands</a></p>
-<p>第一句介绍就是<code>The argparse module makes it easy to write user-friendly command-line interfaces</code>，
-所以这个模块是用于写命令行接口的，使得脚本友好的从命令行传入参数。</p>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br></pre></td></tr></table></figure>
-<h2 id="创建一个parser对象"><a href="#创建一个parser对象" class="headerlink" title="创建一个parser对象"></a>创建一个parser对象</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser = argparse.ArgumentParser()</span><br></pre></td></tr></table></figure>
-<h2 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&#x27;integers&#x27;</span>, metavar=<span class="string">&#x27;N&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, nargs=<span class="string">&#x27;+&#x27;</span>,</span><br><span class="line">                    <span class="built_in">help</span>=<span class="string">&#x27;an integer for the accumulator&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>这里添加了一个叫做<code>integers</code>的参数，它的类型是<code>int</code>，<br><code>metavar</code>是用于在help里面来表示这个数的，本来是help里面会使用<code>integers</code>这个名字，这里就会被替换为<code>N</code>，<br><code>nargs</code>表示这个参数后面可以跟的输入的个数，这里的’+’表示一个或者多个，<br><code>help</code>是在打印help信息时给出的提示。</p>
-<p> 例如下面脚本：</p>
- <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&#x27;--foo&#x27;</span>, nargs=<span class="number">2</span>, metavar=<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&#x27;bar&#x27;</span>, nargs=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args)</span><br></pre></td></tr></table></figure>
-<p>先在命令行中调用帮助信息，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py -h</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo f f] bar</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  bar</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line">  --foo f f</span><br></pre></td></tr></table></figure>
-<p>输入正确的参数个数和错误的参数个数，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py --foo a b 1</span><br><span class="line"></span><br><span class="line">Namespace(bar&#x3D;[&#39;1&#39;], foo&#x3D;[&#39;a&#39;, &#39;b&#39;])</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: the following arguments are required: bar</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b c 2</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: unrecognized arguments: 2</span><br></pre></td></tr></table></figure>
-<p>另外有时候，可能需要使用下面的函数来返回输入参数，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FLAGS, unparsed = parser.parse_known_args()</span><br></pre></td></tr></table></figure>
-<p>这里的意思就是说对于认识的参数，存到<code>FLAGS</code>里面，对于不认识的参数，存到<code>unparsed</code>里面。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/a50aead61319">argparser模块学习</a></p>
-]]></content>
-      <categories>
-        <category>python modules</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 30 Substring with Concatenation of All Words</title>
-    <url>/2017/09/15/2017-09-15-leetcode_30/</url>
-    <content><![CDATA[<p>Description:</p>
-<blockquote>
-<p>You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.  </p>
-<p>For example, given:<br>s: “barfoothefoobarman”<br>words: [“foo”, “bar”]  </p>
-<p>You should return the indices: [0,9].<br>(order does not matter).  </p>
-</blockquote>
-<hr>
-<p>题目理解：</p>
-<p>乍一看这是一个字符串匹配问题，但是其实这样想的话就完全错误了，这比字符串匹配问题要复杂多了。</p>
-<p>还好的是它所给的单词都是一样长的，这就已经简化了很多的问题，但是它可以给重复的单词，
-那么这个问题又不那么简单了，因为这些单词之间可以随意的排列组合，重复的单词会带来很多问题。</p>
-<p>那么首先一定要去除重复，不然会对重复的单词进行重复的匹配，并且对排列组合很不利。通常想到的肯定是使用
-<code>HashMap</code>来做，这样很快能统计出重复的单词，以及这个单词重复的次数。</p>
-<p>因为总长度固定，那么只需要在一个固定长度的窗内去检测是否匹配就好，那么就可以将这个窗从左向右进行滑动，
-来一个单词一个单词的匹配。</p>
-<p>那么如何进行单词的匹配呢？首先想到的是字符串匹配问题，可以使用<strong>KMP</strong>算法来匹配字符串与每一个单词，记录下所有匹配的位置，
-注意到每个单词都不同（去除重复之后），单词长度一样，那么它们之间匹配的位置就不会重复。
-所有可以直接使用一个与字符串同样长的数组来存储这些下标。</p>
-<p>如何查看是否匹配？这时就需要发挥想象力，首先滑动窗是肯定的，在滑动窗中统计很有技巧，这里：</p>
-<ul>
-<li>设置一个总距离<strong>dis</strong>，表示窗口中单词与字典之间的距离。一个单词的距离就是<strong>1</strong>，所以初始的时候距离为字典的总单词数。</li>
-<li>滑动窗口，从字符串上<strong>切割</strong>出一个新的单词，如果这个单词与字典中的单词<strong>不匹配</strong>，则不操作。否则<strong>匹配</strong>上单词<strong>A</strong>：<ul>
-<li>单词<strong>A</strong>现在的计数<strong>超过</strong>所需个数，距离加一。</li>
-<li>单词<strong>A</strong>现在的计数<strong>不超过</strong>所需个数，距离减一。</li>
-</ul>
-</li>
-<li>滑动窗口，需要将最左端的一个单词<strong>弹出</strong>，进行与上面<strong>相反</strong>的操作。</li>
-</ul>
-<hr>
-<p>代码一：</p>
-<p><strong>注：</strong>这里没有使用<code>HashMap</code>来除去重复。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] matchs;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> ( s == <span class="keyword">null</span> || words == <span class="keyword">null</span> || ( words[<span class="number">0</span>].length()*words.length &gt; s.length() ) ) <span class="keyword">return</span> res;</span><br><span class="line">        <span class="keyword">if</span> ( words[<span class="number">0</span>].equals(<span class="string">&quot;&quot;</span>) ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= s.length() ; i++ ) </span><br><span class="line">                res.add(i);</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray();</span><br><span class="line">        matchs = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length];</span><br><span class="line">        Arrays.fill( matchs, -<span class="number">1</span> );</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span>[] counts = <span class="keyword">new</span> <span class="keyword">int</span>[words.length];</span><br><span class="line">        String[] words_wipe = <span class="keyword">new</span> String[words.length];</span><br><span class="line">        <span class="keyword">boolean</span>[] used = <span class="keyword">new</span> <span class="keyword">boolean</span>[words.length];</span><br><span class="line">        <span class="keyword">int</span> counts_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( !used[i] ) &#123;</span><br><span class="line">                words_wipe[counts_len] = words[i];</span><br><span class="line">                counts[counts_len] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; words.length; j++ ) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( words[i].equals(words[j]) ) &#123;</span><br><span class="line">                        counts[counts_len]++;</span><br><span class="line">                        used[j] = <span class="keyword">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                counts_len++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; counts_len; i++ ) &#123;</span><br><span class="line">            KMP(ss, words_wipe[i].toCharArray(), i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> step = words_wipe[<span class="number">0</span>].length(), dis = words.length, total_len = dis * step;</span><br><span class="line">        <span class="keyword">int</span>[] sub_count = <span class="keyword">new</span> <span class="keyword">int</span>[counts_len];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(sub_count, <span class="number">0</span>);</span><br><span class="line">            dis = words.length;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt; ss.length; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = sub_count[matchs[head]] &lt;= counts[matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    sub_count[matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = sub_count[matchs[j]] &gt;= counts[matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                sub_count[matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">KMP</span><span class="params">(<span class="keyword">char</span>[] t, <span class="keyword">char</span>[] p, <span class="keyword">int</span> widx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = computePai(p);</span><br><span class="line">        <span class="keyword">int</span> match_idx = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; t.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( match_idx &gt; -<span class="number">1</span> &amp;&amp; p[match_idx + <span class="number">1</span>] != t[i] )</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            <span class="keyword">if</span> ( p[match_idx + <span class="number">1</span>] == t[i] )</span><br><span class="line">                match_idx++;</span><br><span class="line">            <span class="keyword">if</span> ( match_idx == p.length - <span class="number">1</span> ) &#123;</span><br><span class="line">                matchs[i - p.length + <span class="number">1</span>] = widx;</span><br><span class="line">                match_idx = pai[match_idx];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] computePai(<span class="keyword">char</span>[] p) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] pai = <span class="keyword">new</span> <span class="keyword">int</span>[p.length];</span><br><span class="line">        pai[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> idx = <span class="number">1</span>; idx &lt; p.length; idx++ ) &#123;</span><br><span class="line">            <span class="keyword">while</span> ( k &gt; -<span class="number">1</span> &amp;&amp; p[k+<span class="number">1</span>] != p[idx] )</span><br><span class="line">                k = pai[k];</span><br><span class="line">            <span class="keyword">if</span> ( p[k+<span class="number">1</span>] == p[idx] )</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line">            pai[idx] = k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pai;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)?<br>运行时间：50ms<br>击败：57.51%</p>
-<p><img src="/images/leetcode/30_1.png" alt="image"></p>
-<hr>
-<p>代码还是很垃圾，所以和别人的差距在哪里，实在是想不出来，查看别人代码后发现，别人使用的是<code>HashMap</code>的<strong>Hash</strong>功能来匹配单词的，
-这样通过<strong>Hash</strong>来进行两个个单词的匹配，复杂度是<strong>O(1)</strong>，额，原来<strong>Hash</strong>是这样使用的…</p>
-<p>另外这里还要翻转一下思维，上面是用单词去匹配字符串，这里由于先建好了一个单词的<code>HashMap</code>，所以直接将字符串切割，
-然后使用切出的单词使用<code>HashMap</code>查询就能知道它的次数。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findSubstring</span><span class="params">(String s, String[] words)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> m = s.length(), n = words.length, step = words[<span class="number">0</span>].length(), bound = m - step, total_len = step * n;</span><br><span class="line">        <span class="comment">// Count the repeated words</span></span><br><span class="line">        Map&lt; String, Integer&gt; words_list = <span class="keyword">new</span> HashMap&lt;&gt;(n);</span><br><span class="line">        <span class="keyword">int</span>[][] counts = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>][n];</span><br><span class="line">        Integer index = <span class="number">0</span>, temp;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( ( temp = words_list.get(words[i])) != <span class="keyword">null</span> ) counts[<span class="number">0</span>][temp]++;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                words_list.put( words[i], index);</span><br><span class="line">                counts[<span class="number">0</span>][index++] = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// from s.start to s.end, match all the substring</span></span><br><span class="line">        <span class="keyword">int</span>[] matchs = <span class="keyword">new</span> <span class="keyword">int</span>[bound + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= bound; i++ ) &#123;</span><br><span class="line">            String s_sub = s.substring(i, i + step);</span><br><span class="line">            matchs[i] = ((temp = words_list.get(s_sub)) != <span class="keyword">null</span>) ? temp : -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// move window from head to end, dis = 0 means the current window contains all the words</span></span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; step; i++ ) &#123;</span><br><span class="line">            Arrays.fill(counts[<span class="number">1</span>], <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">int</span> dis = n;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i; j &lt;= bound; j += step ) &#123;</span><br><span class="line">                <span class="keyword">int</span> head = j - total_len;</span><br><span class="line">                <span class="keyword">if</span> ( head &gt; -<span class="number">1</span> &amp;&amp; matchs[head] != -<span class="number">1</span> ) &#123;</span><br><span class="line">                    dis = counts[<span class="number">1</span>][matchs[head]] &lt;= counts[<span class="number">0</span>][matchs[head]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                    counts[<span class="number">1</span>][matchs[head]]--;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> ( matchs[j] == -<span class="number">1</span> )</span><br><span class="line">                     <span class="keyword">continue</span>;</span><br><span class="line">                dis = counts[<span class="number">1</span>][matchs[j]] &gt;= counts[<span class="number">0</span>][matchs[j]] ? dis + <span class="number">1</span> : dis - <span class="number">1</span>;</span><br><span class="line">                counts[<span class="number">1</span>][matchs[j]]++;</span><br><span class="line">                <span class="keyword">if</span> ( dis == <span class="number">0</span> )</span><br><span class="line">                    res.add(j - total_len + step);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(n)。<br>运行时间：27ms。<br>击败：92.37%</p>
-<p><img src="/images/leetcode/30_2.png" alt="image"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -2896,6 +2896,66 @@ n_H = \left \lfloor \frac{n_{H_{prev}} - f + 2 \times pad }{ stride } \right \rf
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 149 Max Points on a Line</title>
+    <url>/2017/11/20/2017-11-20-leetcode_149/</url>
+    <content><![CDATA[<h2 id="Begin"><a href="#Begin" class="headerlink" title="Begin"></a>Begin</h2><p>Description:</p>
+<ul>
+<li>Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.</li>
+</ul>
+<p><strong>题目理解</strong>：</p>
+<p>首先这道题的题干很短，基本第一遍都会理解错，也不清楚输入是个啥，所以这道题被踩了300多次，赞了100次不到…</p>
+<p>经过几次错误的理解之后，明白了题目的意思：<strong>给一系列点，每个点有一个（x，y）的坐标取值，找出处于同一条直线上的最多点数。</strong></p>
+<p>这里需要<strong>注意</strong>：</p>
+<ul>
+<li>可以有取值重复的坐标点。</li>
+<li>直线可以是任意的斜率（以x,y的直角坐标系来看）。</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>思路一：</strong></p>
+<p>计算出可能的所有直线，统计每一条直线上的点的个数。直线以它的<strong>斜率</strong>加<strong>截距</strong>来表示：</p>
+<script type="math/tex; mode=display">
+y = kx + b</script><p>给予两个点的坐标，$(x_1,y_1)$、$(x_2,y_2)$，计算$k$与$b$的计算公式为：</p>
+<script type="math/tex; mode=display">
+k = \frac{y_1 - y_2}{x_1 - x_2}</script><script type="math/tex; mode=display">
+b = y_1 - k x_1</script><p><strong>遇到的问题：</strong></p>
+<ol>
+<li>除法会有精度损失，可能造成不一样的直线算出来的斜率一样，而且可能会溢出，因为有<strong>加减</strong>运算。</li>
+<li>不好统计直线上的点数，例如A、B、C三个点在一条线上，那么就有(A,B)(B,C)(A,C)三个组合，
+那么这条直线上的点数该如何统计？</li>
+</ol>
+<p><strong>思路二：</strong></p>
+<p>以每一个点为起点，计算它与其它的点组成的直线，统计直线上的点的次数。</p>
+<p>这里的直线斜率直接使用分数表示，不需要截距，因为起点为同一个点。</p>
+<p><strong>这里的分数表示需要计算分子与分母的最大公约数</strong>，在后面进行介绍，感觉这个才是这道题的重点。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a point.</span></span><br><span class="line"><span class="comment"> * class Point &#123;</span></span><br><span class="line"><span class="comment"> *     int x;</span></span><br><span class="line"><span class="comment"> *     int y;</span></span><br><span class="line"><span class="comment"> *     Point() &#123; x = 0; y = 0; &#125;</span></span><br><span class="line"><span class="comment"> *     Point(int a, int b) &#123; x = a; y = b; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">PCount</span> </span>&#123;</span><br><span class="line">        Point point;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">PCount</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.point = point;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> c;</span><br><span class="line">        <span class="keyword">while</span> ( b != <span class="number">0</span> ) &#123; </span><br><span class="line">            c = a % b; </span><br><span class="line">            a = b;  </span><br><span class="line">            b = c;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPoints</span><span class="params">(Point[] points)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( points == <span class="keyword">null</span> )</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">        PCount[] pcount = <span class="keyword">new</span> PCount[points.length];</span><br><span class="line">        <span class="keyword">int</span> pidx = <span class="number">0</span>;</span><br><span class="line">        Map&lt;String, Integer&gt; ptable = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> ( Point point : points ) &#123;</span><br><span class="line">            String coord = point.x + <span class="string">&quot;*&quot;</span> + point.y;</span><br><span class="line">            Integer idx = ptable.get(coord);</span><br><span class="line">            <span class="keyword">if</span> ( idx == <span class="keyword">null</span> ) &#123;</span><br><span class="line">                ptable.put(coord, pidx);</span><br><span class="line">                pcount[pidx++] = <span class="keyword">new</span> PCount(point);</span><br><span class="line">            &#125; <span class="keyword">else</span></span><br><span class="line">                pcount[idx].count++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( pidx == <span class="number">1</span> )</span><br><span class="line">            <span class="keyword">return</span> points.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pidx; i++ ) &#123;</span><br><span class="line">            Point p1 = pcount[i].point;</span><br><span class="line">            Map&lt;String, Integer&gt; lines = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; pidx; j++ ) &#123;</span><br><span class="line">                Point p2 = pcount[j].point;</span><br><span class="line">                String line = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">if</span> ( p1.x == p2.x ) &#123;</span><br><span class="line">                    line = <span class="string">&quot;1/0&quot;</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( p1.y == p2.y ) &#123;</span><br><span class="line">                    line = <span class="string">&quot;0/1&quot;</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">int</span> denominator = p1.y - p2.y;</span><br><span class="line">                    <span class="keyword">int</span> numerator = p1.x - p2.x;</span><br><span class="line">                    <span class="keyword">int</span> gcd = GCD(denominator, numerator);</span><br><span class="line">                    <span class="keyword">if</span> ( gcd != <span class="number">0</span> ) &#123;</span><br><span class="line">                        denominator /= gcd;</span><br><span class="line">                        numerator /= gcd;</span><br><span class="line">                    &#125;</span><br><span class="line">                    line = denominator + <span class="string">&quot;/&quot;</span> + numerator;</span><br><span class="line">                &#125;</span><br><span class="line">                lines.put(line, lines.getOrDefault(line, pcount[i].count) + pcount[j].count);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> count : lines.values() ) </span><br><span class="line">                max = max &lt; count ? count : max;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/leetcode/149_1.png" alt="image"></p>
+<h2 id="最大公约数"><a href="#最大公约数" class="headerlink" title="最大公约数"></a>最大公约数</h2><p>对于两个数A、B，求解它们的最大公约数。</p>
+<p><strong>方法一：</strong></p>
+<p>选出A、B中最小的数，向下一个一个进行取余，直到两个数的余数同时为0：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = a &gt; b ? b : a;</span><br><span class="line">    <span class="keyword">while</span> ( a % c != <span class="number">0</span> || b % c != <span class="number">0</span> ) &#123;</span><br><span class="line">        c--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>方法二：</strong></p>
+<p>显然方法一的效率很低，那么肯定有别的快速的方法。</p>
+<p>对A、B，假设它们的最大公约数为C，那么：</p>
+<script type="math/tex; mode=display">
+A = k_1 C</script><script type="math/tex; mode=display">
+B = k_2 C</script><p>注意，其中$k_1$与$k_2$一定是互质的，那么对A与B取余：</p>
+<script type="math/tex; mode=display">
+D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
+<ol>
+<li>D的值为0，那么B就是最大公约数，其中$k_2=1$。</li>
+<li>D的值不为0，D与B之间的最大公约数还是C。</li>
+</ol>
+<p>由于D的绝对值会比A要小，并且B、D之间的最大公约数还是C，所以可以计算B、D之间的最大公约数来代替计算A、B之间的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">    <span class="keyword">while</span> ( b != <span class="number">0</span> ) &#123; </span><br><span class="line">        c = a % b; </span><br><span class="line">        a = b;  </span><br><span class="line">        b = c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法会比方法一快很多。</p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SFC分配简单实验</title>
     <url>/2017/11/17/2017-11-17-SFC/</url>
     <content><![CDATA[<p><a href="https://github.com/isadamu/ml_sfc_allocate_test/tree/master">github链接</a></p>
@@ -2970,66 +3030,6 @@ n_H = \left \lfloor \frac{n_{H_{prev}} - f + 2 \times pad }{ stride } \right \rf
       <tags>
         <tag>study</tag>
         <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 149 Max Points on a Line</title>
-    <url>/2017/11/20/2017-11-20-leetcode_149/</url>
-    <content><![CDATA[<h2 id="Begin"><a href="#Begin" class="headerlink" title="Begin"></a>Begin</h2><p>Description:</p>
-<ul>
-<li>Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.</li>
-</ul>
-<p><strong>题目理解</strong>：</p>
-<p>首先这道题的题干很短，基本第一遍都会理解错，也不清楚输入是个啥，所以这道题被踩了300多次，赞了100次不到…</p>
-<p>经过几次错误的理解之后，明白了题目的意思：<strong>给一系列点，每个点有一个（x，y）的坐标取值，找出处于同一条直线上的最多点数。</strong></p>
-<p>这里需要<strong>注意</strong>：</p>
-<ul>
-<li>可以有取值重复的坐标点。</li>
-<li>直线可以是任意的斜率（以x,y的直角坐标系来看）。</li>
-</ul>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>思路一：</strong></p>
-<p>计算出可能的所有直线，统计每一条直线上的点的个数。直线以它的<strong>斜率</strong>加<strong>截距</strong>来表示：</p>
-<script type="math/tex; mode=display">
-y = kx + b</script><p>给予两个点的坐标，$(x_1,y_1)$、$(x_2,y_2)$，计算$k$与$b$的计算公式为：</p>
-<script type="math/tex; mode=display">
-k = \frac{y_1 - y_2}{x_1 - x_2}</script><script type="math/tex; mode=display">
-b = y_1 - k x_1</script><p><strong>遇到的问题：</strong></p>
-<ol>
-<li>除法会有精度损失，可能造成不一样的直线算出来的斜率一样，而且可能会溢出，因为有<strong>加减</strong>运算。</li>
-<li>不好统计直线上的点数，例如A、B、C三个点在一条线上，那么就有(A,B)(B,C)(A,C)三个组合，
-那么这条直线上的点数该如何统计？</li>
-</ol>
-<p><strong>思路二：</strong></p>
-<p>以每一个点为起点，计算它与其它的点组成的直线，统计直线上的点的次数。</p>
-<p>这里的直线斜率直接使用分数表示，不需要截距，因为起点为同一个点。</p>
-<p><strong>这里的分数表示需要计算分子与分母的最大公约数</strong>，在后面进行介绍，感觉这个才是这道题的重点。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a point.</span></span><br><span class="line"><span class="comment"> * class Point &#123;</span></span><br><span class="line"><span class="comment"> *     int x;</span></span><br><span class="line"><span class="comment"> *     int y;</span></span><br><span class="line"><span class="comment"> *     Point() &#123; x = 0; y = 0; &#125;</span></span><br><span class="line"><span class="comment"> *     Point(int a, int b) &#123; x = a; y = b; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">PCount</span> </span>&#123;</span><br><span class="line">        Point point;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">PCount</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.point = point;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> c;</span><br><span class="line">        <span class="keyword">while</span> ( b != <span class="number">0</span> ) &#123; </span><br><span class="line">            c = a % b; </span><br><span class="line">            a = b;  </span><br><span class="line">            b = c;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPoints</span><span class="params">(Point[] points)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( points == <span class="keyword">null</span> )</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">        PCount[] pcount = <span class="keyword">new</span> PCount[points.length];</span><br><span class="line">        <span class="keyword">int</span> pidx = <span class="number">0</span>;</span><br><span class="line">        Map&lt;String, Integer&gt; ptable = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> ( Point point : points ) &#123;</span><br><span class="line">            String coord = point.x + <span class="string">&quot;*&quot;</span> + point.y;</span><br><span class="line">            Integer idx = ptable.get(coord);</span><br><span class="line">            <span class="keyword">if</span> ( idx == <span class="keyword">null</span> ) &#123;</span><br><span class="line">                ptable.put(coord, pidx);</span><br><span class="line">                pcount[pidx++] = <span class="keyword">new</span> PCount(point);</span><br><span class="line">            &#125; <span class="keyword">else</span></span><br><span class="line">                pcount[idx].count++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( pidx == <span class="number">1</span> )</span><br><span class="line">            <span class="keyword">return</span> points.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pidx; i++ ) &#123;</span><br><span class="line">            Point p1 = pcount[i].point;</span><br><span class="line">            Map&lt;String, Integer&gt; lines = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; pidx; j++ ) &#123;</span><br><span class="line">                Point p2 = pcount[j].point;</span><br><span class="line">                String line = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">if</span> ( p1.x == p2.x ) &#123;</span><br><span class="line">                    line = <span class="string">&quot;1/0&quot;</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( p1.y == p2.y ) &#123;</span><br><span class="line">                    line = <span class="string">&quot;0/1&quot;</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">int</span> denominator = p1.y - p2.y;</span><br><span class="line">                    <span class="keyword">int</span> numerator = p1.x - p2.x;</span><br><span class="line">                    <span class="keyword">int</span> gcd = GCD(denominator, numerator);</span><br><span class="line">                    <span class="keyword">if</span> ( gcd != <span class="number">0</span> ) &#123;</span><br><span class="line">                        denominator /= gcd;</span><br><span class="line">                        numerator /= gcd;</span><br><span class="line">                    &#125;</span><br><span class="line">                    line = denominator + <span class="string">&quot;/&quot;</span> + numerator;</span><br><span class="line">                &#125;</span><br><span class="line">                lines.put(line, lines.getOrDefault(line, pcount[i].count) + pcount[j].count);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> count : lines.values() ) </span><br><span class="line">                max = max &lt; count ? count : max;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="/images/leetcode/149_1.png" alt="image"></p>
-<h2 id="最大公约数"><a href="#最大公约数" class="headerlink" title="最大公约数"></a>最大公约数</h2><p>对于两个数A、B，求解它们的最大公约数。</p>
-<p><strong>方法一：</strong></p>
-<p>选出A、B中最小的数，向下一个一个进行取余，直到两个数的余数同时为0：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = a &gt; b ? b : a;</span><br><span class="line">    <span class="keyword">while</span> ( a % c != <span class="number">0</span> || b % c != <span class="number">0</span> ) &#123;</span><br><span class="line">        c--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>方法二：</strong></p>
-<p>显然方法一的效率很低，那么肯定有别的快速的方法。</p>
-<p>对A、B，假设它们的最大公约数为C，那么：</p>
-<script type="math/tex; mode=display">
-A = k_1 C</script><script type="math/tex; mode=display">
-B = k_2 C</script><p>注意，其中$k_1$与$k_2$一定是互质的，那么对A与B取余：</p>
-<script type="math/tex; mode=display">
-D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
-<ol>
-<li>D的值为0，那么B就是最大公约数，其中$k_2=1$。</li>
-<li>D的值不为0，D与B之间的最大公约数还是C。</li>
-</ol>
-<p>由于D的绝对值会比A要小，并且B、D之间的最大公约数还是C，所以可以计算B、D之间的最大公约数来代替计算A、B之间的。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">    <span class="keyword">while</span> ( b != <span class="number">0</span> ) &#123; </span><br><span class="line">        c = a % b; </span><br><span class="line">        a = b;  </span><br><span class="line">        b = c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个方法会比方法一快很多。</p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -3932,23 +3932,6 @@ java中可以使用下面语句来取到：</p>
       </tags>
   </entry>
   <entry>
-    <title>centos7中lvm分区的创建与扩展</title>
-    <url>/2019/07/23/2019-07-23-centos-lvm-create-extend/</url>
-    <content><![CDATA[<hr>
-<h2 id="创建LVM分区"><a href="#创建LVM分区" class="headerlink" title="创建LVM分区"></a>创建LVM分区</h2><p>首先，挂载虚拟硬盘到虚拟机上，这里挂了2个1T的硬盘。</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdb&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 创建卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgcreate VG1 /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully created</span><br><span class="line"></span><br><span class="line">// 查看卷组剩多少PE</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgdisplay</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               VG1</span><br><span class="line">  System ID             </span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        2</span><br><span class="line">  Metadata Sequence No  7</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                1</span><br><span class="line">  Open LV               0</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                2</span><br><span class="line">  Act PV                2</span><br><span class="line">  VG Size               &lt;2.00 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              524286</span><br><span class="line">  Alloc PE / Size       262143 / &lt;1024.00 GiB</span><br><span class="line">  Free  PE / Size       262143 / &lt;1024.00 GiB     //剩余空间大小</span><br><span class="line">  VG UUID               DYPyVN-9ssj-pLxN-bksi-9U0V-m2wQ-aQ3IPe</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">// 将所有剩余空间创建为逻辑卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvcreate -l 262143 -n MyLvm0 VG1</span></span><br><span class="line"></span><br><span class="line">  Logical volume &quot;MyLvm0&quot; created.</span><br><span class="line"></span><br><span class="line">// 创建完成</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 所创建的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br></pre></td></tr></table></figure></h2><h2 id="扩展LVM分区"><a href="#扩展LVM分区" class="headerlink" title="扩展LVM分区"></a>扩展LVM分区</h2><p>上面使用了一块1T虚拟硬盘，下面将另外一块虚拟硬盘添加到刚才的逻辑卷中，实现扩展。</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 需要扩展的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk       // 额外的空间</span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdc&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 将它加入到卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgextend VG1 /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully extended</span><br><span class="line"></span><br><span class="line">// 扩展逻辑卷MyLvm0</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvextend -l +262142 /dev/VG1/MyLvm0</span></span><br><span class="line"></span><br><span class="line">  Size of logical volume VG1/MyLvm0 changed from 1.00 TiB (262144 extents) to &lt;2.00 TiB (524286 extents).</span><br><span class="line">  Logical volume VG1/MyLvm0 successfully resized.</span><br><span class="line"></span><br><span class="line">// 成功扩展</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br></pre></td></tr></table></figure></h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.cnblogs.com/youn/p/6079376.html">Linux下添加磁盘创建lvm分区</a></p>
-<p><a href="https://www.cnblogs.com/weiyiming007/p/9517484.html">centos7用lvm扩展xfs文件系统的根分区</a></p>
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-        <tag>centos</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ceph-13.2.5添加mon，删除mon（ceph-deploy）</title>
     <url>/2019/07/22/2019-07-22-ceph-mon-add-destroy/</url>
     <content><![CDATA[<hr>
@@ -4031,6 +4014,23 @@ java中可以使用下面语句来取到：</p>
         <tag>centos</tag>
         <tag>ceph</tag>
         <tag>s3</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>centos7中lvm分区的创建与扩展</title>
+    <url>/2019/07/23/2019-07-23-centos-lvm-create-extend/</url>
+    <content><![CDATA[<hr>
+<h2 id="创建LVM分区"><a href="#创建LVM分区" class="headerlink" title="创建LVM分区"></a>创建LVM分区</h2><p>首先，挂载虚拟硬盘到虚拟机上，这里挂了2个1T的硬盘。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdb&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 创建卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgcreate VG1 /dev/sdb</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully created</span><br><span class="line"></span><br><span class="line">// 查看卷组剩多少PE</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgdisplay</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               VG1</span><br><span class="line">  System ID             </span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        2</span><br><span class="line">  Metadata Sequence No  7</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                1</span><br><span class="line">  Open LV               0</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                2</span><br><span class="line">  Act PV                2</span><br><span class="line">  VG Size               &lt;2.00 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              524286</span><br><span class="line">  Alloc PE / Size       262143 / &lt;1024.00 GiB</span><br><span class="line">  Free  PE / Size       262143 / &lt;1024.00 GiB     //剩余空间大小</span><br><span class="line">  VG UUID               DYPyVN-9ssj-pLxN-bksi-9U0V-m2wQ-aQ3IPe</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">// 将所有剩余空间创建为逻辑卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvcreate -l 262143 -n MyLvm0 VG1</span></span><br><span class="line"></span><br><span class="line">  Logical volume &quot;MyLvm0&quot; created.</span><br><span class="line"></span><br><span class="line">// 创建完成</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 所创建的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br></pre></td></tr></table></figure></h2><h2 id="扩展LVM分区"><a href="#扩展LVM分区" class="headerlink" title="扩展LVM分区"></a>扩展LVM分区</h2><p>上面使用了一块1T虚拟硬盘，下面将另外一块虚拟硬盘添加到刚才的逻辑卷中，实现扩展。</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0 1024G  0 lvm        // 需要扩展的LVM逻辑卷</span><br><span class="line">sdc               8:32   0    1T  0 disk       // 额外的空间</span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br><span class="line">// 创建物理卷</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pvcreate /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Physical volume &quot;/dev/sdc&quot; successfully created.</span><br><span class="line"></span><br><span class="line">// 将它加入到卷组</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vgextend VG1 /dev/sdc</span></span><br><span class="line"></span><br><span class="line">  Volume group &quot;VG1&quot; successfully extended</span><br><span class="line"></span><br><span class="line">// 扩展逻辑卷MyLvm0</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo lvextend -l +262142 /dev/VG1/MyLvm0</span></span><br><span class="line"></span><br><span class="line">  Size of logical volume VG1/MyLvm0 changed from 1.00 TiB (262144 extents) to &lt;2.00 TiB (524286 extents).</span><br><span class="line">  Logical volume VG1/MyLvm0 successfully resized.</span><br><span class="line"></span><br><span class="line">// 成功扩展</span><br><span class="line"><span class="meta">$</span><span class="bash"> lsblk</span></span><br><span class="line"></span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0  100G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   99G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0  9.8G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0 39.2G  0 lvm  /home</span><br><span class="line">sdb               8:16   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sdc               8:32   0    1T  0 disk </span><br><span class="line">└─VG1-MyLvm0    253:3    0    2T  0 lvm  </span><br><span class="line">sr0              11:0    1 1024M  0 rom  </span><br><span class="line"></span><br></pre></td></tr></table></figure></h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.cnblogs.com/youn/p/6079376.html">Linux下添加磁盘创建lvm分区</a></p>
+<p><a href="https://www.cnblogs.com/weiyiming007/p/9517484.html">centos7用lvm扩展xfs文件系统的根分区</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>centos</tag>
       </tags>
   </entry>
   <entry>
@@ -5522,13 +5522,13 @@ webrtc会自动的将同一个<code>stream</code>下的<code>track</code>绑定�
 <hr>
 <h1 id="添加k3s集群到rancher"><a href="#添加k3s集群到rancher" class="headerlink" title="添加k3s集群到rancher"></a>添加k3s集群到rancher</h1><p>首先部署一个k3s集群，方法和上面一样。</p>
 <p>进入rancher的web页面，选择添加集群：</p>
-<p><img src="/images/linux/rancher/rancher-添加集群.png" alt="image"></p>
+<p><img src="/images/linux/rancher/rancher-添加集群.png" alt="image" title="rancher-添加集群"></p>
 <p>选择导入：</p>
-<p><img src="/images/linux/rancher/rancher-导入.png" alt="image"></p>
+<p><img src="/images/linux/rancher/rancher-导入.png" alt="image" title="rancher-导入"></p>
 <p>输入集群名字，选择创建即可：</p>
-<p><img src="/images/linux/rancher/rancher-创建.png" alt="image"></p>
+<p><img src="/images/linux/rancher/rancher-创建.png" alt="image" title="rancher-创建"></p>
 <p>复制第二条命令：</p>
-<p><img src="/images/linux/rancher/rancher-导入集群命令.png" alt="image"></p>
+<p><img src="/images/linux/rancher/rancher-导入集群命令.png" alt="image" title="rancher-导入集群命令"></p>
 <p>到要导入的k3s集群的master节点上输入命令：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> kubectl apply -f https://xxx.plus/v3/import/tfgfnzllcntln8pvwkk642mtw745jq8mkmdbv9m5d9lkgjs5wq5g6l_c-r6xhq.yaml</span></span><br><span class="line"></span><br><span class="line">clusterrole.rbac.authorization.k8s.io/proxy-clusterrole-kubeapiserver created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/proxy-role-binding-kubernetes-master created</span><br><span class="line">namespace/cattle-system created</span><br><span class="line">serviceaccount/cattle created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/cattle-admin-binding created</span><br><span class="line">secret/cattle-credentials-ee9e815 created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/cattle-admin created</span><br><span class="line">deployment.apps/cattle-cluster-agent created</span><br></pre></td></tr></table></figure>
 <p>等待一会儿，rancher界面上可以看到集群状态变为waiting。</p>
@@ -5587,6 +5587,78 @@ webrtc会自动的将同一个<code>stream</code>下的<code>track</code>绑定�
       <tags>
         <tag>study</tag>
         <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>golang在程序编译时使用ldflags加入版本信息和git信息等</title>
+    <url>/2021/07/23/2021-07-15-golang-add-git-info/</url>
+    <content><![CDATA[<hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>今天在查一个很久之前运行的程序的问题，结果发现自己根本不知道那个代码是什么时候，用什么版本代码编译的，导致查找问题时异常困难。所以以后写代码时，很有必要将相关编译信息加入到程序中，这样在某些时候，查找问题会方便很多，避免低级错误。</p>
+<hr>
+<h1 id="编译时加入自定义信息到程序中"><a href="#编译时加入自定义信息到程序中" class="headerlink" title="编译时加入自定义信息到程序中"></a>编译时加入自定义信息到程序中</h1><p>通常情况下，我们直接使用<code>go build</code>来编译程序，要想加入自定义信息到程序中，很简单，编译时使用<code>-ldflags</code>就行。</p>
+<p>例如有如下程序test.go：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> AAA <span class="keyword">string</span></span><br><span class="line"><span class="keyword">var</span> BBB <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;AAA =&quot;</span>, AAA)</span><br><span class="line">	fmt.Println(<span class="string">&quot;BBB =&quot;</span>, BBB)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在编译时加入<code>-ldflags</code>:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">go build -ldflags &quot;-X &#x27;main.AAA=111&#x27; -X &#x27;main.BBB=222&#x27;&quot;</span><br></pre></td></tr></table></figure>
+<p>运行程序：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./<span class="built_in">test</span></span></span><br><span class="line"></span><br><span class="line">AAA = 111</span><br><span class="line">BBB = 222</span><br></pre></td></tr></table></figure>
+<p>可以看到AAA和BBB两个变量的值变成了111和222，也就是在编译时加入的信息。</p>
+<p>文档中可以看到相关参数的说明：</p>
+<p><a href="https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies">hdr-Compile_packages_and_dependencies</a></p>
+<p><a href="https://pkg.go.dev/cmd/link">Command Line</a></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-ldflags &#x27;[pattern=]arg list&#x27;</span><br><span class="line">	arguments to pass on each go tool link invocation.</span><br><span class="line"></span><br><span class="line">-X importpath.name=value</span><br><span class="line">	Set the value of the string variable in importpath named name to value.</span><br><span class="line">	This is only effective if the variable is declared in the source code either uninitialized</span><br><span class="line">	or initialized to a constant string expression. -X will not work if the initializer makes</span><br><span class="line">	a function call or refers to other variables.</span><br><span class="line">	Note that before Go 1.5 this option took two separate arguments.</span><br></pre></td></tr></table></figure>
+<p>这里的<code>importpath.name=value</code>可以理解为<code>包名.变量名</code>，比如上面的<code>main.AAA</code>就表示main包下的AAA变量。</p>
+<hr>
+<h1 id="编译时加入git信息等到程序中"><a href="#编译时加入git信息等到程序中" class="headerlink" title="编译时加入git信息等到程序中"></a>编译时加入git信息等到程序中</h1><p>在上面已经叙述了如何加入自定义信息到程序中，所以只要在编译时先获取到相关git信息，然后通过ldflags来加入到程序中即可。</p>
+<p>test.go代码如下：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	Version      <span class="keyword">string</span></span><br><span class="line">	GoVersion    <span class="keyword">string</span></span><br><span class="line">	GitUrl       <span class="keyword">string</span></span><br><span class="line">	GitBranch    <span class="keyword">string</span></span><br><span class="line">	GitCommit    <span class="keyword">string</span></span><br><span class="line">	GitLatestTag <span class="keyword">string</span></span><br><span class="line">	BuildTime    <span class="keyword">string</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;Version =&quot;</span>, Version)</span><br><span class="line">	fmt.Println(<span class="string">&quot;GoVersion =&quot;</span>, GoVersion)</span><br><span class="line">	fmt.Println(<span class="string">&quot;GitUrl =&quot;</span>, GitUrl)</span><br><span class="line">	fmt.Println(<span class="string">&quot;GitBranch =&quot;</span>, GitBranch)</span><br><span class="line">	fmt.Println(<span class="string">&quot;GitCommit =&quot;</span>, GitCommit)</span><br><span class="line">	fmt.Println(<span class="string">&quot;GitLatestTag =&quot;</span>, GitLatestTag)</span><br><span class="line">	fmt.Println(<span class="string">&quot;BuildTime =&quot;</span>, BuildTime)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译时使用如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">go build -ldflags &quot;-X &#x27;main.Version=&quot;v0.1.1&quot;&#x27; -X &#x27;main.GoVersion=`go version`&#x27; \</span><br><span class="line">    -X &#x27;main.GitUrl=`git remote -v`&#x27; -X &#x27;main.GitBranch=`git rev-parse --abbrev-ref HEAD`&#x27; \</span><br><span class="line">    -X &#x27;main.GitCommit=`git rev-parse HEAD`&#x27; -X &#x27;main.GitLatestTag=`git describe --tags --abbrev=0`&#x27; \</span><br><span class="line">    -X &#x27;main.BuildTime=`date +&quot;%Y-%m-%d %H:%m:%S %Z&quot;`&#x27;&quot;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>go version</code>：获取到编译使用的go版本信息。</li>
+<li><code>git remote -v</code>：获取到当前远程仓库的地址。</li>
+<li><code>git rev-parse --abbrev-ref HEAD</code>：获取到当前分支名。</li>
+<li><code>git rev-parse HEAD</code>：获取到当前代码的commit号。</li>
+<li><code>git describe --tags --abbrev=0</code>：获取到最近的tag。</li>
+<li><code>date +&quot;%Y-%m-%d %H:%m:%S %Z&quot;</code>：获取当前编译时间。</li>
+</ul>
+<p>运行程序，打印结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./<span class="built_in">test</span></span></span><br><span class="line"></span><br><span class="line">Version = v0.1.1</span><br><span class="line">GoVersion = go version go1.15.5 linux/amd64</span><br><span class="line">GitUrl = origin https://xxxx/cdnRecord/xxx.git (fetch)</span><br><span class="line">origin  https://xxxx/cdnRecord/xxx.git (push)</span><br><span class="line">GitBranch = master</span><br><span class="line">GitCommit = 82c8b029a93e39a38bc4ea8221b5cbbad947b752</span><br><span class="line">GitLatestTag = v0.1.1</span><br><span class="line">BuildTime = 2021-07-15 09:07:19 CST</span><br></pre></td></tr></table></figure>
+<p>这样就达到了目的。</p>
+<hr>
+<h1 id="使用Makefile来进行编译"><a href="#使用Makefile来进行编译" class="headerlink" title="使用Makefile来进行编译"></a>使用Makefile来进行编译</h1><p>注意到刚才编译时的命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">go build -ldflags &quot;-X &#x27;main.Version=&quot;v0.1.1&quot;&#x27; -X &#x27;main.GoVersion=`go version`&#x27; \</span><br><span class="line">    -X &#x27;main.GitUrl=`git remote -v`&#x27; -X &#x27;main.GitBranch=`git rev-parse --abbrev-ref HEAD`&#x27; \</span><br><span class="line">    -X &#x27;main.GitCommit=`git rev-parse HEAD`&#x27; -X &#x27;main.GitLatestTag=`git describe --tags --abbrev=0`&#x27; \</span><br><span class="line">    -X &#x27;main.BuildTime=`date +&quot;%Y-%m-%d %H:%m:%S %Z&quot;`&#x27;&quot;</span><br></pre></td></tr></table></figure>
+<p>如果每次编译时，都要手动输入这么一大串…</p>
+<p>所以可以使用Makefile来简化这个过程，在项目中新建Makefile文件，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">VERSION&#x3D;&quot;v0.1.1&quot;</span><br><span class="line">GO_VERSION&#x3D;&#96;go version&#96;</span><br><span class="line">GIT_URL&#x3D;&#96;git remote -v&#96;</span><br><span class="line">GIT_BRANCH&#x3D;&#96;git rev-parse --abbrev-ref HEAD&#96;</span><br><span class="line">GIT_COMMIT&#x3D;&#96;git rev-parse HEAD&#96;</span><br><span class="line">GIT_LATEST_TAG&#x3D;&#96;git describe --tags --abbrev&#x3D;0&#96;</span><br><span class="line">BUILD_TIME&#x3D;&#96;date +&quot;%Y-%m-%d %H:%m:%S %Z&quot;&#96;</span><br><span class="line"></span><br><span class="line">LDFLAGS&#x3D;&quot;-X &#39;main.Version&#x3D;$&#123;VERSION&#125;&#39; -X &#39;main.GoVersion&#x3D;$&#123;GO_VERSION&#125;&#39; -X &#39;main.GitUrl&#x3D;$&#123;GIT_URL&#125;&#39; -X &#39;main.GitBranch&#x3D;$&#123;GIT_BRANCH&#125;&#39; -X &#39;main.GitCommit&#x3D;$&#123;GIT_COMMIT&#125;&#39; -X &#39;main.GitLatestTag&#x3D;$&#123;GIT_LATEST_TAG&#125;&#39; -X &#39;main.BuildTime&#x3D;$&#123;BUILD_TIME&#125;&#39;&quot;</span><br><span class="line"></span><br><span class="line">all: build</span><br><span class="line"></span><br><span class="line">build:</span><br><span class="line">	CGO_ENABLED&#x3D;0 GOOS&#x3D;linux GOARCH&#x3D;amd64 go build -ldflags $&#123;LDFLAGS&#125;</span><br></pre></td></tr></table></figure>
+<p>然后编译时，直接使用<code>make</code>即可:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>其中<code>all</code>后面跟着的子模块就代表make时会执行的子模块，比如<code>all: build1 build2</code>那么make时就会执行build1和build2两个模块。也可以使用<code>make build</code>，这样就只会执行build子模块。</p>
+<p>注意这里<code>-X &#39;main.GoVersion=$&#123;GO_VERSION&#125;&#39;</code>中还要加两个引号，是因为<code>go version</code>执行的结果中会包含空格，如果不加引号make会报错，于是索性我这里全部加上了引号。</p>
+<hr>
+<h1 id="顺便在程序启动时打印一个字符画"><a href="#顺便在程序启动时打印一个字符画" class="headerlink" title="顺便在程序启动时打印一个字符画"></a>顺便在程序启动时打印一个字符画</h1><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/common-nighthawk/go-figure&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	myFigure := figure.NewFigure(<span class="string">&quot;MyProject&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="literal">true</span>)</span><br><span class="line"></span><br><span class="line">	fmt.Println(myFigure.String())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"> __  __           ____                     _                 _</span><br><span class="line">|  \/  |  _   _  |  _ \   _ __    ___     (_)   ___    ___  | |_</span><br><span class="line">| |\/| | | | | | | |_) | | &#x27;__|  / _ \    | |  / _ \  / __| | __|</span><br><span class="line">| |  | | | |_| | |  __/  | |    | (_) |   | | |  __/ | (__  | |_</span><br><span class="line">|_|  |_|  \__, | |_|     |_|     \___/   _/ |  \___|  \___|  \__|</span><br><span class="line">          |___/                         |__/</span><br></pre></td></tr></table></figure></h2><h1 id="部分问题"><a href="#部分问题" class="headerlink" title="部分问题"></a>部分问题</h1><p><strong>使用goland在编写Makefile时会出现格式错误：</strong></p>
+<p>由于Makefile规定缩进必需是tab，但是通常情况下我们把golang的tab改成了4个空格，这就导致用goland写的Makefile有格式错误。</p>
+<p>一个简单的解决方法，下载Makefile插件即可：</p>
+<p><img src="/images/golang/goland-makefile.png" alt="image" title="goland的makefile插件"></p>
+<p>插件安装之后重启goland，然后在编辑Makefile时，tab就会强制变为“tab”而不是4个空格。</p>
+<hr>
+<p><strong>make时出现<code>version &quot;go1.14&quot; does not match go tool version &quot;go1.15.5&quot;</code>：</strong></p>
+<p>出现这个错误，可能是因为当前环境中的go版本与系统的go版本不一致造成的：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">type</span> go</span></span><br><span class="line"></span><br><span class="line">go is /usr/bin/go</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> /usr/bin/go version</span></span><br><span class="line"></span><br><span class="line">go version go1.15.5 linux/amd64</span><br></pre></td></tr></table></figure>
+<p>可以看到系统的go版本是1.15.5的，与当前环境的go1.14不一致。解决这个问题，只要让版本一致，或者删掉其中一个go环境就好了。</p>
+<p>我这里直接把当前环境的go也升级到了1.15.5，就不再出现这个问题了。</p>
+<hr>
+]]></content>
+      <categories>
+        <category>golang</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>linux</tag>
+        <tag>golang</tag>
       </tags>
   </entry>
   <entry>
