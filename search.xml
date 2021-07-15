@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode 15.3Sum</title>
+    <url>/2017/08/18/2017-08-18-3Sum/</url>
+    <content><![CDATA[<h2 id="15-3Sum"><a href="#15-3Sum" class="headerlink" title="15.3Sum"></a>15.3Sum</h2><blockquote>
+<p>Description:</p>
+<blockquote>
+<p>Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.</p>
+</blockquote>
+<p>Note: The solution set must not contain duplicate triplets.</p>
+</blockquote>
+<hr>
+<p>题目理解：输入一个数组和一个目标值，求3个数之和等于目标值。返回所有这些3个数的组合，但是不能有重复的组合。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; threeSum(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="keyword">int</span> target = <span class="number">0</span>, m = nums.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>, bound = m - <span class="number">2</span> ; i &lt; bound &amp;&amp; nums[i] &lt;= target ; ) &#123;</span><br><span class="line">            <span class="keyword">int</span> l = i + <span class="number">1</span>, r = m - <span class="number">1</span>, sum = target - nums[i];</span><br><span class="line">            <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">                <span class="keyword">int</span> temp_sum = nums[l] + nums[r];</span><br><span class="line">                <span class="keyword">if</span> ( temp_sum &lt; sum ) l++; </span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ( temp_sum &gt; sum ) r--; </span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                    item.add(nums[i]);</span><br><span class="line">                    item.add(nums[l]);</span><br><span class="line">                    item.add(nums[r]);</span><br><span class="line">                    result.add(item);</span><br><span class="line">                    l++;</span><br><span class="line">                    <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[l] == nums[l-<span class="number">1</span>] ) l++;</span><br><span class="line">                    r--;</span><br><span class="line">                    <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[r] == nums[r+<span class="number">1</span>] ) r--;</span><br><span class="line">                &#125; </span><br><span class="line">            &#125;</span><br><span class="line">            i++;</span><br><span class="line">            <span class="keyword">while</span> ( i &lt; bound &amp;&amp; nums[i] == nums[i-<span class="number">1</span>] ) i++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">  &#125;     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先将数组进行排序，外层循环从左向右，内部就是一个Two_Sum，这里注意要跳过重复的值。</p>
+<p>复杂度n^2，运行时间69ms。</p>
+<p><img src="/images/leetcode/3Sum.png" alt="images"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 16.3Sum Cloest</title>
     <url>/2017/08/18/2017-08-18-3Sum-Closest/</url>
     <content><![CDATA[<h2 id="16-3Sum-Cloest"><a href="#16-3Sum-Cloest" class="headerlink" title="16.3Sum Cloest"></a>16.3Sum Cloest</h2><blockquote>
@@ -21,30 +45,6 @@
 <p>方法和3Sum几乎一样，只是多进行一下距离的比较。</p>
 <p>复杂度 n^2, 运行时间 18ms.</p>
 <p><img src="/images/leetcode/3Sum_Closest.png" alt="images"></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 15.3Sum</title>
-    <url>/2017/08/18/2017-08-18-3Sum/</url>
-    <content><![CDATA[<h2 id="15-3Sum"><a href="#15-3Sum" class="headerlink" title="15.3Sum"></a>15.3Sum</h2><blockquote>
-<p>Description:</p>
-<blockquote>
-<p>Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.</p>
-</blockquote>
-<p>Note: The solution set must not contain duplicate triplets.</p>
-</blockquote>
-<hr>
-<p>题目理解：输入一个数组和一个目标值，求3个数之和等于目标值。返回所有这些3个数的组合，但是不能有重复的组合。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; threeSum(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="keyword">int</span> target = <span class="number">0</span>, m = nums.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>, bound = m - <span class="number">2</span> ; i &lt; bound &amp;&amp; nums[i] &lt;= target ; ) &#123;</span><br><span class="line">            <span class="keyword">int</span> l = i + <span class="number">1</span>, r = m - <span class="number">1</span>, sum = target - nums[i];</span><br><span class="line">            <span class="keyword">while</span> ( l &lt; r ) &#123;</span><br><span class="line">                <span class="keyword">int</span> temp_sum = nums[l] + nums[r];</span><br><span class="line">                <span class="keyword">if</span> ( temp_sum &lt; sum ) l++; </span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ( temp_sum &gt; sum ) r--; </span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    List&lt;Integer&gt; item = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                    item.add(nums[i]);</span><br><span class="line">                    item.add(nums[l]);</span><br><span class="line">                    item.add(nums[r]);</span><br><span class="line">                    result.add(item);</span><br><span class="line">                    l++;</span><br><span class="line">                    <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[l] == nums[l-<span class="number">1</span>] ) l++;</span><br><span class="line">                    r--;</span><br><span class="line">                    <span class="keyword">while</span> ( l &lt; r &amp;&amp; nums[r] == nums[r+<span class="number">1</span>] ) r--;</span><br><span class="line">                &#125; </span><br><span class="line">            &#125;</span><br><span class="line">            i++;</span><br><span class="line">            <span class="keyword">while</span> ( i &lt; bound &amp;&amp; nums[i] == nums[i-<span class="number">1</span>] ) i++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">  &#125;     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>首先将数组进行排序，外层循环从左向右，内部就是一个Two_Sum，这里注意要跳过重复的值。</p>
-<p>复杂度n^2，运行时间69ms。</p>
-<p><img src="/images/leetcode/3Sum.png" alt="images"></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -1202,42 +1202,6 @@ want to strive closer to the rising kramdown standard.</p>
       </tags>
   </entry>
   <entry>
-    <title>Coursera Improving Deep Neural Networks 笔记</title>
-    <url>/2017/08/25/2017-08-25-dnn/</url>
-    <content><![CDATA[<p>第二个专项课程的完整题目是</p>
-<blockquote>
-<p>Improving Deep Neural Networks:
-Hyperparameter tuning, Regularization and Optimization.</p>
-</blockquote>
-<p>通过标题就可以看出课程的主要内容就是在第一个课程的基础上，
-对深度神经网络进行加固。</p>
-<p>一共三周的课程，每周课程题目分别为：</p>
-<ul>
-<li>Practical aspects of Deep Learning</li>
-<li>Optimization algorithms</li>
-<li>Hyperparameter tuning, Batch Normalization and Programming Frameworks</li>
-</ul>
-<p>第一周讲了划分数据集、正则化、权值初始化以及梯度检查。</p>
-<p>第二周讲了<strong>mini-batch</strong>以及<strong>RMSprop</strong>等参数更新方法。</p>
-<p>第三周讲了超参数的选择、标准化以及TensorFlow。</p>
-<hr>
-<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><p><a href="http://longrm.com/2017/08/25/2017-08-25-dnn_2/">神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查</a></p>
-<hr>
-<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_3/">Mini-batch 和 权重更新策略</a></p>
-<hr>
-<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">Hyperparameter tuning, Batch Norm and TensorFlow</a></p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>写博客的注意事项</title>
     <url>/2017/08/23/2017-08-23-my-write-blog-guide/</url>
     <content><![CDATA[<hr>
@@ -1314,6 +1278,159 @@ style="zoom:150%"/></div>
       </categories>
       <tags>
         <tag>guide</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Coursera Improving Deep Neural Networks 笔记</title>
+    <url>/2017/08/25/2017-08-25-dnn/</url>
+    <content><![CDATA[<p>第二个专项课程的完整题目是</p>
+<blockquote>
+<p>Improving Deep Neural Networks:
+Hyperparameter tuning, Regularization and Optimization.</p>
+</blockquote>
+<p>通过标题就可以看出课程的主要内容就是在第一个课程的基础上，
+对深度神经网络进行加固。</p>
+<p>一共三周的课程，每周课程题目分别为：</p>
+<ul>
+<li>Practical aspects of Deep Learning</li>
+<li>Optimization algorithms</li>
+<li>Hyperparameter tuning, Batch Normalization and Programming Frameworks</li>
+</ul>
+<p>第一周讲了划分数据集、正则化、权值初始化以及梯度检查。</p>
+<p>第二周讲了<strong>mini-batch</strong>以及<strong>RMSprop</strong>等参数更新方法。</p>
+<p>第三周讲了超参数的选择、标准化以及TensorFlow。</p>
+<hr>
+<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><p><a href="http://longrm.com/2017/08/25/2017-08-25-dnn_2/">神经网络的数据集划分、正则化、Dropout、输入标准化以及梯度检查</a></p>
+<hr>
+<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_3/">Mini-batch 和 权重更新策略</a></p>
+<hr>
+<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><p><a href="http://longrm.com/2017/08/29/2017-08-29-dnn_4/">Hyperparameter tuning, Batch Norm and TensorFlow</a></p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mini-batch 和 权重更新策略</title>
+    <url>/2017/08/29/2017-08-29-dnn_3/</url>
+    <content><![CDATA[<hr>
+<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
+<ol>
+<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
+<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
+<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
+</ol>
+<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
+这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
+另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
+<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
+虽然这样计算块，更新快，但是随机性也太大了。</p>
+<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
+每次计算不会太复杂，也能降低一点随机性。</p>
+<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
+选取<strong>64、128、256、512</strong>。</p>
+<hr>
+<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
+<p><strong>Exponentially weighted averages:</strong></p>
+<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
+<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
+<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
+<script type="math/tex; mode=display">
+v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
+当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
+<p>大概平均的天数为：</p>
+<script type="math/tex; mode=display">
+days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
+<p>计算时，就一步一步运算就行了，</p>
+<script type="math/tex; mode=display">
+v_\theta = 0</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
+v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
+...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
+<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
+<p>所以，这里需要加入<code>Bias correction</code>，</p>
+<script type="math/tex; mode=display">
+v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
+这样，就能矫正这个初始值太低的问题。</p>
+<p><strong>Momentum:</strong></p>
+<p>属于权重更新的初级魔法：</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
+w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
+b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
+<script type="math/tex; mode=display">
+V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
+V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
+<p><strong>RMSprop:</strong></p>
+<p>属于权重更新的中级魔法：</p>
+<script type="math/tex; mode=display">
+S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
+<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
+<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
+<script type="math/tex; mode=display">
+Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
+V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
+V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
+S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
+S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
+<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
+<p>另外这里还要用到矫正：</p>
+<script type="math/tex; mode=display">
+V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
+S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
+S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
+<script type="math/tex; mode=display">
+w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
+b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
+<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
+<hr>
+<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
+<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
+<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
+另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
+<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
+<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
+<p>首选的策略是：</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
+<script type="math/tex; mode=display">
+\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
+<script type="math/tex; mode=display">
+\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
+<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
+<hr>
+<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
+<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
+<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
+它更像是下面的马鞍面，</p>
+<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
+<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
+模型因为各种措施，它也并不会卡在这个点上。</p>
+<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1468,123 +1585,6 @@ check \ \ \
 <li>Doesn’t work with dropout.（会变得不好计算，先关闭dropout，检查完毕再开启）</li>
 <li>Run at random initialization; perhaps again after some training.</li>
 </ul>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mini-batch 和 权重更新策略</title>
-    <url>/2017/08/29/2017-08-29-dnn_3/</url>
-    <content><![CDATA[<hr>
-<h2 id="Mini-batch"><a href="#Mini-batch" class="headerlink" title="Mini-batch"></a>Mini-batch</h2><p>在训练时，对样本的输入有三种策略，</p>
-<ol>
-<li>一次输入一个样本，<code>Stochastic gradient descent</code>。</li>
-<li>一次输入多个样本，<code>Mini-batch gradient descent</code>。</li>
-<li>一次输入所有样本，<code>Batch gradient descent</code>。</li>
-</ol>
-<p>对于一次输入所有样本，也就是<code>Batch gradient descent</code>，那么每次梯度下降都会向着全局最优/局部最优去前进，
-这样的缺点就是计算更新很慢，因为一次更新都需要计算整个训练集，在训练集非常大的时候甚至是不可能的。
-另外，这样更新是很难跳出局部最优的，虽然局部最优也不差，但是总是有差的局部最优。</p>
-<p>对于一次输入一个样本，也就是<code>Stochastic gradient descent</code>，那就是向另外一个极端去前进，每次梯度下降都会向着这一个样本的全局最优去前进，
-虽然这样计算块，更新快，但是随机性也太大了。</p>
-<p>对于一次输入多个样本，也就是<code>Mini-batch gradient descent</code>，这就是一个折中的解决方案，
-每次计算不会太复杂，也能降低一点随机性。</p>
-<p>在<code>Mini-batch</code>大小的选择中，一般选取2的<strong>幂次</strong>的大小，这与CPU/GPU的计算位数相关，所以一般情况，
-选取<strong>64、128、256、512</strong>。</p>
-<hr>
-<h2 id="权重更新"><a href="#权重更新" class="headerlink" title="权重更新"></a>权重更新</h2><p>在梯度下降的基础上，对更新策略更新一下改动，不再是单纯的减去梯度，而是用带有平均的一种思想去更新。</p>
-<p><strong>Exponentially weighted averages:</strong></p>
-<p>如下图是一个气温随日期变换的坐标图，其中蓝色的点就是某一天的气温，这里总共有一年的数据，</p>
-<p><img src="/images/coursera/mini-advance_1.png" alt="image"></p>
-<p>其中红色和绿色的线是根据下面的公式画出来的，</p>
-<script type="math/tex; mode=display">
-v_t = \beta v_{t-1} + (1 - \beta)\theta_t</script><p>其中$\theta_t$表示的就是第$t$天的气温，当$\beta = 0.9$时，画出的就是红色的线，
-当$\beta = 0.98$时，画出的就是绿色的线。上面的式子就相当于是在给气温做平均。</p>
-<p>大概平均的天数为：</p>
-<script type="math/tex; mode=display">
-days \approx \frac{1}{1 - \beta}</script><p>于是红色的线大概是10天的平均，绿色的线大概是50天的平均，所以绿色的线看起来会有一点偏右。</p>
-<p>计算时，就一步一步运算就行了，</p>
-<script type="math/tex; mode=display">
-v_\theta = 0</script><script type="math/tex; mode=display">
-v_\theta := \beta v + (1 - \beta)\theta_1</script><script type="math/tex; mode=display">
-v_\theta := \beta v + (1 - \beta)\theta_2</script><script type="math/tex; mode=display">
-...</script><p>但是，在实际操作中，按照上面的式子得到的绿色的线其实应该在紫色的线的位置上，这是因为初始值为0的原因，</p>
-<p><img src="/images/coursera/mini-advance_2.png" alt="image"></p>
-<p>所以，这里需要加入<code>Bias correction</code>，</p>
-<script type="math/tex; mode=display">
-v_t = \frac{v_t}{1 - \beta^t}</script><p>这里的$\beta^t$是$\beta$的$t$次幂，刚开始的时候分子会很小，然后逐渐变大，事实上，第一轮迭代，$v_1$就等于$\theta_1$。
-这样，就能矫正这个初始值太低的问题。</p>
-<p><strong>Momentum:</strong></p>
-<p>属于权重更新的初级魔法：</p>
-<script type="math/tex; mode=display">
-V_{dw} = \beta V_{dw} + (1 - \beta)dw</script><script type="math/tex; mode=display">
-V_{db} = \beta V_{db} + (1 - \beta)db</script><script type="math/tex; mode=display">
-w := w - \alpha V_{dw}</script><script type="math/tex; mode=display">
-b := b - \alpha V_{db}</script><p>通常取$\beta = 0.9$，而且这里不需要矫正。也可以去掉$(1 - \beta)$，变为，</p>
-<script type="math/tex; mode=display">
-V_{dw} = \beta V_{dw} + dw</script><script type="math/tex; mode=display">
-V_{db} = \beta V_{db} + db</script><p>这样相当于参数调整基本交给$\alpha$来做。</p>
-<p><strong>RMSprop:</strong></p>
-<p>属于权重更新的中级魔法：</p>
-<script type="math/tex; mode=display">
-S_{dw} = \beta S_{dw} + (1 - \beta)dw^2</script><script type="math/tex; mode=display">
-S_{db} = \beta S_{db} + (1 - \beta)db^2</script><script type="math/tex; mode=display">
-w := w - \alpha \frac{dw}{\sqrt{S_{dw}}}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{db}{\sqrt{S_{db}}}</script><p>这里的$dw^2$就是$dw$的平方，当然也是<strong>element-wise</strong>的。这里的$\beta$通常取0.999，而且也不用矫正。</p>
-<p>为了防止出现分母为0的错误，通常要在分母上加上一个很小的数$\epsilon$，</p>
-<script type="math/tex; mode=display">
-w := w - \alpha \frac{dw}{\sqrt{S_{dw}} + \epsilon}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{db}{\sqrt{S_{db}} + \epsilon}</script><p><strong>Adam:</strong></p>
-<p>属于权重更新的高级魔法，它将<strong>Momentum</strong>与<strong>RMSprop</strong>相结合：</p>
-<script type="math/tex; mode=display">
-Init:V_{dw} = 0, S_{dw} = 0, V_{db} = 0, S_{db} = 0</script><script type="math/tex; mode=display">
-V_{dw} = \beta_1 V_{dw} + (1 - \beta_1) dw</script><script type="math/tex; mode=display">
-V_{db} = \beta_1 V_{db} + (1 - \beta_1) db</script><script type="math/tex; mode=display">
-S_{dw} = \beta_2 S_{dw} + (1 - \beta_2) dw^2</script><script type="math/tex; mode=display">
-S_{db} = \beta_2 S_{db} + (1 - \beta_2) db^2</script><p>显然这里的$V_{dw}$属于<strong>Momentum</strong>，</p>
-<p>这里的$S_{dw}$属于<strong>RMSprop</strong>，</p>
-<p>另外这里还要用到矫正：</p>
-<script type="math/tex; mode=display">
-V_{dw}^{corrected} = \frac{V_{dw}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
-V_{db}^{corrected} = \frac{V_{db}}{(1 - \beta_1^t)}</script><script type="math/tex; mode=display">
-S_{dw}^{corrected} = \frac{S_{dw}}{(1 - \beta_2^t)}</script><script type="math/tex; mode=display">
-S_{db}^{corrected} = \frac{S_{db}}{(1 - \beta_2^t)}</script><p>将它们结合起来，权重的更新策略就如下：</p>
-<script type="math/tex; mode=display">
-w := w - \alpha \frac{V_{dw}^{corrected}}{\sqrt{S_{dw}^{corrected}} + \epsilon}</script><script type="math/tex; mode=display">
-b := b - \alpha \frac{V_{db}^{corrected}}{\sqrt{S_{db}^{corrected}} + \epsilon}</script><p>通常将参数设置为$\beta_1 = 0.9,\beta_2 = 0.999,\epsilon = 10^{-8}$，一般情况不需要去调整它们的取值，默认的就足够了。</p>
-<p>（它名字的全称其实是<code>Adaptive moment estimation</code>，所以其实和<code>Adam</code>没有半毛钱关系…）</p>
-<hr>
-<h2 id="Learning-rate-decay"><a href="#Learning-rate-decay" class="headerlink" title="Learning rate decay"></a>Learning rate decay</h2><p>在权值更新的过程中逐渐减小学习速率，能够使模型收敛到更好的解，</p>
-<p><img src="/images/coursera/mini-advance_3.png" alt="image"></p>
-<p>其中蓝色的线是没有减小学习速率的，它最后会在最优解附近一个较宽的范围徘徊，
-另外绿色的线就是逐渐减小学习速率的，它会收敛到一个较窄的范围。</p>
-<p>需要<strong>注意</strong>的是，这里逐渐减小学习速率的<strong>单位</strong>是<code>epoch</code>，一个<code>epoch</code>就是过一遍数据。</p>
-<p><img src="/images/coursera/mini-advance_6.png" alt="image" title="epoch"></p>
-<p>首选的策略是：</p>
-<script type="math/tex; mode=display">
-\alpha = \frac{1}{1 + decayRate * epochNum} \alpha_0</script><p>其它的一些策略：</p>
-<script type="math/tex; mode=display">
-\alpha = 0.95^{epochNum} \alpha_0</script><script type="math/tex; mode=display">
-\alpha = \frac{k}{\sqrt{epochNum}} \alpha_0</script><p>或者，</p>
-<script type="math/tex; mode=display">
-\alpha = \frac{k}{\sqrt{t}} \alpha_0</script><p>这里的$t$就是总的迭代次数了，上面的$k$是一个固定的常量。</p>
-<p>以上的这些decay的方法其实都可以，选一个用就好。</p>
-<hr>
-<h2 id="关于局部最优"><a href="#关于局部最优" class="headerlink" title="关于局部最优"></a>关于局部最优</h2><p>通常对于局部最优的印象是这样的，</p>
-<p><img src="/images/coursera/mini-advance_4.png" alt="image"></p>
-<p>就会觉得很容易陷入局部最优，但是实际上在高维空间中，这样的直觉是不准确的，
-它更像是下面的马鞍面，</p>
-<p><img src="/images/coursera/mini-advance_5.png" alt="image"></p>
-<p>那么在遇到一个梯度为0的点的时候，实际上更可能是马鞍面中间的那个点，
-模型因为各种措施，它也并不会卡在这个点上。</p>
-<p>因为这样的原因，神经网络几乎不可能卡在一个很差的局部最优点上，通常都能收敛到一个较好的局部最优点，距离全局最优也差不了多远。</p>
 ]]></content>
       <categories>
         <category>coursera</category>
@@ -1812,50 +1812,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>TensorFlow 笔记一</title>
-    <url>/2017/09/02/2017-09-02-tensorflow/</url>
-    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
-<hr>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>或者</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>它也可以是矩阵，</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
-<p>当然直接写也是可以的，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
-<hr>
-<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
-<p>还不明白它的作用。</p>
-<hr>
-<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
-<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
-<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
-<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
-<hr>
-<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>109</p>
-</blockquote>
-<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
-]]></content>
-      <categories>
-        <category>coursera</category>
-        <category>deep learning</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-        <tag>mechine learning</tag>
-        <tag>deep learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode 5 Longest Palindromic Substring</title>
     <url>/2017/09/01/2017-09-01-longest-palindromic-substring/</url>
     <content><![CDATA[<hr>
@@ -1912,6 +1868,50 @@ z^{[L]} =
       </categories>
       <tags>
         <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TensorFlow 笔记一</title>
+    <url>/2017/09/02/2017-09-02-tensorflow/</url>
+    <content><![CDATA[<p>一个十分简单的TensorFlow笔记。</p>
+<hr>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>python里面直接按照module来导入就行，</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure></h2><h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>, name=<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>它也可以是矩阵，</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X = tf.constant(np.random.randn(<span class="number">3</span>,<span class="number">1</span>), name = <span class="string">&quot;X&quot;</span>)</span><br></pre></td></tr></table></figure></h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>例如，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y_hat = tf.constant(<span class="number">36</span>, name=<span class="string">&#x27;y_hat&#x27;</span>)</span><br><span class="line">y = tf.constant(<span class="number">39</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">loss = tf.Variable((y - y_hat)**<span class="number">2</span>, name=<span class="string">&#x27;loss&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到变量是由一些常量进行一些运算后得到的。</p>
+<p>当然直接写也是可以的，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss = (y - y_hat)**<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>TensorFlow对基本运算进行了重写，它会自动识别出这里的运算步骤的。</p>
+<hr>
+<h2 id="初始化变量"><a href="#初始化变量" class="headerlink" title="初始化变量"></a>初始化变量</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init = tf.global_variables_initializer()</span><br></pre></td></tr></table></figure>
+<p>还不明白它的作用。</p>
+<hr>
+<h2 id="占位符"><a href="#占位符" class="headerlink" title="占位符"></a>占位符</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.placeholder(tf.int64, name = <span class="string">&#x27;x&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>占位符可以看成一个变量，它可以重复的赋值，赋值时要使用<code>feed_dict&#123;&#125;</code>，</p>
+<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess.run(<span class="number">2</span> * x, feed_dict = &#123;x: <span class="number">3</span>&#125;)</span><br></pre></td></tr></table></figure></h2><h2 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h2><p>TensorFlow的运行需要建立一个会话任务，然后通过它来运行，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:</span><br><span class="line">    session.run(init)</span><br><span class="line">    print(session.run(loss))</span><br></pre></td></tr></table></figure>
+<p>要通过<code>session</code>才能将计算<code>run()</code>起来，这里也可以使用下面的方式，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line">print(sess.run(loss))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>目前看来，上面结构的好处就是可以自动进行<code>close()</code>。</p>
+<hr>
+<h2 id="十分简单的程序"><a href="#十分简单的程序" class="headerlink" title="十分简单的程序"></a>十分简单的程序</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf   <span class="comment"># 导包</span></span><br><span class="line"></span><br><span class="line">a = tf.constant(<span class="number">2</span>, name=<span class="string">&#x27;a&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">b = tf.constant(<span class="number">3</span>, name=<span class="string">&#x27;b&#x27;</span>)  <span class="comment"># 常量</span></span><br><span class="line"></span><br><span class="line">c = a * b + b                 <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">d = tf.placeholder(tf.int32, name = <span class="string">&#x27;d&#x27;</span>) <span class="comment"># 占位符</span></span><br><span class="line"></span><br><span class="line">f = d + c                                <span class="comment"># 变量</span></span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment"># 初始化器</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> session:                    <span class="comment"># 建立会话</span></span><br><span class="line">    session.run(init)                            <span class="comment"># 执行初始化</span></span><br><span class="line">    print(session.run(f, feed_dict = &#123;d: <span class="number">100</span>&#125;))  <span class="comment"># 运行变量f</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>109</p>
+</blockquote>
+<p>甚至怀疑应该把<code>variable</code>看成为一个运算式子，所以才会去<code>run()</code>这么一个式子。</p>
+]]></content>
+      <categories>
+        <category>coursera</category>
+        <category>deep learning</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+        <tag>mechine learning</tag>
+        <tag>deep learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1982,6 +1982,49 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 44 Wildcard Matching</title>
+    <url>/2017/09/06/2017-09-06-leetcode_44/</url>
+    <content><![CDATA[<blockquote>
+<p>Implement wildcard pattern matching with support for ‘?’ and ‘*‘.  </p>
+<p>‘?’ Matches any single character.<br>‘*‘ Matches any sequence of characters (including the empty sequence).  </p>
+<p>The matching should cover the entire input string (not partial).  </p>
+<p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
+<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “*“) → true<br>isMatch(“aa”, “a*“) → true<br>isMatch(“ab”, “?*“) → true<br>isMatch(“aab”, “c*a*b”) → false  </p>
+</blockquote>
+<p>题目理解：</p>
+<p>经典的字符串匹配问题。</p>
+<p>首先想到的方法，顺着走，但是第一次写得非常复杂，这里忽略不计（但是速度还可以）。</p>
+<p>今天所想的方法，动态规划，自顶向下，或者自底向上。</p>
+<p>看了别人的顺着走的算法，原来思路也是很简单的。</p>
+<p><strong>所以不是看到这种问题就想着动态规划，也许顺着想就能简单解决。</strong></p>
+<p><strong>另外，这道题的java运行时间十分不稳定，重复提交可以差30ms。</strong></p>
+<hr>
+<p>代码一：</p>
+<p>自顶向下。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="comment">// 为了先合并连续的&#x27;*&#x27;</span></span><br><span class="line">        <span class="keyword">char</span>[] ppp = <span class="keyword">new</span> <span class="keyword">char</span>[pp.length];</span><br><span class="line">        <span class="keyword">int</span> ppp_idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">boolean</span> last_not_star = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pp.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pp[i] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( last_not_star )</span><br><span class="line">                    ppp[ppp_idx++] = pp[i];</span><br><span class="line">                last_not_star = <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                last_not_star = <span class="keyword">true</span>;</span><br><span class="line">                ppp[ppp_idx++] = pp[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] pppp = <span class="keyword">new</span> <span class="keyword">char</span>[ppp_idx];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ppp_idx; i++ )</span><br><span class="line">            pppp[i] = ppp[i];</span><br><span class="line">        pp = pppp;</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( ss, pp, <span class="number">0</span>, <span class="number">0</span>, matchs) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">(<span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> ai, <span class="keyword">int</span> bi, <span class="keyword">char</span>[][] matchs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;\0&#x27;</span> ) </span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        <span class="keyword">if</span> ( ai == a.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;?&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( a[ai] == b[bi] )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)？？？<br>运行时间：大约100ms。<br>击败：大约16.73%</p>
+<p><img src="/images/leetcode/44_1.png" alt="image"></p>
+<hr>
+<p>代码二：</p>
+<p>自底向上。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length;</span><br><span class="line">        <span class="keyword">boolean</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">boolean</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            matchs[i][<span class="number">0</span>] = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n &amp;&amp; pp[i] == <span class="string">&#x27;*&#x27;</span>; i++ )</span><br><span class="line">            matchs[<span class="number">0</span>][i+<span class="number">1</span>] = <span class="keyword">true</span>;</span><br><span class="line">        matchs[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">int</span> ii = i - <span class="number">1</span>, jj = j - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;?&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][jj];</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][j] || matchs[i][jj];</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[ii][jj] ) </span><br><span class="line">                        matchs[i][j] = (ss[ii] == pp[jj]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[m][n];</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：O(mn)。<br>运行时间：大约75ms。<br>击败：大约50%</p>
+<p><img src="/images/leetcode/44_2.png" alt="image"></p>
+<hr>
+<p>代码三：</p>
+<p>顺序扫描。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length, i = <span class="number">0</span>, j = <span class="number">0</span>, star_idx = -<span class="number">1</span>, match = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( i &lt; m ) &#123;</span><br><span class="line">            <span class="keyword">if</span>  ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                match = i;</span><br><span class="line">                star_idx = j;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( j &lt; n &amp;&amp; ( pp[j] == <span class="string">&#x27;?&#x27;</span> || pp[j] == ss[i] ) ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( star_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                i = match++;</span><br><span class="line">                j = star_idx + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">            j++;</span><br><span class="line">        <span class="keyword">return</span> j == n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度：应该介于O(mn)到O(m + n)之间。<br>运行时间： 大约60ms。<br>击败：大约80%</p>
+<p><img src="/images/leetcode/44_3.png" alt="image"></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode 72 Edit Distance</title>
     <url>/2017/09/06/2017-09-06-leetcode_72/</url>
     <content><![CDATA[<p>Description:</p>
@@ -2024,49 +2067,6 @@ z^{[L]} =
 <p><img src="/images/leetcode/72_2.png" alt="image"></p>
 <p><strong>注：</strong></p>
 <p><strong>自顶向上比自底向上快？？？想了一下，应该是因为在自顶向下的过程中，并不需要去将所有的子问题都计算出来。</strong></p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode 44 Wildcard Matching</title>
-    <url>/2017/09/06/2017-09-06-leetcode_44/</url>
-    <content><![CDATA[<blockquote>
-<p>Implement wildcard pattern matching with support for ‘?’ and ‘*‘.  </p>
-<p>‘?’ Matches any single character.<br>‘*‘ Matches any sequence of characters (including the empty sequence).  </p>
-<p>The matching should cover the entire input string (not partial).  </p>
-<p>The function prototype should be:<br>bool isMatch(const char *s, const char *p)  </p>
-<p>Some examples:<br>isMatch(“aa”,”a”) → false<br>isMatch(“aa”,”aa”) → true<br>isMatch(“aaa”,”aa”) → false<br>isMatch(“aa”, “*“) → true<br>isMatch(“aa”, “a*“) → true<br>isMatch(“ab”, “?*“) → true<br>isMatch(“aab”, “c*a*b”) → false  </p>
-</blockquote>
-<p>题目理解：</p>
-<p>经典的字符串匹配问题。</p>
-<p>首先想到的方法，顺着走，但是第一次写得非常复杂，这里忽略不计（但是速度还可以）。</p>
-<p>今天所想的方法，动态规划，自顶向下，或者自底向上。</p>
-<p>看了别人的顺着走的算法，原来思路也是很简单的。</p>
-<p><strong>所以不是看到这种问题就想着动态规划，也许顺着想就能简单解决。</strong></p>
-<p><strong>另外，这道题的java运行时间十分不稳定，重复提交可以差30ms。</strong></p>
-<hr>
-<p>代码一：</p>
-<p>自顶向下。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="comment">// 为了先合并连续的&#x27;*&#x27;</span></span><br><span class="line">        <span class="keyword">char</span>[] ppp = <span class="keyword">new</span> <span class="keyword">char</span>[pp.length];</span><br><span class="line">        <span class="keyword">int</span> ppp_idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">boolean</span> last_not_star = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pp.length; i++ ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( pp[i] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span> ( last_not_star )</span><br><span class="line">                    ppp[ppp_idx++] = pp[i];</span><br><span class="line">                last_not_star = <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                last_not_star = <span class="keyword">true</span>;</span><br><span class="line">                ppp[ppp_idx++] = pp[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] pppp = <span class="keyword">new</span> <span class="keyword">char</span>[ppp_idx];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ppp_idx; i++ )</span><br><span class="line">            pppp[i] = ppp[i];</span><br><span class="line">        pp = pppp;</span><br><span class="line">        <span class="keyword">char</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">char</span>[ss.length + <span class="number">1</span>][pp.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ss.length; i++ )</span><br><span class="line">            matchs[i][pp.length] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        matchs[ss.length][pp.length] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> myMatch( ss, pp, <span class="number">0</span>, <span class="number">0</span>, matchs) == <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">char</span> <span class="title">myMatch</span><span class="params">(<span class="keyword">char</span>[] a, <span class="keyword">char</span>[] b, <span class="keyword">int</span> ai, <span class="keyword">int</span> bi, <span class="keyword">char</span>[][] matchs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;\0&#x27;</span> ) </span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        <span class="keyword">if</span> ( ai == a.length ) &#123;</span><br><span class="line">            <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;?&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( b[bi] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">            matchs[ai][bi] = myMatch(a, b, ai, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">if</span> ( matchs[ai][bi] != <span class="string">&#x27;1&#x27;</span> )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi, matchs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ( a[ai] == b[bi] )</span><br><span class="line">                matchs[ai][bi] = myMatch(a, b, ai + <span class="number">1</span>, bi + <span class="number">1</span>, matchs);</span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                matchs[ai][bi] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[ai][bi];</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)？？？<br>运行时间：大约100ms。<br>击败：大约16.73%</p>
-<p><img src="/images/leetcode/44_1.png" alt="image"></p>
-<hr>
-<p>代码二：</p>
-<p>自底向上。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length;</span><br><span class="line">        <span class="keyword">boolean</span>[][] matchs = <span class="keyword">new</span> <span class="keyword">boolean</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++ )</span><br><span class="line">            matchs[i][<span class="number">0</span>] = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n &amp;&amp; pp[i] == <span class="string">&#x27;*&#x27;</span>; i++ )</span><br><span class="line">            matchs[<span class="number">0</span>][i+<span class="number">1</span>] = <span class="keyword">true</span>;</span><br><span class="line">        matchs[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++ ) &#123;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++ ) &#123;</span><br><span class="line">                <span class="keyword">int</span> ii = i - <span class="number">1</span>, jj = j - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;?&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][jj];</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ( pp[jj] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">                    matchs[i][j] = matchs[ii][j] || matchs[i][jj];</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( matchs[ii][jj] ) </span><br><span class="line">                        matchs[i][j] = (ss[ii] == pp[jj]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matchs[m][n];</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：O(mn)。<br>运行时间：大约75ms。<br>击败：大约50%</p>
-<p><img src="/images/leetcode/44_2.png" alt="image"></p>
-<hr>
-<p>代码三：</p>
-<p>顺序扫描。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span>[] ss = s.toCharArray(), pp = p.toCharArray();</span><br><span class="line">        <span class="keyword">int</span> m = ss.length, n = pp.length, i = <span class="number">0</span>, j = <span class="number">0</span>, star_idx = -<span class="number">1</span>, match = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> ( i &lt; m ) &#123;</span><br><span class="line">            <span class="keyword">if</span>  ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> ) &#123;</span><br><span class="line">                match = i;</span><br><span class="line">                star_idx = j;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( j &lt; n &amp;&amp; ( pp[j] == <span class="string">&#x27;?&#x27;</span> || pp[j] == ss[i] ) ) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( star_idx != -<span class="number">1</span> ) &#123;</span><br><span class="line">                i = match++;</span><br><span class="line">                j = star_idx + <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ( j &lt; n &amp;&amp; pp[j] == <span class="string">&#x27;*&#x27;</span> )</span><br><span class="line">            j++;</span><br><span class="line">        <span class="keyword">return</span> j == n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复杂度：应该介于O(mn)到O(m + n)之间。<br>运行时间： 大约60ms。<br>击败：大约80%</p>
-<p><img src="/images/leetcode/44_3.png" alt="image"></p>
 ]]></content>
       <categories>
         <category>leetcode</category>
@@ -2564,35 +2564,6 @@ z^{[L]} =
       </tags>
   </entry>
   <entry>
-    <title>python argparse 模块笔记</title>
-    <url>/2017/09/26/2017-09-26-python-argparse/</url>
-    <content><![CDATA[<p><strong>argparse</strong>是python中的一个模块，参考官方文档来理解它
-<a href="https://docs.python.org/3/library/argparse.html?highlight=argparse#module-argparse">argparse — Parser for command-line options, arguments and sub-commands</a></p>
-<p>第一句介绍就是<code>The argparse module makes it easy to write user-friendly command-line interfaces</code>，
-所以这个模块是用于写命令行接口的，使得脚本友好的从命令行传入参数。</p>
-<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br></pre></td></tr></table></figure>
-<h2 id="创建一个parser对象"><a href="#创建一个parser对象" class="headerlink" title="创建一个parser对象"></a>创建一个parser对象</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser = argparse.ArgumentParser()</span><br></pre></td></tr></table></figure>
-<h2 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&#x27;integers&#x27;</span>, metavar=<span class="string">&#x27;N&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, nargs=<span class="string">&#x27;+&#x27;</span>,</span><br><span class="line">                    <span class="built_in">help</span>=<span class="string">&#x27;an integer for the accumulator&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>这里添加了一个叫做<code>integers</code>的参数，它的类型是<code>int</code>，<br><code>metavar</code>是用于在help里面来表示这个数的，本来是help里面会使用<code>integers</code>这个名字，这里就会被替换为<code>N</code>，<br><code>nargs</code>表示这个参数后面可以跟的输入的个数，这里的’+’表示一个或者多个，<br><code>help</code>是在打印help信息时给出的提示。</p>
-<p> 例如下面脚本：</p>
- <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&#x27;--foo&#x27;</span>, nargs=<span class="number">2</span>, metavar=<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&#x27;bar&#x27;</span>, nargs=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args)</span><br></pre></td></tr></table></figure>
-<p>先在命令行中调用帮助信息，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py -h</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo f f] bar</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  bar</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line">  --foo f f</span><br></pre></td></tr></table></figure>
-<p>输入正确的参数个数和错误的参数个数，</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py --foo a b 1</span><br><span class="line"></span><br><span class="line">Namespace(bar&#x3D;[&#39;1&#39;], foo&#x3D;[&#39;a&#39;, &#39;b&#39;])</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: the following arguments are required: bar</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b c 2</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: unrecognized arguments: 2</span><br></pre></td></tr></table></figure>
-<p>另外有时候，可能需要使用下面的函数来返回输入参数，</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FLAGS, unparsed = parser.parse_known_args()</span><br></pre></td></tr></table></figure>
-<p>这里的意思就是说对于认识的参数，存到<code>FLAGS</code>里面，对于不认识的参数，存到<code>unparsed</code>里面。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/a50aead61319">argparser模块学习</a></p>
-]]></content>
-      <categories>
-        <category>python modules</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Anaconda 使用记录</title>
     <url>/2017/09/18/2017-09-18-anaconda/</url>
     <content><![CDATA[<hr>
@@ -2637,6 +2608,35 @@ z^{[L]} =
       </categories>
       <tags>
         <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python argparse 模块笔记</title>
+    <url>/2017/09/26/2017-09-26-python-argparse/</url>
+    <content><![CDATA[<p><strong>argparse</strong>是python中的一个模块，参考官方文档来理解它
+<a href="https://docs.python.org/3/library/argparse.html?highlight=argparse#module-argparse">argparse — Parser for command-line options, arguments and sub-commands</a></p>
+<p>第一句介绍就是<code>The argparse module makes it easy to write user-friendly command-line interfaces</code>，
+所以这个模块是用于写命令行接口的，使得脚本友好的从命令行传入参数。</p>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br></pre></td></tr></table></figure>
+<h2 id="创建一个parser对象"><a href="#创建一个parser对象" class="headerlink" title="创建一个parser对象"></a>创建一个parser对象</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser = argparse.ArgumentParser()</span><br></pre></td></tr></table></figure>
+<h2 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&#x27;integers&#x27;</span>, metavar=<span class="string">&#x27;N&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, nargs=<span class="string">&#x27;+&#x27;</span>,</span><br><span class="line">                    <span class="built_in">help</span>=<span class="string">&#x27;an integer for the accumulator&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>这里添加了一个叫做<code>integers</code>的参数，它的类型是<code>int</code>，<br><code>metavar</code>是用于在help里面来表示这个数的，本来是help里面会使用<code>integers</code>这个名字，这里就会被替换为<code>N</code>，<br><code>nargs</code>表示这个参数后面可以跟的输入的个数，这里的’+’表示一个或者多个，<br><code>help</code>是在打印help信息时给出的提示。</p>
+<p> 例如下面脚本：</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&#x27;--foo&#x27;</span>, nargs=<span class="number">2</span>, metavar=<span class="string">&#x27;f&#x27;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&#x27;bar&#x27;</span>, nargs=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args)</span><br></pre></td></tr></table></figure>
+<p>先在命令行中调用帮助信息，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py -h</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo f f] bar</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  bar</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message and exit</span><br><span class="line">  --foo f f</span><br></pre></td></tr></table></figure>
+<p>输入正确的参数个数和错误的参数个数，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python .\test.py --foo a b 1</span><br><span class="line"></span><br><span class="line">Namespace(bar&#x3D;[&#39;1&#39;], foo&#x3D;[&#39;a&#39;, &#39;b&#39;])</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: the following arguments are required: bar</span><br><span class="line"></span><br><span class="line">$ python .\test.py --foo a b c 2</span><br><span class="line"></span><br><span class="line">usage: test.py [-h] [--foo FOO FOO] bar</span><br><span class="line">test.py: error: unrecognized arguments: 2</span><br></pre></td></tr></table></figure>
+<p>另外有时候，可能需要使用下面的函数来返回输入参数，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FLAGS, unparsed = parser.parse_known_args()</span><br></pre></td></tr></table></figure>
+<p>这里的意思就是说对于认识的参数，存到<code>FLAGS</code>里面，对于不认识的参数，存到<code>unparsed</code>里面。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/a50aead61319">argparser模块学习</a></p>
+]]></content>
+      <categories>
+        <category>python modules</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -2896,66 +2896,6 @@ n_H = \left \lfloor \frac{n_{H_{prev}} - f + 2 \times pad }{ stride } \right \rf
       </tags>
   </entry>
   <entry>
-    <title>LeetCode 149 Max Points on a Line</title>
-    <url>/2017/11/20/2017-11-20-leetcode_149/</url>
-    <content><![CDATA[<h2 id="Begin"><a href="#Begin" class="headerlink" title="Begin"></a>Begin</h2><p>Description:</p>
-<ul>
-<li>Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.</li>
-</ul>
-<p><strong>题目理解</strong>：</p>
-<p>首先这道题的题干很短，基本第一遍都会理解错，也不清楚输入是个啥，所以这道题被踩了300多次，赞了100次不到…</p>
-<p>经过几次错误的理解之后，明白了题目的意思：<strong>给一系列点，每个点有一个（x，y）的坐标取值，找出处于同一条直线上的最多点数。</strong></p>
-<p>这里需要<strong>注意</strong>：</p>
-<ul>
-<li>可以有取值重复的坐标点。</li>
-<li>直线可以是任意的斜率（以x,y的直角坐标系来看）。</li>
-</ul>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>思路一：</strong></p>
-<p>计算出可能的所有直线，统计每一条直线上的点的个数。直线以它的<strong>斜率</strong>加<strong>截距</strong>来表示：</p>
-<script type="math/tex; mode=display">
-y = kx + b</script><p>给予两个点的坐标，$(x_1,y_1)$、$(x_2,y_2)$，计算$k$与$b$的计算公式为：</p>
-<script type="math/tex; mode=display">
-k = \frac{y_1 - y_2}{x_1 - x_2}</script><script type="math/tex; mode=display">
-b = y_1 - k x_1</script><p><strong>遇到的问题：</strong></p>
-<ol>
-<li>除法会有精度损失，可能造成不一样的直线算出来的斜率一样，而且可能会溢出，因为有<strong>加减</strong>运算。</li>
-<li>不好统计直线上的点数，例如A、B、C三个点在一条线上，那么就有(A,B)(B,C)(A,C)三个组合，
-那么这条直线上的点数该如何统计？</li>
-</ol>
-<p><strong>思路二：</strong></p>
-<p>以每一个点为起点，计算它与其它的点组成的直线，统计直线上的点的次数。</p>
-<p>这里的直线斜率直接使用分数表示，不需要截距，因为起点为同一个点。</p>
-<p><strong>这里的分数表示需要计算分子与分母的最大公约数</strong>，在后面进行介绍，感觉这个才是这道题的重点。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a point.</span></span><br><span class="line"><span class="comment"> * class Point &#123;</span></span><br><span class="line"><span class="comment"> *     int x;</span></span><br><span class="line"><span class="comment"> *     int y;</span></span><br><span class="line"><span class="comment"> *     Point() &#123; x = 0; y = 0; &#125;</span></span><br><span class="line"><span class="comment"> *     Point(int a, int b) &#123; x = a; y = b; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">PCount</span> </span>&#123;</span><br><span class="line">        Point point;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">PCount</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.point = point;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> c;</span><br><span class="line">        <span class="keyword">while</span> ( b != <span class="number">0</span> ) &#123; </span><br><span class="line">            c = a % b; </span><br><span class="line">            a = b;  </span><br><span class="line">            b = c;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPoints</span><span class="params">(Point[] points)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( points == <span class="keyword">null</span> )</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">        PCount[] pcount = <span class="keyword">new</span> PCount[points.length];</span><br><span class="line">        <span class="keyword">int</span> pidx = <span class="number">0</span>;</span><br><span class="line">        Map&lt;String, Integer&gt; ptable = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> ( Point point : points ) &#123;</span><br><span class="line">            String coord = point.x + <span class="string">&quot;*&quot;</span> + point.y;</span><br><span class="line">            Integer idx = ptable.get(coord);</span><br><span class="line">            <span class="keyword">if</span> ( idx == <span class="keyword">null</span> ) &#123;</span><br><span class="line">                ptable.put(coord, pidx);</span><br><span class="line">                pcount[pidx++] = <span class="keyword">new</span> PCount(point);</span><br><span class="line">            &#125; <span class="keyword">else</span></span><br><span class="line">                pcount[idx].count++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( pidx == <span class="number">1</span> )</span><br><span class="line">            <span class="keyword">return</span> points.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pidx; i++ ) &#123;</span><br><span class="line">            Point p1 = pcount[i].point;</span><br><span class="line">            Map&lt;String, Integer&gt; lines = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; pidx; j++ ) &#123;</span><br><span class="line">                Point p2 = pcount[j].point;</span><br><span class="line">                String line = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">if</span> ( p1.x == p2.x ) &#123;</span><br><span class="line">                    line = <span class="string">&quot;1/0&quot;</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( p1.y == p2.y ) &#123;</span><br><span class="line">                    line = <span class="string">&quot;0/1&quot;</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">int</span> denominator = p1.y - p2.y;</span><br><span class="line">                    <span class="keyword">int</span> numerator = p1.x - p2.x;</span><br><span class="line">                    <span class="keyword">int</span> gcd = GCD(denominator, numerator);</span><br><span class="line">                    <span class="keyword">if</span> ( gcd != <span class="number">0</span> ) &#123;</span><br><span class="line">                        denominator /= gcd;</span><br><span class="line">                        numerator /= gcd;</span><br><span class="line">                    &#125;</span><br><span class="line">                    line = denominator + <span class="string">&quot;/&quot;</span> + numerator;</span><br><span class="line">                &#125;</span><br><span class="line">                lines.put(line, lines.getOrDefault(line, pcount[i].count) + pcount[j].count);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> count : lines.values() ) </span><br><span class="line">                max = max &lt; count ? count : max;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="/images/leetcode/149_1.png" alt="image"></p>
-<h2 id="最大公约数"><a href="#最大公约数" class="headerlink" title="最大公约数"></a>最大公约数</h2><p>对于两个数A、B，求解它们的最大公约数。</p>
-<p><strong>方法一：</strong></p>
-<p>选出A、B中最小的数，向下一个一个进行取余，直到两个数的余数同时为0：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = a &gt; b ? b : a;</span><br><span class="line">    <span class="keyword">while</span> ( a % c != <span class="number">0</span> || b % c != <span class="number">0</span> ) &#123;</span><br><span class="line">        c--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>方法二：</strong></p>
-<p>显然方法一的效率很低，那么肯定有别的快速的方法。</p>
-<p>对A、B，假设它们的最大公约数为C，那么：</p>
-<script type="math/tex; mode=display">
-A = k_1 C</script><script type="math/tex; mode=display">
-B = k_2 C</script><p>注意，其中$k_1$与$k_2$一定是互质的，那么对A与B取余：</p>
-<script type="math/tex; mode=display">
-D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
-<ol>
-<li>D的值为0，那么B就是最大公约数，其中$k_2=1$。</li>
-<li>D的值不为0，D与B之间的最大公约数还是C。</li>
-</ol>
-<p>由于D的绝对值会比A要小，并且B、D之间的最大公约数还是C，所以可以计算B、D之间的最大公约数来代替计算A、B之间的。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">    <span class="keyword">while</span> ( b != <span class="number">0</span> ) &#123; </span><br><span class="line">        c = a % b; </span><br><span class="line">        a = b;  </span><br><span class="line">        b = c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个方法会比方法一快很多。</p>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>study</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SFC分配简单实验</title>
     <url>/2017/11/17/2017-11-17-SFC/</url>
     <content><![CDATA[<p><a href="https://github.com/isadamu/ml_sfc_allocate_test/tree/master">github链接</a></p>
@@ -3030,6 +2970,66 @@ D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
       <tags>
         <tag>study</tag>
         <tag>deep learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode 149 Max Points on a Line</title>
+    <url>/2017/11/20/2017-11-20-leetcode_149/</url>
+    <content><![CDATA[<h2 id="Begin"><a href="#Begin" class="headerlink" title="Begin"></a>Begin</h2><p>Description:</p>
+<ul>
+<li>Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.</li>
+</ul>
+<p><strong>题目理解</strong>：</p>
+<p>首先这道题的题干很短，基本第一遍都会理解错，也不清楚输入是个啥，所以这道题被踩了300多次，赞了100次不到…</p>
+<p>经过几次错误的理解之后，明白了题目的意思：<strong>给一系列点，每个点有一个（x，y）的坐标取值，找出处于同一条直线上的最多点数。</strong></p>
+<p>这里需要<strong>注意</strong>：</p>
+<ul>
+<li>可以有取值重复的坐标点。</li>
+<li>直线可以是任意的斜率（以x,y的直角坐标系来看）。</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>思路一：</strong></p>
+<p>计算出可能的所有直线，统计每一条直线上的点的个数。直线以它的<strong>斜率</strong>加<strong>截距</strong>来表示：</p>
+<script type="math/tex; mode=display">
+y = kx + b</script><p>给予两个点的坐标，$(x_1,y_1)$、$(x_2,y_2)$，计算$k$与$b$的计算公式为：</p>
+<script type="math/tex; mode=display">
+k = \frac{y_1 - y_2}{x_1 - x_2}</script><script type="math/tex; mode=display">
+b = y_1 - k x_1</script><p><strong>遇到的问题：</strong></p>
+<ol>
+<li>除法会有精度损失，可能造成不一样的直线算出来的斜率一样，而且可能会溢出，因为有<strong>加减</strong>运算。</li>
+<li>不好统计直线上的点数，例如A、B、C三个点在一条线上，那么就有(A,B)(B,C)(A,C)三个组合，
+那么这条直线上的点数该如何统计？</li>
+</ol>
+<p><strong>思路二：</strong></p>
+<p>以每一个点为起点，计算它与其它的点组成的直线，统计直线上的点的次数。</p>
+<p>这里的直线斜率直接使用分数表示，不需要截距，因为起点为同一个点。</p>
+<p><strong>这里的分数表示需要计算分子与分母的最大公约数</strong>，在后面进行介绍，感觉这个才是这道题的重点。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a point.</span></span><br><span class="line"><span class="comment"> * class Point &#123;</span></span><br><span class="line"><span class="comment"> *     int x;</span></span><br><span class="line"><span class="comment"> *     int y;</span></span><br><span class="line"><span class="comment"> *     Point() &#123; x = 0; y = 0; &#125;</span></span><br><span class="line"><span class="comment"> *     Point(int a, int b) &#123; x = a; y = b; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">PCount</span> </span>&#123;</span><br><span class="line">        Point point;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">PCount</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.point = point;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> c;</span><br><span class="line">        <span class="keyword">while</span> ( b != <span class="number">0</span> ) &#123; </span><br><span class="line">            c = a % b; </span><br><span class="line">            a = b;  </span><br><span class="line">            b = c;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPoints</span><span class="params">(Point[] points)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( points == <span class="keyword">null</span> )</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">        PCount[] pcount = <span class="keyword">new</span> PCount[points.length];</span><br><span class="line">        <span class="keyword">int</span> pidx = <span class="number">0</span>;</span><br><span class="line">        Map&lt;String, Integer&gt; ptable = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> ( Point point : points ) &#123;</span><br><span class="line">            String coord = point.x + <span class="string">&quot;*&quot;</span> + point.y;</span><br><span class="line">            Integer idx = ptable.get(coord);</span><br><span class="line">            <span class="keyword">if</span> ( idx == <span class="keyword">null</span> ) &#123;</span><br><span class="line">                ptable.put(coord, pidx);</span><br><span class="line">                pcount[pidx++] = <span class="keyword">new</span> PCount(point);</span><br><span class="line">            &#125; <span class="keyword">else</span></span><br><span class="line">                pcount[idx].count++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( pidx == <span class="number">1</span> )</span><br><span class="line">            <span class="keyword">return</span> points.length;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pidx; i++ ) &#123;</span><br><span class="line">            Point p1 = pcount[i].point;</span><br><span class="line">            Map&lt;String, Integer&gt; lines = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; pidx; j++ ) &#123;</span><br><span class="line">                Point p2 = pcount[j].point;</span><br><span class="line">                String line = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">if</span> ( p1.x == p2.x ) &#123;</span><br><span class="line">                    line = <span class="string">&quot;1/0&quot;</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> ( p1.y == p2.y ) &#123;</span><br><span class="line">                    line = <span class="string">&quot;0/1&quot;</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">int</span> denominator = p1.y - p2.y;</span><br><span class="line">                    <span class="keyword">int</span> numerator = p1.x - p2.x;</span><br><span class="line">                    <span class="keyword">int</span> gcd = GCD(denominator, numerator);</span><br><span class="line">                    <span class="keyword">if</span> ( gcd != <span class="number">0</span> ) &#123;</span><br><span class="line">                        denominator /= gcd;</span><br><span class="line">                        numerator /= gcd;</span><br><span class="line">                    &#125;</span><br><span class="line">                    line = denominator + <span class="string">&quot;/&quot;</span> + numerator;</span><br><span class="line">                &#125;</span><br><span class="line">                lines.put(line, lines.getOrDefault(line, pcount[i].count) + pcount[j].count);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> ( <span class="keyword">int</span> count : lines.values() ) </span><br><span class="line">                max = max &lt; count ? count : max;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/leetcode/149_1.png" alt="image"></p>
+<h2 id="最大公约数"><a href="#最大公约数" class="headerlink" title="最大公约数"></a>最大公约数</h2><p>对于两个数A、B，求解它们的最大公约数。</p>
+<p><strong>方法一：</strong></p>
+<p>选出A、B中最小的数，向下一个一个进行取余，直到两个数的余数同时为0：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = a &gt; b ? b : a;</span><br><span class="line">    <span class="keyword">while</span> ( a % c != <span class="number">0</span> || b % c != <span class="number">0</span> ) &#123;</span><br><span class="line">        c--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>方法二：</strong></p>
+<p>显然方法一的效率很低，那么肯定有别的快速的方法。</p>
+<p>对A、B，假设它们的最大公约数为C，那么：</p>
+<script type="math/tex; mode=display">
+A = k_1 C</script><script type="math/tex; mode=display">
+B = k_2 C</script><p>注意，其中$k_1$与$k_2$一定是互质的，那么对A与B取余：</p>
+<script type="math/tex; mode=display">
+D = A \% B = (k_1 \% k_2)C</script><p>那么注意到D的取值情况：</p>
+<ol>
+<li>D的值为0，那么B就是最大公约数，其中$k_2=1$。</li>
+<li>D的值不为0，D与B之间的最大公约数还是C。</li>
+</ol>
+<p>由于D的绝对值会比A要小，并且B、D之间的最大公约数还是C，所以可以计算B、D之间的最大公约数来代替计算A、B之间的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GCD</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">    <span class="keyword">while</span> ( b != <span class="number">0</span> ) &#123; </span><br><span class="line">        c = a % b; </span><br><span class="line">        a = b;  </span><br><span class="line">        b = c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法会比方法一快很多。</p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -3960,63 +3960,6 @@ java中可以使用下面语句来取到：</p>
       </tags>
   </entry>
   <entry>
-    <title>ceph-mimic-13.2.5中s3的初步使用</title>
-    <url>/2019/08/02/2019-08-02-ceph-s3-use/</url>
-    <content><![CDATA[<hr>
-<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><p>有一个<strong>HEALTH_OK</strong>的ceph集群，并且还有剩余的存储空间。</p>
-<p>这里是我所搭建的集群：</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph -s</span></span><br><span class="line">  cluster:</span><br><span class="line">    id:     a20b153c-c907-41bb-a5b2-753a40e2085c</span><br><span class="line">    health: HEALTH_OK</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon: 4 daemons, quorum node1,node2,node3,node4</span><br><span class="line">    mgr: node2(active), standbys: node3, node1, node4</span><br><span class="line">    osd: 4 osds: 4 up, 4 in</span><br><span class="line">    rgw: 1 daemon active</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   6 pools, 48 pgs</span><br><span class="line">    objects: 198  objects, 3.2 KiB</span><br><span class="line">    usage:   4.1 GiB used, 46 GiB / 50 GiB avail</span><br><span class="line">    pgs:     48 active+clean</span><br></pre></td></tr></table></figure></h2><h2 id="创建OBJECT-GATEWAY"><a href="#创建OBJECT-GATEWAY" class="headerlink" title="创建OBJECT GATEWAY"></a>创建OBJECT GATEWAY</h2><p>注意到<code>OBJECT GATEWAY</code>不需要是mon节点或者osd节点。</p>
-<p>首先，要在节点上安装相关的包，可以使用官网推荐的<code>ceph-deploy install --rgw &lt;gateway-node1&gt; [&lt;gateway-node2&gt; ...]</code>来进行安装，
-但是这里由于指定版本、epel包下载容易失败等问题，还是推荐直接使用本地yum源来进行ceph和ceph-radosgw的安装。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install -y ceph-13.2.5 ceph-radosgw-13.2.5</span></span><br></pre></td></tr></table></figure>
-<p>第二步，将节点设为<strong>admin</strong>节点，我这里直接使用了集群中的node1节点：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ceph-deploy admin node1</span></span><br></pre></td></tr></table></figure>
-<p>第三步，创建<code>GATEWAY INSTANCE</code>：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ceph-deploy rgw create node1</span></span><br></pre></td></tr></table></figure>
-<p>服务的默认端口为7480，查看当前打开端口，可以看到服务成功建立起来：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">[node1]$</span><span class="bash"> netstat -nlpt</span></span><br><span class="line"></span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 192.168.31.203:6789     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6800     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6801     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6802     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6803     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6804     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 0.0.0.0:7480            0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN      -                   </span><br><span class="line">tcp6       0      0 ::1:25                  :::*                    LISTEN      -                   </span><br></pre></td></tr></table></figure>
-<p>查看当前pool，应该可以看到相关的pool被创建：</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph osd pool ls</span></span><br><span class="line"></span><br><span class="line">default.rgw.meta</span><br><span class="line">.rgw.root</span><br><span class="line">default.rgw.control</span><br><span class="line">default.rgw.log</span><br><span class="line">default.rgw.buckets.index</span><br><span class="line">default.rgw.buckets.data</span><br></pre></td></tr></table></figure></h2><h2 id="创建RADOSGW-USER"><a href="#创建RADOSGW-USER" class="headerlink" title="创建RADOSGW USER"></a>创建RADOSGW USER</h2><p>s3是一个Web服务接口，自然的，就需要相应的访问权限来与它交互，所以在使用它之前，需要创建用户。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo radosgw-admin user create --uid=<span class="string">&quot;testuser&quot;</span> --display-name=<span class="string">&quot;First User&quot;</span></span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">        &quot;user_id&quot;: &quot;testuser&quot;,</span><br><span class="line">        &quot;display_name&quot;: &quot;First User&quot;,</span><br><span class="line">        &quot;email&quot;: &quot;&quot;,</span><br><span class="line">        &quot;suspended&quot;: 0,</span><br><span class="line">        &quot;max_buckets&quot;: 1000,</span><br><span class="line">        &quot;subusers&quot;: [],</span><br><span class="line">        &quot;keys&quot;: [&#123;</span><br><span class="line">                &quot;user&quot;: &quot;testuser&quot;,</span><br><span class="line">                &quot;access_key&quot;: &quot;I0PJDPCIYZ665MW88W9R&quot;,</span><br><span class="line">                &quot;secret_key&quot;: &quot;dxaXZ8U90SXydYzyS5ivamEP20hkLSUViiaR+ZDA&quot;</span><br><span class="line">        &#125;],</span><br><span class="line">        &quot;swift_keys&quot;: [],</span><br><span class="line">        &quot;caps&quot;: [],</span><br><span class="line">        &quot;op_mask&quot;: &quot;read, write, delete&quot;,</span><br><span class="line">        &quot;default_placement&quot;: &quot;&quot;,</span><br><span class="line">        &quot;placement_tags&quot;: [],</span><br><span class="line">        &quot;bucket_quota&quot;: &#123;</span><br><span class="line">                &quot;enabled&quot;: false,</span><br><span class="line">                &quot;max_size_kb&quot;: -1,</span><br><span class="line">                &quot;max_objects&quot;: -1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;user_quota&quot;: &#123;</span><br><span class="line">                &quot;enabled&quot;: false,</span><br><span class="line">                &quot;max_size_kb&quot;: -1,</span><br><span class="line">                &quot;max_objects&quot;: -1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;temp_url_keys&quot;: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在这一长串的输出中，别的在现阶段不用管，记住<strong>access_key</strong>和<strong>secret_key</strong>就行。</p>
-<p>想再查询<strong>access_key</strong>和<strong>secret_key</strong>，可以使用以下命令：</p>
-<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">// 查询有哪些用户</span><br><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo radosgw-admin user list</span></span><br><span class="line"></span><br><span class="line">[</span><br><span class="line">    &quot;testuser&quot;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">// 查询用户信息</span><br><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo radosgw-admin user info --uid=testuser</span></span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">        &quot;keys&quot;: [&#123;</span><br><span class="line">                &quot;user&quot;: &quot;testuser&quot;,</span><br><span class="line">                &quot;access_key&quot;: &quot;I0PJDPCIYZ665MW88W9R&quot;,</span><br><span class="line">                &quot;secret_key&quot;: &quot;dxaXZ8U90SXydYzyS5ivamEP20hkLSUViiaR+ZDA&quot;</span><br><span class="line">        &#125;],</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure></h2><h2 id="使用S3-Browser（非必须）"><a href="#使用S3-Browser（非必须）" class="headerlink" title="使用S3 Browser（非必须）"></a>使用<code>S3 Browser</code>（非必须）</h2><p>使用<code>S3 Browser</code>来浏览存储，以证明现在服务运行正常，连接正常。</p>
-<p><a href="https://s3browser.com/">下载S3 Browser</a></p>
-<p>运行S3 Browser，它会让你输入你的S3账户：</p>
-<p><img src="/images/linux/ceph/s3-browser-1.png" alt="image" title="s3-browser-1"></p>
-<p>然后将上面的信息都填上，如下：</p>
-<p><img src="/images/linux/ceph/s3-browser-2.png" alt="image" title="s3-browser-2"></p>
-<p>连接成功之后，就可以看到当前的bucket情况，也可以使用它进行创建、删除、上传以及下载等：</p>
-<p><img src="/images/linux/ceph/s3-browser-3.png" alt="image" title="s3-browser-3"></p>
-<p>到目前为止，算是完成了ceph集群方面的准备工作，下面就是写代码方面了。</p>
-<hr>
-<h2 id="创建工程"><a href="#创建工程" class="headerlink" title="创建工程"></a>创建工程</h2><p>我这里使用的是<strong>idea+java</strong>。</p>
-<p>首先创建maven工程（处理依赖会简单很多）：</p>
-<p><img src="/images/linux/ceph/s3-maven-1.png" alt="image" title="s3-maven-1"></p>
-<p>（注：这里略过了idea中maven配置的相关内容。）</p>
-<p>修改pom.xml文件，添加依赖:</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>test<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.amazonaws<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aws-java-sdk-s3<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.11.597<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>接下来最重要的就是参考官方给的<a href="https://github.com/awsdocs/aws-doc-sdk-examples/tree/master/java/example_code/s3/src/main/java">代码样例</a>了。</p>
-<p>最后我写的类如下：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> s3;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.amazonaws.auth.AWSStaticCredentialsProvider;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.auth.BasicAWSCredentials;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.client.builder.AwsClientBuilder;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.services.s3.AmazonS3;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.services.s3.AmazonS3ClientBuilder;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.services.s3.model.*;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.util.StringUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * S3操作类，完成一些基本的操作</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> long</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> v0.1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">S3Template</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String ORIGINAL_FOLDER = <span class="string">&quot;video/original&quot;</span>; <span class="comment">// 原始文件目录</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DOWNLOAD_FOLDER = <span class="string">&quot;video/download&quot;</span>; <span class="comment">// 下载文件目录</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TRANSCODING_FOLDER = <span class="string">&quot;video/transcoding&quot;</span>; <span class="comment">// 转码文件目录</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AmazonS3 s3Client = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MyLogger log = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">S3Template</span><span class="params">(String endPoint, String accessKey, String secretKey)</span> </span>&#123;</span><br><span class="line">         <span class="keyword">this</span>.s3Client = AmazonS3ClientBuilder.standard()</span><br><span class="line">                .withCredentials(<span class="keyword">new</span> AWSStaticCredentialsProvider(<span class="keyword">new</span> BasicAWSCredentials(accessKey, secretKey)))</span><br><span class="line">                .withEndpointConfiguration(<span class="keyword">new</span> AwsClientBuilder.EndpointConfiguration(endPoint, <span class="string">&quot;&quot;</span>))</span><br><span class="line">                .build();</span><br><span class="line">         log = <span class="keyword">new</span> MyLogger();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">listBuckets</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Bucket&gt; buckets = s3Client.listBuckets();</span><br><span class="line">        <span class="keyword">for</span> (Bucket bucket : buckets) &#123;</span><br><span class="line">            log.info(bucket.getName() + <span class="string">&quot;\t&quot;</span> +</span><br><span class="line">                    StringUtils.fromDate(bucket.getCreationDate()));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createBucket</span><span class="params">(String bucketName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!s3Client.doesBucketExistV2(bucketName)) &#123;</span><br><span class="line">            s3Client.createBucket(<span class="keyword">new</span> CreateBucketRequest(bucketName));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Verify that the bucket was created by retrieving it and checking its location.</span></span><br><span class="line">        String bucketLocation = s3Client.getBucketLocation(<span class="keyword">new</span> GetBucketLocationRequest(bucketName));</span><br><span class="line">        log.info(<span class="string">&quot;Bucket location: &quot;</span> + bucketLocation);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteBucket</span><span class="params">(String bucketName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!s3Client.doesBucketExistV2(bucketName)) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;Bucket &quot;</span> + bucketName + <span class="string">&quot; does not exist.&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ObjectListing objectListing = s3Client.listObjects(bucketName);</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            Iterator&lt;S3ObjectSummary&gt; objIter = objectListing.getObjectSummaries().iterator();</span><br><span class="line">            <span class="keyword">while</span> (objIter.hasNext()) &#123;</span><br><span class="line">                s3Client.deleteObject(bucketName, objIter.next().getKey());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (objectListing.isTruncated()) &#123;</span><br><span class="line">                objectListing = s3Client.listNextBatchOfObjects(objectListing);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        VersionListing versionList = s3Client.listVersions(<span class="keyword">new</span> ListVersionsRequest().withBucketName(bucketName));</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            Iterator&lt;S3VersionSummary&gt; versionIter = versionList.getVersionSummaries().iterator();</span><br><span class="line">            <span class="keyword">while</span> (versionIter.hasNext()) &#123;</span><br><span class="line">                S3VersionSummary vs = versionIter.next();</span><br><span class="line">                s3Client.deleteVersion(bucketName, vs.getKey(), vs.getVersionId());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (versionList.isTruncated()) &#123;</span><br><span class="line">                versionList = s3Client.listNextBatchOfVersions(versionList);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        s3Client.deleteBucket(bucketName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">downFile</span><span class="params">(String bucketName, String key)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;Downloading object &quot;</span> + key);</span><br><span class="line">        S3Object fullObject = <span class="keyword">null</span>;</span><br><span class="line">        fullObject = s3Client.getObject(<span class="keyword">new</span> GetObjectRequest(bucketName, key));</span><br><span class="line">        storeFile(fullObject.getObjectContent(), key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">uploadFile</span><span class="params">(String bucketName, String fileObjKeyName, String fileName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( s3Client.doesObjectExist(bucketName, fileObjKeyName) ) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;The File &quot;</span> + fileName + <span class="string">&quot; already exists.&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Upload a file as a new object with ContentType and title specified.</span></span><br><span class="line">        log.info(<span class="string">&quot;Upload object &quot;</span> + fileName);</span><br><span class="line">        PutObjectRequest request = <span class="keyword">new</span> PutObjectRequest(bucketName, fileObjKeyName, <span class="keyword">new</span> File(ORIGINAL_FOLDER + <span class="string">&quot;/&quot;</span> + fileName));</span><br><span class="line">        ObjectMetadata metadata = <span class="keyword">new</span> ObjectMetadata();</span><br><span class="line">        metadata.setContentType(<span class="string">&quot;plain/video&quot;</span>);</span><br><span class="line">        metadata.addUserMetadata(<span class="string">&quot;x-amz-meta-title&quot;</span>, <span class="string">&quot;someTitle&quot;</span>);</span><br><span class="line">        request.setMetadata(metadata);</span><br><span class="line">        s3Client.putObject(request);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">storeFile</span><span class="params">(InputStream input, String fileName)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;Store File &quot;</span> + fileName);</span><br><span class="line">        <span class="comment">// Read the text input stream one line at a time and display each line.</span></span><br><span class="line">        BufferedInputStream reader = <span class="keyword">new</span> BufferedInputStream(input);</span><br><span class="line">        BufferedOutputStream writer = <span class="keyword">new</span> BufferedOutputStream(<span class="keyword">new</span> FileOutputStream(DOWNLOAD_FOLDER + <span class="string">&quot;/&quot;</span> + fileName));</span><br><span class="line">        <span class="keyword">byte</span>[] buff = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> ((len = reader.read(buff)) != -<span class="number">1</span>) &#123;</span><br><span class="line">            writer.write(buff, <span class="number">0</span>, len);</span><br><span class="line">        &#125;</span><br><span class="line">        reader.close();</span><br><span class="line">        writer.close();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>成功上传文件到ceph并将其下载下来：</p>
-<p><img src="/images/linux/ceph/s3-maven-2.png" alt="image" title="s3-maven-2"></p>
-<p>基本操作练习结束。</p>
-<hr>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.ceph.com/docs/master/install/install-ceph-gateway/">INSTALL CEPH OBJECT GATEWAY</a></p>
-<p><a href="https://github.com/awsdocs/aws-doc-sdk-examples/tree/master/java/example_code/s3/src/main/java">aws-doc-sdk-examples</a></p>
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-        <tag>centos</tag>
-        <tag>ceph</tag>
-        <tag>s3</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>centos7中lvm分区的创建与扩展</title>
     <url>/2019/07/23/2019-07-23-centos-lvm-create-extend/</url>
     <content><![CDATA[<hr>
@@ -4092,6 +4035,63 @@ java中可以使用下面语句来取到：</p>
         <tag>ceph</tag>
         <tag>cephfs</tag>
         <tag>nfs</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ceph-mimic-13.2.5中s3的初步使用</title>
+    <url>/2019/08/02/2019-08-02-ceph-s3-use/</url>
+    <content><![CDATA[<hr>
+<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><p>有一个<strong>HEALTH_OK</strong>的ceph集群，并且还有剩余的存储空间。</p>
+<p>这里是我所搭建的集群：</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph -s</span></span><br><span class="line">  cluster:</span><br><span class="line">    id:     a20b153c-c907-41bb-a5b2-753a40e2085c</span><br><span class="line">    health: HEALTH_OK</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon: 4 daemons, quorum node1,node2,node3,node4</span><br><span class="line">    mgr: node2(active), standbys: node3, node1, node4</span><br><span class="line">    osd: 4 osds: 4 up, 4 in</span><br><span class="line">    rgw: 1 daemon active</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   6 pools, 48 pgs</span><br><span class="line">    objects: 198  objects, 3.2 KiB</span><br><span class="line">    usage:   4.1 GiB used, 46 GiB / 50 GiB avail</span><br><span class="line">    pgs:     48 active+clean</span><br></pre></td></tr></table></figure></h2><h2 id="创建OBJECT-GATEWAY"><a href="#创建OBJECT-GATEWAY" class="headerlink" title="创建OBJECT GATEWAY"></a>创建OBJECT GATEWAY</h2><p>注意到<code>OBJECT GATEWAY</code>不需要是mon节点或者osd节点。</p>
+<p>首先，要在节点上安装相关的包，可以使用官网推荐的<code>ceph-deploy install --rgw &lt;gateway-node1&gt; [&lt;gateway-node2&gt; ...]</code>来进行安装，
+但是这里由于指定版本、epel包下载容易失败等问题，还是推荐直接使用本地yum源来进行ceph和ceph-radosgw的安装。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install -y ceph-13.2.5 ceph-radosgw-13.2.5</span></span><br></pre></td></tr></table></figure>
+<p>第二步，将节点设为<strong>admin</strong>节点，我这里直接使用了集群中的node1节点：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ceph-deploy admin node1</span></span><br></pre></td></tr></table></figure>
+<p>第三步，创建<code>GATEWAY INSTANCE</code>：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ceph-deploy rgw create node1</span></span><br></pre></td></tr></table></figure>
+<p>服务的默认端口为7480，查看当前打开端口，可以看到服务成功建立起来：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">[node1]$</span><span class="bash"> netstat -nlpt</span></span><br><span class="line"></span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 192.168.31.203:6789     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6800     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6801     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6802     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6803     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 192.168.31.203:6804     0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 0.0.0.0:7480            0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN      -                   </span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN      -                   </span><br><span class="line">tcp6       0      0 ::1:25                  :::*                    LISTEN      -                   </span><br></pre></td></tr></table></figure>
+<p>查看当前pool，应该可以看到相关的pool被创建：</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ceph osd pool ls</span></span><br><span class="line"></span><br><span class="line">default.rgw.meta</span><br><span class="line">.rgw.root</span><br><span class="line">default.rgw.control</span><br><span class="line">default.rgw.log</span><br><span class="line">default.rgw.buckets.index</span><br><span class="line">default.rgw.buckets.data</span><br></pre></td></tr></table></figure></h2><h2 id="创建RADOSGW-USER"><a href="#创建RADOSGW-USER" class="headerlink" title="创建RADOSGW USER"></a>创建RADOSGW USER</h2><p>s3是一个Web服务接口，自然的，就需要相应的访问权限来与它交互，所以在使用它之前，需要创建用户。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo radosgw-admin user create --uid=<span class="string">&quot;testuser&quot;</span> --display-name=<span class="string">&quot;First User&quot;</span></span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">        &quot;user_id&quot;: &quot;testuser&quot;,</span><br><span class="line">        &quot;display_name&quot;: &quot;First User&quot;,</span><br><span class="line">        &quot;email&quot;: &quot;&quot;,</span><br><span class="line">        &quot;suspended&quot;: 0,</span><br><span class="line">        &quot;max_buckets&quot;: 1000,</span><br><span class="line">        &quot;subusers&quot;: [],</span><br><span class="line">        &quot;keys&quot;: [&#123;</span><br><span class="line">                &quot;user&quot;: &quot;testuser&quot;,</span><br><span class="line">                &quot;access_key&quot;: &quot;I0PJDPCIYZ665MW88W9R&quot;,</span><br><span class="line">                &quot;secret_key&quot;: &quot;dxaXZ8U90SXydYzyS5ivamEP20hkLSUViiaR+ZDA&quot;</span><br><span class="line">        &#125;],</span><br><span class="line">        &quot;swift_keys&quot;: [],</span><br><span class="line">        &quot;caps&quot;: [],</span><br><span class="line">        &quot;op_mask&quot;: &quot;read, write, delete&quot;,</span><br><span class="line">        &quot;default_placement&quot;: &quot;&quot;,</span><br><span class="line">        &quot;placement_tags&quot;: [],</span><br><span class="line">        &quot;bucket_quota&quot;: &#123;</span><br><span class="line">                &quot;enabled&quot;: false,</span><br><span class="line">                &quot;max_size_kb&quot;: -1,</span><br><span class="line">                &quot;max_objects&quot;: -1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;user_quota&quot;: &#123;</span><br><span class="line">                &quot;enabled&quot;: false,</span><br><span class="line">                &quot;max_size_kb&quot;: -1,</span><br><span class="line">                &quot;max_objects&quot;: -1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;temp_url_keys&quot;: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这一长串的输出中，别的在现阶段不用管，记住<strong>access_key</strong>和<strong>secret_key</strong>就行。</p>
+<p>想再查询<strong>access_key</strong>和<strong>secret_key</strong>，可以使用以下命令：</p>
+<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">// 查询有哪些用户</span><br><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo radosgw-admin user list</span></span><br><span class="line"></span><br><span class="line">[</span><br><span class="line">    &quot;testuser&quot;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">// 查询用户信息</span><br><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo radosgw-admin user info --uid=testuser</span></span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">        &quot;keys&quot;: [&#123;</span><br><span class="line">                &quot;user&quot;: &quot;testuser&quot;,</span><br><span class="line">                &quot;access_key&quot;: &quot;I0PJDPCIYZ665MW88W9R&quot;,</span><br><span class="line">                &quot;secret_key&quot;: &quot;dxaXZ8U90SXydYzyS5ivamEP20hkLSUViiaR+ZDA&quot;</span><br><span class="line">        &#125;],</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure></h2><h2 id="使用S3-Browser（非必须）"><a href="#使用S3-Browser（非必须）" class="headerlink" title="使用S3 Browser（非必须）"></a>使用<code>S3 Browser</code>（非必须）</h2><p>使用<code>S3 Browser</code>来浏览存储，以证明现在服务运行正常，连接正常。</p>
+<p><a href="https://s3browser.com/">下载S3 Browser</a></p>
+<p>运行S3 Browser，它会让你输入你的S3账户：</p>
+<p><img src="/images/linux/ceph/s3-browser-1.png" alt="image" title="s3-browser-1"></p>
+<p>然后将上面的信息都填上，如下：</p>
+<p><img src="/images/linux/ceph/s3-browser-2.png" alt="image" title="s3-browser-2"></p>
+<p>连接成功之后，就可以看到当前的bucket情况，也可以使用它进行创建、删除、上传以及下载等：</p>
+<p><img src="/images/linux/ceph/s3-browser-3.png" alt="image" title="s3-browser-3"></p>
+<p>到目前为止，算是完成了ceph集群方面的准备工作，下面就是写代码方面了。</p>
+<hr>
+<h2 id="创建工程"><a href="#创建工程" class="headerlink" title="创建工程"></a>创建工程</h2><p>我这里使用的是<strong>idea+java</strong>。</p>
+<p>首先创建maven工程（处理依赖会简单很多）：</p>
+<p><img src="/images/linux/ceph/s3-maven-1.png" alt="image" title="s3-maven-1"></p>
+<p>（注：这里略过了idea中maven配置的相关内容。）</p>
+<p>修改pom.xml文件，添加依赖:</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>test<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.amazonaws<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aws-java-sdk-s3<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.11.597<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>接下来最重要的就是参考官方给的<a href="https://github.com/awsdocs/aws-doc-sdk-examples/tree/master/java/example_code/s3/src/main/java">代码样例</a>了。</p>
+<p>最后我写的类如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> s3;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.amazonaws.auth.AWSStaticCredentialsProvider;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.auth.BasicAWSCredentials;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.client.builder.AwsClientBuilder;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.services.s3.AmazonS3;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.services.s3.AmazonS3ClientBuilder;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.services.s3.model.*;</span><br><span class="line"><span class="keyword">import</span> com.amazonaws.util.StringUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * S3操作类，完成一些基本的操作</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> long</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> v0.1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">S3Template</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String ORIGINAL_FOLDER = <span class="string">&quot;video/original&quot;</span>; <span class="comment">// 原始文件目录</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DOWNLOAD_FOLDER = <span class="string">&quot;video/download&quot;</span>; <span class="comment">// 下载文件目录</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TRANSCODING_FOLDER = <span class="string">&quot;video/transcoding&quot;</span>; <span class="comment">// 转码文件目录</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AmazonS3 s3Client = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MyLogger log = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">S3Template</span><span class="params">(String endPoint, String accessKey, String secretKey)</span> </span>&#123;</span><br><span class="line">         <span class="keyword">this</span>.s3Client = AmazonS3ClientBuilder.standard()</span><br><span class="line">                .withCredentials(<span class="keyword">new</span> AWSStaticCredentialsProvider(<span class="keyword">new</span> BasicAWSCredentials(accessKey, secretKey)))</span><br><span class="line">                .withEndpointConfiguration(<span class="keyword">new</span> AwsClientBuilder.EndpointConfiguration(endPoint, <span class="string">&quot;&quot;</span>))</span><br><span class="line">                .build();</span><br><span class="line">         log = <span class="keyword">new</span> MyLogger();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">listBuckets</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Bucket&gt; buckets = s3Client.listBuckets();</span><br><span class="line">        <span class="keyword">for</span> (Bucket bucket : buckets) &#123;</span><br><span class="line">            log.info(bucket.getName() + <span class="string">&quot;\t&quot;</span> +</span><br><span class="line">                    StringUtils.fromDate(bucket.getCreationDate()));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createBucket</span><span class="params">(String bucketName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!s3Client.doesBucketExistV2(bucketName)) &#123;</span><br><span class="line">            s3Client.createBucket(<span class="keyword">new</span> CreateBucketRequest(bucketName));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Verify that the bucket was created by retrieving it and checking its location.</span></span><br><span class="line">        String bucketLocation = s3Client.getBucketLocation(<span class="keyword">new</span> GetBucketLocationRequest(bucketName));</span><br><span class="line">        log.info(<span class="string">&quot;Bucket location: &quot;</span> + bucketLocation);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteBucket</span><span class="params">(String bucketName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!s3Client.doesBucketExistV2(bucketName)) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;Bucket &quot;</span> + bucketName + <span class="string">&quot; does not exist.&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ObjectListing objectListing = s3Client.listObjects(bucketName);</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            Iterator&lt;S3ObjectSummary&gt; objIter = objectListing.getObjectSummaries().iterator();</span><br><span class="line">            <span class="keyword">while</span> (objIter.hasNext()) &#123;</span><br><span class="line">                s3Client.deleteObject(bucketName, objIter.next().getKey());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (objectListing.isTruncated()) &#123;</span><br><span class="line">                objectListing = s3Client.listNextBatchOfObjects(objectListing);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        VersionListing versionList = s3Client.listVersions(<span class="keyword">new</span> ListVersionsRequest().withBucketName(bucketName));</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            Iterator&lt;S3VersionSummary&gt; versionIter = versionList.getVersionSummaries().iterator();</span><br><span class="line">            <span class="keyword">while</span> (versionIter.hasNext()) &#123;</span><br><span class="line">                S3VersionSummary vs = versionIter.next();</span><br><span class="line">                s3Client.deleteVersion(bucketName, vs.getKey(), vs.getVersionId());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (versionList.isTruncated()) &#123;</span><br><span class="line">                versionList = s3Client.listNextBatchOfVersions(versionList);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        s3Client.deleteBucket(bucketName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">downFile</span><span class="params">(String bucketName, String key)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;Downloading object &quot;</span> + key);</span><br><span class="line">        S3Object fullObject = <span class="keyword">null</span>;</span><br><span class="line">        fullObject = s3Client.getObject(<span class="keyword">new</span> GetObjectRequest(bucketName, key));</span><br><span class="line">        storeFile(fullObject.getObjectContent(), key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">uploadFile</span><span class="params">(String bucketName, String fileObjKeyName, String fileName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( s3Client.doesObjectExist(bucketName, fileObjKeyName) ) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;The File &quot;</span> + fileName + <span class="string">&quot; already exists.&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Upload a file as a new object with ContentType and title specified.</span></span><br><span class="line">        log.info(<span class="string">&quot;Upload object &quot;</span> + fileName);</span><br><span class="line">        PutObjectRequest request = <span class="keyword">new</span> PutObjectRequest(bucketName, fileObjKeyName, <span class="keyword">new</span> File(ORIGINAL_FOLDER + <span class="string">&quot;/&quot;</span> + fileName));</span><br><span class="line">        ObjectMetadata metadata = <span class="keyword">new</span> ObjectMetadata();</span><br><span class="line">        metadata.setContentType(<span class="string">&quot;plain/video&quot;</span>);</span><br><span class="line">        metadata.addUserMetadata(<span class="string">&quot;x-amz-meta-title&quot;</span>, <span class="string">&quot;someTitle&quot;</span>);</span><br><span class="line">        request.setMetadata(metadata);</span><br><span class="line">        s3Client.putObject(request);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">storeFile</span><span class="params">(InputStream input, String fileName)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;Store File &quot;</span> + fileName);</span><br><span class="line">        <span class="comment">// Read the text input stream one line at a time and display each line.</span></span><br><span class="line">        BufferedInputStream reader = <span class="keyword">new</span> BufferedInputStream(input);</span><br><span class="line">        BufferedOutputStream writer = <span class="keyword">new</span> BufferedOutputStream(<span class="keyword">new</span> FileOutputStream(DOWNLOAD_FOLDER + <span class="string">&quot;/&quot;</span> + fileName));</span><br><span class="line">        <span class="keyword">byte</span>[] buff = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> ((len = reader.read(buff)) != -<span class="number">1</span>) &#123;</span><br><span class="line">            writer.write(buff, <span class="number">0</span>, len);</span><br><span class="line">        &#125;</span><br><span class="line">        reader.close();</span><br><span class="line">        writer.close();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>成功上传文件到ceph并将其下载下来：</p>
+<p><img src="/images/linux/ceph/s3-maven-2.png" alt="image" title="s3-maven-2"></p>
+<p>基本操作练习结束。</p>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.ceph.com/docs/master/install/install-ceph-gateway/">INSTALL CEPH OBJECT GATEWAY</a></p>
+<p><a href="https://github.com/awsdocs/aws-doc-sdk-examples/tree/master/java/example_code/s3/src/main/java">aws-doc-sdk-examples</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>centos</tag>
+        <tag>ceph</tag>
+        <tag>s3</tag>
       </tags>
   </entry>
   <entry>
@@ -5624,22 +5624,28 @@ webrtc会自动的将同一个<code>stream</code>下的<code>track</code>绑定�
 <li><code>date +&quot;%Y-%m-%d %H:%m:%S %Z&quot;</code>：获取当前编译时间。</li>
 </ul>
 <p>运行程序，打印结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./<span class="built_in">test</span></span></span><br><span class="line"></span><br><span class="line">Version = v0.1.1</span><br><span class="line">GoVersion = go version go1.15.5 linux/amd64</span><br><span class="line">GitUrl = origin https://xxxx/cdnRecord/xxx.git (fetch)</span><br><span class="line">origin  https://xxxx/cdnRecord/xxx.git (push)</span><br><span class="line">GitBranch = master</span><br><span class="line">GitCommit = 82c8b029a93e39a38bc4ea8221b5cbbad947b752</span><br><span class="line">GitLatestTag = v0.1.1</span><br><span class="line">BuildTime = 2021-07-15 09:07:19 CST</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./<span class="built_in">test</span></span></span><br><span class="line"></span><br><span class="line">Version = v0.1.1</span><br><span class="line">GoVersion = go version go1.15.5 linux/amd64</span><br><span class="line">GitUrl = origin https://xxx.git (fetch)</span><br><span class="line">origin  https://xxx.git (push)</span><br><span class="line">GitBranch = master</span><br><span class="line">GitCommit = 71c8xxxxxxxx21b</span><br><span class="line">GitLatestTag = v0.1.1</span><br><span class="line">BuildTime = 2021-07-15 09:07:19 CST</span><br></pre></td></tr></table></figure>
 <p>这样就达到了目的。</p>
 <hr>
 <h1 id="使用Makefile来进行编译"><a href="#使用Makefile来进行编译" class="headerlink" title="使用Makefile来进行编译"></a>使用Makefile来进行编译</h1><p>注意到刚才编译时的命令：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">go build -ldflags &quot;-X &#x27;main.Version=&quot;v0.1.1&quot;&#x27; -X &#x27;main.GoVersion=`go version`&#x27; \</span><br><span class="line">    -X &#x27;main.GitUrl=`git remote -v`&#x27; -X &#x27;main.GitBranch=`git rev-parse --abbrev-ref HEAD`&#x27; \</span><br><span class="line">    -X &#x27;main.GitCommit=`git rev-parse HEAD`&#x27; -X &#x27;main.GitLatestTag=`git describe --tags --abbrev=0`&#x27; \</span><br><span class="line">    -X &#x27;main.BuildTime=`date +&quot;%Y-%m-%d %H:%m:%S %Z&quot;`&#x27;&quot;</span><br></pre></td></tr></table></figure>
-<p>如果每次编译时，都要手动输入这么一大串…</p>
-<p>所以可以使用Makefile来简化这个过程，在项目中新建Makefile文件，内容如下：</p>
+<p>如果每次编译时，都要手动输入这么一大串……不可能的事情</p>
+<p>可以使用Makefile来简化这个过程，在项目中新建Makefile文件，内容如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">VERSION&#x3D;&quot;v0.1.1&quot;</span><br><span class="line">GO_VERSION&#x3D;&#96;go version&#96;</span><br><span class="line">GIT_URL&#x3D;&#96;git remote -v&#96;</span><br><span class="line">GIT_BRANCH&#x3D;&#96;git rev-parse --abbrev-ref HEAD&#96;</span><br><span class="line">GIT_COMMIT&#x3D;&#96;git rev-parse HEAD&#96;</span><br><span class="line">GIT_LATEST_TAG&#x3D;&#96;git describe --tags --abbrev&#x3D;0&#96;</span><br><span class="line">BUILD_TIME&#x3D;&#96;date +&quot;%Y-%m-%d %H:%m:%S %Z&quot;&#96;</span><br><span class="line"></span><br><span class="line">LDFLAGS&#x3D;&quot;-X &#39;main.Version&#x3D;$&#123;VERSION&#125;&#39; -X &#39;main.GoVersion&#x3D;$&#123;GO_VERSION&#125;&#39; -X &#39;main.GitUrl&#x3D;$&#123;GIT_URL&#125;&#39; -X &#39;main.GitBranch&#x3D;$&#123;GIT_BRANCH&#125;&#39; -X &#39;main.GitCommit&#x3D;$&#123;GIT_COMMIT&#125;&#39; -X &#39;main.GitLatestTag&#x3D;$&#123;GIT_LATEST_TAG&#125;&#39; -X &#39;main.BuildTime&#x3D;$&#123;BUILD_TIME&#125;&#39;&quot;</span><br><span class="line"></span><br><span class="line">all: build</span><br><span class="line"></span><br><span class="line">build:</span><br><span class="line">	CGO_ENABLED&#x3D;0 GOOS&#x3D;linux GOARCH&#x3D;amd64 go build -ldflags $&#123;LDFLAGS&#125;</span><br></pre></td></tr></table></figure>
+<p>这里<code>CGO_ENABLED=0 GOOS=linux GOARCH=amd64</code>用于指定代码运行平台（交叉编译），其中:</p>
+<ul>
+<li><code>CGO_ENABLED=0</code>：表示不启用cgo。</li>
+<li><code>GOOS=linux</code>：表示为linux平台编译代码。</li>
+<li><code>GOARCH=amd64</code>：表示代码执行架构为amd64。</li>
+</ul>
 <p>然后编译时，直接使用<code>make</code>即可:</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
 <p>其中<code>all</code>后面跟着的子模块就代表make时会执行的子模块，比如<code>all: build1 build2</code>那么make时就会执行build1和build2两个模块。也可以使用<code>make build</code>，这样就只会执行build子模块。</p>
-<p>注意这里<code>-X &#39;main.GoVersion=$&#123;GO_VERSION&#125;&#39;</code>中还要加两个引号，是因为<code>go version</code>执行的结果中会包含空格，如果不加引号make会报错，于是索性我这里全部加上了引号。</p>
+<p>注意这里<code>-X &#39;main.GoVersion=$&#123;GO_VERSION&#125;&#39;</code>中还要加两个引号，是因为<code>go version</code>执行的结果中会包含空格，如果不加引号make会报错，索性这里全部加上了引号。</p>
 <hr>
 <h1 id="顺便在程序启动时打印一个字符画"><a href="#顺便在程序启动时打印一个字符画" class="headerlink" title="顺便在程序启动时打印一个字符画"></a>顺便在程序启动时打印一个字符画</h1><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/common-nighthawk/go-figure&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	myFigure := figure.NewFigure(<span class="string">&quot;MyProject&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="literal">true</span>)</span><br><span class="line"></span><br><span class="line">	fmt.Println(myFigure.String())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>效果如下：</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"> __  __           ____                     _                 _</span><br><span class="line">|  \/  |  _   _  |  _ \   _ __    ___     (_)   ___    ___  | |_</span><br><span class="line">| |\/| | | | | | | |_) | | &#x27;__|  / _ \    | |  / _ \  / __| | __|</span><br><span class="line">| |  | | | |_| | |  __/  | |    | (_) |   | | |  __/ | (__  | |_</span><br><span class="line">|_|  |_|  \__, | |_|     |_|     \___/   _/ |  \___|  \___|  \__|</span><br><span class="line">          |___/                         |__/</span><br></pre></td></tr></table></figure></h2><h1 id="部分问题"><a href="#部分问题" class="headerlink" title="部分问题"></a>部分问题</h1><p><strong>使用goland在编写Makefile时会出现格式错误：</strong></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"> __  __           ____                     _                 _</span><br><span class="line">|  \/  |  _   _  |  _ \   _ __    ___     (_)   ___    ___  | |_</span><br><span class="line">| |\/| | | | | | | |_) | | &#x27;__|  / _ \    | |  / _ \  / __| | __|</span><br><span class="line">| |  | | | |_| | |  __/  | |    | (_) |   | | |  __/ | (__  | |_</span><br><span class="line">|_|  |_|  \__, | |_|     |_|     \___/   _/ |  \___|  \___|  \__|</span><br><span class="line">          |___/                         |__/</span><br></pre></td></tr></table></figure></h2><h1 id="程序启动时的效果"><a href="#程序启动时的效果" class="headerlink" title="程序启动时的效果"></a>程序启动时的效果</h1><h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">=====================================================================</span><br><span class="line">  __  __           ____                     _                 _</span><br><span class="line"> |  \/  |  _   _  |  _ \   _ __    ___     (_)   ___    ___  | |_</span><br><span class="line"> | |\/| | | | | | | |_) | | &#x27;__|  / _ \    | |  / _ \  / __| | __|</span><br><span class="line"> | |  | | | |_| | |  __/  | |    | (_) |   | | |  __/ | (__  | |_</span><br><span class="line"> |_|  |_|  \__, | |_|     |_|     \___/   _/ |  \___|  \___|  \__|</span><br><span class="line">           |___/                         |__/</span><br><span class="line">=====================================================================</span><br><span class="line">=====================================================================</span><br><span class="line">Version: v0.1.1</span><br><span class="line">Go Version: go version go1.15.5 linux/amd64</span><br><span class="line">Git URL: origin https://xxx.git (fetch)</span><br><span class="line">origin  https://xxx.git (push)</span><br><span class="line">Git Branch: master</span><br><span class="line">Git Commit: 71c8xxxxxxxx21b</span><br><span class="line">Git Latest Tag: v0.1.1</span><br><span class="line">Build Time: 2021-07-15 09:07:19 CST</span><br><span class="line"></span><br><span class="line">=====================================================================</span><br></pre></td></tr></table></figure></h2><h1 id="部分问题"><a href="#部分问题" class="headerlink" title="部分问题"></a>部分问题</h1><p><strong>使用goland在编写Makefile时会出现格式错误：</strong></p>
 <p>由于Makefile规定缩进必需是tab，但是通常情况下我们把golang的tab改成了4个空格，这就导致用goland写的Makefile有格式错误。</p>
 <p>一个简单的解决方法，下载Makefile插件即可：</p>
 <p><img src="/images/golang/goland-makefile.png" alt="image" title="goland的makefile插件"></p>
