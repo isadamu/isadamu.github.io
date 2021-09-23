@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://longrm.com/images/linux/rancher/rancher-创建.png">
 <meta property="og:image" content="http://longrm.com/images/linux/rancher/rancher-导入集群命令.png">
 <meta property="article:published_time" content="2021-06-23T07:38:00.000Z">
-<meta property="article:modified_time" content="2021-07-15T04:18:53.330Z">
+<meta property="article:modified_time" content="2021-09-23T08:28:29.104Z">
 <meta property="article:author" content="龙">
 <meta property="article:tag" content="study">
 <meta property="article:tag" content="linux">
@@ -250,7 +250,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-15 12:18:53" itemprop="dateModified" datetime="2021-07-15T12:18:53+08:00">2021-07-15</time>
+                <time title="修改时间：2021-09-23 16:28:29" itemprop="dateModified" datetime="2021-09-23T16:28:29+08:00">2021-09-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -301,11 +301,14 @@
 <h3 id="部署k3s-agent节点"><a href="#部署k3s-agent节点" class="headerlink" title="部署k3s-agent节点"></a>部署k3s-agent节点</h3><p>首先在server节点上找到token：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> cat /var/lib/rancher/k3s/server/node-token</span></span><br><span class="line"></span><br><span class="line">K1082501c0eaxxxxxxxx77059a4fff524a8a589b9::server:1f2d8a347xxxxxxxa75efd06</span><br></pre></td></tr></table></figure>
 <p>在要部署agent的节点上运行如下命令即可</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn \</span><br><span class="line">K3S_TOKEN=&#x27;K1082501c0eaxxxxxxxx77059a4fff524a8a589b9::server:1f2d8a347xxxxxxxa75efd06&#x27; \</span><br><span class="line">K3S_URL=https://192.168.1.60:6443 sh -</span><br></pre></td></tr></table></figure></h2><h2 id="k3s的卸载"><a href="#k3s的卸载" class="headerlink" title="k3s的卸载"></a>k3s的卸载</h2><p>在使用脚本安装k3s的时候，已经提供了卸载脚本放在了主机上。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn \</span><br><span class="line">K3S_TOKEN=&#x27;K1082501c0eaxxxxxxxx77059a4fff524a8a589b9::server:1f2d8a347xxxxxxxa75efd06&#x27; \</span><br><span class="line">K3S_URL=https://192.168.1.60:6443 sh -</span><br></pre></td></tr></table></figure>
+<p>agent节点不是必需的，实际上我这里就部署了上面两个server节点，如果嫌麻烦可以只部署server。</p>
+<hr>
+<h2 id="k3s的卸载"><a href="#k3s的卸载" class="headerlink" title="k3s的卸载"></a>k3s的卸载</h2><p>在使用脚本安装k3s的时候，已经提供了卸载脚本放在了主机上。</p>
 <p>k3s-server的卸载：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/k3s-uninstall.sh</span><br></pre></td></tr></table></figure>
 <p>k3s-agent的卸载：</p>
-<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/k3s-agent-uninstall.sh</span><br></pre></td></tr></table></figure></h2><h1 id="rancher的安装"><a href="#rancher的安装" class="headerlink" title="rancher的安装"></a>rancher的安装</h1><p>rancher2.5需要安装在Kubernetes集群之上，上面我们安装好了k3s集群，可以在上面进行rancher的安装。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/k3s-agent-uninstall.sh</span><br></pre></td></tr></table></figure></h2><h1 id="rancher的安装"><a href="#rancher的安装" class="headerlink" title="rancher的安装"></a>rancher的安装</h1><p>rancher2.5需要安装在Kubernetes集群之上，上面我们安装好了k3s集群，可以在上面进行rancher的安装。</p>
 <hr>
 <h2 id="安装helm"><a href="#安装helm" class="headerlink" title="安装helm"></a>安装helm</h2><p>参考官方文档<a target="_blank" rel="noopener" href="https://helm.sh/docs/intro/install/">Installing Helm</a></p>
 <p>安装方式很简单，首先选择以一个helm版本并下载<a target="_blank" rel="noopener" href="https://github.com/helm/helm/releases">releases</a>，我这里选择了3.6.0版本，</p>
@@ -315,7 +318,7 @@
 <p>查看helm是否可以使用了，</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> helm version</span></span><br><span class="line"></span><br><span class="line">version.BuildInfo&#123;Version:&quot;v3.6.0&quot;, GitCommit:&quot;7f2df6467771a75f5646b7f12afb408590ed1755&quot;, GitTreeState:&quot;clean&quot;, GoVersion:&quot;go1.16.3&quot;&#125;</span><br></pre></td></tr></table></figure>
 <p>然后添加一下rancher的地址：</p>
-<h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm repo add rancher-stable http://rancher-mirror.oss-cn-beijing.aliyuncs.com/server-charts/stable</span><br></pre></td></tr></table></figure></h2><h2 id="为Rancher创建Namespace"><a href="#为Rancher创建Namespace" class="headerlink" title="为Rancher创建Namespace"></a>为Rancher创建Namespace</h2><h2 id="-3"><a href="#-3" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create namespace cattle-system</span><br></pre></td></tr></table></figure></h2><h2 id="选择SSL方式"><a href="#选择SSL方式" class="headerlink" title="选择SSL方式"></a>选择SSL方式</h2><p>有三种SSL方式可以选择：</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm repo add rancher-stable http://rancher-mirror.oss-cn-beijing.aliyuncs.com/server-charts/stable</span><br></pre></td></tr></table></figure></h2><h2 id="为Rancher创建Namespace"><a href="#为Rancher创建Namespace" class="headerlink" title="为Rancher创建Namespace"></a>为Rancher创建Namespace</h2><h2 id="-2"><a href="#-2" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create namespace cattle-system</span><br></pre></td></tr></table></figure></h2><h2 id="选择SSL方式"><a href="#选择SSL方式" class="headerlink" title="选择SSL方式"></a>选择SSL方式</h2><p>有三种SSL方式可以选择：</p>
 <ul>
 <li>Rancher生成的自签名证书。</li>
 <li>Let’s Encrypt。</li>
@@ -323,7 +326,7 @@
 </ul>
 <p>这里我只试了第一种和第三种方式，还是第三种方式比较靠谱，也就是使用自己的域名生成证书。</p>
 <p>使用自己域名生成证书的方法就不写在这里了，总之得到三个证书文件：</p>
-<h2 id="-4"><a href="#-4" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxx.plus.csr  xxx.plus.key  xxx.plus.pem</span><br></pre></td></tr></table></figure></h2><h2 id="通过Helm安装Rancher"><a href="#通过Helm安装Rancher" class="headerlink" title="通过Helm安装Rancher"></a>通过Helm安装Rancher</h2><p>首先配置一下环境变量，否则会出现<code>Error: Kubernetes cluster unreachable: Get &quot;http://localhost:8080/version?timeout=32s&quot;: dial tcp [::1]:8080: connect: connection refused</code>的错误：</p>
+<h2 id="-3"><a href="#-3" class="headerlink" title=""></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxx.plus.csr  xxx.plus.key  xxx.plus.pem</span><br></pre></td></tr></table></figure></h2><h2 id="通过Helm安装Rancher"><a href="#通过Helm安装Rancher" class="headerlink" title="通过Helm安装Rancher"></a>通过Helm安装Rancher</h2><p>首先配置一下环境变量，否则会出现<code>Error: Kubernetes cluster unreachable: Get &quot;http://localhost:8080/version?timeout=32s&quot;: dial tcp [::1]:8080: connect: connection refused</code>的错误：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export KUBECONFIG=/etc/rancher/k3s/k3s.yaml</span><br></pre></td></tr></table></figure>
 <p>我这里使用的是自己生成的证书，安装命令如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">helm install rancher rancher-stable/rancher \</span><br><span class="line"> --namespace cattle-system \</span><br><span class="line"> --set hostname=xxx.plus \</span><br><span class="line"> --set replicas=3 \</span><br><span class="line"> --set ingress.tls.source=secret</span><br></pre></td></tr></table></figure>
@@ -479,19 +482,13 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k3s%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">k3s的安装与卸载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#k3s%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">k3s的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.1.1.</span> <span class="nav-text">部署外部数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2k3s-server%E8%8A%82%E7%82%B9"><span class="nav-number">2.1.2.</span> <span class="nav-text">部署k3s-server节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2k3s-agent%E8%8A%82%E7%82%B9"><span class="nav-number">2.1.3.</span> <span class="nav-text">部署k3s-agent节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.2.</span> <span class="nav-text">1
-2
-3
-curl -sfL http:&#x2F;&#x2F;rancher-mirror.cnrancher.com&#x2F;k3s&#x2F;k3s-install.sh | INSTALL_K3S_MIRROR&#x3D;cn \
-K3S_TOKEN&#x3D;&amp;#x27;K1082501c0eaxxxxxxxx77059a4fff524a8a589b9::server:1f2d8a347xxxxxxxa75efd06&amp;#x27; \
-K3S_URL&#x3D;https:&#x2F;&#x2F;192.168.1.60:6443 sh -
-</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k3s%E7%9A%84%E5%8D%B8%E8%BD%BD"><span class="nav-number">2.3.</span> <span class="nav-text">k3s的卸载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">2.4.</span> <span class="nav-text">1
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k3s%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">k3s的安装与卸载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#k3s%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">k3s的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.1.1.</span> <span class="nav-text">部署外部数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2k3s-server%E8%8A%82%E7%82%B9"><span class="nav-number">2.1.2.</span> <span class="nav-text">部署k3s-server节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2k3s-agent%E8%8A%82%E7%82%B9"><span class="nav-number">2.1.3.</span> <span class="nav-text">部署k3s-agent节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k3s%E7%9A%84%E5%8D%B8%E8%BD%BD"><span class="nav-number">2.2.</span> <span class="nav-text">k3s的卸载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.3.</span> <span class="nav-text">1
 &#x2F;usr&#x2F;local&#x2F;bin&#x2F;k3s-agent-uninstall.sh
-</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rancher%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">rancher的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85helm"><span class="nav-number">3.1.</span> <span class="nav-text">安装helm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-2"><span class="nav-number">3.2.</span> <span class="nav-text">1
+</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rancher%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">rancher的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85helm"><span class="nav-number">3.1.</span> <span class="nav-text">安装helm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">3.2.</span> <span class="nav-text">1
 helm repo add rancher-stable http:&#x2F;&#x2F;rancher-mirror.oss-cn-beijing.aliyuncs.com&#x2F;server-charts&#x2F;stable
-</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BARancher%E5%88%9B%E5%BB%BANamespace"><span class="nav-number">3.3.</span> <span class="nav-text">为Rancher创建Namespace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-3"><span class="nav-number">3.4.</span> <span class="nav-text">1
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BARancher%E5%88%9B%E5%BB%BANamespace"><span class="nav-number">3.3.</span> <span class="nav-text">为Rancher创建Namespace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-2"><span class="nav-number">3.4.</span> <span class="nav-text">1
 kubectl create namespace cattle-system
-</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9SSL%E6%96%B9%E5%BC%8F"><span class="nav-number">3.5.</span> <span class="nav-text">选择SSL方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-4"><span class="nav-number">3.6.</span> <span class="nav-text">1
+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9SSL%E6%96%B9%E5%BC%8F"><span class="nav-number">3.5.</span> <span class="nav-text">选择SSL方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-3"><span class="nav-number">3.6.</span> <span class="nav-text">1
 xxx.plus.csr  xxx.plus.key  xxx.plus.pem
 </span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87Helm%E5%AE%89%E8%A3%85Rancher"><span class="nav-number">3.7.</span> <span class="nav-text">通过Helm安装Rancher</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0k3s%E9%9B%86%E7%BE%A4%E5%88%B0rancher"><span class="nav-number">4.</span> <span class="nav-text">添加k3s集群到rancher</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1"><span class="nav-number">5.1.</span> <span class="nav-text">1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2"><span class="nav-number">5.2.</span> <span class="nav-text">2</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2021-07-02%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">2021-07-02问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2021-07-05%E9%97%AE%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">2021-07-05问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
@@ -509,7 +506,7 @@ xxx.plus.csr  xxx.plus.key  xxx.plus.pem
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-count">99</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -522,7 +519,7 @@ xxx.plus.csr  xxx.plus.key  xxx.plus.pem
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

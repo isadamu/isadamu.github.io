@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Microsoft YaHei, consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"longrm.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="尝试使用prometheus与grafana来监控程序运行情况，当然这里也顺便学习一下使用rancher来部署服务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rancher部署prometheus和grafana以及简单使用">
+<meta property="og:url" content="http://longrm.com/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="尝试使用prometheus与grafana来监控程序运行情况，当然这里也顺便学习一下使用rancher来部署服务。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署1.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署2.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署3.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署4.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署5.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署6.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署7.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署8.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署9.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署10.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署11.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-部署1.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-部署2.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-部署3.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-部署4.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-部署5.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-部署6.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-部署7.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-部署8.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证1.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证2.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证3.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证4.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证5.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证6.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证7.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证8.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证1.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证2.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证3.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证4.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证5.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证6.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证7.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证8.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证9.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/直接-prometheus-认证10.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/prometheus-监控1.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/prometheus-监控2.png">
+<meta property="og:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/prometheus-监控3.png">
+<meta property="article:published_time" content="2021-09-22T08:24:00.000Z">
+<meta property="article:modified_time" content="2021-09-23T11:43:09.799Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="prometheus">
+<meta property="article:tag" content="grafana">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://longrm.com/images/linux/rancher-prometheus-grafana/应用商店.png">
+
+<link rel="canonical" href="http://longrm.com/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>rancher部署prometheus和grafana以及简单使用 | 龙</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-104895670-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-104895670-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?df64de185c0ed2effe68855ef7caa51e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://longrm.com/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          rancher部署prometheus和grafana以及简单使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-22 16:24:00" itemprop="dateCreated datePublished" datetime="2021-09-22T16:24:00+08:00">2021-09-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-23 19:43:09" itemprop="dateModified" datetime="2021-09-23T19:43:09+08:00">2021-09-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">尝试使用prometheus与grafana来监控程序运行情况，当然这里也顺便学习一下使用rancher来部署服务。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>通常服务部署成功之后，对服务进行实时监控是一件很正常的事情，之前只用过别人搭建好的grafana。这篇博客中我自己来尝试完成这一整套流程。</p>
+<p>首先对环境进行部署，然后编写一个简单的代码来在go程序中使用prometheus监控数据，通过prometheus服务端的采集，然后在grafana上进行展示。</p>
+<hr>
+<h1 id="prometheus和grafana部署"><a href="#prometheus和grafana部署" class="headerlink" title="prometheus和grafana部署"></a>prometheus和grafana部署</h1><p>关于rancher的部署，在我之前的博客中已经写过了<a href="http://longrm.com/2021/06/23/2021-06-23-rancher-k3s-deploy/">rancher+k3s的高可用部署以及k3s集群的导入</a></p>
+<p>对于prometheus和grafana，这两个东西不使用容器，直接部署很简单，下载下来配置一下运行就好了。我这里环境中既然有rancher，那就直接使用rancher来部署，这样方便我进行服务管理。</p>
+<hr>
+<h2 id="方法一，在rancher的应用商店中部署"><a href="#方法一，在rancher的应用商店中部署" class="headerlink" title="方法一，在rancher的应用商店中部署"></a>方法一，在rancher的应用商店中部署</h2><p>首先进入到应用商店中，选择启动：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店.png" alt="image" title="应用商店"></p>
+<p>在其中找到prometheus：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus.png" alt="image" title="应用商店-prometheus"></p>
+<p>点进去进行部署前的设置，我这里首先改了一下名称，选择了一下命名空间:</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署1.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p>我这里选择不使用默认镜像，因为我使用默认镜像后，发现默认镜像的prometheus版本太低了，根本不支持<code>basic auth</code>，安全性没有任何保证，所以这里把prometheus改成了官方的最新镜像：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署2.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p>这里为prometheus启用了ingress，这个比直接端口映射方便，不过图中的.xip.io这个域名网站已经不能用了，后面换一下就好：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署3.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p>然后我关闭了我不需要的alert和push功能，开启了需要的grafana，同样为grafana启用了ingress：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署4.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p>点击部署之后，可以在应用商店中找到它：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署5.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p>点进这个应用，首先去改一下ingress规则，将<code>.xip.io</code>这个域名换成<code>.nip.io</code>:</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署6.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署7.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署8.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p>现在就可以通过域名直接访问到这两个服务了：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署9.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署10.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署11.png" alt="image" title="应用商店-prometheus-部署"></p>
+<p>到这里为止，服务部署已经完毕。</p>
+<hr>
+<h2 id="方法二，使用rancher直接部署"><a href="#方法二，使用rancher直接部署" class="headerlink" title="方法二，使用rancher直接部署"></a>方法二，使用rancher直接部署</h2><p>本来我用应用商店部署，发现用不了<code>basic auth</code>，当时没有发现可以修改docker版本，于是重新部署了一个最新版本的prometheus，整半天才加上<code>basic auth</code>。</p>
+<p>首先，直接在工作负载中，选择部署服务：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-部署1.png" alt="image" title="直接-prometheus-部署"></p>
+<p>改一下名字，选一下镜像和命名空间（新创建也行），然后直接部署即可：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-部署2.png" alt="image" title="直接-prometheus-部署"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-部署3.png" alt="image" title="直接-prometheus-部署"></p>
+<p>这时服务已经启动了，但是没有向外暴露服务，所以我们是访问不了的。</p>
+<p>手动添加一下ingress规则，选择负载均衡-&gt;添加规则，修改规则名，选择命名空间，工作负载，内部服务端口（prometheus默认是9090端口）：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-部署4.png" alt="image" title="直接-prometheus-部署"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-部署5.png" alt="image" title="直接-prometheus-部署"></p>
+<p>同样的，还是要修改一下域名，将<code>.xip.io</code>这个域名换成<code>.nip.io</code>：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-部署6.png" alt="image" title="直接-prometheus-部署"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-部署7.png" alt="image" title="直接-prometheus-部署"></p>
+<p>这样就出现了访问端口80，可以直接点击它来访问到prometheus服务：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-部署8.png" alt="image" title="直接-prometheus-部署"></p>
+<p>到这里直接部署已经完成。</p>
+<hr>
+<h1 id="应用商店中prometheus启用基本认证"><a href="#应用商店中prometheus启用基本认证" class="headerlink" title="应用商店中prometheus启用基本认证"></a>应用商店中prometheus启用基本认证</h1><p>在上面rancher部署完毕之后，可以发现现在prometheus是没有启用<code>basic auth</code>的。</p>
+<p>通过官方文档<a target="_blank" rel="noopener" href="https://prometheus.io/docs/guides/basic-auth/#securing-prometheus-api-and-ui-endpoints-using-basic-auth">SECURING PROMETHEUS API AND UI ENDPOINTS USING BASIC AUTH</a>可以知道，最新的prometheus是可以直接支持认证的，而不是像以前一样要加个反向代理来曲线救国。</p>
+<p>依据官方文档所述，现在可以额外添加一个<code>web.yml</code>文件来指定连接时的用户名和账号，格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">basic_auth_users:</span><br><span class="line">    admin: $2b$12$hNf2lSsxfm0.i4a.1kVpSOVyBCfIB51VRjgBUyv6kdnyTlgWj81Ay</span><br></pre></td></tr></table></figure>
+<p>这里的密码是test，经过bcrypt算法hash之后得到<code>$2b$12$hNf2lSsxfm0.i4a.1kVpSOVyBCfIB51VRjgBUyv6kdnyTlgWj81Ay</code>。</p>
+<p>因为这个文件需要我们自己生成，也就意味着这个密码的hash过程得我们自己实现。</p>
+<p>这里提供一个golang生成bcrypt进行hash之后的密码的简单代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">	&quot;golang.org&#x2F;x&#x2F;crypto&#x2F;bcrypt&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	password :&#x3D; &quot;mypassword&quot;</span><br><span class="line">	buf, err :&#x3D; bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)</span><br><span class="line">	if err !&#x3D; nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(string(buf))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在运行prometheus时，通过指定这个文件来启用认证：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prometheus --config.file=/etc/prometheus/prometheus.yml --web.config.file=/etc/prometheus/web.yml</span><br></pre></td></tr></table></figure>
+<p>当然现在我们是通过rancher来启动得prometheus，所以需要通过修改rancher的配置来让prometheus容器启动时，运行如上命令。</p>
+<hr>
+<h2 id="应用商店中prometheus启用基本认证-1"><a href="#应用商店中prometheus启用基本认证-1" class="headerlink" title="应用商店中prometheus启用基本认证"></a>应用商店中prometheus启用基本认证</h2><p>首先，还是同样的在应用商店中对prometheus进行管理，添加配置映射，在其中加入我们的<code>web-auth.yml</code>:</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证1.png" alt="image" title="应用商店-prometheus-认证"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证2.png" alt="image" title="应用商店-prometheus-认证"></p>
+<p>然后，配置一下容器启动时命令，选择工作负载，在启动对入口命令进行修改：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证3.png" alt="image" title="应用商店-prometheus-认证"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证4.png" alt="image" title="应用商店-prometheus-认证"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证5.png" alt="image" title="应用商店-prometheus-认证"></p>
+<p>上面的命令(CMD)中本来是如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--storage.tsdb.retention.time=15d --config.file=/etc/config/prometheus.yml --storage.tsdb.path=/data --web.console.libraries=/etc/prometheus/console_libraries --web.console.templates=/etc/prometheus/consoles --web.enable-lifecycle</span><br></pre></td></tr></table></figure>
+<p>添加<code>--web.config.file=/etc/config/web-auth.yml</code>到其中，（注意这里的配置文件是<code>prometheus-server-configmap-reload</code>这个服务来映射的，在<code>/etc/config/</code>路径下，而默认配置文件在<code>/etc/prometheus/</code>路径下）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--storage.tsdb.retention.time=15d --config.file=/etc/config/prometheus.yml --web.config.file=/etc/config/web-auth.yml --storage.tsdb.path=/data --web.console.libraries=/etc/prometheus/console_libraries --web.console.templates=/etc/prometheus/consoles --web.enable-lifecycle</span><br></pre></td></tr></table></figure>
+<p>点击升级之后，容器开始重启，但是这里我发现重启失败了，原因是健康检查没有通过，因为其默认使用的是http认证，但是启用认证之后，普通的http请求会直接403，所以健康检查无法通过。这里改成端口检查即可：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证6.png" alt="image" title="应用商店-prometheus-认证"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证7.png" alt="image" title="应用商店-prometheus-认证"></p>
+<p>修改之后，prometheus服务健康启动，查看界面，可以发现需要输入密码了：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证8.png" alt="image" title="应用商店-prometheus-认证"></p>
+<p>输入刚才所设置的用户名和密码，即可登录成功。</p>
+<hr>
+<h2 id="直接部署的prometheus启用基本认证"><a href="#直接部署的prometheus启用基本认证" class="headerlink" title="直接部署的prometheus启用基本认证"></a>直接部署的prometheus启用基本认证</h2><p>使用rancher直接部署的prometheus，由于是单个的独立服务，并没有其它的服务来辅助进行配置文件的管理，所以每次重新部署服务，之前容器都会被摧毁。</p>
+<p>所以这里需要我们自己来对配置文件进行管理，最开始我试用了主机目录映射的方法，然后发现两个k3s节点有一个有这个目录，有一个没有，这样就有可能部署会失败。于是换用了挂载pvc卷的方法，pv卷底层选择了nfs。</p>
+<p>首先选择一台机器<code>192.168.88.60</code>来安装nfs：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum  install  -y nfs-utils</span><br></pre></td></tr></table></figure>
+<p>修改nfs配置文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> vim /etc/exports</span></span><br><span class="line"></span><br><span class="line">/home/lrm/rancher-pv 192.168.88.58(rw,sync,root_squash) 192.168.88.59(rw,sync,root_squash)</span><br></pre></td></tr></table></figure>
+<p>因为nfs没有太多的安全性可以配置，所以这里配置时指定了能够访问的ip以及权限，这两个ip就是两个k3s节点。这里将<code>/home/lrm/rancher-pv</code>目录进行分享。</p>
+<p>启动nfs：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start nfs</span><br></pre></td></tr></table></figure>
+<p>另外的一些常用命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 查看当前向外提供的挂载目录</span><br><span class="line">showmount -e</span><br><span class="line"></span><br><span class="line">// 查看当前nfs被哪些客户端所挂载</span><br><span class="line">showmount -a</span><br><span class="line"></span><br><span class="line">// 应用配置文件修改</span><br><span class="line">exportfs -r</span><br></pre></td></tr></table></figure>
+<p>然后就可以到rancher上配置pv卷。选择集群（但是不选择具体项目），可以看到存储，选择其中的持久卷，然后点击添加pv：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证1.png" alt="image" title="直接-prometheus-认证"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证2.png" alt="image" title="直接-prometheus-认证"></p>
+<p>修改持久卷名字，选择卷插件<code>NFS Share</code>，填写容量大小，路径是我们刚才分享的目录<code>/home/lrm/rancher-pv</code>，分享的机器<code>192.168.88.60</code>：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证3.png" alt="image" title="直接-prometheus-认证"></p>
+<p>添加完成pv卷后，来到刚才部署好的<code>long-prometheus</code>这个服务中进行升级，选择数据卷-&gt;添加卷-&gt;添加新的pvc，然后选择使用现有的持久卷，也就是刚才创建的pv卷<code>long-nfs-pv</code>:</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证4.png" alt="image" title="直接-prometheus-认证"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证5.png" alt="image" title="直接-prometheus-认证"></p>
+<p>我这里将它映射到容器内路径<code>/etc/prometheus/myconfig</code>下：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证6.png" alt="image" title="直接-prometheus-认证"></p>
+<p>添加好数据卷后，点击升级，服务会重启。完成之后，进入容器内命令行，可以看到目录已经成功映射进来：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证7.png" alt="image" title="直接-prometheus-认证"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证8.png" alt="image" title="直接-prometheus-认证"></p>
+<p>剩下的事情就很简单了，在这个目录中编写好我们的配置文件<code>prometheus.yml</code>和<code>web-auth.yml</code>，然后配置容器启动时命令，指定prometheus使用这两个配置文件启动即可：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证9.png" alt="image" title="直接-prometheus-认证"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/直接-prometheus-认证10.png" alt="image" title="直接-prometheus-认证"></p>
+<p>我这里将启动命令配置为:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--config.file=/etc/prometheus/myconfig/prometheus/prometheus.yml --web.config.file=/etc/prometheus/myconfig/prometheus/web-auth.yml</span><br></pre></td></tr></table></figure>
+<p>服务重启之后，prometheus的基本认证就成功启用了。</p>
+<hr>
+<h1 id="使用prometheus监控go程序"><a href="#使用prometheus监控go程序" class="headerlink" title="使用prometheus监控go程序"></a>使用prometheus监控go程序</h1><p>一个简单的测试程序编写如下：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;github.com/prometheus/client_golang/prometheus&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/prometheus/client_golang/prometheus/promhttp&quot;</span></span><br><span class="line">	<span class="string">&quot;math/rand&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	metricLabels := prometheus.Labels&#123;</span><br><span class="line">		<span class="string">&quot;program_name&quot;</span>: <span class="string">&quot;test&quot;</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	prometheus.DefaultRegisterer = prometheus.WrapRegistererWith(metricLabels,</span><br><span class="line">		prometheus.WrapRegistererWithPrefix(<span class="string">&quot;long_&quot;</span>, prometheus.DefaultRegisterer))</span><br><span class="line"></span><br><span class="line">	prometheus.MustRegister(promTestUsageFunc)</span><br><span class="line">	prometheus.MustRegister(promTestUsage)</span><br><span class="line">	prometheus.MustRegister(promTestCounter)</span><br><span class="line">	prometheus.MustRegister(promTestHist)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> updatePromTestHist()</span><br><span class="line"></span><br><span class="line">	http.Handle(<span class="string">&quot;/metrics&quot;</span>, promhttp.HandlerFor(</span><br><span class="line">		prometheus.DefaultGatherer,</span><br><span class="line">		promhttp.HandlerOpts&#123;</span><br><span class="line">			EnableOpenMetrics: <span class="literal">true</span>,</span><br><span class="line">		&#125;,</span><br><span class="line">	))</span><br><span class="line"></span><br><span class="line">	err := http.ListenAndServe(<span class="string">&quot;:12345&quot;</span>, <span class="literal">nil</span>)  <span class="comment">// prometheus的/metrics监听在12345端口</span></span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里定义四个变量用于测试</span></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	<span class="comment">// 使用函数调用的方式每次返回 Gauge 类型的值</span></span><br><span class="line">	promTestUsageFunc = prometheus.NewGaugeFunc(prometheus.GaugeOpts&#123;</span><br><span class="line">		Name: <span class="string">&quot;test_usage_func&quot;</span>,</span><br><span class="line">		Help: <span class="string">&quot;test usage like cpu&quot;</span>,</span><br><span class="line">	&#125;, <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">		<span class="keyword">return</span> getTestUsage()</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 使用变量的方式每次返回 Gauge 类型的值</span></span><br><span class="line">	promTestUsage = prometheus.NewGauge(prometheus.GaugeOpts&#123;</span><br><span class="line">		Name: <span class="string">&quot;test_usage&quot;</span>,</span><br><span class="line">		Help: <span class="string">&quot;test usage like cpu&quot;</span>,</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 使用函数调用的方式每次返回 counter 类型的值</span></span><br><span class="line">	promTestCounter = prometheus.NewCounterFunc(prometheus.CounterOpts&#123;</span><br><span class="line">		Name: <span class="string">&quot;test_counter&quot;</span>,</span><br><span class="line">		Help: <span class="string">&quot;test counter always increase&quot;</span>,</span><br><span class="line">	&#125;, <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">		<span class="keyword">return</span> getTestCounter()</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Histogram 类型的值</span></span><br><span class="line">	promTestHist = prometheus.NewHistogram(prometheus.HistogramOpts&#123;</span><br><span class="line">		Name: <span class="string">&quot;test_hist&quot;</span>,</span><br><span class="line">		Help: <span class="string">&quot;test hist buckets&quot;</span>,</span><br><span class="line">		Buckets: prometheus.ExponentialBuckets(<span class="number">0.05</span>, <span class="number">1.5</span>, <span class="number">10</span>),</span><br><span class="line">	&#125;)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> testUsage <span class="keyword">float64</span> = <span class="number">0.5</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getTestUsage</span><span class="params">()</span> <span class="title">float64</span></span> &#123; <span class="comment">// 简单模拟一下实时cpu使用率</span></span><br><span class="line">	testUsage += <span class="number">0.1</span> * (rand.Float64() - rand.Float64())</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> testUsage &lt; <span class="number">0</span> &#123;</span><br><span class="line">		testUsage = <span class="number">0</span></span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> testUsage &gt; <span class="number">1</span> &#123;</span><br><span class="line">		testUsage = <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	promTestUsage.Set(testUsage)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> testUsage</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> testCounter <span class="keyword">float64</span> = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getTestCounter</span><span class="params">()</span> <span class="title">float64</span></span> &#123; <span class="comment">// 简单模拟cpu使用时长（无限累加）</span></span><br><span class="line">	testCounter += <span class="keyword">float64</span>(rand.Intn(<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> testCounter</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">updatePromTestHist</span><span class="params">()</span></span> &#123;   <span class="comment">// 简单模拟请求延迟，使用正态分布</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		sample := rand.NormFloat64()*<span class="number">0.5</span>+<span class="number">0.09</span></span><br><span class="line">		<span class="keyword">if</span> sample &lt; <span class="number">0</span> &#123;</span><br><span class="line">			sample = -sample</span><br><span class="line">		&#125;</span><br><span class="line">		promTestHist.Observe(sample)</span><br><span class="line">		time.Sleep(time.Millisecond*<span class="number">200</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里模拟了三种通常使用的统计类型Gauge，counter和Histogram，监听在192.168.88.60的12345端口，修改prometheus配置，让它从此进程中抓取数据，修改prometheus.yml配置文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">scrape_configs:</span><br><span class="line">- job_name: test</span><br><span class="line">  static_configs:</span><br><span class="line">  - targets: [&quot;192.168.88.60:12345&quot;]</span><br></pre></td></tr></table></figure>
+<p>在<code>scrape_configs</code>加入上面的配置，在prometheus的界面上可以看到新的target已经加入：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/prometheus-监控1.png" alt="image" title="prometheus-监控"></p>
+<p>可以在prometheus界面上查询到采集的值，以及看到简单的图形：</p>
+<p><img src="/images/linux/rancher-prometheus-grafana/prometheus-监控2.png" alt="image" title="prometheus-监控"></p>
+<p><img src="/images/linux/rancher-prometheus-grafana/prometheus-监控3.png" alt="image" title="prometheus-监控"></p>
+<p>到这里就完成了prometheus对go程序监控数据的采集。</p>
+<hr>
+<h1 id="使用grafana展示监控数据"><a href="#使用grafana展示监控数据" class="headerlink" title="使用grafana展示监控数据"></a>使用grafana展示监控数据</h1><hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/golang/" rel="tag"># golang</a>
+              <a href="/tags/prometheus/" rel="tag"># prometheus</a>
+              <a href="/tags/grafana/" rel="tag"># grafana</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/23/2021-07-15-golang-add-git-info/" rel="prev" title="golang在程序编译时使用ldflags加入版本信息和git信息等">
+      <i class="fa fa-chevron-left"></i> golang在程序编译时使用ldflags加入版本信息和git信息等
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prometheus%E5%92%8Cgrafana%E9%83%A8%E7%BD%B2"><span class="nav-number">2.</span> <span class="nav-text">prometheus和grafana部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%8C%E5%9C%A8rancher%E7%9A%84%E5%BA%94%E7%94%A8%E5%95%86%E5%BA%97%E4%B8%AD%E9%83%A8%E7%BD%B2"><span class="nav-number">2.1.</span> <span class="nav-text">方法一，在rancher的应用商店中部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%8C%E4%BD%BF%E7%94%A8rancher%E7%9B%B4%E6%8E%A5%E9%83%A8%E7%BD%B2"><span class="nav-number">2.2.</span> <span class="nav-text">方法二，使用rancher直接部署</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%95%86%E5%BA%97%E4%B8%ADprometheus%E5%90%AF%E7%94%A8%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81"><span class="nav-number">3.</span> <span class="nav-text">应用商店中prometheus启用基本认证</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%95%86%E5%BA%97%E4%B8%ADprometheus%E5%90%AF%E7%94%A8%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81-1"><span class="nav-number">3.1.</span> <span class="nav-text">应用商店中prometheus启用基本认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E9%83%A8%E7%BD%B2%E7%9A%84prometheus%E5%90%AF%E7%94%A8%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81"><span class="nav-number">3.2.</span> <span class="nav-text">直接部署的prometheus启用基本认证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8prometheus%E7%9B%91%E6%8E%A7go%E7%A8%8B%E5%BA%8F"><span class="nav-number">4.</span> <span class="nav-text">使用prometheus监控go程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8grafana%E5%B1%95%E7%A4%BA%E7%9B%91%E6%8E%A7%E6%95%B0%E6%8D%AE"><span class="nav-number">5.</span> <span class="nav-text">使用grafana展示监控数据</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
