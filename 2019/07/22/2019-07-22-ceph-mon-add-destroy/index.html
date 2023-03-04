@@ -5,26 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/head/dragon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/head/dragon-16x16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/dragon-32x32.png" color="#222">
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Microsoft YaHei, consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"longrm.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"blog.longrm.top","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="搭建好集群之后，该如何添加mon，删除mon">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ceph-13.2.5添加mon，删除mon（ceph-deploy）">
-<meta property="og:url" content="http://longrm.com/2019/07/22/2019-07-22-ceph-mon-add-destroy/index.html">
+<meta property="og:url" content="http://blog.longrm.top/2019/07/22/2019-07-22-ceph-mon-add-destroy/index.html">
 <meta property="og:site_name" content="龙">
 <meta property="og:description" content="搭建好集群之后，该如何添加mon，删除mon">
 <meta property="og:locale" content="zh_CN">
@@ -36,7 +35,7 @@
 <meta property="article:tag" content="ceph">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://longrm.com/2019/07/22/2019-07-22-ceph-mon-add-destroy/">
+<link rel="canonical" href="http://blog.longrm.top/2019/07/22/2019-07-22-ceph-mon-add-destroy/">
 
 
 <script id="page-configurations">
@@ -66,7 +65,7 @@
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?df64de185c0ed2effe68855ef7caa51e";
+      hm.src = "https://hm.baidu.com/hm.js?ddd83a70fcf1b063ec2e1095f5d8358b";
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(hm, s);
     })();
@@ -135,30 +134,30 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-about">
 
-    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -216,10 +215,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://longrm.com/2019/07/22/2019-07-22-ceph-mon-add-destroy/">
+    <link itemprop="mainEntityOfPage" href="http://blog.longrm.top/2019/07/22/2019-07-22-ceph-mon-add-destroy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head/head_bigfan.png">
+      <meta itemprop="image" content="/images/head_bigfan.png">
       <meta itemprop="name" content="龙">
       <meta itemprop="description" content="哇咔咔">
     </span>
@@ -235,7 +234,7 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -243,14 +242,14 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-08-23 16:14:03" itemprop="dateModified" datetime="2019-08-23T16:14:03+08:00">2019-08-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -259,6 +258,20 @@
             </span>
 
           
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2019/07/22/2019-07-22-ceph-mon-add-destroy/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/07/22/2019-07-22-ceph-mon-add-destroy/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
             <div class="post-description">搭建好集群之后，该如何添加mon，删除mon</div>
 
         </div>
@@ -279,7 +292,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">// 先添加集群用户</span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> useradd -d /home/&#123;username&#125; -m &#123;username&#125;</span></span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&quot;&#123;username&#125; ALL = (root) NOPASSWD:ALL&quot;</span> | sudo tee /etc/sudoers.d/&#123;username&#125;</span></span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> sudo chmod 0440 /etc/sudoers.d/&#123;username&#125;</span></span><br><span class="line"></span><br><span class="line">// 修改hosts文件</span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> sudo vim /etc/hosts</span></span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> cat /etc/hosts</span></span><br><span class="line"></span><br><span class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</span><br><span class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</span><br><span class="line"></span><br><span class="line">192.168.31.203 node1</span><br><span class="line">192.168.31.204 node2</span><br><span class="line">192.168.31.205 node3</span><br><span class="line">192.168.31.207 node4</span><br><span class="line"></span><br><span class="line">// 其它所有节点拷贝hosts文件（不知道是不是必须的，反正我是做了这一步）</span><br><span class="line"><span class="meta">[node1]$</span><span class="bash"> sudo scp ming@192.168.31.202:/etc/hosts /etc/hosts</span></span><br><span class="line"><span class="meta">[node2]$</span><span class="bash"> sudo scp ming@192.168.31.202:/etc/hosts /etc/hosts</span></span><br><span class="line"><span class="meta">[node3]$</span><span class="bash"> sudo scp ming@192.168.31.202:/etc/hosts /etc/hosts</span></span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> sudo scp ming@192.168.31.202:/etc/hosts /etc/hosts</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// ssh免密登录设置</span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> vim ~/.ssh/config</span></span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> cat ~/.ssh/config</span></span><br><span class="line"></span><br><span class="line">Host node1</span><br><span class="line">	HostName 192.168.31.203</span><br><span class="line">	User ming</span><br><span class="line">Host node2</span><br><span class="line">	HostName 192.168.31.204</span><br><span class="line">	User ming</span><br><span class="line">Host node3</span><br><span class="line">	HostName 192.168.31.205</span><br><span class="line">	User ming</span><br><span class="line">Host node4</span><br><span class="line">	HostName 192.168.31.207</span><br><span class="line">	User ming</span><br><span class="line"></span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ssh-copy-id &#123;username&#125;@node4</span></span><br><span class="line"></span><br><span class="line">// ntp设置</span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> sudo yum install -y ntp</span></span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> sudo systemctl start ntpd</span></span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> sudo systemctl <span class="built_in">enable</span> ntpd</span></span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> sudo vim /etc/ntp.conf</span></span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> cat /etc/ntp.conf</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="meta">#</span><span class="bash"> Use public servers from the pool.ntp.org project.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Please consider joining the pool (http://www.pool.ntp.org/join.html).</span></span><br><span class="line">server 192.168.31.202 prefer</span><br><span class="line">server 0.centos.pool.ntp.org iburst</span><br><span class="line">server 1.centos.pool.ntp.org iburst</span><br><span class="line">server 2.centos.pool.ntp.org iburst</span><br><span class="line">server 3.centos.pool.ntp.org iburst</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>完成上面的准备工作之后，开始进行mon的添加，</p>
 <p><strong>注意：</strong>我这里使用的本地源来安装ceph，所以即使不装epel也无所谓，因为所需依赖包都在本地了，
-具体可以参考之前的博客<a href="http://longrm.com/2019/07/18/2019-07-18-ceph-install/">centos7上的ceph指定版本安装方法</a>。</p>
+具体可以参考之前的博客<a target="_blank" rel="noopener" href="http://longrm.com/2019/07/18/2019-07-18-ceph-install/">centos7上的ceph指定版本安装方法</a>。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// 安装ceph</span><br><span class="line"><span class="meta">[node4]$</span><span class="bash"> sudo yum install -y ceph</span></span><br><span class="line"></span><br><span class="line">// 修改ceph.conf配置。</span><br><span class="line">// 这里在mon_initial_members、mon_host上的修改可能并不是必须的（经本人测试），但感觉还是加上好一点。</span><br><span class="line">// 一定要增加public_network字段的配置，否则大概率会出现&quot;admin_socket: exception getting command descriptions file ...&quot;的错误。</span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> vim ceph.conf</span></span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> cat ceph.conf</span></span><br><span class="line"></span><br><span class="line">[global]</span><br><span class="line">fsid = a20b153c-c907-41bb-a5b2-753a40e2085c</span><br><span class="line">mon_initial_members = node1, node2, node3, node4</span><br><span class="line">mon_host = 192.168.31.203,192.168.31.204,192.168.31.205,192.168.31.207</span><br><span class="line">auth_cluster_required = cephx</span><br><span class="line">auth_service_required = cephx</span><br><span class="line">auth_client_required = cephx</span><br><span class="line">public_network = 192.168.31.0/24</span><br><span class="line"></span><br><span class="line">// 将这个配置发送到其它节点</span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ceph-deploy --overwrite-conf config push node1 node2 node3 node4</span></span><br><span class="line"></span><br><span class="line">// 添加mon节点</span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ceph-deploy mon add node4</span></span><br><span class="line"></span><br><span class="line"><span class="meta">[deploy]$</span><span class="bash"> ssh node1 sudo ceph -s</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  services:</span><br><span class="line">    mon: 4 daemons, quorum node1,node2,node3,node4</span><br><span class="line">    mgr: node1(active), standbys: node2, node3</span><br><span class="line">    osd: 0 osds: 0 up, 0 in</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
 <p>这样就完成了mon节点的添加，注意到其中的<strong>关键在于public_network字段的添加</strong>。</p>
 <h2 id="删除mon节点"><a href="#删除mon节点" class="headerlink" title="删除mon节点"></a>删除mon节点</h2><p>直接destroy就可以了：</p>
@@ -324,6 +337,13 @@
 
           </div>
           
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -379,7 +399,7 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="龙"
-      src="/images/head/head_bigfan.png">
+      src="/images/head_bigfan.png">
   <p class="site-author-name" itemprop="name">龙</p>
   <div class="site-description" itemprop="description">哇咔咔</div>
 </div>
@@ -406,6 +426,11 @@
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/isadamu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;isadamu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
 
 
 
@@ -427,15 +452,13 @@
 
 <div class="copyright">
   
-  &copy; 2017 – 
-  <span itemprop="copyrightYear">2021</span>
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class=""></i>
   </span>
   <span class="author" itemprop="copyrightHolder">龙</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
-  </div>
 
         
 
@@ -452,8 +475,6 @@
 
   
   <script src="/lib/anime.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
-  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
 
@@ -495,6 +516,37 @@
   
 
   
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://lrmblog-1.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://blog.longrm.top/2019/07/22/2019-07-22-ceph-mon-add-destroy/";
+    this.page.identifier = "2019/07/22/2019-07-22-ceph-mon-add-destroy/";
+    this.page.title = "ceph-13.2.5添加mon，删除mon（ceph-deploy）";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lrmblog-1.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
 
 </body>
 </html>
