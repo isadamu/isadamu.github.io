@@ -23,78 +23,78 @@
   <meta name="description" content="尝试使用prometheus与grafana来监控程序运行情况，当然这里也顺便学习一下使用rancher来部署服务。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rancher部署prometheus和grafana以及简单使用">
-<meta property="og:url" content="http://blog.longrm.top/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/index.html">
+<meta property="og:url" content="https://blog.longrm.top/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/index.html">
 <meta property="og:site_name" content="龙">
 <meta property="og:description" content="尝试使用prometheus与grafana来监控程序运行情况，当然这里也顺便学习一下使用rancher来部署服务。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署1.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署2.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署3.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署4.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署5.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署6.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署7.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署8.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署9.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署10.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署11.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署1.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署2.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署3.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署4.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署5.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署6.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署7.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署8.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证1.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证2.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证3.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证4.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证5.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证6.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证7.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证8.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证1.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证2.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证3.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证4.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证5.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证6.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证7.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证8.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证9.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证10.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/prometheus-监控1.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/prometheus-监控2.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/prometheus-监控3.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示1.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示2.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示3.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示4.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示5.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示6.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示7.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示8.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示9.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示10.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示11.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示12.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示13.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示14.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示15.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示16.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示17.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示18.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示19.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示20.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量1.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量2.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量3.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量4.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量5.png">
-<meta property="og:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量6.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署1.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署2.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署3.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署4.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署5.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署6.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署7.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署8.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署9.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署10.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-部署11.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署1.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署2.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署3.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署4.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署5.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署6.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署7.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-部署8.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证1.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证2.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证3.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证4.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证5.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证6.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证7.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店-prometheus-认证8.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证1.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证2.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证3.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证4.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证5.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证6.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证7.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证8.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证9.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/直接-prometheus-认证10.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/prometheus-监控1.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/prometheus-监控2.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/prometheus-监控3.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示1.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示2.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示3.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示4.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示5.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示6.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示7.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示8.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示9.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示10.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示11.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示12.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示13.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示14.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示15.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示16.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示17.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示18.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示19.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-展示20.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量1.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量2.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量3.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量4.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量5.png">
+<meta property="og:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/grafana-变量6.png">
 <meta property="article:published_time" content="2021-09-22T08:24:00.000Z">
 <meta property="article:modified_time" content="2021-09-26T08:44:09.000Z">
 <meta property="article:author" content="龙">
@@ -104,9 +104,9 @@
 <meta property="article:tag" content="prometheus">
 <meta property="article:tag" content="grafana">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店.png">
+<meta name="twitter:image" content="https://blog.longrm.top/images/linux/rancher-prometheus-grafana/应用商店.png">
 
-<link rel="canonical" href="http://blog.longrm.top/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/">
+<link rel="canonical" href="https://blog.longrm.top/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/">
 
 
 <script id="page-configurations">
@@ -286,7 +286,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.longrm.top/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/">
+    <link itemprop="mainEntityOfPage" href="https://blog.longrm.top/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head_bigfan.png">
@@ -791,7 +791,7 @@
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "http://blog.longrm.top/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/";
+    this.page.url = "https://blog.longrm.top/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/";
     this.page.identifier = "2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/";
     this.page.title = "rancher部署prometheus和grafana以及简单使用";
     };
