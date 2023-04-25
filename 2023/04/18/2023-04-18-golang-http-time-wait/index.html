@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/dragon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/dragon-16x16.png">
+  <link rel="mask-icon" href="/images/dragon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.longrm.top","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="go程序中发生http请求出现错误，并且可以查询到系统中存在大量time-wait连接。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="go程序中http请求出现&quot;connect:cannot-assign-requested-address&quot;以及TIME-WAIT的问题调查">
+<meta property="og:url" content="https://blog.longrm.top/2023/04/18/2023-04-18-golang-http-time-wait/index.html">
+<meta property="og:site_name" content="龙">
+<meta property="og:description" content="go程序中发生http请求出现错误，并且可以查询到系统中存在大量time-wait连接。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.longrm.top/images/2023-04-18-golang-http-time-wait/1.png">
+<meta property="og:image" content="https://blog.longrm.top/images/2023-04-18-golang-http-time-wait/2.png">
+<meta property="article:published_time" content="2023-04-18T07:40:00.000Z">
+<meta property="article:modified_time" content="2023-04-25T09:48:59.498Z">
+<meta property="article:author" content="龙">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="golang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.longrm.top/images/2023-04-18-golang-http-time-wait/1.png">
+
+<link rel="canonical" href="https://blog.longrm.top/2023/04/18/2023-04-18-golang-http-time-wait/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>go程序中http请求出现"connect:cannot-assign-requested-address"以及TIME-WAIT的问题调查 | 龙</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XR5EFQLDK9"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XR5EFQLDK9');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ddd83a70fcf1b063ec2e1095f5d8358b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">龙</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">哇咔咔</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.longrm.top/2023/04/18/2023-04-18-golang-http-time-wait/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head_bigfan.png">
+      <meta itemprop="name" content="龙">
+      <meta itemprop="description" content="哇咔咔">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="龙">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          go程序中http请求出现"connect:cannot-assign-requested-address"以及TIME-WAIT的问题调查
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-04-18 15:40:00" itemprop="dateCreated datePublished" datetime="2023-04-18T15:40:00+08:00">2023-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-04-25 17:48:59" itemprop="dateModified" datetime="2023-04-25T17:48:59+08:00">2023-04-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2023/04/18/2023-04-18-golang-http-time-wait/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2023/04/18/2023-04-18-golang-http-time-wait/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">go程序中发生http请求出现错误，并且可以查询到系统中存在大量time-wait连接。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>最近在golang程序中，连续遇到了两次在大并发下，出现<code>connect: cannot assign requested address</code>的问题，在系统中查询可以发现出现了大量<code>TIME-WAIT</code>。下面逐渐梳理一下出现这个问题的原因，以及大并发下，该如何正确使用httpClient。</p>
+<hr>
+<h1 id="第一次问题出现"><a href="#第一次问题出现" class="headerlink" title="第一次问题出现"></a>第一次问题出现</h1><p>线上的一个go程序在每秒4000个请求的情况下，很快就出现了大量<code>connect: cannot assign requested address</code>的请求错误。</p>
+<p>这里出现问题的代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> HttpClient <span class="keyword">struct</span> &#123;</span><br><span class="line">	host *url.URL </span><br><span class="line">	HTTPClient *http.Client</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewHttpClient</span><span class="params">(host <span class="keyword">string</span>)</span> *<span class="title">HttpClient</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> hostURL *url.URL = <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">var</span> err error</span><br><span class="line">    <span class="keyword">if</span> host != <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">        hostURL, err = url.Parse(host)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            <span class="built_in">panic</span>(err.Error())</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &amp;HttpClient&#123;host: hostURL&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *HttpClient)</span> <span class="title">httpClient</span><span class="params">()</span> *<span class="title">http</span>.<span class="title">Client</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> c.HTTPClient == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> http.DefaultClient</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c.HTTPClient</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *HttpClient)</span> <span class="title">Do</span><span class="params">(req *http.Request, v <span class="keyword">interface</span>&#123;&#125;)</span> <span class="params">(*http.Response, error)</span></span> &#123;</span><br><span class="line">    response, err := c.httpClient().Do(req)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> response.Body.Close()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> v != <span class="literal">nil</span> &#123;</span><br><span class="line">        err = osjson.NewDecoder(response.Body).Decode(v)</span><br><span class="line">        <span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">            err = <span class="literal">nil</span> <span class="comment">// ignore EOF, empty response body</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> response, err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到这里的代码中定义了一个结构体<code>HttpClient</code>，其中虽然有<code>*http.Client</code>，但是实际上并没有初始化，所以在执行Do请求的时候，使用的仍然是<code>http.DefaultClient</code>，可以看一下它的参数定义：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// DefaultClient is the default Client and is used by Get, Head, and Post.</span></span><br><span class="line"><span class="keyword">var</span> DefaultClient = &amp;Client&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Transport specifies the mechanism by which individual</span></span><br><span class="line">	<span class="comment">// HTTP requests are made.</span></span><br><span class="line">	<span class="comment">// If nil, DefaultTransport is used.</span></span><br><span class="line">	Transport RoundTripper</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> DefaultTransport RoundTripper = &amp;Transport&#123;</span><br><span class="line">	Proxy: ProxyFromEnvironment,</span><br><span class="line">	DialContext: defaultTransportDialContext(&amp;net.Dialer&#123;</span><br><span class="line">		Timeout:   <span class="number">30</span> * time.Second,</span><br><span class="line">		KeepAlive: <span class="number">30</span> * time.Second,</span><br><span class="line">	&#125;),</span><br><span class="line">	ForceAttemptHTTP2:     <span class="literal">true</span>,</span><br><span class="line">	MaxIdleConns:          <span class="number">100</span>,</span><br><span class="line">	IdleConnTimeout:       <span class="number">90</span> * time.Second,</span><br><span class="line">	TLSHandshakeTimeout:   <span class="number">10</span> * time.Second,</span><br><span class="line">	ExpectContinueTimeout: <span class="number">1</span> * time.Second,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Transport <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// MaxIdleConnsPerHost, if non-zero, controls the maximum idle</span></span><br><span class="line">	<span class="comment">// (keep-alive) connections to keep per-host. If zero,</span></span><br><span class="line">	<span class="comment">// DefaultMaxIdleConnsPerHost is used.</span></span><br><span class="line">	MaxIdleConnsPerHost <span class="keyword">int</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// MaxConnsPerHost optionally limits the total number of</span></span><br><span class="line">	<span class="comment">// connections per host, including connections in the dialing,</span></span><br><span class="line">	<span class="comment">// active, and idle states. On limit violation, dials will block.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Zero means no limit.</span></span><br><span class="line">	MaxConnsPerHost <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DefaultMaxIdleConnsPerHost is the default value of Transport&#x27;s</span></span><br><span class="line"><span class="comment">// MaxIdleConnsPerHost.</span></span><br><span class="line"><span class="keyword">const</span> DefaultMaxIdleConnsPerHost = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>所以其实<code>http.DefaultClient</code>没有定义<code>Transport</code>，于是在这里会使用到<code>DefaultTransport</code>，由于<code>DefaultTransport</code>中没有定义<code>MaxIdleConnsPerHost</code>，所以便会用到<code>DefaultMaxIdleConnsPerHost</code>，也就是每个host的最大空闲连接数为2，同时<code>MaxConnsPerHost</code>没有限制。这样在大量并发的情况下，就会出现问题：</p>
+<ol>
+<li>假如同时有2000个请求发送，则当2000个请求完成时，会有2000个Idle请求。</li>
+<li>由于使用了<code>DefaultMaxIdleConnsPerHost = 2</code>，所以这里会有1998个连接被关闭。</li>
+<li>又有2000个请求，循环以上。</li>
+</ol>
+<p>这样就会产生大量的<code>TIME-WAIT</code>，在大量并发的情况下，一样会造成端口耗尽。</p>
+<hr>
+<h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><p>解决这个问题很简单，就是避免使用<code>http.DefaultClient</code>，它只适合在测试的时候使用，在生产上应该创建新的<code>http.Client</code>，修改后使用如下代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">client := &amp;http.Client&#123;</span><br><span class="line">    Transport: &amp;http.Transport&#123;</span><br><span class="line">        MaxIdleConns:        <span class="number">500</span>,                              <span class="comment">// 最大空闲连接数</span></span><br><span class="line">        MaxConnsPerHost:     <span class="number">100</span>,                              <span class="comment">// 每个host最大连接数</span></span><br><span class="line">        MaxIdleConnsPerHost: <span class="number">100</span>,                              <span class="comment">// 每个host最大空闲连接数</span></span><br><span class="line">        IdleConnTimeout:     <span class="number">60</span> * time.Second,                 <span class="comment">// 空闲连接超时时间</span></span><br><span class="line">    &#125;,</span><br><span class="line">    Timeout: time.Duration(conf.Timeout) * time.Second,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>问题得到解决。</strong></p>
+<p>其实主要的关键在于限制<code>MaxConnsPerHost</code>，否则当有大量请求要发送的时候，它们不会阻塞等待空闲连接，而是会直接新建连接进行发送，导致远远超过空闲连接池的大小，以至于被迫关闭大量连接，出现大量<code>TIME-WAIT</code>。</p>
+<hr>
+<h1 id="第二次问题出现"><a href="#第二次问题出现" class="headerlink" title="第二次问题出现"></a>第二次问题出现</h1><p>这一次还是线上go程序，不过是另一个，同样的出现了<code>connect: cannot assign requested address</code>的问题，在系统中查询可以发现出现了大量<code>TIME-WAIT</code>。</p>
+<p>第一反应就是没有设置<code>MaxConnsPerHost</code>等参数导致的，但查看代码之后，发现其实已经设置了，代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewHttpClientManager</span><span class="params">()</span> *<span class="title">HttpClientManager</span></span> &#123;</span><br><span class="line">	mgr := &amp;HttpClientManager&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	mgr.transport = &amp;http.Transport&#123;</span><br><span class="line">		MaxIdleConns:        <span class="number">6000</span>,</span><br><span class="line">		MaxConnsPerHost:     <span class="number">1200</span>,</span><br><span class="line">		MaxIdleConnsPerHost: <span class="number">1200</span>,</span><br><span class="line">		IdleConnTimeout:     <span class="number">60</span> * time.Second,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mgr *HttpClientManager)</span> <span class="title">createHttpClient</span><span class="params">()</span> *<span class="title">HttpClientInfo</span></span> &#123;</span><br><span class="line">	client := &amp;http.Client&#123;</span><br><span class="line">		Transport: mgr.transport,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到上面的部分代码中，已经定义了一个连接池<code>transport</code>，并且其中也设置了<code>MaxConnsPerHost</code>和<code>MaxIdleConnsPerHost</code>，端口理论上是一个2字节的整型，也就是范围是0-65535，这里就算1个host跑满使用1200个连接，10个host也才占用12000个连接，而且实际上看日志发现只有几个host，而且这也无法解释大量<code>TIME-WAIT</code>。</p>
+<p>再次看代码，确定可以排除连接池参数设置问题，终于在一个博客上找到了问题所在<a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_36436112/article/details/118698978">Golang 产生大量TIME_WAIT或ESTABLISHED的问题</a>(额外说一句，现在的csdn就是个垃圾)其中提到了<a target="_blank" rel="noopener" href="https://studygolang.com/articles/28263?fr=sidebar">使用golang的<code>http.Client</code>容易出现TIME_WAIT上涨的几种情况和解决方案</a>。</p>
+<p>可以看到博客中所述：</p>
+<blockquote>
+<p>由于忘记读取响应的body导致创建大量处于TIME_WAIT状态的连接</p>
+</blockquote>
+<p>还能有这种问题？看看库里面的几段注释:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// By default, Transport caches connections for future re-use.</span></span><br><span class="line"><span class="comment">// This may leave many open connections when accessing many hosts.</span></span><br><span class="line"><span class="comment">// This behavior can be managed using Transport&#x27;s CloseIdleConnections method</span></span><br><span class="line"><span class="comment">// and the MaxIdleConnsPerHost and DisableKeepAlives fields.</span></span><br><span class="line"><span class="keyword">type</span> Transport <span class="keyword">struct</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// If the returned error is nil, the Response will contain a non-nil</span></span><br><span class="line"><span class="comment">// Body which the user is expected to close. If the Body is not both</span></span><br><span class="line"><span class="comment">// read to EOF and closed, the Client&#x27;s underlying RoundTripper</span></span><br><span class="line"><span class="comment">// (typically Transport) may not be able to re-use a persistent TCP</span></span><br><span class="line"><span class="comment">// connection to the server for a subsequent &quot;keep-alive&quot; request.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span> <span class="title">Do</span><span class="params">(req *Request)</span> <span class="params">(*Response, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> c.do(req)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Response represents the response from an HTTP request.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The Client and Transport return Responses from servers once</span></span><br><span class="line"><span class="comment">// the response headers have been received. The response body</span></span><br><span class="line"><span class="comment">// is streamed on demand as the Body field is read.</span></span><br><span class="line"><span class="keyword">type</span> Response <span class="keyword">struct</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Body represents the response body.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// The response body is streamed on demand as the Body field</span></span><br><span class="line">	<span class="comment">// is read. If the network connection fails or the server</span></span><br><span class="line">	<span class="comment">// terminates the response, Body.Read calls return an error.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// The http Client and Transport guarantee that Body is always</span></span><br><span class="line">	<span class="comment">// non-nil, even on responses without a body or responses with</span></span><br><span class="line">	<span class="comment">// a zero-length body. It is the caller&#x27;s responsibility to</span></span><br><span class="line">	<span class="comment">// close Body. The default HTTP client&#x27;s Transport may not</span></span><br><span class="line">	<span class="comment">// reuse HTTP/1.x &quot;keep-alive&quot; TCP connections if the Body is</span></span><br><span class="line">	<span class="comment">// not read to completion and closed.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// The Body is automatically dechunked if the server replied</span></span><br><span class="line">	<span class="comment">// with a &quot;chunked&quot; Transfer-Encoding.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// As of Go 1.12, the Body will also implement io.Writer</span></span><br><span class="line">	<span class="comment">// on a successful &quot;101 Switching Protocols&quot; response,</span></span><br><span class="line">	<span class="comment">// as used by WebSockets and HTTP/2&#x27;s &quot;h2c&quot; mode.</span></span><br><span class="line">	Body io.ReadCloser</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意到其中的两段注释：</p>
+<blockquote>
+<p>If the Body is not both read to EOF and closed, the Client’s underlying RoundTripper 
+(typically Transport) may not be able to re-use a persistent TCP
+connection to the server for a subsequent “keep-alive” request.</p>
+<p>The http Client and Transport guarantee that Body is always
+non-nil, even on responses without a body or responses with
+a zero-length body. It is the caller’s responsibility to
+close Body. The default HTTP client’s Transport may not
+reuse HTTP/1.x “keep-alive” TCP connections if the Body is
+not read to completion and closed.</p>
+</blockquote>
+<p>chatgpt翻译一下：</p>
+<blockquote>
+<p>如果未将Body完全读取并关闭，客户端底层的RoundTripper（通常是Transport）可能无法重新使用持久的TCP连接进行后续的“keep-alive”请求。</p>
+<p>HTTP客户端和Transport保证Body始终为非零值，即使在没有主体或主体长度为零的响应中也是如此。关闭Body是调用方的责任。如果未将Body完全读取并关闭，则默认的HTTP客户端的Transport可能无法重用HTTP/1.x“keep-alive”TCP连接。</p>
+</blockquote>
+<p>这里已经说得很明白了，如果想要<code>RoundTripper</code>（也就是Transport）重用连接，<strong>必需</strong><code>both read to EOF and closed</code>。</p>
+<p>那么再看看出问题的代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(server *Server)</span> <span class="title">HandleReq</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    resp, err := server.PassReq(req)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Error(err.Error())</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> resp.StatusCode != <span class="number">404</span> || .... &#123;</span><br><span class="line">        _, err = io.Copy(w, resp.Body)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Error(err.Error())</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        _ = resp.Body.Close()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _ = resp.Body.Close()</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到这里有一个if判断<code>if resp.StatusCode != 404 || ....</code>，如果这里判断没有通过，则不会进行读取body的操作，而是直接<code>resp.Body.Close()</code>。这样就会导致在完成body读取之前就关闭了连接。于是这些连接在关闭之前并没有把body读完，导致连接不会重用，于是被close，然后进入<code>TIME_WAIT</code>。</p>
+<p>为了保证无论如何都可以把body读取了再关闭，改写代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(server *Server)</span> <span class="title">HandleReq</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    resp, err := server.PassReq(req)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Error(err.Error())</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		_, _ = io.CopyN(io.Discard, resp.Body, <span class="number">1024</span>*<span class="number">4</span>)</span><br><span class="line">		_ = resp.Body.Close()</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> resp.StatusCode != <span class="number">404</span> || .... &#123;</span><br><span class="line">        _, err = io.Copy(w, resp.Body)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Error(err.Error())</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里添加了：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    _, _ = io.CopyN(io.Discard, resp.Body, <span class="number">1024</span>*<span class="number">4</span>)</span><br><span class="line">    _ = resp.Body.Close()</span><br><span class="line">&#125;()</span><br></pre></td></tr></table></figure>
+<p>这里使用了<code>io.CopyN</code>将多余的数据全部写入到<code>io.Discard</code>（也就是丢弃这些不要的数据），同时使用了<code>1024*4</code>来限制读取body剩余数据的最大上限为4k。这个代码就保证了在关闭body之前，将剩余数据读取出来，即使之前body已经被读取完了，这里再次重复读取也没问题。</p>
+<p>至于为什么要用<code>io.CopyN</code>而不是<code>io.Copy</code>，下面会进行解释。</p>
+<hr>
+<h1 id="为什么golang要这样设计Http"><a href="#为什么golang要这样设计Http" class="headerlink" title="为什么golang要这样设计Http"></a>为什么golang要这样设计Http</h1><p><strong>第一个问题：为什么golang不给http.DefaultClient配置连接数上限？</strong></p>
+<p>这个问题还好解释，毕竟生产环境上面应该调用者自己配置<code>http.Client</code>，而不是偷懒使用<code>http.DefaultClient</code>，那么这个问题姑且认为调用者占大部分锅。</p>
+<p><strong>第二个问题：为什么明明都调用body.close了，剩下的数据已经没法读取了，http库为什么不自动丢弃这些数据？</strong></p>
+<p>我们在学习go语言的时候，大部分示例代码都教我们使用<code>defer body.Close()</code>来关闭body即可，直到实际使用时出现大量<code>TIME-WAIT</code>，才会去调查问题，最终发现源自于没有读取完毕剩余数据而提前close导致。</p>
+<p>这里可以看一下github上的一些讨论：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/golang/go/issues/26095">net/http: Docs update for connection reuse</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/google/go-github/pull/317">Drain Response.Body to enable TCP/TLS connection reuse (4x speedup)</a></p>
+<p>可以看到其中一位用户的发言:</p>
+<p><img src="/images/2023-04-18-golang-http-time-wait/1.png" alt="images" title="讨论1"></p>
+<p>chatgpt翻译一下:</p>
+<blockquote>
+<p>这个“读取完整的消息体”在某些时候不是安全问题吗？我不记得这是与服务器还是客户端相关（或者两者都有），但是如果 Go 自动读取完整的消息体，那么程序就很容易被拒绝服务攻击（CPU / 内存消耗）。对手只需发送一个无限消息体，Go 程序将一直消耗它，如果您在代码中没有显式地消耗它（使用 ioutil.Discard 或其他方式），则程序的开发者可能不会知道它正在发生。</p>
+<p>我记得有一段时间前的提交，让 Go 读取消息体的一部分，但如果它继续读取，那么它将突然关闭连接，以避免这种潜在的拒绝服务攻击。如果是这种情况，而且当某个 goroutine 还在执行时你发起了另一个请求，那么创建新连接就是有意义的（这也是你在这里看到的，以及为什么读取完整消息体是“解决方案”的原因）。实际上，从安全和“HTTP”角度来看，如果您不从两方面都读取完整的消息体，那么在消息体关闭时或接近关闭时关闭连接并在需要时重新打开一个新连接是不是更有意义？这样一次只有一个连接。</p>
+</blockquote>
+<p>也就是说，其实在之前的某一次提交中，http会去自动处理剩余消息，但是这里确带来了安全问题<code>对手只需发送一个无限消息体</code>，所以又取消的了这个操作。</p>
+<p>再看一部分讨论：</p>
+<p><img src="/images/2023-04-18-golang-http-time-wait/2.png" alt="images" title="讨论2"></p>
+<p>chatgpt翻译一下:</p>
+<blockquote>
+<p>这么做的风险是你可能面临大量（可能是无限的）数据流。因此，解决方案是仅在从可信源（例如此 PR 中的 GitHub）获取数据时使用此“技巧”？</p>
+<p>@Slimmy，你看到了 #317（评论）中的内联建议吗？建议是“读取，比如，512 字节，在关闭时发生 50 毫秒超时，这对于这种情况可能足够好。”</p>
+<p>我正在尽力以其最纯粹的形式重现此问题（即：除标准软件包之外没有任何依赖项），但到目前为止无法做到。我想充分了解这是否是任何使用 net/http 的人的问题，还是仅限于此项目。</p>
+<p>@kevin-cantwell，非常重要的一点是这些是 TLS 连接，因为所使用的协议是 https，而不是 http。TLS 连接握手非常昂贵，因此重用已建立的到远程服务器的 TLS 连接将提供很大的节省。重用到本地主机的非 TLS 连接将几乎没有什么收益，这就是从你的测试中我可以看到的情况。</p>
+</blockquote>
+<p>这里可以看到，即使是调用者自己去读取剩余消息，也要注意剩余消息过长或者读取时间过久的问题，所以这里提到了<code>read, say, 512 bytes with a 50ms timeout happening on close</code>，所以相比使用<code>io.Copy</code>，这里使用<code>io.CopyN</code>其实更好。</p>
+<p>如上所述可以加上超时更保险，如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        time.Sleep(time.Millisecond * <span class="number">50</span>)</span><br><span class="line">        _ = body.Close()</span><br><span class="line">    &#125;()</span><br><span class="line">    _, _ = io.CopyN(io.Discard, body, <span class="number">1024</span>*<span class="number">4</span>)</span><br><span class="line">    _ = body.Close()</span><br><span class="line">&#125;()</span><br></pre></td></tr></table></figure>
+<p>这里的代码只是随便写一下，这里无论如何都要有一个协程阻塞50ms可能也不是什么好主意。</p>
+<hr>
+<h1 id="总结一下"><a href="#总结一下" class="headerlink" title="总结一下"></a>总结一下</h1><p>如果你在golang中使用了HttpClient并且想要让它<strong>重用连接</strong>，那么有几个注意事项：</p>
+<ol>
+<li>不要使用DefaultClinet，自己New一个Client。</li>
+<li>Client要设置合理的参数。</li>
+<li>在关闭http响应的body之前，要把里面的数据读完。</li>
+</ol>
+<p>另外提一点，每次调用<code>io.Copy()</code>时，它都会在内部创建一个32k的<code>buf []byte</code>，如果想要优化这个地方的性能，可以使用<code>io.CopyBuffer()</code>，然后通过一个缓存池来避免buf的重复创建。</p>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_36436112/article/details/118698978">Golang 产生大量TIME_WAIT或ESTABLISHED的问题</a></p>
+<p><a target="_blank" rel="noopener" href="https://studygolang.com/articles/28263?fr=sidebar">使用golang的<code>http.Client</code>容易出现TIME_WAIT上涨的几种情况和解决方案</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/golang/go/issues/26095">net/http: Docs update for connection reuse</a></p>
+<p><a target="_blank" rel="noopener" href="https://studygolang.com/articles/28263?fr=sidebar">Drain Response.Body to enable TCP/TLS connection reuse (4x speedup)](</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/golang/" rel="tag"># golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/22/2021-09-22-rancher-prometheus-grafana-golang/" rel="prev" title="rancher部署prometheus和grafana以及简单使用">
+      <i class="fa fa-chevron-left"></i> rancher部署prometheus和grafana以及简单使用
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E9%97%AE%E9%A2%98%E5%87%BA%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">第一次问题出现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">解决问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%E9%97%AE%E9%A2%98%E5%87%BA%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">第二次问题出现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88golang%E8%A6%81%E8%BF%99%E6%A0%B7%E8%AE%BE%E8%AE%A1Http"><span class="nav-number">4.</span> <span class="nav-text">为什么golang要这样设计Http</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"><span class="nav-number">5.</span> <span class="nav-text">总结一下</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="龙"
+      src="/images/head_bigfan.png">
+  <p class="site-author-name" itemprop="name">龙</p>
+  <div class="site-description" itemprop="description">哇咔咔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/isadamu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;isadamu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">龙</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://lrmblog-1.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://blog.longrm.top/2023/04/18/2023-04-18-golang-http-time-wait/";
+    this.page.identifier = "2023/04/18/2023-04-18-golang-http-time-wait/";
+    this.page.title = "go程序中http请求出现\"connect:cannot-assign-requested-address\"以及TIME-WAIT的问题调查";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lrmblog-1.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
